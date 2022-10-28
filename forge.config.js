@@ -1,9 +1,11 @@
 const generatedName = require('./app/utils/generateName.js');
 
+const name = generatedName(10);
+
 module.exports = {
   packagerConfig: {
-    "name": generatedName(10),
-    "icon": "./app/img/icon.ico"
+    "name": name,
+    "icon": "./app/img/icon-premium.ico"
   },
   makers: [
     {
@@ -11,9 +13,9 @@ module.exports = {
       "config": {
         "name": generatedName(10),
         "authors": generatedName(10),
-        "description": 'Electron application',
-        "setupIcon": "./app/img/icon.ico",
-        "setupExe": "AutoFish Setup.exe",
+        "description": 'Application',
+        "setupIcon": "./app/img/icon-premium.ico",
+        "setupExe": `AutoFish (${name}) Setup.exe`,
         "loadingGif": "./app/img/install.gif"
       }
     }
