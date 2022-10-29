@@ -23,7 +23,7 @@ const renderCanvasOnce = once(renderCanvas);
 
 const renderThreshold = ({ threshold, bobberColor }) => {
 
-	if(threshold < 10) threshold = 10;
+	if(threshold < 1) threshold = 1;
 	else if(threshold > 150) threshold = 150;
 
   const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch`,
@@ -31,14 +31,14 @@ const renderThreshold = ({ threshold, bobberColor }) => {
                                 name: `bobberColor`,
                                 title: `Switch between blue and red feathers.`,
                                 value: bobberColor,
-                                style: `background-image: url("./img/switch_${bobberColor == `red` ? `red` : `blue`}.png")`,
+                                style: `background-image: url("./img/switch_${bobberColor == `red` ? `red` : `blue`}_new.png")`,
                                });
 
-  const range = elt(`input`, { type: `range`, min: 10, max: 150, value: threshold, name: `threshold` });
+  const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold` });
   if(bobberColor == `blue`) {
-    document.styleSheets[0].rules[69].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
+    document.styleSheets[0].rules[70].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
   } else {
-    document.styleSheets[0].rules[69].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
+    document.styleSheets[0].rules[70].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
   }
 
   const number = elt(`input`, { type: `number`, value: threshold, name: `threshold` });
