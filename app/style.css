@@ -82,6 +82,15 @@ section {
   margin-right: 80px;
 }
 
+.premium_crown {
+  position: absolute;
+  width: 30px;
+  transform: rotate(-8deg);
+  top: 0;
+  left: 133px;
+}
+
+
 .logo_link_img {
   height: 11px;
   margin-right: 5px;

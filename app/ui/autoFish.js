@@ -16,7 +16,8 @@ const renderLogo = () => {
         { href: `#`, onclick: () => ipcRenderer.send("open-link-youtube") },
         "jsbots"
       )
-    )
+    ),
+    elt(`img`,{ className: `premium_crown`, src: `img/premium.png`})
   );
 };
 
