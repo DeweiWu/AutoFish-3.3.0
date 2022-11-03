@@ -1,5 +1,5 @@
 {
-  "game": "Retail",
+  "game": "Dragonflight",
   "timer": 0,
   "likeHuman": true,
   "lures": false,
@@ -13,7 +13,7 @@
   "confirmSoulbound": true,
   "whitelistLanguage": "eng",
   "threshold": 60,
-  "bobberColor": "red",
+  "bobberColor": "blue",
   "multipleWindows": false,
   "initial": true
 }
