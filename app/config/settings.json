@@ -13,7 +13,7 @@
   "confirmSoulbound": true,
   "whitelistLanguage": "eng",
   "threshold": 60,
-  "bobberColor": "blue",
+  "bobberColor": "red",
   "multipleWindows": false,
   "initial": true
 }
