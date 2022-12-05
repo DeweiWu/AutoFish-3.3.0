@@ -20,10 +20,10 @@ const renderLogo = () => {
     elt(`img`,{ className: `premium_crown`, src: `img/premium.png`})
   );
 };
-
+const bugLogo = elt(`img`, {src: `img/bug.png`, title: `Report an issue`,onclick: () => ipcRenderer.send("open-link-bug"), className: `bug_button`});
 const renderLogger = () => {
   return {
-    dom: elt("section", { className: `logger` }),
+    dom: elt("section", { className: `logger` }, bugLogo),
     show({ text, type }) {
       let row = elt("p", null, text);
       row.style.color = type;

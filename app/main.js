@@ -224,6 +224,10 @@ or in connection with the use or performance of this software.`)) {
     shell.openExternal("https://www.youtube.com/jsbots")
   );
 
+  ipcMain.on("open-link-bug", () =>
+    shell.openExternal("https://discord.com/channels/1006827456931569735/1008328201031921694")
+  );
+
   ipcMain.on("open-link-donate", () =>
     shell.openExternal("https://www.buymeacoffee.com/jsbots/e/96734")
   );
