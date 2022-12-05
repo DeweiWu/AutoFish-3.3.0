@@ -185,6 +185,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       applyLures.timer.update(() => addTime);
     }
 
+    if(settings.spare) {
+      applySpare.timer.update(() => addTime);
+    }
+
   };
   logOut.timer = logOutTimer;
   logOut.on = config.logOut > 0;
@@ -210,13 +214,29 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   const applyLures = async () => {
     await action(async () => {
       await keyboard.sendKey(settings.luresKey, delay);
+      if(settings.game == `Dragonflight`) {
+        if(config.reaction) {
+          await sleep(random(config.reactionDelay.from, config.reactionDelay.to))
+        }
+        await keyboard.sendKey(settings.poleKey, delay);
+      }
     });
     await sleep(config.luresDelay);
   };
-
   applyLures.on = settings.lures;
   applyLures.timer = createTimer(() => {
     return settings.luresDelayMin * 60 * 1000;
+  });
+
+  const applySpare = async () => {
+    await action(async () => {
+      await keyboard.sendKey(settings.spareKey, delay);
+    });
+    await sleep(config.spareDelay);
+  };
+  applySpare.on = settings.spare;
+  applySpare.timer = createTimer(() => {
+    return settings.spareDelayMin * 60 * 1000;
   });
 
   const randomSleep = async () => {
@@ -522,6 +542,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     findAllBobberColors,
     randomSleep,
     applyLures,
+    applySpare,
     castFishing,
     findBobber,
     highlightBobber,

@@ -11,7 +11,8 @@ const runBot = async ({ bot, log, state, stats }) => {
     checkBobber,
     hookBobber,
     checkWhisper,
-    replyToChat
+    replyToChat,
+    applySpare
   } = bot;
 
   let attempts = 0;
@@ -49,6 +50,12 @@ const runBot = async ({ bot, log, state, stats }) => {
         return;
       }
       randomSleep.timer.update();
+    }
+
+    if(applySpare.on && applySpare.timer.isElapsed()) {
+      log.send(`Applying spare...`);
+      await applySpare();
+      applySpare.timer.update();
     }
 
     if (applyLures.on && applyLures.timer.isElapsed()) {
