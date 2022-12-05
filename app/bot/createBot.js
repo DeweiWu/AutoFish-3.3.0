@@ -169,6 +169,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       await keyboard.toggleKey(`enter`, false, delay);
     });
     await sleep(20000);
+
+    const addTime = applyLures.timer.timeRemains();
+
     await sleep(random(30000, 60000));
     if(state.status == 'stop') {
       return;
@@ -177,11 +180,21 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       await keyboard.sendKey(`enter`);
     });
     await sleep(random(30000, 60000));
+
+    if(settings.lures) {
+      applyLures.timer.update(() => addTime);
+    }
+
+    if(settings.spare) {
+      applySpare.timer.update(() => addTime);
+    }
+
   };
   logOut.timer = logOutTimer;
   logOut.on = config.logOut > 0;
 
   const preliminaryChecks = async () => {
+    if(config.ignorePreliminary) return;
     if (screenSize.x == -32000 && screenSize.y == -32000) {
       throw new Error("The window is either in fullscreen mode or minimized. Switch to windowed or windowed(maximized).");
     }
@@ -202,13 +215,29 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   const applyLures = async () => {
     await action(async () => {
       await keyboard.sendKey(settings.luresKey, delay);
+      if(settings.game == `Dragonflight`) {
+        if(config.reaction) {
+          await sleep(random(config.reactionDelay.from, config.reactionDelay.to))
+        }
+        await keyboard.sendKey(settings.poleKey, delay);
+      }
     });
     await sleep(config.luresDelay);
   };
-
   applyLures.on = settings.lures;
   applyLures.timer = createTimer(() => {
     return settings.luresDelayMin * 60 * 1000;
+  });
+
+  const applySpare = async () => {
+    await action(async () => {
+      await keyboard.sendKey(settings.spareKey, delay);
+    });
+    await sleep(config.spareDelay);
+  };
+  applySpare.on = settings.spare;
+  applySpare.timer = createTimer(() => {
+    return settings.spareDelayMin * 60 * 1000;
   });
 
   const randomSleep = async () => {
@@ -239,7 +268,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
 
     if (state.status == "initial") {
       await sleep(250);
-      if (await notificationZone.check("error")) {
+      if (!config.ignorePreliminary && await notificationZone.check("error")) {
         throw new Error(`Game error notification occured on casting fishing.`);
       } else {
         state.status = "working";
@@ -514,6 +543,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     findAllBobberColors,
     randomSleep,
     applyLures,
+    applySpare,
     castFishing,
     findBobber,
     highlightBobber,

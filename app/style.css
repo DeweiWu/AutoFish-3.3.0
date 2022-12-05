@@ -194,7 +194,7 @@ section {
 }
 
 
-.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"] {
+.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="poleKey"], .settings input[name="spareKey"] {
   cursor: pointer;
 }
 
@@ -410,6 +410,11 @@ input[type=range][name=threshold]::-ms-track {
   background: transparent;
   border-color: transparent;
   color: transparent;
+}
+
+input[type=checkbox] {
+  width: 13px;
+  height: 13px;
 }
 
 input[type=range][name=threshold]::-webkit-slider-thumb {

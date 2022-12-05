@@ -21,6 +21,9 @@ const renderDelay = ({delay}) => {
      elt('input', {type: `number`, name: `to`, value: delay.to}));
 };
 
+const renderIgnorePreliminary = ({ignorePreliminary}) => {
+  return elt(`input`, {type: `checkbox`, checked: ignorePreliminary, name: `ignorePreliminary`});
+}
 
 const renderShiftClick = ({shiftClick}) => {
   let dom = elt("input", {
@@ -100,6 +103,10 @@ const renderMouseCurvature = ({mouseCurvatureStrength}) => {
 
 const renderLuresDelay = ({luresDelay}) => {
   return elt(`input`, {type: `number`, name: `luresDelay`, value: luresDelay});
+};
+
+const renderSpareDelay = ({spareDelay}) => {
+  return elt(`input`, {type: `number`, name: `spareDelay`, value: spareDelay});
 };
 
 const renderRandomSleep = ({randomSleep}) => {
@@ -203,6 +210,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Random mouse speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
   wrapInLabel(`Random mouse curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
   wrapInLabel(`Applying lures delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
+  wrapInLabel(`Applying spare delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
   wrapInLabel(`Attempts limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
   wrapInLabel( "Quit after timer: ", renderTimerQuit(config),`The bot will quit the game after timer elapsed.`),
   wrapInLabel(
@@ -245,6 +253,7 @@ const renderSettings = (config) => {
   ),
   elt(`p`, {className: `settings_header`}, `Critical (might break the bot)`),
   elt('div', {className: "settings_section settings_critical"},
+  wrapInLabel(`Ignore preliminary checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
   wrapInLabel(`Max check time (ms):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Bobber sensitivity:`, renderBobberSensitivity(config), `How sensitive the bot is to any movements of the bobber. If the bot often clicks too early, decrease this value (don't confuse it with when the bot missclicks on purpose). If the bot often doesn't react to bobber, increase this value.`),
   wrapInLabel(`Checking delay (ms):`, renderCheckingDelay(config), `How often the bot checks the bobber for any movements. Use this option in addition to Bobber Sensativity to find an optimal sensitivity.`),

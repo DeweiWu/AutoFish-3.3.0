@@ -16,6 +16,7 @@
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 3000,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -33,6 +34,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
+      "ignorePreliminary": false,
       "chatZone": {
         "x": 0.01875,
         "y": 0.8407407407407408,
@@ -86,6 +88,7 @@
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 3000,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -103,6 +106,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
+      "ignorePreliminary": false,
       "chatZone": {
         "x": 0.022395833333333334,
         "y": 0.6787037037037037,
@@ -156,6 +160,7 @@
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 5500,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -173,6 +178,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
+      "ignorePreliminary": false,
       "chatZone": {
         "x": 0.022395833333333334,
         "y": 0.6787037037037037,
@@ -294,6 +300,7 @@
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 3000,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -311,6 +318,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
+      "ignorePreliminary": false,
       "chatZone": {
         "x": 0.0171875,
         "y": 0.7768518518518519,
@@ -362,6 +370,7 @@
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 3000,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -380,6 +389,7 @@
       "whisperThreshold": 60,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 3,
+      "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
           "x": 0.41142,
@@ -427,6 +437,7 @@
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 3000,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -450,6 +461,7 @@
         "height": 0.1638888888888889
       },
       "bobberSensitivity": 3,
+      "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
           "x": 0.41288,
@@ -495,6 +507,7 @@
       "checkingDelay": 10,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 5500,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -513,6 +526,7 @@
       "whisperThreshold": 60,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 3,
+      "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
           "x": 0.41215,
@@ -560,6 +574,7 @@
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 5500,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -583,6 +598,7 @@
         "height": 0.15092592592592594
       },
       "bobberSensitivity": 3,
+      "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
           "x": 0.41215,
