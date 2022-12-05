@@ -20,9 +20,9 @@ const renderThreshold = ({ threshold, bobberColor }) => {
 
   const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold` });
   if(bobberColor == `blue`) {
-    document.styleSheets[0].rules[71].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
+    document.styleSheets[0].rules[72].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
   } else {
-    document.styleSheets[0].rules[71].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
+    document.styleSheets[0].rules[72].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
   }
 
   const number = elt(`input`, { type: `number`, value: threshold, name: `threshold` });
@@ -119,11 +119,11 @@ const renderStopKey = ({stopKey}) => {
 };
 
 const renderLuresDelay = ({lures, luresDelayMin}) => {
-  return elt('input', {type: 'number', value: luresDelayMin, disabled: !lures, name: "luresDelayMin"});
+  return elt('input', {type: 'number', value: luresDelayMin, step: 0.1, disabled: !lures, name: "luresDelayMin"});
 };
 
 const renderSpareDelay = ({spare, spareDelayMin}) => {
-  return elt('input', {type: 'number', value: spareDelayMin, disabled: !spare, name: "spareDelayMin"});
+  return elt('input', {type: 'number', value: spareDelayMin, step: 0.1, disabled: !spare, name: "spareDelayMin"});
 };
 
 const renderFishingKey = ({fishingKey}) => {

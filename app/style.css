@@ -403,6 +403,11 @@ input[type=range][name=threshold]::-ms-track {
   color: transparent;
 }
 
+input[type=checkbox] {
+  width: 13px;
+  height: 13px;
+}
+
 input[type=range][name=threshold]::-webkit-slider-thumb {
   -webkit-appearance: none;
   border: 1px solid grey;
