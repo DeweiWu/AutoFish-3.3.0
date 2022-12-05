@@ -185,7 +185,7 @@ section {
 }
 
 
-.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"] {
+.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="poleKey"], .settings input[name="spareKey"] {
   cursor: pointer;
 }
 
