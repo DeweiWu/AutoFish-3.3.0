@@ -194,6 +194,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   logOut.on = config.logOut > 0;
 
   const preliminaryChecks = async () => {
+    if(config.ignorePreliminary) return;
     if (screenSize.x == -32000 && screenSize.y == -32000) {
       throw new Error("The window is either in fullscreen mode or minimized. Switch to windowed or windowed(maximized).");
     }
@@ -267,7 +268,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
 
     if (state.status == "initial") {
       await sleep(250);
-      if (await notificationZone.check("error")) {
+      if (!config.ignorePreliminary && await notificationZone.check("error")) {
         throw new Error(`Game error notification occured on casting fishing.`);
       } else {
         state.status = "working";
