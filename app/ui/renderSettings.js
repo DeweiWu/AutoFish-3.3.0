@@ -87,19 +87,30 @@ const renderMultipleWindows = ({multipleWindows}) => {
   });
 };
 
-const renderLures = ({lures}) => {
-  return elt("input", {
+const renderLures = ({lures, luresKey}) => {
+  let checkbox = elt("input", {
     type: "checkbox",
     className: "option",
     checked: lures,
     name: "lures",
   });
-};
-const renderLuresKey = ({lures, luresKey}) => {
   let key = elt('input', {type: 'text', value: luresKey, disabled: !lures, name: "luresKey"});
+  key.setAttribute(`readonly`, `true`);
+  return elt('div', null, key, checkbox);
+};
+
+const renderPoleKey = ({lures, game, poleKey}) => {
+  let key = elt('input', {type: 'text', value: poleKey, disabled: !lures || game != `Dragonflight`, name: "poleKey"});
   key.setAttribute(`readonly`, `true`);
   return key;
 };
+
+const renderSpareKey = ({spare, spareKey}) => {
+  const checkbox = elt(`input`, {type: `checkbox`, name: `spare`, checked: spare});
+  let key = elt('input', {type: 'text', value: spareKey, disabled: !spare, name: "spareKey"});
+  key.setAttribute(`readonly`, `true`);
+  return elt(`div`, null, key, checkbox);
+}
 
 const renderStopKey = ({stopKey}) => {
   let key = elt('input', {type: 'text', value: stopKey, name: "stopKey"});
@@ -110,6 +121,11 @@ const renderStopKey = ({stopKey}) => {
 const renderLuresDelay = ({lures, luresDelayMin}) => {
   return elt('input', {type: 'number', value: luresDelayMin, disabled: !lures, name: "luresDelayMin"});
 };
+
+const renderSpareDelay = ({spare, spareDelayMin}) => {
+  return elt('input', {type: 'number', value: spareDelayMin, disabled: !spare, name: "spareDelayMin"});
+};
+
 const renderFishingKey = ({fishingKey}) => {
   let key = elt('input', {type: 'text', value: fishingKey, name: "fishingKey"});
   key.setAttribute(`readonly`, `true`);
@@ -174,14 +190,19 @@ return elt(
         `Assign a key that you will use to stop the bot.`
       ),
       wrapInLabel(
-        "Lures Key: ",
-        renderLuresKey(config),
-        `Assign the same key you use for using fishing lures.`
+        "Pole Key: ",
+        renderPoleKey(config),
+        `Exclusively for Dragonflight. Assign your fishing pole to this key to be able to apply lures to it.`
       ),
       wrapInLabel(
         "Reuse lure: ",
         renderLuresDelay(config),
         `Fishing lures expiration time in minutes.`
+      ),
+      wrapInLabel(
+        "Reuse spare: ",
+        renderSpareDelay(config),
+        `Spare action expiration time in minutes.`
       )
     ),
     elt(
@@ -198,9 +219,14 @@ return elt(
         `If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
       ),
       wrapInLabel(
-        "Use lures: ",
+        "Lures Key: ",
         renderLures(config),
-        `Check this option if you want to use fishing lures. If your game requires manual application of lures, use a macros for that and assign that macro to Lures Key option.`
+        `Check this option if you want to use fishing lures. Assign the same key you use for using fishing lures.  You can change cast delay of this key in the Advanced Settings.`
+      ),
+      wrapInLabel(
+        "Spare Key: ",
+        renderSpareKey(config),
+        `You can use this key for e.g. "waterwalking". You can change cast delay of this key in the Advanced Settings.`
       ),
       wrapInLabel(
         "",
