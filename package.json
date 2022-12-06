@@ -8,6 +8,7 @@
     "startf": "electron-forge start",
     "test": "jest",
     "package": "electron-forge package",
+    "premake": "node random.js",
     "make": "electron-forge make"
   },
   "keywords": [
