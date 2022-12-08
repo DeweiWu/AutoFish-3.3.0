@@ -9,7 +9,6 @@ const renderThreshold = ({ threshold, bobberColor }) => {
 
 	if(threshold < 1) threshold = 1;
 	else if(threshold > 150) threshold = 150;
-
   const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch`,
                                 type: `text`,
                                 name: `bobberColor`,
@@ -99,10 +98,12 @@ const renderLures = ({lures, luresKey}) => {
   return elt('div', null, key, checkbox);
 };
 
-const renderPoleKey = ({lures, game, poleKey}) => {
-  let key = elt('input', {type: 'text', value: poleKey, disabled: !lures || game != `Dragonflight`, name: "poleKey"});
+const renderPoleKey = ({lures, game, poleKey, usePole}) => {
+  let key = elt('input', {type: 'text', value: poleKey, disabled: !usePole, name: "poleKey"});
   key.setAttribute(`readonly`, `true`);
-  return key;
+  const checkbox = elt(`input`, {type: `checkbox`, checked: usePole, style: `margin-right: 7px`, name: "usePole"});
+  const container = elt(`div`, null, checkbox, key)
+  return container;
 };
 
 const renderSpareKey = ({spare, spareKey}) => {

@@ -6,6 +6,7 @@
   "fishingKey": "1",
   "luresKey": "2",
   "poleKey": "3",
+  "usePole": false,
   "stopKey": "space",
   "spare": false,
   "spareKey": "4",

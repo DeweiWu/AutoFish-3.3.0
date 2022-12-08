@@ -219,7 +219,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   const applyLures = async () => {
     await action(async () => {
       await keyboard.sendKey(settings.luresKey, delay);
-      if(settings.game == `Dragonflight`) {
+      if(settings.usePole) {
         if(config.reaction) {
           await sleep(random(config.reactionDelay.from, config.reactionDelay.to))
         }
