@@ -57,19 +57,21 @@
       },
       "lootWindow": {
         "1536": {
-          "upperLimit": 0.0651041,
-          "toItemX": 0.0190336,
-          "toItemY": 0.0117187,
-          "itemHeight": 0.0572916,
+          "upperLimit": 0.06510416,
+          "toItemX": 0.01976573,
+          "toItemY": 0.015625,
+          "itemHeight": 0.05078125,
+          "itemHeightAdd": 0.01432291,
           "height": 0.24739583,
-          "width": 0.1112737,
+          "width": 0.1120058,
           "exitButton": { "x": 0.1295754, "y": 0.05338541 }
         },
         "1920": {
           "upperLimit": 0.046296,
           "toItemX": 0.013541,
           "toItemY": 0.008333,
-          "itemHeight": 0.04074,
+          "itemHeight": 0.0324074,
+          "itemHeightAdd": 0.01018518,
           "height": 0.175925,
           "width": 0.079687,
           "exitButton": { "x": 0.092187, "y": 0.037962 }
@@ -136,78 +138,6 @@
           "height": 0.22526,
           "width": 0.079795,
           "exitButton": { "x": 0.08565153, "y": 0.110677083 }
-        },
-        "1920": {
-          "upperLimit": 0.11203,
-          "toItemX": 0.00729,
-          "toItemY": 0.03796,
-          "itemHeight": 0.051,
-          "height": 0.20185,
-          "width": 0.070833,
-          "exitButton": { "x": 0.0776041, "y": 0.099074 }
-        }
-      }
-    },
-    "Classic": {
-      "useCustomWindow": false,
-      "customWindow": "",
-      "delay": { "from": 50, "to": 150 },
-      "castDelay": 2500,
-      "sleepAfterHook": true,
-      "afterHookDelay": { "from": 150, "to": 400 },
-      "maxFishTime": 25000,
-      "relZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
-      "checkingDelay": 50,
-      "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
-      "mouseCurvatureStrength": { "from": 50, "to": 80 },
-      "spareDelay": 3000,
-      "luresDelay": 5500,
-      "randomSleep": true,
-      "randomSleepEvery": { "from": 1, "to": 3 },
-      "randomSleepDelay": { "from": 1000, "to": 15000 },
-      "reaction": true,
-      "reactionDelay": { "from": 150, "to": 400 },
-      "maxAttempts": 5,
-      "timerQuit": false,
-      "shiftClick": false,
-      "missOnPurpose": false,
-      "missOnPurposeRandom": { "from": 5, "to": 20 },
-      "logOut": true,
-      "logOutEvery": { "from": 50, "to": 120 },
-      "tmApiKey": "",
-      "detectWhisper": true,
-      "whisperThreshold": 60,
-      "bobberSensitivity": 3,
-      "ignorePreliminary": false,
-      "chatZone": {
-        "x": 0.022395833333333334,
-        "y": 0.6787037037037037,
-        "width": 0.28541666666666665,
-        "height": 0.15092592592592594
-      },
-      "confirmationWindow": {
-        "1536": {
-          "x": 0.41142,
-          "y": 0.22526,
-          "width": 0.082723,
-          "height": 0.022135
-        },
-        "1920": {
-          "x": 0.42031,
-          "y": 0.20185,
-          "width": 0.073958,
-          "height": 0.021296
-        }
-      },
-      "lootWindow": {
-        "1536": {
-          "upperLimit": 0.125,
-          "toItemX": 0.00732,
-          "toItemY": 0.04296,
-          "itemHeight": 0.057291,
-          "height": 0.22526,
-          "width": 0.079795,
-          "exitButton": { "x": 0.0856515, "y": 0.11067708 }
         },
         "1920": {
           "upperLimit": 0.11203,
