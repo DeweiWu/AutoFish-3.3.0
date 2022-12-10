@@ -70,6 +70,14 @@ class AutoFish {
       ipcRenderer.send("start-bot", `chatZone`);
     });
 
+    this.settings.regOnDx11(() => {
+      ipcRenderer.send("dx11-warn");
+    });
+
+    this.settings.regOnWhitelistWarn(() => {
+      ipcRenderer.send("whitelist-warn");
+    });
+
     this.button.regOnStart(() => {
       ipcRenderer.send("start-bot");
     });

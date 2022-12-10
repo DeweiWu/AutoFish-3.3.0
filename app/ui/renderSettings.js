@@ -228,7 +228,7 @@ return elt(
       wrapInLabel(
         "AFK fishing: ",
         renderAfkmode(config),
-        `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts and automatically focus the window when it needs to catch.`
+        `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts (bringing back to the previous window) and automatically focus the window of the game when it needs to catch. If you use your mouse too much during AFK fishing the whitelist feature might be unstable. `
       ),
       wrapInLabel(
         "Multiple windows: ",
