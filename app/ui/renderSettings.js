@@ -68,22 +68,30 @@ const renderTimer = ({timer}) => {
 };
 
 
-const renderAfkmode = ({afkmode}) => {
-  return elt("input", {
+const renderAfkmode = ({afkmode, multipleWindows}) => {
+  const checkbox = elt("input", {
     type: "checkbox",
     className: "option",
     checked: afkmode,
     name: "afkmode",
   });
+  if(multipleWindows) {
+    checkbox.setAttribute("disabled", true);
+  }
+  return checkbox;
 };
 
-const renderMultipleWindows = ({multipleWindows}) => {
-  return elt("input", {
+const renderMultipleWindows = ({multipleWindows, afkmode}) => {
+  const checkbox = elt("input", {
     type: "checkbox",
     className: "option",
     checked: multipleWindows,
     name: "multipleWindows",
   });
+  if(afkmode) {
+    checkbox.setAttribute("disabled", true);
+  }
+  return checkbox;
 };
 
 const renderLures = ({lures, luresKey}) => {
