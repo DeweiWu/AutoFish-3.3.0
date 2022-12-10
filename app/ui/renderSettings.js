@@ -19,9 +19,9 @@ const renderThreshold = ({ threshold, bobberColor }) => {
 
   const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold` });
   if(bobberColor == `blue`) {
-    document.styleSheets[0].rules[73].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
+    document.styleSheets[0].rules[75].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
   } else {
-    document.styleSheets[0].rules[73].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
+    document.styleSheets[0].rules[75].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
   }
 
   const number = elt(`input`, { type: `number`, value: threshold, name: `threshold` });
@@ -153,15 +153,21 @@ const renderChatZone = () => {
   return elt('input', {type: 'button', name:"chatZone", value: "Set Chat Zone", className: "advanced_settings_button"});
 };
 
-const renderLanguageType = ({whitelist, whitelistLanguage, filterType}) => {
+const renderLanguageType = ({game, whitelist, whitelistLanguage, filterType, atMouse}) => {
   let languages = [`eng`, `spa`, `spa_old`, `por`, `fra`, `deu`, `ita`, `chi_sim`, `chi_tra`, `kor`, `rus`];
+
+  if(game != `Dragonflight` && game != `Vanilla`) {
+    atMouse = true;
+  }
+
   const langContainer = elt('select', {name: `whitelistLanguage`, className: `whitelistLanguage` , disabled: !whitelist}, ...languages.map( language => elt(`option`, {selected: whitelistLanguage == language}, language)));
+  const atMouseContainer = elt(`input`, {name: `atMouse`, type:`checkbox`, checked: atMouse, className: `atMouse`, disabled: !whitelist || (game != `Dragonflight` && game != `Vanilla`)});
   const modeContainer =  elt(`select`, {name: `filterType`, className: `filterType`, disabled: !whitelist},
     elt(`option`, {selected: filterType == `whitelist`}, `whitelist`),
     elt(`option`, {selected: filterType == `blacklist`}, `blacklist`)
   );
 
-  return elt(`div`, null, `Mode: `, modeContainer, `Language: `, langContainer);
+  return elt(`div`, null, `Mode: `, modeContainer, `Language: `, langContainer, `At Mouse:`, atMouseContainer);
 }
 
 const renderWhitelist = ({game, whitelist, whitelistWords, whitelistLanguage, filterType}) => {

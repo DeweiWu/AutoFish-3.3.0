@@ -208,16 +208,19 @@ section {
 }
 
 
-.settings select.whitelistLanguage, .settings select.filterType {
-  width: 80px;
-  margin-left: 5px;
+.settings select.filterType {
+  width: 61px;
+  margin-left: 2px;
 }
 
 .settings select.whitelistLanguage {
-  width: 79px;
-  margin-right: 23px;
+  width: 45px;
+  margin-left: 3px;
 }
 
+.settings input.atMouse {
+  margin-left: 8px;
+}
 
 .advanced_settings_button {
   height: 22px;

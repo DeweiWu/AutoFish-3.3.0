@@ -371,7 +371,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   };
 
   const pickLoot = async () => {
-    let cursorPos = lootWindow.cursorPos ? lootWindow.cursorPos : mouse.getPos();
+    let cursorPos = settings.atMouse || !lootWindow.cursorPos? mouse.getPos() : lootWindow.cursorPos;
     if (cursorPos.y - lootWindow.upperLimit < 0) {
       cursorPos.y = lootWindow.upperLimit;
     }
