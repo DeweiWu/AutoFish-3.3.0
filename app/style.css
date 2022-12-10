@@ -195,11 +195,11 @@ section {
 }
 
 
-.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="poleKey"], .settings input[name="spareKey"] {
+.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="intKey"], .settings input[name="spareKey"] {
   cursor: pointer;
 }
 
-.settings input[name="stopKey"]:active, .settings input[name="luresKey"]:active, .settings input[name="fishingKey"]:active {
+.settings input[name="stopKey"]:active, .settings input[name="luresKey"]:active, .settings input[name="fishingKey"]:active, .settings input[name="intKey"]:active {
   cursor: default;
 }
 
