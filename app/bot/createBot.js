@@ -38,7 +38,19 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   const { keyboard, mouse, workwindow } = game;
   const delay = [config.delay.from, config.delay.to];
 
+ const altTab = async () => {
+   if(config.reaction) {
+     await sleep(random(config.reaction.from, config.reaction.to))
+   }
+
+  await keyboard.toggleKey(["alt", "tab"], true, delay);
+  await keyboard.toggleKey(["alt", "tab"], false, delay);
+ }
+
   const action = async (callback) => {
+    if(settings.afkmode && config.reaction) {
+       await sleep(random(config.reaction.from, config.reaction.to))
+    }
     await winSwitch.execute(workwindow);
     await callback();
     winSwitch.finished();
@@ -55,12 +67,12 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     if(zone.width > screenSize.width) zone.width = screenSize.width;
     if(zone.height > screenSize.height) zone.height = screenSize.height;
 
-    if(!settings.multipleWindows) {
+    if(settings.multipleWindows || settings.afkmode) {
+      return workwindow.capture(zone);
+    } else {
       await actionOnce(() => {});
       let grabbed = await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
       return grabbed;
-    } else {
-      return workwindow.capture(zone);
     }
   };
 
@@ -145,7 +157,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       pos.y = pos.y + random(-randomRange, randomRange);
     }
 
-    if (settings.likeHuman) {
+    if (config.likeHuman) {
       await mouse.humanMoveTo(
         pos.x,
         pos.y,
@@ -172,6 +184,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       await keyboard.toggleKey(`enter`, true, delay);
       await keyboard.toggleKey(`enter`, false, delay);
     });
+
+    if(settings.afkmode) await altTab();
+
     await sleep(20000);
 
     const addTime = applyLures.timer.timeRemains();
@@ -183,6 +198,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     await action(async () => {
       await keyboard.sendKey(`enter`);
     });
+
+    if(settings.afkmode) await altTab();
+
     await sleep(random(30000, 60000));
 
     if(settings.lures) {
@@ -219,13 +237,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   const applyLures = async () => {
     await action(async () => {
       await keyboard.sendKey(settings.luresKey, delay);
-      if(settings.usePole) {
-        if(config.reaction) {
-          await sleep(random(config.reactionDelay.from, config.reactionDelay.to))
-        }
-        await keyboard.sendKey(settings.poleKey, delay);
-      }
     });
+    await altTab();
     await sleep(config.luresDelay);
   };
   applyLures.on = settings.lures;
@@ -245,6 +258,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   });
 
   const randomSleep = async () => {
+    if(settings.afkmode) await altTab();
+
     let sleepFor = random(
       config.randomSleepDelay.from,
       config.randomSleepDelay.to
@@ -270,6 +285,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       await keyboard.sendKey(settings.fishingKey, delay);
     });
 
+    if(settings.afkmode) await altTab();
+
     if (state.status == "initial") {
       await sleep(250);
       if (!config.ignorePreliminary && await notificationZone.check("error")) {
@@ -283,7 +300,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   };
 
   const highlightBobber = async (pos) => {
-    if (settings.likeHuman && random(0, 100) > 85) {
+    if (settings.useInt || settings.afkmode || (config.likeHuman && random(0, 100) > 85)) {
         return pos;
     }
 
@@ -341,7 +358,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     await sleep(250);
     let x = screenSize.x + cursorPos.x + lootWindow.exitButton.x;
     let y = screenSize.y + cursorPos.y - lootWindow.exitButton.y;
-    if(settings.multipleWindows) {
+    if(settings.multipleWindows || settings.afkmode) {
       return isYellow(workwindow.colorAt(x, y, "array"));
     } else {
       let color = await screen.colorAt(new Point(x, y));
@@ -481,16 +498,21 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     let caught = false;
 
     await action(async () => {
-      await moveTo({ pos, randomRange: 5 });
-
-      if (config.shiftClick) {
-        await keyboard.toggleKey("shift", true, delay);
-        await mouse.toggle("right", true, delay);
-        await mouse.toggle("right", false, delay);
-        await keyboard.toggleKey("shift", false, delay);
+      if(settings.useInt) {
+        await keyboard.toggleKey(settings.intKey, true, delay);
+        await keyboard.toggleKey(settings.intKey, false, delay);
       } else {
-        await mouse.toggle("right", true, delay);
-        await mouse.toggle("right", false, delay);
+        await moveTo({ pos, randomRange: 5 });
+
+        if (config.shiftClick) {
+          await keyboard.toggleKey("shift", true, delay);
+          await mouse.toggle("right", true, delay);
+          await mouse.toggle("right", false, delay);
+          await keyboard.toggleKey("shift", false, delay);
+        } else {
+          await mouse.toggle("right", true, delay);
+          await mouse.toggle("right", false, delay);
+        }
       }
 
     await sleep(250);

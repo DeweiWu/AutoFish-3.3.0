@@ -1,12 +1,11 @@
 {
   "game": "Dragonflight",
   "timer": 0,
-  "likeHuman": true,
   "lures": false,
   "fishingKey": "1",
   "luresKey": "2",
-  "poleKey": "3",
-  "usePole": false,
+  "intKey": "f",
+  "useInt": false,
   "stopKey": "space",
   "spare": false,
   "spareKey": "4",
@@ -19,6 +18,7 @@
   "whitelistLanguage": "eng",
   "threshold": 60,
   "bobberColor": "red",
+  "afkmode": false,
   "multipleWindows": false,
   "initial": true
 }

@@ -68,12 +68,12 @@ const renderTimer = ({timer}) => {
 };
 
 
-const renderLikeHuman = ({likeHuman}) => {
+const renderAfkmode = ({afkmode}) => {
   return elt("input", {
     type: "checkbox",
     className: "option",
-    checked: likeHuman,
-    name: "likeHuman",
+    checked: afkmode,
+    name: "afkmode",
   });
 };
 
@@ -210,14 +210,14 @@ return elt(
       "div",
       { className: "settings_section" },
       wrapInLabel(
-        "Like a human: ",
-        renderLikeHuman(config),
-        `The bot will move your mouse in a human way: random speed and with a slight random deviation in the movement. Otherwise it will move the mouse instantly, which might be a better option if you use a lot of windows.`
+        "AFK fishing: ",
+        renderAfkmode(config),
+        `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts and automatically focus the window when it needs to catch.`
       ),
       wrapInLabel(
         "Multiple windows: ",
         renderMultipleWindows(config),
-        `If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
+        `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
       ),
       wrapInLabel(
         "Lures Key: ",
