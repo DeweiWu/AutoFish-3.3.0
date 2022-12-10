@@ -153,14 +153,22 @@ const renderChatZone = () => {
   return elt('input', {type: 'button', name:"chatZone", value: "Set Chat Zone", className: "advanced_settings_button"});
 };
 
+const renderLanguageType = ({whitelist, whitelistLanguage, filterType}) => {
+  let languages = [`eng`, `spa`, `spa_old`, `por`, `fra`, `deu`, `ita`, `chi_sim`, `chi_tra`, `kor`, `rus`];
+  const langContainer = elt('select', {name: `whitelistLanguage`, className: `whitelistLanguage` , disabled: !whitelist}, ...languages.map( language => elt(`option`, {selected: whitelistLanguage == language}, language)));
+  const modeContainer =  elt(`select`, {name: `filterType`, className: `filterType`, disabled: !whitelist},
+    elt(`option`, {selected: filterType == `whitelist`}, `whitelist`),
+    elt(`option`, {selected: filterType == `blacklist`}, `blacklist`)
+  );
 
-const renderWhitelist = ({game, whitelist, whitelistWords, whitelistLanguage}) => {
+  return elt(`div`, null, `Mode: `, modeContainer, `Language: `, langContainer);
+}
+
+const renderWhitelist = ({game, whitelist, whitelistWords, whitelistLanguage, filterType}) => {
   let disabled = !whitelist;
   let checked = whitelist;
 
-  let languages = [`eng`, `spa`, `spa_old`, `por`, `fra`, `deu`, `ita`, `chi_sim`, `chi_tra`, `kor`, `rus`];
   return elt('div', null,
-  elt('select', {name: `whitelistLanguage`, className: `whitelistLanguage` , disabled: !whitelist}, ...languages.map( language => elt(`option`, {selected: whitelistLanguage == language}, language))),
   elt('input', {type: 'text', name:"whitelistWords", placeholder: `e.g. Glacial Salmon, Pygmy Suckerfish`, className: "whitelist_input", value: whitelistWords, disabled}),
   elt('input', {type: 'checkbox', name: "whitelist", checked}))
 };
@@ -253,13 +261,17 @@ return elt(
         `Advanced settings that allow you to fine-tune the bot. The settings will be saved under the chosen game version.`
       ),
     ),
-    elt("p", {className: 'settings_header'}, "Whitelist:"),
+    elt("p", {className: 'settings_header'}, "Filter:"),
     elt(
       "div",
       { className: "settings_section" },
       wrapInLabel("",
         renderWhitelist(config),
         `The bot will loot only items in the whitelist. Before using, turn off AutoLoot in the game and set UI Scale to default. The names of the items must be exactly the same as in the game, separated by comma. If it's the first time you using a language from the list, wait until the bot downloads the tesseract data for your language.`
+      ),
+      wrapInLabel("",
+        renderLanguageType(config),
+        ``
       ),
       wrapInLabel(elt('span', null, "Loot all ", elt('span', {style: `color:#4DDF3F; font-weight: bold`}, `Uncommon `), `and `, elt(`span`, {style: `color: #015CB4; font-weight: bold`}, `Rare `), `and `, elt('span', {style: `color:#950c95; font-weight: bold`}, `Epic `), `items:`), renderWhiteListGreenBlue(config), `If you use whitelist, you can check this option to loot every green, blue and purple items in addition to the items in the whitelist.`)
     ),

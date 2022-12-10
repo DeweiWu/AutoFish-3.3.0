@@ -16,6 +16,7 @@
   "whiteListBlueGreen": false,
   "confirmSoulbound": true,
   "whitelistLanguage": "eng",
+  "filterType": "whitelist",
   "threshold": 60,
   "bobberColor": "red",
   "afkmode": false,

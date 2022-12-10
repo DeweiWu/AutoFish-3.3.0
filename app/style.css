@@ -204,12 +204,20 @@ section {
 }
 
 .settings input[type="text"].whitelist_input  {
-  width: 211px;
+  width: 260px;
+}
+
+
+.settings select.whitelistLanguage, .settings select.filterType {
+  width: 80px;
+  margin-left: 5px;
 }
 
 .settings select.whitelistLanguage {
-  width: 45px;
+  width: 79px;
+  margin-right: 23px;
 }
+
 
 .advanced_settings_button {
   height: 22px;

@@ -78,7 +78,7 @@ const createWindow = async () => {
   let win = new BrowserWindow({
     title: generateName(10),
     width: 325,
-    height: 745,
+    height: 770,
     show: false,
     resizable: false,
     webPreferences: {

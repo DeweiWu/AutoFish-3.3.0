@@ -407,6 +407,14 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     for (let item of items) {
       let isInList = whitelist.find((word) => percentComparison(word, item) > 90);
 
+      if(settings.filterType == `blacklist`) {
+        if(isInList) {
+          isInList = false;
+        } else {
+          isInList = true;
+        }
+      }
+
       if (!isInList && settings.whiteListBlueGreen) {
         let lootZone = createLootZone({
           getDataFrom,
