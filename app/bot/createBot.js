@@ -254,6 +254,11 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     await action(async () => {
       await keyboard.sendKey(settings.spareKey, delay);
     });
+
+    if(settings.afkmode) {
+      await altTab();
+    }
+
     await sleep(config.spareDelay);
   };
   applySpare.on = settings.spare;
