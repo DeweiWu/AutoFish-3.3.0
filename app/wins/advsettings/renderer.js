@@ -35,6 +35,15 @@ const renderShiftClick = ({shiftClick}) => {
   return dom;
 };
 
+const renderLikeHuman = ({likeHuman}) => {
+  let dom = elt("input", {
+    type: "checkbox",
+    className: "option",
+    checked: likeHuman,
+    name: "likeHuman",
+  });
+  return dom;
+};
 
 const renderCastDelay = ({castDelay}) => {
   return elt('input', {type: `number`, name: `castDelay`, value: castDelay})
@@ -205,6 +214,7 @@ const renderSettings = (config) => {
   return elt('section', {className: `settings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `General`),
   elt('div', {className: "settings_section"},
+  wrapInLabel(`Like a human: `, renderLikeHuman(config), `The bot will move your mouse in a human way: random speed and with a slight random deviation in the movement. Otherwise it will move the mouse instantly, which might be a better option if you use a lot of windows.`),
   wrapInLabel(`Custom window: `, renderCustomWindow(config), `If for some reason your game window isn't "World of Warcraft" you can choose a custom window from all the windows opened on your computer.`),
   wrapInLabel(`Mouse/keyboard random delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
   wrapInLabel(`Random mouse speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),

@@ -6,6 +6,7 @@
   "patch": {
     "Dragonflight": {
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "delay": { "from": 50, "to": 150 },
       "castDelay": 2500,
@@ -70,7 +71,7 @@
           "upperLimit": 0.046296,
           "toItemX": 0.013541,
           "toItemY": 0.008333,
-          "itemHeight": 0.03240740,
+          "itemHeight": 0.0324074,
           "itemHeightAdd": 0.01018518,
           "height": 0.175925,
           "width": 0.079687,
@@ -80,6 +81,7 @@
     },
     "WotLK Classic": {
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "delay": { "from": 50, "to": 150 },
       "castDelay": 2500,
@@ -152,6 +154,7 @@
     },
     "Classic": {
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "delay": { "from": 50, "to": 150 },
       "castDelay": 2500,
@@ -220,6 +223,7 @@
     },
     "MoP": {
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "delay": { "from": 50, "to": 150 },
       "castDelay": 2500,
@@ -290,6 +294,7 @@
     },
     "Cataclysm": {
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "delay": { "from": 50, "to": 150 },
       "castDelay": 2500,
@@ -357,6 +362,7 @@
     },
     "WotLK Private": {
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "delay": { "from": 50, "to": 150 },
       "castDelay": 1250,
@@ -427,6 +433,7 @@
     },
     "TBC": {
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "delay": { "from": 50, "to": 150 },
       "castDelay": 2500,
@@ -494,6 +501,7 @@
     },
     "Vanilla": {
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "delay": { "from": 50, "to": 150 },
       "castDelay": 2500,
