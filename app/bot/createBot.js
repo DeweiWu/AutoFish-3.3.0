@@ -360,12 +360,13 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
 
   const isLootOpened = async (cursorPos) => {
     await sleep(250);
-    let x = screenSize.x + cursorPos.x + lootWindow.exitButton.x;
-    let y = screenSize.y + cursorPos.y - lootWindow.exitButton.y;
+    let x = cursorPos.x + lootWindow.exitButton.x;
+    let y = cursorPos.y - lootWindow.exitButton.y;
+
     if(settings.multipleWindows || settings.afkmode) {
       return isYellow(workwindow.colorAt(x, y, "array"));
     } else {
-      let color = await screen.colorAt(new Point(x, y));
+      let color = await screen.colorAt(new Point(x + screenSize.x, y + screenSize.y));
       return isYellow([color.R, color.G, color.B]);
     }
   };
