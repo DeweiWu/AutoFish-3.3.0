@@ -238,7 +238,11 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     await action(async () => {
       await keyboard.sendKey(settings.luresKey, delay);
     });
-    await altTab();
+
+    if(settings.afkmode) {
+      await altTab();
+    }
+
     await sleep(config.luresDelay);
   };
   applyLures.on = settings.lures;
