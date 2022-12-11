@@ -491,16 +491,42 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     }
 
     if ((settings.game == `WotLK Classic` || settings.game == `Classic`|| settings.game == `Dragonflight`) ? await isLootOpened(cursorPos) : items.length != itemsPicked.length) {
+
       if (config.reaction) {
         await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
       }
-      if(lootWindow.exitButton) {
-        await moveTo({ pos: {
-          x: cursorPos.x + lootWindow.exitButton.x,
-          y: cursorPos.y - lootWindow.exitButton.y
-        }});
-        await mouse.toggle("left", true, delay);
-        await mouse.toggle("left", false, delay);
+
+      if((config.closeLoot == `mouse` || config.closeLoot == `mouse+esc`) && lootWindow.exitButton) {
+
+        if(config.closeLoot == `mouse`) {
+          await moveTo({ pos: {
+            x: cursorPos.x + lootWindow.exitButton.x,
+            y: cursorPos.y - lootWindow.exitButton.y
+          }});
+          await mouse.toggle("left", true, delay);
+          await mouse.toggle("left", false, delay);
+
+          if(settings.useInt) {
+            await moveTo({ pos: cursorPos });
+          }
+        }
+
+        if(config.closeLoot == `mouse+esc`) {
+          if(random(0, 100) > 50) {
+            await keyboard.sendKey("escape", delay);
+          } else {
+            await moveTo({ pos: {
+              x: cursorPos.x + lootWindow.exitButton.x,
+              y: cursorPos.y - lootWindow.exitButton.y
+            }});
+            await mouse.toggle("left", true, delay);
+            await mouse.toggle("left", false, delay);
+
+            if(settings.useInt) {
+              await moveTo({ pos: cursorPos });
+            }
+          }
+        }
       } else {
         await keyboard.sendKey("escape", delay);
       }
