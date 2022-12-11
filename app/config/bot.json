@@ -13,7 +13,7 @@
       "castDelay": 2500,
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
-      "maxFishTime": 25000,
+      "maxFishTime": 35000,
       "relZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
