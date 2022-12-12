@@ -204,22 +204,20 @@ section {
 }
 
 .settings input[type="text"].whitelist_input  {
-  width: 260px;
+  width: 215px;
 }
 
-
 .settings select.filterType {
-  width: 61px;
-  margin-left: 2px;
+  width: 89px;
+  margin-left: 6px;
 }
 
 .settings select.whitelistLanguage {
-  width: 45px;
-  margin-left: 3px;
+  width: 43px;
 }
 
 .settings input.atMouse {
-  margin-left: 8px;
+  margin-left: 6px;
 }
 
 .advanced_settings_button {
