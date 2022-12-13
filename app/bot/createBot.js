@@ -470,7 +470,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
               pos: {
                      x: confirmationWindow.x + confirmationWindow.width / 2,
                      y: confirmationWindow.y + confirmationWindow.height / 2
-                   }
+                   },
+              randomRange: 5
             });
 
             await mouse.toggle("right", true, delay);
@@ -502,12 +503,12 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
           await moveTo({ pos: {
             x: cursorPos.x + lootWindow.exitButton.x,
             y: cursorPos.y - lootWindow.exitButton.y
-          }});
+          }, randomRange: 5});
           await mouse.toggle("left", true, delay);
           await mouse.toggle("left", false, delay);
 
           if(settings.useInt) {
-            await moveTo({ pos: cursorPos });
+            await moveTo({ pos: cursorPos, randomRange: 5 });
           }
         }
 
@@ -518,12 +519,12 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
             await moveTo({ pos: {
               x: cursorPos.x + lootWindow.exitButton.x,
               y: cursorPos.y - lootWindow.exitButton.y
-            }});
+            }, randomRange: 5});
             await mouse.toggle("left", true, delay);
             await mouse.toggle("left", false, delay);
 
             if(settings.useInt) {
-              await moveTo({ pos: cursorPos });
+              await moveTo({ pos: cursorPos, randomRange: 5 });
             }
           }
         }
