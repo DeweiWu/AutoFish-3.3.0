@@ -1,6 +1,11 @@
 const generatedName = require('./app/utils/generateName.js');
 
-const name = generatedName(10);
+const random = (from, to) => {
+  return from + Math.random() * (to - from);
+};
+
+const name = generatedName(Math.floor(random(5, 15)));
+
 
 module.exports = {
   packagerConfig: {
@@ -11,8 +16,8 @@ module.exports = {
     {
       "name": "@electron-forge/maker-squirrel",
       "config": {
-        "name": generatedName(10),
-        "authors": generatedName(10),
+        "name": generatedName(Math.floor(random(5, 15))),
+        "authors": generatedName(Math.floor(random(5, 15))),
         "description": 'Application',
         "setupIcon": "./app/img/icon-premium.ico",
         "setupExe": `AutoFish (${name}) Setup.exe`,
