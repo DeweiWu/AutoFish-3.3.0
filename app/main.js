@@ -26,7 +26,7 @@ const { createLog } = require("./utils/logger.js");
 const { findGameWindows, getAllWindows } = require("./game/createGame.js");
 const createBots = require("./bot/createBots.js");
 const getBitmapAsync = require("./utils/getBitmap.js");
-const { Telegraf } = require('telegraf');
+const { Telegraf, Markup } = require('telegraf');
 /* Bot modules end */
 
 /* Squirrel */
@@ -111,47 +111,81 @@ const createWindow = async () => {
     app.quit();
   });
 
+  const log = createLog((data) => {
+    win.webContents.send("log-data", data);
+  });
+
+let tmBot = {
+  bot: null,
+  ctx: null
+};
+
+const connectToTelegram = (key) => {
+  tmBot.bot = new Telegraf(key);
+
+  const statusData = {
+    status: `off`,
+    time: 0
+  };
+
+  const helpMessage = `<b>Start</b> - starts the bot.\n<b>Stop</b> - stops the bot.\n<b>Stats</b> - returns stats.\n<b>Screenshot</b> - makes a screenshot of the game window.\n<b>Quit</b> - closes both the game and the bot.\n<b>/r</b> <i> text</i> - replies to user.<b>\n/w</b> <i>username text</i> - whispers to user.`;
+  const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n\n<i>Before using via telegram you should configure and test the bot on your local computer.</i>\n\n${helpMessage}`;
+  tmBot.bot.command("start", async (ctx) => {
+    tmBot.ctx = ctx;
+    return await ctx.reply(
+      `${welcomeMessage}`,  { parse_mode: "HTML" },
+      Markup.keyboard([
+        ["🟢 Start", "🔴 Stop", "❌ Quit"],
+        ["📢 Stats", "📷 Screenshot", "💬 Help"],
+      ]).resize(),
+
+    );
+  });
+
+  tmBot.bot.hears("🟢 Start", (ctx) => {
+    tmBot.ctx = ctx;
+    win.webContents.send(`start-tm`);
+    ctx.reply(`Started the bot!`);
+  });
+
+  tmBot.bot.hears("🔴 Stop", (ctx) => {
+    win.webContents.send(`stop-tm`);
+  });
+
+  tmBot.bot.hears("💬 Help", (ctx) => {
+    ctx.reply(helpMessage, { parse_mode: "HTML" });
+  });
+
+  return tmBot.bot.launch();
+};
+
+
   win.once("ready-to-show", () => {
+    const config = getJson("./config/bot.json");
+    const settings = getJson("./config/settings.json");
+
+    if(settings.initial) {
+      log.send(`Thank you for purchasing Premium!`);
+    }
+
+    let tmKey = config.patch[settings.game].tmApiKey;
+
+    if(tmKey) {
+      connectToTelegram(tmKey)
+      .then(() => log.ok(`Connected to Telegram!`))
+      .catch(e => log.err(`Telegram error: ${e.message}`))
+    } else {
+      log.warn(`Provide a Telegram token!`);
+    }
+
     win.show();
     let { version } = getJson('../package.json');
     win.webContents.send('set-version', version);
   });
 
-  let tmBot = {
-    bot: null,
-    ctx: null
-  };
-
-  const connectToTelegram = (key) => {
-    const listOfCommands = `/start - starts telegram bot\n/bstart - starts AutoFish\n/bstop - stops AutoFish\n/bstats - shows stats\n/bquit - quits from all the windows opened\n /ss - makes a screenshot of the whole screen \n/w *username* - whispers to *username*\n/help - list of commands\n`;
-    tmBot.bot = new Telegraf(key);
-    tmBot.bot.start((ctx) => {
-      ctx.reply(`AutoFish was connected to the bot successfully!\n${listOfCommands}`)
-      tmBot.bot.command(`bstart`, (ctx) => {
-        win.webContents.send(`start-tm`);
-        ctx.reply(`Started the bot`);
-      });
-      tmBot.bot.command(`bstop`, (ctx) => {
-        win.webContents.send(`stop-tm`);
-        ctx.reply(`Stopped the bot`);
-      });
-
-      tmBot.bot.command(`help`, (ctx) => {
-        ctx.reply(listOfCommands);
-      })
-      tmBot.ctx = ctx;
-    });
-
-    return tmBot.bot.launch();
-  };
-
   ipcMain.on("start-bot", async (event, type) => {
     const config = getJson("./config/bot.json");
     const settings = getJson("./config/settings.json");
-
-    const log = createLog((data) => {
-      win.webContents.send("log-data", data);
-    });
 
     log.send(`Looking for the windows...`);
 

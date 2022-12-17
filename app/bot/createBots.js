@@ -11,6 +11,10 @@ const { setWorker } = require("../utils/textReader.js");
 const createWinSwitch = require("../game/winSwitch.js");
 const { app } = require("electron");
 
+const getPercent = (value, total) => {
+  return Math.ceil((value / (total || 1)) * 100 * 100) / 100;
+};
+
 let tmStats = null;
 
 const createBots = async (games, settings, config, log, tmBot) => {
@@ -34,25 +38,26 @@ const createBots = async (games, settings, config, log, tmBot) => {
   }
   });
 
-  if(tmBot.bot) {
-    tmStats = bots.map(({stats}) => stats);
-    tmBot.bot.command(`bstats`, (ctx) => {
-      tmStats.forEach((stats, i) => ctx.reply(`WIN${i + 1}:${stats.show()}`));
-    });
-    tmBot.bot.command(`bquit`, (ctx) => {
-      games.forEach(({workwindow}) => workwindow.close());
-      log.send('Stopping the bots...')
-      log.setState(false);
-      bots.forEach(({state}) => state.status = "stop");
-      ctx.reply(`Quit all the windows of the game`);
-      app.quit();
-    })
-  }
+if (tmBot.bot) {
+  tmStats = bots.map(({ stats, state }) => ({stats, state}));
 
+  tmBot.bot.hears("📢 Stats", (ctx) => {
+    tmStats.forEach(({stats, state}, i) => ctx.reply(`State: <b>${state.status}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
+  });
+
+  tmBot.bot.hears("❌ Quit", (ctx) => {
+    games.forEach(({ workwindow }) => workwindow.close());
+    log.send("Stopping the bots...");
+    log.setState(false);
+    bots.forEach(({ state }) => (state.status = "stop"));
+    ctx.reply(`Quit all the windows of the game and the bot.`);
+    app.quit();
+  });
+}
 
   return {
     startBots(onError) {
-      log.send("Starting the bots...")
+      log.send("Starting the bots...");
       if (settings.timer) {
         setTimeout(() => {
           if(!bots.every(({state}) => state.status == 'stop')) {
@@ -82,7 +87,7 @@ const createBots = async (games, settings, config, log, tmBot) => {
             bot.log.err(`${error.message}`);
 
             if(tmBot.bot) {
-              tmBot.ctx.reply(`${error.message}`);
+              tmBot.ctx.reply(`[ERROR]${error.message}`);
             }
 
             bot.stats.show().forEach((stat) => bot.log.ok(stat));
@@ -91,7 +96,10 @@ const createBots = async (games, settings, config, log, tmBot) => {
       })
     },
     stopBots() {
-      log.send('Stopping the bots...')
+      log.send('Stopping the bots...');
+      if(tmBot.ctx) {
+        tmBot.ctx.reply(`Stopped the bot!`);
+      }
       log.setState(false);
       bots.forEach(({state}) => state.status = "stop");
     },

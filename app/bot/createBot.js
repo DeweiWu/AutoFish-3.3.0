@@ -77,13 +77,22 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   };
 
   if(tmBot.bot) {
-    tmBot.bot.command(`/w`, (ctx) => {
+    tmBot.bot.command(`/w`, async (ctx) => {
       chatMsgs.push(ctx.update.message.text);
-    })
+    });
 
-    tmBot.bot.command(`/ss`, async (ctx) => {
-      const img = await (await Jimp.read(await getDataFrom(screenSize))).getBufferAsync(Jimp.MIME_JPEG);
-      tmBot.ctx.replyWithPhoto({source: img});
+    tmBot.bot.command(`/r`, async (ctx) => {
+      chatMsgs.push(ctx.update.message.text);
+    });
+
+    tmBot.bot.hears(`📷 Screenshot`, async (ctx) => {
+      ctx.sendChatAction(`upload_photo`);
+      getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
+      .then(Jimp.read)
+      .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
+      .then((screenshot) => {
+        ctx.replyWithPhoto({source: screenshot});
+      })
     })
   }
 
@@ -589,9 +598,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   };
 
   const checkWhisper = async () => {
-    if(tmBot.ctx == null || !config.detectWhisper) return;
+    if(tmBot.bot == null || !config.detectWhisper) return;
     if(await chatZone.checkNewMessages()) {
       tmBot.ctx.reply(`Someone whispered!`);
+      tmBot.ctx.sendChatAction(`upload_photo`);
       tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
     }
   };
