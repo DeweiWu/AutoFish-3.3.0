@@ -39,6 +39,7 @@
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
       "ignorePreliminary": false,
+      "closeLootDelay": 1500,
       "chatZone": {
         "x": 0.01875,
         "y": 0.8407407407407408,
@@ -119,6 +120,7 @@
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
       "ignorePreliminary": false,
+      "closeLootDelay": 750,
       "chatZone": {
         "x": 0.022395833333333334,
         "y": 0.6787037037037037,
@@ -193,6 +195,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
+      "closeLootDelay": 750,
       "chatZone": {
         "x": 0.022395833333333334,
         "y": 0.6787037037037037,
@@ -267,6 +270,7 @@
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
       "ignorePreliminary": false,
+      "closeLootDelay": 250,
       "chatZone": {
         "x": 0.0171875,
         "y": 0.7768518518518519,
@@ -342,6 +346,7 @@
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 3,
       "ignorePreliminary": false,
+      "closeLootDelay": 250,
       "confirmationWindow": {
         "1536": {
           "x": 0.41142,
@@ -410,6 +415,7 @@
       "tmApiKey": "",
       "detectWhisper": true,
       "whisperThreshold": 60,
+      "closeLootDelay": 250,
       "chatZone": {
         "x": 0.021875,
         "y": 0.725,
@@ -484,6 +490,7 @@
       "tmApiKey": "",
       "detectWhisper": true,
       "whisperThreshold": 60,
+      "closeLootDelay": 250,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 3,
       "ignorePreliminary": false,
@@ -555,6 +562,7 @@
       "tmApiKey": "",
       "detectWhisper": true,
       "whisperThreshold": 60,
+      "closeLootDelay": 250,
       "chatZone": {
         "x": 0.019791666666666666,
         "y": 0.7564814814814815,
