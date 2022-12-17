@@ -60,7 +60,7 @@ const renderLogOutEvery = ({logOutEvery, logOut}) => {
 };
 
 const renderLogOutFor = ({logOutFor, logOut}) => {
-  return elt(`div`, {"data-collection": `logOutFory`}, elt(`span`, {className: `option_text`}, `from:`),
+  return elt(`div`, {"data-collection": `logOutFor`}, elt(`span`, {className: `option_text`}, `from:`),
      elt('input', {type: `number`, name: `from`, value: logOutFor.from, disabled: !logOut}), elt(`span`, {className: `option_text`}, `to:`),
      elt('input', {type: `number`, name: `to`, value: logOutFor.to, disabled: !logOut}));
 };
