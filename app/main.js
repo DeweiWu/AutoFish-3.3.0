@@ -123,11 +123,6 @@ let tmBot = {
 const connectToTelegram = (key) => {
   tmBot.bot = new Telegraf(key);
 
-  const statusData = {
-    status: `off`,
-    time: 0
-  };
-
   const helpMessage = `<b>Start</b> - starts the bot.\n<b>Stop</b> - stops the bot.\n<b>Stats</b> - returns stats.\n<b>Screenshot</b> - makes a screenshot of the game window.\n<b>Quit</b> - closes both the game and the bot.\n<b>/r</b> <i> text</i> - replies to user.<b>\n/w</b> <i>username text</i> - whispers to user.`;
   const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n\n<i>Before using via telegram you should configure and test the bot on your local computer.</i>\n\n${helpMessage}`;
   tmBot.bot.command("start", async (ctx) => {
