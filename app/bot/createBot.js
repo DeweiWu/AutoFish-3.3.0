@@ -198,9 +198,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
 
     await sleep(20000);
 
-    const addTime = applyLures.timer.timeRemains();
+    const addTimeLures = applyLures.timer.timeRemains();
+    const addTimeSpare = applySpare.timer.timeRemains();
 
-    await sleep(random(30000, 60000));
+    await sleep(random(config.logOutFor.from * 1000, config.logOutFor.to * 1000));
     if(state.status == 'stop') {
       return;
     }
@@ -210,14 +211,14 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
 
     if(settings.afkmode) await altTab();
 
-    await sleep(random(30000, 60000));
+    await sleep(random(config.logOutAfter.from * 1000, config.logOutAfter.from * 1000));
 
     if(settings.lures) {
-      applyLures.timer.update(() => addTime);
+      applyLures.timer.update(() => addTimeLures);
     }
 
     if(settings.spare) {
-      applySpare.timer.update(() => addTime);
+      applySpare.timer.update(() => addTimeSpare);
     }
 
   };
