@@ -270,10 +270,6 @@ or in connection with the use or performance of this software.`)) {
     shell.openExternal("https://www.youtube.com/jsbots")
   );
 
-  ipcMain.on("open-link-bug", () =>
-    shell.openExternal("https://discord.com/channels/1006827456931569735/1008328201031921694")
-  );
-
   ipcMain.on("dx11-warn", () => {
     showWarning(win, `If you play on official servers, don't forget to switch to DirectX 11 in the game.`);
   });

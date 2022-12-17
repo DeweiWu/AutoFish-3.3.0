@@ -20,10 +20,9 @@ const renderLogo = () => {
     elt(`img`,{ className: `premium_crown`, src: `img/premium.png`})
   );
 };
-const bugLogo = elt(`img`, {src: `img/bug.png`, title: `Report an issue`,onclick: () => ipcRenderer.send("open-link-bug"), className: `bug_button`});
 const renderLogger = () => {
   return {
-    dom: elt("section", { className: `logger` }, bugLogo),
+    dom: elt("section", { className: `logger` }),
     show({ text, type }) {
       let row = elt("p", null, text);
       row.style.color = type;
@@ -52,7 +51,7 @@ class AutoFish {
     const footer = elt(`p`, { className: "version" }, versionNode, premiumIcon);
 
     ipcRenderer.on("set-version", (event, version) => {
-      versionNode.textContent = `ver. 1.15.2 Premium `;
+      versionNode.textContent = `ver. 1.16.0 Premium `;
     });
     this.settings.regOnChange((config) => {
       ipcRenderer.send("save-settings", config);
