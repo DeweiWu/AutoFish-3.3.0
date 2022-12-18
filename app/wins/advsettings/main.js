@@ -50,7 +50,7 @@ const createAdvSettings = (appPath) => {
   });
 
   ipcMain.on("mammoth-warn", () => {
-    showWarning(win, `Turn on interaction key in the game. You don't need to turn it on in the bot (Int.key section), but the bot will use the same key assigned there (even if disabled).`);
+    return showWarning(win, `Turn on interaction key in the game. You don't need to turn it on in the bot (Int.key section), but the bot will use the same key assigned there (even if disabled).`);
   })
 
   ipcMain.handle("advanced-defaults", () => {
