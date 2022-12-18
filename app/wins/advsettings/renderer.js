@@ -357,6 +357,10 @@ const runApp = async () => {
 
       setTimeout(() => event.target.value = `Connect`, 1000);
     }
+
+    if(event.target.name == `mammoth` && event.target.checked) {
+      ipcRenderer.send("mammoth-warn");
+    }
   });
 
   const keyAssigning = (event) => {

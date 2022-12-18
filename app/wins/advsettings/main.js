@@ -1,8 +1,17 @@
-const { BrowserWindow, ipcMain } = require("electron");
+const { BrowserWindow, ipcMain, dialog } = require("electron");
 const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
 
 const getJson = (path) => JSON.parse(readFileSync(path), "utf8");
+
+const showWarning = (win, warning) => {
+  return result = dialog.showMessageBoxSync(win, {
+    type: "warning",
+    title: `Disclaimer`,
+    message: warning,
+    buttons: [`Ok`]
+  });
+};
 
 const createAdvSettings = (appPath) => {
   let win = new BrowserWindow({
@@ -39,6 +48,10 @@ const createAdvSettings = (appPath) => {
     }
     win.close();
   });
+
+  ipcMain.on("mammoth-warn", () => {
+    showWarning(win, `Turn on interaction key in the game. You don't need to turn it on in the bot (Int.key section), but the bot will use the same key assigned there (even if disabled).`);
+  })
 
   ipcMain.handle("advanced-defaults", () => {
     const settings = getJson(path.join(appPath, "./config/settings.json"));
