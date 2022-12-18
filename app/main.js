@@ -123,32 +123,34 @@ let tmBot = {
 
 const connectToTelegram = (key) => {
   tmBot.bot = new Telegraf(key);
+  const helpMessage = `<b>Start</b> - starts the bot.\n<b>Stop</b> - stops the bot.\n<b>Stats</b> - returns stats.\n<b>Screenshot</b> - makes a screenshot of the game window.\n<b>Quit</b> - closes both the game and the bot.\n<b>/r</b> <i> text</i> - replies to user.<b>\n/w</b> <i>username text</i> - whispers to user.\n/start - starts telegram bot.`;
+  const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n\n${helpMessage}`;
 
-  const helpMessage = `<b>Start</b> - starts the bot.\n<b>Stop</b> - stops the bot.\n<b>Stats</b> - returns stats.\n<b>Screenshot</b> - makes a screenshot of the game window.\n<b>Quit</b> - closes both the game and the bot.\n<b>/r</b> <i> text</i> - replies to user.<b>\n/w</b> <i>username text</i> - whispers to user.`;
-  const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n\n<i>Before using via telegram you should configure and test the bot on your local computer.</i>\n\n${helpMessage}`;
   tmBot.bot.command("start", async (ctx) => {
     tmBot.ctx = ctx;
+    await ctx.reply(`${welcomeMessage}`,  { parse_mode: "HTML" });
     return await ctx.reply(
-      `${welcomeMessage}`,  { parse_mode: "HTML" },
+      `Before using via telegram you should configure and test the bot on your local computer.`,
       Markup.keyboard([
         ["🟢 Start", "🔴 Stop", "❌ Quit"],
-        ["📢 Stats", "📷 Screenshot", "💬 Help"],
+        ["📢 Stats", "📷 Screenshot", "💬 Help"]
       ]).resize(),
-
     );
   });
 
   tmBot.bot.hears("🟢 Start", (ctx) => {
-    tmBot.ctx = ctx;
+    if(!tmBot.ctx) tmBot.ctx = ctx;
     win.webContents.send(`start-tm`);
     ctx.reply(`Started the bot!`);
   });
 
   tmBot.bot.hears("🔴 Stop", (ctx) => {
+    if(!tmBot.ctx) tmBot.ctx = ctx;
     win.webContents.send(`stop-tm`);
   });
 
   tmBot.bot.hears("💬 Help", (ctx) => {
+    if(!tmBot.ctx) tmBot.ctx = ctx;
     ctx.reply(helpMessage, { parse_mode: "HTML" });
   });
 

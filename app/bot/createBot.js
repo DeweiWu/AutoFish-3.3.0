@@ -84,8 +84,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     tmBot.bot.command(`/r`, async (ctx) => {
       chatMsgs.push(ctx.update.message.text);
     });
-
+    
     tmBot.bot.hears(`📷 Screenshot`, async (ctx) => {
+      if(!tmBot.ctx) tmBot.ctx = ctx;
       ctx.sendChatAction(`upload_photo`);
       getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
       .then(Jimp.read)
@@ -599,7 +600,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   };
 
   const checkWhisper = async () => {
-    if(tmBot.bot == null || !config.detectWhisper) return;
+    if(tmBot.ctx == null || !config.detectWhisper) return;
     if(await chatZone.checkNewMessages()) {
       tmBot.ctx.reply(`Someone whispered!`);
       tmBot.ctx.sendChatAction(`upload_photo`);

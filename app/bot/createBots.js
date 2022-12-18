@@ -42,7 +42,8 @@ if (tmBot.bot) {
   tmStats = bots.map(({ stats, state }) => ({stats, state}));
 
   tmBot.bot.hears("📢 Stats", (ctx) => {
-    tmStats.forEach(({stats, state}, i) => ctx.reply(`State: <b>${state.status}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
+    if(!tmBot.ctx) tmBot.ctx = ctx;
+    tmStats.forEach(({stats, state}, i) => ctx.reply(`State: <b>${state.status == `working` ? `ON` : state.status == `initial` ? `INITIAL` : `OFF`}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
   });
 
   tmBot.bot.hears("❌ Quit", (ctx) => {
@@ -85,8 +86,7 @@ if (tmBot.bot) {
             }
             log.setState(true);
             bot.log.err(`${error.message}`);
-
-            if(tmBot.bot) {
+            if(tmBot.ctx) {
               tmBot.ctx.reply(`[ERROR]${error.message}`);
             }
 
