@@ -304,7 +304,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Mammoth Key Delay(ms): `, renderMammothKeyDelay(config), `How long the bot will wait after summoning a mammoth mount.`),
   wrapInLabel(`Mammoth Sell Delay(ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
   wrapInLabel(`Mammoth Apply Every(min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
-  wrapInLabel(`Mammoth Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here.`),
+  wrapInLabel(`Mammoth Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
   ),
   elt(`p`, {className: `settings_header`}, `Random sleep`),
   elt('div', {className: "settings_section"},
