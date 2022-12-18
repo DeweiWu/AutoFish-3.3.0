@@ -84,7 +84,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     tmBot.bot.command(`/r`, async (ctx) => {
       chatMsgs.push(ctx.update.message.text);
     });
-    
+
     tmBot.bot.hears(`📷 Screenshot`, async (ctx) => {
       if(!tmBot.ctx) tmBot.ctx = ctx;
       ctx.sendChatAction(`upload_photo`);
@@ -244,6 +244,55 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       );
     }
   };
+
+  const applyMammoth = async () => {
+    await action(async () => {
+      await keyboard.sendKey(config.mammothKey, delay);
+    });
+    await sleep(config.mammothKeyDelay);
+
+    if(config.reaction) {
+      await sleep(random(config.reaction.from, config.reaction.to));
+    }
+
+    await action(async () => {
+      await keyboard.toggleKey(`enter`, true, delay);
+      await keyboard.toggleKey(`enter`, false, delay);
+      await keyboard.printText(`/target ${config.mammothTraderName} `, delay);
+      await keyboard.toggleKey(`enter`, true, delay);
+      await keyboard.toggleKey(`enter`, false, delay);
+    });
+
+    if(config.reaction) {
+      await sleep(random(config.reaction.from, config.reaction.to));
+    }
+
+    await action(async () => {
+      await keyboard.toggleKey(settings.intKey, true, delay);
+      await keyboard.toggleKey(settings.intKey, false, delay);
+    });
+
+    await sleep(random(config.mammothSellDelay.from, config.mammothSellDelay.to));
+
+
+
+    await action(async () => {
+      await keyboard.sendKey(`escape`, delay);
+      if(config.reaction) {
+        await sleep(random(config.reaction.from, config.reaction.to));
+      }
+      await keyboard.sendKey(config.mammothKey, delay);
+    });
+
+    await sleep(random(500, 3000));
+
+    if(settings.afkmode) {
+      await altTab();
+    }
+  }
+
+  applyMammoth.on = config.mammoth;
+  applyMammoth.timer = createTimer(() => random(config.mammothApplyEvery.from * 1000 * 60, config.mammothApplyEvery.to * 1000 * 60));
 
   const applyLures = async () => {
     await action(async () => {
@@ -629,6 +678,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
     preliminaryChecks,
     findAllBobberColors,
     randomSleep,
+    applyMammoth,
     applyLures,
     applySpare,
     castFishing,

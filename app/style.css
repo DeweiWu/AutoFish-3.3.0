@@ -195,11 +195,11 @@ section {
 }
 
 
-.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="intKey"], .settings input[name="spareKey"] {
+.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="intKey"], .settings input[name="spareKey"], .settings input[name="mammothKey"] {
   cursor: pointer;
 }
 
-.settings input[name="stopKey"]:active, .settings input[name="luresKey"]:active, .settings input[name="fishingKey"]:active, .settings input[name="intKey"]:active {
+.settings input[name="stopKey"]:active, .settings input[name="luresKey"]:active, .settings input[name="fishingKey"]:active, .settings input[name="intKey"]:active, .settings input[name="mammothKey"]:active {
   cursor: default;
 }
 
@@ -302,13 +302,13 @@ section {
 }
 
 
-.advSettings .settings_section input[type=number] {
+.advSettings .settings_section input[type=number], .advSettings .settings_section input[type=text] {
   width: 50px;
 }
 
-.advSettings .settings_section input[type=text] {
-  width: 134px;
-}
+ .advSettings .settings_section input[name=mammothTraderName] {
+   width: 160px;
+ }
 
 .advSettings .settings {
   flex-flow: column;

@@ -232,7 +232,39 @@ const renderDetectWhisper = ({detectWhisper}) => {
 const renderWhisperThreshold = ({whisperThreshold}) => {
   return elt(`div`, null, elt('input', {type: `range`, min: 0, max: 255, value: whisperThreshold, name: `whisperThreshold`, className: `whisperRange`}),
    elt(`div`, {className: `whisperColorBox`, style: `background-color: rgb(${whisperThreshold},0,${whisperThreshold})`}, `${whisperThreshold}`));
-}
+};
+
+const renderMammoth = ({mammoth}) => {
+  return elt('input', {type: `checkbox`, checked: mammoth, name: `mammoth`});
+};
+
+const renderMammothKey = ({mammoth, mammothKey}) => {
+  const key = elt('input', {type: `text`, disabled: !mammoth, name: `mammothKey`, value: mammothKey});
+  key.setAttribute(`readonly`, `true`);
+  return key;
+};
+
+const renderMammothKeyDelay = ({mammoth, mammothKeyDelay}) => {
+  return elt('input', {type: `number`, disabled: !mammoth, name: `mammothKeyDelay`, value: mammothKeyDelay});
+};
+
+const renderMammothSellDelay = ({mammoth, mammothSellDelay}) => {
+  return elt(`div`, {"data-collection": `mammothSellDelay`}, elt(`span`, {className: `option_text`}, `from:`),
+  elt('input', {type: `number`, name: `from`, value: mammothSellDelay.from, disabled: !mammoth}), elt(`span`, {className: `option_text`}, `to:`),
+  elt('input', {type: `number`, name: `to`, value: mammothSellDelay.to, disabled: !mammoth})
+  );
+};
+
+const renderMammothApplyEvery= ({mammoth, mammothApplyEvery}) => {
+  return elt(`div`, {"data-collection": `mammothApplyEvery`}, elt(`span`, {className: `option_text`}, `from:`),
+  elt('input', {type: `number`, name: `from`, value: mammothApplyEvery.from, disabled: !mammoth}), elt(`span`, {className: `option_text`}, `to:`),
+  elt('input', {type: `number`, name: `to`, value: mammothApplyEvery.to, disabled: !mammoth})
+  );
+};
+
+const renderMammothTraderName = ({mammoth, mammothTraderName}) => {
+    return elt('input', {type: `text`, disabled: !mammoth, name: `mammothTraderName`, value: mammothTraderName});
+};
 
 const renderSettings = (config) => {
   return elt('section', {className: `settings`},
@@ -264,6 +296,15 @@ const renderSettings = (config) => {
   wrapInLabel(`Random Log out every: (min)`, renderLogOutEvery(config), `The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
   wrapInLabel(`Random Log out for: (sec)`, renderLogOutFor(config), `How long the bot should be stayed logged out. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
   wrapInLabel(`Random Log out after: (sec)`, renderLogOutAfter(config), `How long the bot should wait before starting fishing again. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
+  ),
+  elt(`p`, {className: `settings_header`}, `🐘 Mammoth Selling`),
+  elt('div', {className: "settings_section"},
+  wrapInLabel(`Use mammoth for selling: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),
+  wrapInLabel(`Mammoth Key: `, renderMammothKey(config), `A key that will be used to summon a mammoth mount.`),
+  wrapInLabel(`Mammoth Key Delay(ms): `, renderMammothKeyDelay(config), `How long the bot will wait after summoning a mammoth mount.`),
+  wrapInLabel(`Mammoth Sell Delay(ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
+  wrapInLabel(`Mammoth Apply Every(min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
+  wrapInLabel(`Mammoth Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here.`),
   ),
   elt(`p`, {className: `settings_header`}, `Random sleep`),
   elt('div', {className: "settings_section"},
@@ -315,6 +356,29 @@ const runApp = async () => {
       .catch(() => event.target.value = `Error!`);
 
       setTimeout(() => event.target.value = `Connect`, 1000);
+    }
+  });
+
+  const keyAssigning = (event) => {
+    event.target.value = event.key == ` `? `space` : event.key;
+    gatherConfig();
+    document.removeEventListener(`keydown`, keyAssigning);
+    event.target.blur();
+  }
+
+  settings.addEventListener('mousedown', (event) => {
+    if(event.target.name == `mammothKey` && !event.target.disabled) {
+      event.target.style.backgroundColor = `rgb(255, 104, 101)`;
+      event.target.style.border = `1px solid grey`;
+
+      event.target.addEventListener(`blur`, function bluring(event) {
+        event.target.style.backgroundColor = `white`;
+        event.target.style.border = `1px solid grey`;
+        event.target.removeEventListener(`blur`, bluring);
+        event.target.removeEventListener(`keydown`, keyAssigning);
+      });
+
+      event.target.addEventListener(`keydown`, keyAssigning);
     }
   });
 

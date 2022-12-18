@@ -103,7 +103,6 @@ const createWindow = async () => {
 
   win.loadFile("./app/index.html");
   win.setContentProtection(true);
-
   win.on("closed", () => {
     if (process.platform === "darwin") {
       return false;

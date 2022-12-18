@@ -12,7 +12,8 @@ const runBot = async ({ bot, log, state, stats }) => {
     hookBobber,
     checkWhisper,
     replyToChat,
-    applySpare
+    applySpare,
+    applyMammoth
   } = bot;
 
   const sleep = (time) => {
@@ -34,6 +35,10 @@ const runBot = async ({ bot, log, state, stats }) => {
       log.ok(`Everything is fine!`);
       if(randomSleep.on) {
         randomSleep.timer.start();
+      }
+
+      if(applyMammoth.on) {
+        applyMammoth.timer.start(); 
       }
 
       if(logOut.on) {
@@ -73,6 +78,12 @@ const runBot = async ({ bot, log, state, stats }) => {
       log.send(`Applying lures...`);
       await applyLures();
       applyLures.timer.update();
+    }
+
+    if(applyMammoth.on && applyMammoth.timer.isElapsed()) {
+      log.send(`Applying mammoth...`);
+      await applyMammoth();
+      applyMammoth.timer.update();
     }
 
     findBobber.memory = await findAllBobberColors();
