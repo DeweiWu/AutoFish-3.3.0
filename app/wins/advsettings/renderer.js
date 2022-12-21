@@ -352,10 +352,19 @@ const runApp = async () => {
   settings.addEventListener(`click`, (event) => {
     if(event.target.value == `Connect`) {
       ipcRenderer.invoke(`connect-telegram`, config.tmApiKey)
-      .then(() => event.target.value = `Done!`)
-      .catch(() => event.target.value = `Error!`);
+      .then(() => {
+        event.target.style.backgroundColor = `rgb(65, 255, 65)`;
+        event.target.value = `Success!`
+      })
+      .catch(() => {
+        event.target.style.backgroundColor = `rgb(255, 65, 65)`;
+        event.target.value = `Error!`
+      });
 
-      setTimeout(() => event.target.value = `Connect`, 1000);
+      setTimeout(() => {
+        event.target.value = `Connect`;
+        event.target.style.backgroundColor = `rgb(240, 240, 240)`;
+      }, 1000);
     }
 
     if(event.target.name == `mammoth` && event.target.checked) {

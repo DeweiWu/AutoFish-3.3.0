@@ -210,13 +210,13 @@ const connectToTelegram = (key) => {
     }
 
     if(type == `relZone` || type == `chatZone`) {
-      log.send(`Setting ${type == `relZone` ? `fishing` : `chat`} zone...`);
+      log.send(`Setting ${type == `relZone` ? `Fishing` : `Chat`} Zone...`);
       let data = await setFishingZone(games[0], config.patch[settings.game][type], type, config.patch[settings.game], settings);
       if(data) {
         config.patch[settings.game][type] = data;
         writeFileSync(path.join(__dirname, "./config/bot.json"), JSON.stringify(config));
       }
-      log.ok(`Done!`);
+      log.ok(`Set ${type == `relZone` ? `Fishing` : `Chat`} Zone successfully!`);
       win.focus();
       return;
     }
@@ -292,7 +292,13 @@ or in connection with the use or performance of this software.`)) {
     }
   });
 
-  ipcMain.handle("connect-telegram", (event, key) => connectToTelegram(key))
+  ipcMain.handle("connect-telegram", (event, key) => {
+    return connectToTelegram(key)
+    .then(() => log.ok(`Connected to Telegram!`), (e) => {
+      log.err(`Telegram error: ${e.message}`)
+      return Promise.reject(e);
+    })
+  })
   ipcMain.handle("get-bitmap", getBitmapAsync);
   ipcMain.handle("get-all-windows", getAllWindows);
   ipcMain.handle("get-settings", () => getJson("./config/settings.json"));
