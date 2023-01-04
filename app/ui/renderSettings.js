@@ -40,6 +40,7 @@ const renderGameNames = ({game}) => {
   ];
 
   const gamesPrivate = [
+    "Legion",
     "MoP",
     "Cataclysm",
     "WotLK Private",

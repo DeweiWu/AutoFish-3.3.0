@@ -214,6 +214,8 @@
       "whisperThreshold": 60,
       "bobberSensitivity": 3,
       "closeLootDelay": 750,
+      "spareDelay": 3000,
+      "ignorePreliminary": false,
       "chatZone": {
         "x": 0.022395833333333334,
         "y": 0.6787037037037037,
@@ -250,6 +252,87 @@
           "itemHeight": 0.051,
           "height": 0.20185,
           "width": 0.070833
+        }
+      }
+    },
+    "Legion": {
+      "useCustomWindow": false,
+      "likeHuman": true,
+      "customWindow": "",
+      "closeLoot": "mouse",
+      "delay": { "from": 50, "to": 150 },
+      "castDelay": 2500,
+      "sleepAfterHook": true,
+      "afterHookDelay": { "from": 150, "to": 400 },
+      "maxFishTime": 45000,
+      "relZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
+      "checkingDelay": 50,
+      "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
+      "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
+      "luresDelay": 3000,
+      "randomSleep": true,
+      "randomSleepEvery": { "from": 1, "to": 3 },
+      "randomSleepDelay": { "from": 1000, "to": 15000 },
+      "reaction": true,
+      "reactionDelay": { "from": 150, "to": 400 },
+      "maxAttempts": 5,
+      "timerQuit": false,
+      "shiftClick": false,
+      "missOnPurpose": false,
+      "missOnPurposeRandom": { "from": 5, "to": 20 },
+      "logOut": false,
+      "logOutEvery": { "from": 50, "to": 120 },
+      "logOutFor": { "from": 30, "to": 90 },
+      "logOutAfter": { "from": 30, "to": 90 },
+      "mammoth": false,
+      "mammothKey": "5",
+      "mammothKeyDelay": 3000,
+      "mammothSellDelay": { "from": 3000, "to": 5000 },
+      "mammothApplyEvery": { "from": 15, "to": 30 },
+      "mammothTraderName": "Gnimo",
+      "tmApiKey": "",
+      "detectWhisper": true,
+      "whisperThreshold": 60,
+      "bobberSensitivity": 3,
+      "ignorePreliminary": false,
+      "closeLootDelay": 250,
+      "chatZone": {
+        "x": 0.0171875,
+        "y": 0.7768518518518519,
+        "width": 0.22708333333333333,
+        "height": 0.12314814814814815
+      },
+      "confirmationWindow": {
+        "1536": {
+          "x": 0.41142,
+          "y": 0.22786,
+          "width": 0.08272,
+          "height": 0.01953
+        },
+        "1920": {
+          "x": 0.43697,
+          "y": 0.16203,
+          "width": 0.05885,
+          "height": 0.01388
+        }
+      },
+      "lootWindow": {
+        "1536": {
+          "upperLimit": 0.123,
+          "toItemX": 0.01,
+          "toItemY": 0.035,
+          "itemHeight": 0.058,
+          "height": 0.213,
+          "width": 0.074
+        },
+        "1920": {
+          "upperLimit": 0.1,
+          "toItemX": 0.007,
+          "toItemY": 0.025,
+          "itemHeight": 0.04,
+          "height": 0.153,
+          "width": 0.056
         }
       }
     },
