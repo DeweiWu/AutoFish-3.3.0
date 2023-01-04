@@ -31,6 +31,7 @@ const createAdvSettings = (appPath) => {
 
   win.on("closed", () => {
     ipcMain.removeAllListeners(`advanced-click`);
+    ipcMain.removeAllListeners(`mammoth-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
   });
