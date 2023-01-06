@@ -171,7 +171,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       await mouse.humanMoveTo(
         pos.x,
         pos.y,
-        random(config.mouseMoveSpeed.from, config.mouseMoveSpeed.to),
+        random(screenSize.width < 3000 ? config.mouseMoveSpeed.from : config.mouseMoveSpeed.from * 2,
+               screenSize.width < 3000 ? config.mouseMoveSpeed.to : config.mouseMoveSpeed.to * 2),
         random(
           config.mouseCurvatureStrength.from,
           config.mouseCurvatureStrength.to
