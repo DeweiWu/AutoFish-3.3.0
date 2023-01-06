@@ -47,6 +47,7 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
+      "windowsScale": 100,
       "chatZone": {
         "x": 0.01875,
         "y": 0.8407407407407408,
@@ -135,6 +136,7 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 750,
+      "windowsScale": 100,
       "chatZone": {
         "x": 0.022395833333333334,
         "y": 0.6787037037037037,
@@ -217,6 +219,7 @@
       "bobberSensitivity": 1,
       "bobberDensity": 1,
       "closeLootDelay": 750,
+      "windowsScale": 100,
       "spareDelay": 3000,
       "ignorePreliminary": false,
       "chatZone": {
@@ -301,6 +304,7 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
+      "windowsScale": 100,
       "chatZone": {
         "x": 0.0171875,
         "y": 0.7768518518518519,
@@ -383,6 +387,7 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
+      "windowsScale": 100,
       "chatZone": {
         "x": 0.0171875,
         "y": 0.7768518518518519,
@@ -466,6 +471,7 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
+      "windowsScale": 100,
       "confirmationWindow": {
         "1536": {
           "x": 0.41142,
@@ -541,6 +547,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
+      "windowsScale": 100,
       "chatZone": {
         "x": 0.021875,
         "y": 0.725,
@@ -623,6 +630,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
+      "windowsScale": 100,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 1,
       "bobberDensity": 1,
@@ -702,6 +710,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
+      "windowsScale": 100,
       "chatZone": {
         "x": 0.019791666666666666,
         "y": 0.7564814814814815,

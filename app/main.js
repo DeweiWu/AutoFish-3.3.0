@@ -65,20 +65,21 @@ const setFishingZone = async ({workwindow}, relZone, type, config, settings) => 
     workwindow.setForeground();
   }
   const screenSize = workwindow.getView();
+  const scale = config.windowsScale / 100;
   const pos = {
-    x: screenSize.x + relZone.x * screenSize.width,
-    y: screenSize.y + relZone.y * screenSize.height,
-    width: relZone.width * screenSize.width,
-    height: relZone.height * screenSize.height
+    x: (screenSize.x + relZone.x * screenSize.width) / scale,
+    y: (screenSize.y + relZone.y * screenSize.height) / scale,
+    width: (relZone.width * screenSize.width) / scale,
+    height: (relZone.height * screenSize.height) / scale
   }
 
   const result = await createFishingZone({pos, screenSize, type, config, settings});
   if(!result) return;
   return {
-    x: (result.x - screenSize.x) / screenSize.width,
-    y: (result.y - screenSize.y) / screenSize.height,
-    width: result.width / screenSize.width,
-    height: result.height / screenSize.height
+    x: (result.x - screenSize.x) * scale / screenSize.width,
+    y: (result.y - screenSize.y) * scale / screenSize.height,
+    width: result.width * scale / screenSize.width,
+    height: result.height * scale / screenSize.height
   }
 }
 
