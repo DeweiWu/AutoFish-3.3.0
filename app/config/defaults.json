@@ -43,7 +43,8 @@
       "tmApiKey": "",
       "detectWhisper": true,
       "whisperThreshold": 60,
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
       "chatZone": {
@@ -130,7 +131,8 @@
       "tmApiKey": "",
       "detectWhisper": true,
       "whisperThreshold": 60,
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 750,
       "chatZone": {
@@ -212,7 +214,8 @@
       "tmApiKey": "",
       "detectWhisper": true,
       "whisperThreshold": 60,
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "closeLootDelay": 750,
       "spareDelay": 3000,
       "ignorePreliminary": false,
@@ -294,7 +297,8 @@
       "tmApiKey": "",
       "detectWhisper": true,
       "whisperThreshold": 60,
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "chatZone": {
@@ -375,7 +379,8 @@
       "tmApiKey": "",
       "detectWhisper": true,
       "whisperThreshold": 60,
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "chatZone": {
@@ -457,7 +462,8 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "confirmationWindow": {
@@ -541,7 +547,8 @@
         "width": 0.21875,
         "height": 0.1638888888888889
       },
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -617,7 +624,8 @@
       "whisperThreshold": 60,
       "closeLootDelay": 250,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -700,7 +708,8 @@
         "width": 0.2875,
         "height": 0.15092592592592594
       },
-      "bobberSensitivity": 3,
+      "bobberSensitivity": 1,
+      "bobberDensity": 1,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
