@@ -471,7 +471,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
       height: lootWindow.height,
     };
 
-    let recognizedWords = await readTextFrom(await getDataFrom(lootWindowDim), screenSize.width <= 1536 ? 3 : 2);
+    const lootScale = screenSize.width <= 1536 ? 3 : screenSize.width <= 1920 ? 2 : 1;
+    let recognizedWords = await readTextFrom(await getDataFrom(lootWindowDim), lootScale);
     let items = sortWordsByItem(recognizedWords, lootWindow, settings.game == `Dragonflight`);
     let itemPos = 0;
 
