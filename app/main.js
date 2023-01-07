@@ -273,7 +273,7 @@ or in connection with the use or performance of this software.`)) {
   });
 
   ipcMain.on("whitelist-warn", () => {
-    showWarning(win, `Turn off AutoLoot. Your resolution should be either 1366x768 or 1920x1080. UI addons and UI scale should be turned off. Turn on Open Loot Window at Mouse option (optional for Dragonflight and Vanilla).`);
+    showWarning(win, `Turn off AutoLoot. The resolution in game should be 1366x768 or 1920x1080 or 3840x2160. UI addons and UI scale should be turned off. Turn on Open Loot Window at Mouse option (optional for Dragonflight and Vanilla).`);
   });
 
   ipcMain.on("open-link-donate", () =>
