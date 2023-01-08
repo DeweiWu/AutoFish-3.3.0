@@ -245,8 +245,9 @@ const renderDetectWhisper = ({detectWhisper}) => {
 };
 
 const renderWhisperThreshold = ({whisperThreshold}) => {
-  return elt(`div`, null, elt('input', {type: `range`, min: 0, max: 255, value: whisperThreshold, name: `whisperThreshold`, className: `whisperRange`}),
-   elt(`div`, {className: `whisperColorBox`, style: `background-color: rgb(${whisperThreshold},0,${whisperThreshold})`}, `${whisperThreshold}`));
+  let colorWin = elt(`div`, {className: `whisperColorBox`, style: `background-color: rgb(${whisperThreshold},0,${whisperThreshold})`}, `${whisperThreshold}`);
+  let range = elt('input', {type: `range`, min: 0, max: 255, oninput: function () {colorWin.style = `background-color: rgb(${this.value},0,${this.value})`; colorWin.innerHTML = this.value}, value: whisperThreshold, name: `whisperThreshold`, className: `whisperRange`});
+  return elt(`div`, null, range, colorWin);
 };
 
 const renderMammoth = ({mammoth}) => {
