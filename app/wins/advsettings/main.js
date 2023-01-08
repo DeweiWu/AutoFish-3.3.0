@@ -4,6 +4,10 @@ const path = require("path");
 
 const getJson = (path) => JSON.parse(readFileSync(path), "utf8");
 
+const getProfile = (appPath) => {
+  return getJson(path.join(appPath, `./config/config.json`)).selected;
+};
+
 const showWarning = (win, warning) => {
   return result = dialog.showMessageBoxSync(win, {
     type: "warning",
@@ -42,10 +46,11 @@ const createAdvSettings = (appPath) => {
 
   ipcMain.on("advanced-click", (event, newConfig) => {
     if(newConfig) {
-      const settings = getJson(path.join(appPath, "./config/settings.json"));
-      const config = getJson(path.join(appPath, "./config/bot.json"));
+      const profile = getProfile(appPath);
+      const settings = getJson(path.join(appPath, `./config/${profile}/settings.json`));
+      const config = getJson(path.join(appPath, `./config/${profile}/bot.json`));
       config.patch[settings.game] = newConfig;
-      writeFileSync(path.join(appPath, "./config/bot.json"), JSON.stringify(config));
+      writeFileSync(path.join(appPath, `./config/${profile}/bot.json`), JSON.stringify(config));
     }
     win.close();
   });
@@ -55,14 +60,16 @@ const createAdvSettings = (appPath) => {
   })
 
   ipcMain.handle("advanced-defaults", () => {
-    const settings = getJson(path.join(appPath, "./config/settings.json"));
-    const defaults = getJson(path.join(appPath, "./config/defaults.json"));
+    const profile = getProfile(appPath);
+    const settings = getJson(path.join(appPath, `./config/${profile}/settings.json`));
+    const defaults = getJson(path.join(appPath, `./config/${profile}/defaults.json`));
     return defaults.patch[settings.game];
   })
 
   ipcMain.handle("get-game-config", () => {
-    const settings = getJson(path.join(appPath, "./config/settings.json"));
-    const config = getJson(path.join(appPath, "./config/bot.json"));
+    const profile = getProfile(appPath);
+    const settings = getJson(path.join(appPath, `./config/${profile}/settings.json`));
+    const config = getJson(path.join(appPath, `./config/${profile}/bot.json`));
     return config.patch[settings.game];
   });
 

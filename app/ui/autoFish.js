@@ -20,6 +20,19 @@ const renderLogo = () => {
     elt(`img`,{ className: `premium_crown`, src: `img/premium.png`})
   );
 };
+
+const renderProfiles = (profiles) => {
+  let select = elt(`select`, null, ...profiles.users.map(profile => elt(`option`, {selected: profile == profiles.selected}, profile)))
+
+  let add = elt(`input`, {type: `button`, style: `color: green`, className: `profile_button`, value: `+`});
+  let remove = elt(`input`, {type: `button`, style: `color: red`, className: `profile_button`, value: `x`});
+
+  let dom = elt(`div`, {className: `profiles`}, select, add, remove);
+  let value = ``;
+
+  return {value, dom, select, add, remove};
+}
+
 const renderLogger = () => {
   return {
     dom: elt("section", { className: `logger` }),
@@ -33,10 +46,65 @@ const renderLogger = () => {
 };
 
 class AutoFish {
-  constructor(settings, startButton) {
+  constructor(settings, startButton, profiles) {
     this.settings = settings;
     this.button = startButton;
     this.logger = renderLogger();
+    let profile = renderProfiles(profiles);
+
+    const inputTextWriting = (event) => {
+       profile.value = event.target.value;
+    };
+
+    const inputTextDone = async (event) => {
+      event.target.remove();
+      profile.select.style = `visibility: visible; position: static;`;
+      if(event.target.value == ``) {
+        profile.add.value = `+`;
+      } else {
+        ipcRenderer.invoke(`create-user`, event.target.value)
+        .then(() => {
+          let option = elt(`option`, {selected: true}, event.target.value);
+          profile.select.append(option);
+        })
+      }
+      event.target.removeEventListener(`blur`, inputTextDone);
+      event.target.removeEventListener(`change`, inputTextWriting);
+    };
+
+    profile.remove.addEventListener(`mousedown`, async () => {
+      let user = profile.select.value;
+
+      ipcRenderer.invoke("delete-user", user)
+      .then(async (another) => {
+        if(user == `Default`) return;
+        [...profile.select.options].find(child => child.value == user).remove();
+        profile.select.value = another;
+        this.settings.config = await ipcRenderer.invoke("get-settings");
+        this.settings.reRender();
+      });
+    });
+
+    profile.add.addEventListener(`click`, () => {
+      if(profile.add.value == `v`) {
+        profile.add.value = `+`;
+        return;
+      }
+      profile.select.style = `visibility: hidden; position: absolute;`;
+      profile.add.value = `v`;
+      let inputText = elt(`input`, {type: `text`, className: `profiles_text`});
+      inputText.addEventListener(`change`, inputTextWriting);
+      profile.dom.prepend(inputText);
+      inputText.focus();
+      inputText.addEventListener(`blur`, inputTextDone);
+    });
+
+    profile.select.addEventListener(`change`, async (event) => {
+      await ipcRenderer.invoke("change-selected-profile", event.target.value)
+      this.settings.config = await ipcRenderer.invoke("get-settings");
+      this.settings.reRender();
+    })
+
     const premiumIcon = elt(`img`, { className: `premium_icon`, src: `img/premium.png` });
     const versionNode = elt("span");
     const donateLink = elt(
@@ -112,7 +180,7 @@ class AutoFish {
       "div",
       { className: "AutoFish" },
       renderLogo(),
-      elt("p", { className: "settings_header" }, "Settings:"),
+      elt("p", { className: "settings_header" }, "Settings for", profile.dom),
       this.settings.dom,
       elt("p", { className: "settings_header" }, "Log:"),
       this.logger.dom,

@@ -458,3 +458,35 @@ input[type=range][name=threshold]::-webkit-slider-runnable-track {
 input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
   opacity: 0.9;
 }
+
+/* Profiles */
+
+.profiles {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.profiles input[type=text] {
+  margin: 0;
+  display: inline;
+}
+
+.profiles input[type=button] {
+  width: 21px;
+  height: 21px;
+  border: 1px solid grey;
+  border-radius: 5px;
+    margin-left: 2px;
+}
+
+.profiles input[type=button]:hover {
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.profiles select, .profiles input[type=text].profiles_text {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  width: 182px;
+}

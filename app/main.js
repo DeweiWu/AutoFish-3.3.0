@@ -11,13 +11,20 @@ const {
 } = require("electron");
 const path = require("path");
 
-const { readFileSync, writeFileSync } = require("fs");
+const { readFileSync, writeFileSync, mkdir, rmdir, readdir } = require("fs");
+const { unlink } = require("fs").promises;
+
 const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
 
 const getJson = (jsonPath) => {
   return JSON.parse(readFileSync(path.join(__dirname, jsonPath), "utf8"));
 };
+
+const getProfile = () => {
+  return getJson(`./config/config.json`);
+};
+
 /* Electron modules end */
 
 /* Bot modules */
@@ -91,7 +98,7 @@ const createWindow = async () => {
   let win = new BrowserWindow({
     title: generateName(Math.floor(random(5, 15))),
     width: 325,
-    height: 770,
+    height: 785,
     show: false,
     resizable: false,
     webPreferences: {
@@ -159,8 +166,9 @@ const connectToTelegram = (key) => {
 
 
   win.once("ready-to-show", () => {
-    const config = getJson("./config/bot.json");
-    const settings = getJson("./config/settings.json");
+    const profile = getProfile().selected;
+    const config = getJson(`./config/${profile}/bot.json`);
+    const settings = getJson(`./config/${profile}/settings.json`);
 
     if(settings.initial) {
       log.send(`Thank you for purchasing Premium!`);
@@ -182,8 +190,9 @@ const connectToTelegram = (key) => {
   });
 
   ipcMain.on("start-bot", async (event, type) => {
-    const config = getJson("./config/bot.json");
-    const settings = getJson("./config/settings.json");
+    const profile = getProfile().selected;
+    const config = getJson(`./config/${profile}/bot.json`);
+    const settings = getJson(`./config/${profile}/settings.json`);
 
     log.send(`Looking for the windows...`);
 
@@ -215,7 +224,7 @@ const connectToTelegram = (key) => {
       let data = await setFishingZone(games[0], config.patch[settings.game][type], type, config.patch[settings.game], settings);
       if(data) {
         config.patch[settings.game][type] = data;
-        writeFileSync(path.join(__dirname, "./config/bot.json"), JSON.stringify(config));
+        writeFileSync(path.join(__dirname, `./config/${profile}/bot.json`), JSON.stringify(config));
       }
       log.ok(`Set ${type == `relZone` ? `Fishing` : `Chat`} Zone successfully!`);
       win.focus();
@@ -233,7 +242,7 @@ or in connection with the use or performance of this software.`)) {
         return;
       } else {
         settings.initial = false;
-        writeFileSync(path.join(__dirname, "./config/settings.json"), JSON.stringify(settings));
+        writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
       }
     }
 
@@ -281,7 +290,7 @@ or in connection with the use or performance of this software.`)) {
   );
 
   ipcMain.on("save-settings", (event, settings) =>
-    writeFileSync(path.join(__dirname, "./config/settings.json"), JSON.stringify(settings))
+    writeFileSync(path.join(__dirname, `./config/${getProfile().selected}/settings.json`), JSON.stringify(settings))
   );
 
   let settWin;
@@ -302,7 +311,67 @@ or in connection with the use or performance of this software.`)) {
   })
   ipcMain.handle("get-bitmap", getBitmapAsync);
   ipcMain.handle("get-all-windows", getAllWindows);
-  ipcMain.handle("get-settings", () => getJson("./config/settings.json"));
+  ipcMain.handle("get-profiles", () => getProfile());
+  ipcMain.handle("get-settings", () => getJson(`./config/${getProfile().selected}/settings.json`));
+
+ipcMain.handle("delete-user", (event, user) => {
+  if (user == `Default`) {
+    log.err(`You can't delete Default profile.`);
+    return;
+  }
+  return new Promise((resolve, reject) => {
+  readdir(path.join(__dirname, `./config/`, user), async (error, files) => {
+      if(error) reject(error);
+
+      for(let file of files) {
+        await unlink(path.join(__dirname, `./config/`, user, file));
+      }
+
+      rmdir(path.join(__dirname, `./config/`, user), (error) => {
+        if (error) {
+          reject(error);
+        } else {
+          let profile = getProfile();
+          profile.selected = profile.users[profile.users.indexOf(user) - 1];
+          profile.users = profile.users.filter((exstUser) => exstUser != user);
+          writeFileSync(path.join(__dirname, `./config/`, `config.json`), JSON.stringify(profile));
+          resolve(profile.selected);
+        }
+      });
+  });
+  });
+});
+
+
+  ipcMain.handle("create-user", (event, user) => {
+    return new Promise((resolve, reject) => {
+      mkdir(path.join(__dirname, `./config/`, user), (error) => {
+        if(error) {
+          if(error.code == `EEXIST`) {
+            log.err(`The user already exist.`);
+          }
+          reject(error);
+        } else {
+          let profile = getProfile();
+          let settings = getJson(`./config/${profile.selected}/settings.json`);
+          let config = getJson(`./config/${profile.selected}/bot.json`);
+          let defConfig = getJson(`./config/${profile.selected}/defaults.json`);
+          writeFileSync(path.join(__dirname, `./config/`, user, `settings.json`), JSON.stringify(settings));
+          writeFileSync(path.join(__dirname, `./config/`, user, `bot.json`), JSON.stringify(config));
+          writeFileSync(path.join(__dirname, `./config/`, user, `defaults.json`), JSON.stringify(defConfig));
+          profile.selected = user;
+          profile.users.push(user);
+          writeFileSync(path.join(__dirname, `./config/`, `config.json`), JSON.stringify(profile));
+          resolve();
+        }
+      })
+    });
+  });
+  ipcMain.handle("change-selected-profile", (event, profile) => {
+    let profiles = getProfile();
+    profiles.selected = profile;
+    writeFileSync(path.join(__dirname, `./config/config.json`), JSON.stringify(profiles));
+  });
 }
 
 let powerBlocker = powerSaveBlocker.start("prevent-display-sleep");
