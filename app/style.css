@@ -490,3 +490,7 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
   border-radius: 5px;
   width: 182px;
 }
+
+.profiles input[type=text].profiles_text:focus {
+  border: 1px solid grey;
+}
