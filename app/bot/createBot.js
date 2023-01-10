@@ -34,7 +34,7 @@ const random = (from, to) => {
 
 let chatMsgs = [];
 
-const createBot = (game, { config, settings }, winSwitch, tmBot) => {
+const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
   const { keyboard, mouse, workwindow } = game;
   const delay = [config.delay.from, config.delay.to];
 
@@ -77,24 +77,18 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   };
 
   if(tmBot.bot) {
-    tmBot.bot.command(`/w`, async (ctx) => {
-      chatMsgs.push(ctx.update.message.text);
-    });
+  tmBot.replies.push({win: winNum, fn: (message) => {
+    chatMsgs.push(message);
+  }});
 
-    tmBot.bot.command(`/r`, async (ctx) => {
-      chatMsgs.push(ctx.update.message.text);
-    });
-
-    tmBot.bot.hears(`📷 Screenshot`, async (ctx) => {
-      if(!tmBot.ctx) tmBot.ctx = ctx;
-      ctx.sendChatAction(`upload_photo`);
-      getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
-      .then(Jimp.read)
-      .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
-      .then((screenshot) => {
-        ctx.replyWithPhoto({source: screenshot});
-      })
+  tmBot.ss.push((ctx) => {
+    getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
+    .then(Jimp.read)
+    .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
+    .then((screenshot) => {
+      ctx.replyWithPhoto({source: screenshot});
     })
+   })
   }
 
   const fishingZone = createFishingZone({
@@ -654,7 +648,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot) => {
   const checkWhisper = async () => {
     if(tmBot.ctx == null || !config.detectWhisper) return;
     if(await chatZone.checkNewMessages()) {
-      tmBot.ctx.reply(`Someone whispered!`);
+      tmBot.ctx.reply(`Someone whispered on Window: ${winNum}!`);
       tmBot.ctx.sendChatAction(`upload_photo`);
       tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
     }

@@ -125,7 +125,11 @@ const createWindow = async () => {
 
 let tmBot = {
   bot: null,
-  ctx: null
+  ctx: null,
+  stats: [],
+  ss: [],
+  whispers: [],
+  replies: []
 };
 
 const connectToTelegram = (key) => {

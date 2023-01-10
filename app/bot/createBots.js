@@ -15,8 +15,6 @@ const getPercent = (value, total) => {
   return Math.ceil((value / (total || 1)) * 100 * 100) / 100;
 };
 
-let tmStats = null;
-
 const createBots = async (games, settings, config, log, tmBot) => {
   const winSwitch = createWinSwitch(new EventLine());
 
@@ -25,13 +23,77 @@ const createBots = async (games, settings, config, log, tmBot) => {
     await setWorker(settings.whitelistLanguage);
   }
 
+if (tmBot.bot) {
+  tmBot.ss = [];
+  tmBot.replies = [];
+
+  tmBot.bot.hears(`📷 Screenshot`, (ctx) => {
+    if (!tmBot.ctx) tmBot.ctx = ctx;
+    ctx.sendChatAction(`upload_photo`);
+    tmBot.ss.forEach((screenshot) => screenshot(ctx));
+  });
+
+  const replyThrough = (ctx) => {
+
+  }
+
+  tmBot.bot.command(`/w`, (ctx) => {
+    let message = ctx.update.message.text;
+
+    if(tmBot.replies.length > 1) {
+      let winNum = message[3]
+
+      if(!(/\d+/.test(winNum))) {
+        ctx.reply(`Message is written incorrectly. It should be "/w win_number message"`);
+        return;
+      }
+
+      let reply = tmBot.replies.find((bot) => bot.win == winNum);
+
+      if(!reply) {
+        ctx.reply(`Can't find Window: ${winNum}`);
+        return;
+      }
+
+      reply.fn(message.slice(0, 3) + message.slice(4));
+    } else {
+      tmBot.replies[0].fn(message);
+    }
+  });
+
+  tmBot.bot.command(`/r`, (ctx) => {
+    let message = ctx.update.message.text;
+
+    if(tmBot.replies.length > 1) {
+      let winNum = message[3]
+
+      if(!(/\d+/.test(winNum))) {
+        ctx.reply(`Message writtent incorrectly! It should be "/r win_number message"`);
+        return;
+      }
+
+      let reply = tmBot.replies.find((bot) => bot.win == winNum);
+
+      if(!reply) {
+        ctx.reply(`Can't find Window: ${winNum}`);
+        return;
+      }
+
+      reply.fn(message.slice(0, 3) + message.slice(4));
+    } else {
+      tmBot.replies[0].fn(message);
+    }
+  });
+}
+
+
   if(!settings.multipleWindows) {
     games = [games[0]];
   }
 
   const bots = games.map((game, i) => {
     return {
-      bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot),
+      bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1),
       log: createIdLog(log, ++i),
       state: { status: "initial", startTime: Date.now() },
       stats: new Stats()
@@ -39,11 +101,11 @@ const createBots = async (games, settings, config, log, tmBot) => {
   });
 
 if (tmBot.bot) {
-  tmStats = bots.map(({ stats, state }) => ({stats, state}));
+  tmBot.stats = bots.map(({ stats, state }) => ({stats, state}));
 
   tmBot.bot.hears("📢 Stats", (ctx) => {
     if(!tmBot.ctx) tmBot.ctx = ctx;
-    tmStats.forEach(({stats, state}, i) => ctx.reply(`State: <b>${state.status == `working` ? `ON` : state.status == `initial` ? `INITIAL` : `OFF`}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
+    tmBot.stats.forEach(({stats, state}, i) => ctx.reply(`State: <b>${state.status == `working` ? `ON` : state.status == `initial` ? `INITIAL` : `OFF`}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
   });
 
   tmBot.bot.hears("❌ Quit", (ctx) => {
