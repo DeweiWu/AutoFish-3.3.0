@@ -267,6 +267,7 @@ or in connection with the use or performance of this software.`)) {
       }
       globalShortcut.unregisterAll();
       win.webContents.send("stop-bot");
+      ipcMain.removeAllListeners("stop-bot");
     };
 
     ipcMain.on("stop-bot", stopAppAndBots);
