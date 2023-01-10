@@ -391,7 +391,7 @@ const runApp = async () => {
   });
 
   const keyAssigning = (event) => {
-    event.target.value = event.key == ` `? `space` : event.key;
+    event.target.value = event.key == ` `? `space` : event.key.toLowerCase();
     gatherConfig();
     document.removeEventListener(`keydown`, keyAssigning);
     event.target.blur();
