@@ -17,6 +17,10 @@ select {
   font: menu;
 }
 
+select {
+  border-radius: 5px;
+}
+
 html,
 body {
   height: 100%;
@@ -481,13 +485,18 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 
 .profiles input[type=button]:hover {
   border: 1px solid black;
+  background-color: rgb(230, 230, 230);
   cursor: pointer;
 }
+
+.profiles input[type=button]:active {
+  background-color: rgb(240, 240, 240);
+}
+
 
 .profiles select, .profiles input[type=text].profiles_text {
   margin-top: 10px;
   margin-bottom: 5px;
-  border-radius: 5px;
   width: 182px;
 }
 

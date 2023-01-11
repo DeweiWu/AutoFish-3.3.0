@@ -56,15 +56,20 @@ class AutoFish {
        profile.value = event.target.value;
     };
 
+    let mouseOverProfileAdd = false;
+
+    profile.add.addEventListener(`mouseover`, () => mouseOverProfileAdd ? null : mouseOverProfileAdd = true);
+    profile.add.addEventListener(`mouseout`, () => mouseOverProfileAdd = false);
+
     const inputTextDone = async (event) => {
       event.target.remove();
       profile.select.style = `visibility: visible; position: static;`;
-      if(event.target.value == ``) {
+      if(event.target.value == `` || !mouseOverProfileAdd) {
         profile.add.value = `+`;
       } else {
-        ipcRenderer.invoke(`create-user`, event.target.value)
+        ipcRenderer.invoke(`create-user`, event.target.value.trim())
         .then(() => {
-          let option = elt(`option`, {selected: true}, event.target.value);
+          let option = elt(`option`, {selected: true}, event.target.value.trim());
           profile.select.append(option);
         })
       }
