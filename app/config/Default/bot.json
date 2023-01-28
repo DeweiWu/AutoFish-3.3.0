@@ -44,7 +44,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
       "windowsScale": 100,
