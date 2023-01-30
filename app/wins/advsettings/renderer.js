@@ -23,11 +23,24 @@ const renderDelay = ({delay}) => {
 
 const renderCloseLootDelay = ({closeLootDelay}) => {
   return elt('input', {type: `number`, name: `closeLootDelay`, value: closeLootDelay});
-}
+};
 
 const renderIgnorePreliminary = ({ignorePreliminary}) => {
   return elt(`input`, {type: `checkbox`, checked: ignorePreliminary, name: `ignorePreliminary`});
-}
+};
+
+const renderSoundDetection = ({soundDetection}) => {
+    return elt(`input`, {type: `checkbox`, checked: soundDetection, name: `soundDetection`});
+};
+
+const renderSoundDetectionRange = ({soundDetection, soundDetectionRange}) => {
+    if(soundDetectionRange > 1100) soundDetectionRange = 1100;
+    if(soundDetectionRange < 128) soundDetectionRange = 128;
+    let soundDetectionRangeWin = elt(`input`, {type: `number`, name: `soundDetectionRange`, value: soundDetectionRange, disabled: !soundDetection});
+
+    return elt(`div`, null, elt('input', {type: `range`, min: 128, max: 1100, value: soundDetectionRange, disabled: !soundDetection,  oninput: function() {soundDetectionRangeWin.value = this.value}, name: `soundDetectionRange`}),
+     soundDetectionRangeWin);
+};
 
 const renderShiftClick = ({shiftClick}) => {
   let dom = elt("input", {
@@ -301,6 +314,11 @@ const renderSettings = (config) => {
     renderShiftClick(config),
     `Use shift + click instead of Auto Loot. Check this option if you don't want to turn on Auto Loot option in the game. Your "Loot key" in the game should be assigned to shift.`
   )),
+  elt(`p`, {className: `settings_header`}, `🔊 Sound Detection`),
+  elt('div', {className: "settings_section"},
+  wrapInLabel(`Sound Detection: `, renderSoundDetection(config), `The bot will check the change of sound instead of the change of pixels when it should catch the fish.`),
+  wrapInLabel(`Sound Detection Range: `, renderSoundDetectionRange(config), `The strength of the noise created by jerking of the bobber`),
+  ),
   elt(`p`, {className: `settings_header`}, `Miss on purpose`),
   elt('div', {className: "settings_section"},
   wrapInLabel(`Miss on purpose: `, renderMissOnPurpose(config), `The bot will miss fish on purpose to simulate a human mistake. The value is % chance per cast that the bot will miss (it's not % of the whole session, so it might be drastically different). This functionality might decrease chances of being detected`),

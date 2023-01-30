@@ -5,6 +5,8 @@ const createLootZone = require("./lootZone.js");
 const createChatZone = require('./chatZone');
 const Jimp = require(`jimp`);
 
+const { BrowserWindow, ipcMain } = require(`electron`);
+
 const { screen, Region, Point } = require("@nut-tree/nut-js");
 
 let once = (fn, done) => (...args) => {
@@ -396,7 +398,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
     while (state.status == "working") {
       if (checkBobberTimer.isElapsed()) {
         throw new Error(
-          `Something is wrong. The bot sticked to the bobber for more than ${config.maxFishTime} ms.`
+          `Something is wrong. The bot had been checking the bobber for more than ${config.maxFishTime} ms. The server might be down or your character is dead.`
         );
       }
 
@@ -404,14 +406,26 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
         return pos;
       }
 
-      if (!(await fishingZone.isBobber(pos))) {
-        const newPos = await fishingZone.checkAroundBobber(pos);
-        if (!newPos) {
-          return pos;
-        } else {
-          pos = newPos;
-        }
-      }
+if (config.soundDetection) {
+  let caught = await new Promise((resolve, reject) => {
+    ipcMain.once("get-waveform", (event, waveform) => {
+      resolve(waveform.filter((n) => n != 128).length > Number(config.soundDetectionRange) ? true : false);
+    });
+    BrowserWindow.getAllWindows()[0].webContents.send("get-audio");
+  });
+
+  if (caught) return pos;
+} else {
+  if (!(await fishingZone.isBobber(pos))) {
+    const newPos = await fishingZone.checkAroundBobber(pos);
+    if (!newPos) {
+      return pos;
+    } else {
+      pos = newPos;
+    }
+  }
+}
+
 
       await sleep(config.checkingDelay);
     }
