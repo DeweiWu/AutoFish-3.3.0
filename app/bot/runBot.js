@@ -13,7 +13,8 @@ const runBot = async ({ bot, log, state, stats }) => {
     checkWhisper,
     replyToChat,
     applySpare,
-    applyMammoth
+    applyMammoth,
+    dx12Case
   } = bot;
 
   const sleep = (time) => {
@@ -29,6 +30,7 @@ const runBot = async ({ bot, log, state, stats }) => {
   let failedCast = false;
   let attempts = 0;
   do {
+    await dx12Case();
     if (state.status == "initial") {
       log.send(`Preliminary checks...`);
       await preliminaryChecks();
@@ -38,7 +40,7 @@ const runBot = async ({ bot, log, state, stats }) => {
       }
 
       if(applyMammoth.on) {
-        applyMammoth.timer.start(); 
+        applyMammoth.timer.start();
       }
 
       if(logOut.on) {

@@ -72,7 +72,6 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
     if(settings.multipleWindows || settings.afkmode) {
       return workwindow.capture(zone);
     } else {
-      await actionOnce(() => {});
       let grabbed = await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
       return grabbed;
     }
@@ -350,6 +349,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
   });
 
   const findAllBobberColors = async () => {
+    if(settings.useInt && config.soundDetection) {
+      return null;
+    }
     return await fishingZone.getBobberPrint(7);
   };
 
@@ -389,6 +391,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
   };
 
   const findBobber = async () => {
+    if(settings.useInt && config.soundDetection) {
+      return true;
+    }
     return await fishingZone.findBobber(findBobber.memory);
   };
   findBobber.memory = null;
@@ -690,6 +695,12 @@ if (config.soundDetection) {
     }
   }
 
+  const dx12Case = async () => {
+    if(!settings.multipleWindows && !settings.afkmode) {
+        await actionOnce(() => {});
+    }
+  }
+
   return {
     logOut,
     preliminaryChecks,
@@ -704,7 +715,8 @@ if (config.soundDetection) {
     checkBobber,
     hookBobber,
     checkWhisper,
-    replyToChat
+    replyToChat,
+    dx12Case
   };
 };
 
