@@ -26,6 +26,7 @@ const createBots = async (games, settings, config, log, tmBot) => {
 if (tmBot.bot) {
   tmBot.ss = [];
   tmBot.replies = [];
+  tmBot.reconnects = [];
 
   tmBot.bot.hears(`📷 Screenshot`, (ctx) => {
     if (!tmBot.ctx) tmBot.ctx = ctx;
@@ -33,9 +34,9 @@ if (tmBot.bot) {
     tmBot.ss.forEach((screenshot) => screenshot(ctx));
   });
 
-  const replyThrough = (ctx) => {
-
-  }
+  tmBot.bot.hears(`⌨️ Press Enter`, (ctx) => {
+    tmBot.reconnects.forEach(reconnect => reconnect(ctx))
+  });
 
   tmBot.bot.command(`/w`, (ctx) => {
     let message = ctx.update.message.text;

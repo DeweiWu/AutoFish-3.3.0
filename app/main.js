@@ -127,8 +127,8 @@ let tmBot = {
   bot: null,
   ctx: null,
   stats: [],
+  reconnects: [],
   ss: [],
-  whispers: [],
   replies: []
 };
 
@@ -144,7 +144,8 @@ const connectToTelegram = (key) => {
       `Before using via telegram you should configure and test the bot on your local computer.`,
       Markup.keyboard([
         ["🟢 Start", "🔴 Stop", "❌ Quit"],
-        ["📢 Stats", "📷 Screenshot", "💬 Help"]
+        ["📢 Stats", "📷 Screenshot", "💬 Help"],
+        ["⌨️ Press Enter"]
       ]).resize(),
     );
   });

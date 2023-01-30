@@ -83,6 +83,12 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
     chatMsgs.push(message);
   }});
 
+  tmBot.reconnects.push(async (ctx) => {
+    await action(async () => {
+      await keyboard.sendKey(`enter`, delay);
+    });
+  });
+
   tmBot.ss.push((ctx) => {
     getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
     .then(Jimp.read)
