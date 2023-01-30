@@ -209,13 +209,13 @@ const renderSleepAfterHook = ({sleepAfterHook}) => {
   return elt(`input`, {type: `checkbox`, name: `sleepAfterHook`, checked: sleepAfterHook});
 };
 
-const renderBobberSensitivity = ({bobberSensitivity}) => {
+const renderBobberSensitivity = ({bobberSensitivity, soundDetection}) => {
 
   if(bobberSensitivity > 3) bobberSensitivity = 3;
   if(bobberSensitivity < 1) bobberSensitivity = 1;
-  let bobberSensitivityWin = elt(`input`, {type: `number`, name: `bobberSensitivity`, value: bobberSensitivity});
+  let bobberSensitivityWin = elt(`input`, {type: `number`, name: `bobberSensitivity`, value: bobberSensitivity, disabled: soundDetection});
 
-  return elt(`div`, null, elt('input', {type: `range`, min: 1, max: 3, value: bobberSensitivity, oninput: function() {bobberSensitivityWin.value = this.value}, name: `bobberSensitivity`}),
+  return elt(`div`, null, elt('input', {type: `range`, min: 1, max: 3, value: bobberSensitivity, disabled: soundDetection, oninput: function() {bobberSensitivityWin.value = this.value}, name: `bobberSensitivity`}),
    bobberSensitivityWin);
 };
 
