@@ -36,6 +36,7 @@ const createAdvSettings = (appPath) => {
   win.on("closed", () => {
     ipcMain.removeAllListeners(`advanced-click`);
     ipcMain.removeAllListeners(`mammoth-warn`);
+    ipcMain.removeAllListeners(`sound-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
   });
@@ -57,7 +58,12 @@ const createAdvSettings = (appPath) => {
 
   ipcMain.on("mammoth-warn", () => {
     return showWarning(win, `Turn on interaction key in the game. You don't need to turn it on in the bot (Int.key section), but the bot will use the same key assigned there (even if disabled).`);
-  })
+  });
+
+
+  ipcMain.on("sound-warn", () => {
+    return showWarning(win, `Turn off Music and Ambient Sounds in the game, leave only Sound Effects. Your volume should be normal. Try to find a place secluded from the sounds made by other players to avoid false detections.`);
+  });
 
   ipcMain.handle("advanced-defaults", () => {
     const profile = getProfile(appPath);

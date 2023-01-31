@@ -406,6 +406,10 @@ const runApp = async () => {
     if(event.target.name == `mammoth` && event.target.checked) {
       ipcRenderer.send("mammoth-warn");
     }
+
+    if(event.target.name == `soundDetection` && event.target.checked) {
+      ipcRenderer.send("sound-warn");
+    }
   });
 
   const keyAssigning = (event) => {
