@@ -236,12 +236,12 @@ return elt(
       "div",
       { className: "settings_section" },
       wrapInLabel(
-        "AFK fishing: ",
+        "AFK Fishing: ",
         renderAfkmode(config),
         `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts (bringing back the previous window) and automatically focus the window of the game when it needs to catch. If you use your mouse too much during AFK fishing the whitelist feature might be unstable. `
       ),
       wrapInLabel(
-        "Multiple windows: ",
+        "Multiple Windows: ",
         renderMultipleWindows(config),
         `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
       ),
@@ -271,7 +271,7 @@ return elt(
         `Advanced settings that allow you to fine-tune the bot. The settings will be saved under the chosen game version.`
       ),
     ),
-    elt("p", {className: 'settings_header'}, "Filter:"),
+    elt("p", {className: 'settings_header'}, "Filter"),
     elt(
       "div",
       { className: "settings_section" },
@@ -285,7 +285,7 @@ return elt(
       ),
       wrapInLabel(elt('span', null, "Loot all ", elt('span', {style: `color:#4DDF3F; font-weight: bold`}, `Uncommon `), `and `, elt(`span`, {style: `color: #015CB4; font-weight: bold`}, `Rare `), `and `, elt('span', {style: `color:#950c95; font-weight: bold`}, `Epic `), `items:`), renderWhiteListGreenBlue(config), `If you use whitelist, you can check this option to loot every green, blue and purple items in addition to the items in the whitelist.`)
     ),
-    elt("p", {className: 'settings_header'}, "Threshold:"),
+    elt("p", {className: 'settings_header'}, "Threshold"),
     elt(
       "div",
       { className: "settings_section threshold_settings" },
