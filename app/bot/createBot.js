@@ -426,6 +426,10 @@ if (config.soundDetection) {
   });
 
   if (caught) return pos;
+} else if(settings.game == `Dragonflight`) {
+   if(!(await fishingZone.checkBobberPrint(pos))) {
+     return pos;
+   }
 } else {
   if (!(await fishingZone.isBobber(pos))) {
     const newPos = await fishingZone.checkAroundBobber(pos);
