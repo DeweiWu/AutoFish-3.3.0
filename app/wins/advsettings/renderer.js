@@ -98,6 +98,13 @@ const renderCloseLoot = ({ closeLoot }) => {
     elt(`option`, {selected: closeLoot == `esc`, value: `esc`}, `Escape`),
     elt(`option`, {selected: closeLoot == `mouse+esc`, value: `mouse+esc`}, `Mouse + Escape`)
   );
+};
+
+const renderMaxFishTimeAfter = ({ maxFishTimeAfter }) => {
+  return elt(`select`, {className: `maxFishTimeAfter`, name: `maxFishTimeAfter`},
+    elt(`option`, {selected: maxFishTimeAfter == `stop`, value: `stop`}, `Stop`),
+    elt(`option`, {selected: maxFishTimeAfter == `recast`, value: `recast`}, `Recast`),
+  );
 }
 
 const renderAfterHookDelay = ({sleepAfterHook, afterHookDelay}) => {
@@ -375,6 +382,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Windows Scale:`, renderWindowsScale(config), `If your scale isn't 100% change this value for the Fishing Zone to work correctly.`),
   wrapInLabel(`Loot Window closing delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting.`),
   wrapInLabel(`Max check time (ms):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
+  wrapInLabel(`Do after max check time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
   wrapInLabel(`Bobber sensitivity (px):`, renderBobberSensitivity(config), `How sensitive the bot is to any movements of the bobber. If the bot often clicks too early, increase this value (don't confuse it with when the bot missclicks on purpose). If the bot often doesn't react to the bobber, decrease this value.`),
   wrapInLabel(`Bobber density (px):`, renderBobberDensity(config), `Density decides where exactly the bot sticks on the feather. The larger the feather the larger the value should be. This value is mostly for 4k resolution users and if the bot clicks too early.`),
   wrapInLabel(`Bobber check time (ms):`, renderCheckingDelay(config), `How often the bot checks the bobber for any movements. Use this option in addition to Bobber Sensativity to find an optimal sensitivity.`),
