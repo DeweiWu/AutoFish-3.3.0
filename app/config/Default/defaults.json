@@ -45,7 +45,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivityPrint": true,
-      "bobberSensitivity": 20,
+      "bobberSensitivity": 10,
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
