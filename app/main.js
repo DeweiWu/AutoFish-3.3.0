@@ -8,6 +8,7 @@ const {
   shell,
   powerSaveBlocker,
   globalShortcut,
+  screen
 } = require("electron");
 const path = require("path");
 
@@ -72,7 +73,8 @@ const setFishingZone = async ({workwindow}, relZone, type, config, settings) => 
     workwindow.setForeground();
   }
   const screenSize = workwindow.getView();
-  const scale = config.windowsScale / 100;
+  const scale = screen.getPrimaryDisplay().scaleFactor || 1;
+
   const pos = {
     x: (screenSize.x + relZone.x * screenSize.width) / scale,
     y: (screenSize.y + relZone.y * screenSize.height) / scale,
@@ -80,7 +82,7 @@ const setFishingZone = async ({workwindow}, relZone, type, config, settings) => 
     height: (relZone.height * screenSize.height) / scale
   }
 
-  const result = await createFishingZone({pos, screenSize, type, config, settings});
+  const result = await createFishingZone({pos, screenSize, type, config, settings, scale});
   if(!result) return;
   return {
     x: (result.x - screenSize.x) * scale / screenSize.width,

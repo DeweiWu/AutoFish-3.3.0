@@ -158,11 +158,6 @@ const renderLuresDelay = ({luresDelay}) => {
   return elt(`input`, {type: `number`, name: `luresDelay`, value: luresDelay});
 };
 
-const renderWindowsScale = ({windowsScale}) => {
-  return elt(`input`, {type: `number`, name: `windowsScale`, value: windowsScale});
-};
-
-
 const renderSpareDelay = ({spareDelay}) => {
   return elt(`input`, {type: `number`, name: `spareDelay`, value: spareDelay});
 };
@@ -379,7 +374,6 @@ const renderSettings = (config) => {
   elt(`p`, {className: `settings_header`}, `Critical (might break the bot)`),
   elt('div', {className: "settings_section settings_critical"},
   wrapInLabel(`Ignore preliminary checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
-  wrapInLabel(`Scale Factor:`, renderWindowsScale(config), `If your Scale Factor isn't 100% change this value for the Fishing Zone to work correctly.`),
   wrapInLabel(`Loot Window closing delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting.`),
   wrapInLabel(`Max check time (ms):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do after max check time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),

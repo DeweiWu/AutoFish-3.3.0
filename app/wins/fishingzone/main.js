@@ -11,7 +11,7 @@ const getDataFrom = async (zone) => {
 	return grabbed;
 };
 
-const createFishingZone = ({pos, screenSize, type, config, settings}, finished) => {
+const createFishingZone = ({pos, screenSize, type, config, settings, scale}, finished) => {
   let win = new BrowserWindow({
 		title: `Fishing Zone`,
     x: Math.floor(pos.x),
@@ -45,8 +45,6 @@ const createFishingZone = ({pos, screenSize, type, config, settings}, finished) 
     finished();
     win.close();
   });
-
-	const scale = config.windowsScale / 100;
 
 	ipcMain.handle(`fishingZone-check`, async () => {
 		let pos = win.getBounds();

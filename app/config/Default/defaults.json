@@ -49,7 +49,6 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "chatZone": {
@@ -141,7 +140,6 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 750,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "chatZone": {
@@ -227,7 +225,6 @@
       "bobberSensitivity": 1,
       "bobberDensity": 1,
       "closeLootDelay": 750,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "spareDelay": 3000,
@@ -315,7 +312,6 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "chatZone": {
@@ -401,7 +397,6 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "chatZone": {
@@ -488,7 +483,6 @@
       "bobberDensity": 1,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "confirmationWindow": {
@@ -567,7 +561,6 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "chatZone": {
@@ -653,7 +646,6 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
@@ -736,7 +728,6 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
-      "windowsScale": 100,
       "soundDetection": false,
       "soundDetectionRange": 800,
       "chatZone": {
