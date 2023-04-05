@@ -152,6 +152,22 @@ const connectToTelegram = (key) => {
     );
   });
 
+  tmBot.bot.command(`/th`, (ctx) => {
+    const profile = getProfile().selected;
+    if(!tmBot.ctx) tmBot.ctx = ctx;
+    let text = ctx.update.message.text;
+    let newThreshold = Number(text.slice((`/th`).length));
+    console.log(newThreshold);
+    if(!isNaN(newThreshold) && newThreshold > 1 && newThreshold < 150) {
+      let settings = getJson(`./config/${profile}/settings.json`);
+      settings.threshold = newThreshold;
+      writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
+      ctx.reply(`Threshold is changed to ${newThreshold}`);
+    } else {
+      ctx.reply(`The value is incorrect. Provide a proper numeric value between 1 and 150.`);
+    }
+  });
+
   tmBot.bot.hears("🟢 Start", (ctx) => {
     if(!tmBot.ctx) tmBot.ctx = ctx;
     win.webContents.send(`start-tm`);
