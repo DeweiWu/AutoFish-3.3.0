@@ -98,7 +98,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
    })
   }
 
-  const fishingZone = createFishingZone({
+  let fishingZone = createFishingZone({
     getDataFrom,
     zone: Zone.from(screenSize).toRel(config.relZone),
     threshold: settings.threshold,
@@ -716,7 +716,23 @@ if (config.soundDetection) {
     }
   }
 
+  const dynamicThreshold = () => {
+    settings.threshold = settings.threshold - config.dynamicThresholdValue;
+    fishingZone = createFishingZone({
+      getDataFrom,
+      zone: Zone.from(screenSize).toRel(config.relZone),
+      threshold: settings.threshold,
+      bobberColor: settings.bobberColor,
+      sensitivity: config.bobberSensitivity,
+      density: config.bobberDensity
+    });
+  }
+
+  dynamicThreshold.on = config.dynamicThreshold;
+  dynamicThreshold.limit = () => settings.threshold < 20;
+
   return {
+    dynamicThreshold,
     logOut,
     preliminaryChecks,
     findAllBobberColors,

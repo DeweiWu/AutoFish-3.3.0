@@ -303,6 +303,12 @@ const renderMammothTraderName = ({mammoth, mammothTraderName}) => {
     return elt('input', {type: `text`, disabled: !mammoth, name: `mammothTraderName`, value: mammothTraderName});
 };
 
+const renderDynamicThreshold = ({dynamicThreshold, dynamicThresholdValue}) => {
+  let checkbox = elt(`input`, {type: `checkbox`, name: `dynamicThreshold`, checked: dynamicThreshold});
+  let input = elt(`input`, {type: `number`, name: `dynamicThresholdValue`, disabled: !dynamicThreshold, value: dynamicThresholdValue});
+  return elt(`div`, null, checkbox, input);
+};
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `General`),
@@ -316,6 +322,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Applying lures delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
   wrapInLabel(`Applying spare delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
   wrapInLabel(`Attempts limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
+  wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `After attempts limit the bot will dynamically change threshold by the provided value.`),
   wrapInLabel("Quit after timer: ", renderTimerQuit(config),`The bot will quit the game after timer elapsed.`),
   wrapInLabel(
     "Use shift+click: ",
