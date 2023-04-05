@@ -136,7 +136,7 @@ let tmBot = {
 
 const connectToTelegram = (key) => {
   tmBot.bot = new Telegraf(key);
-  const helpMessage = `<b>Start</b> - starts the bot.\n<b>Stop</b> - stops the bot.\n<b>Stats</b> - returns stats.\n<b>Screenshot</b> - makes a screenshot of the game window.\n<b>Quit</b> - closes both the game and the bot.\n<b>/r</b> <i> text</i> - replies to user.<b>\n/w</b> <i>username text</i> - whispers to user.\n/start - starts telegram bot.`;
+  const helpMessage = `<b>Start</b> - starts the bot.\n<b>Stop</b> - stops the bot.\n<b>Stats</b> - returns stats.\n<b>Screenshot</b> - makes a screenshot of the game window.\n<b>Quit</b> - closes both the game and the bot.\n<b>/r</b> <i> text</i> - replies to user.<b>\n/w</b> <i>username text</i> - whispers to user.\n<b>/th</b> <i>value</i> - changes threshold value.\n/start - starts telegram bot.`;
   const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n\n${helpMessage}`;
 
   tmBot.bot.command("start", async (ctx) => {
