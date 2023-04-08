@@ -48,7 +48,7 @@
       "whisperThreshold": 60,
       "bobberSensitivityPrint": true,
       "bobberSensitivity": 10,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
       "soundDetection": false,
@@ -141,7 +141,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "closeLootDelay": 750,
       "soundDetection": false,
@@ -229,7 +229,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "closeLootDelay": 750,
       "soundDetection": false,
       "soundDetectionRange": 800,
@@ -317,7 +317,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "soundDetection": false,
@@ -404,7 +404,7 @@
       "detectWhisper": true,
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "soundDetection": false,
@@ -492,7 +492,7 @@
       "whisperThreshold": 60,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "soundDetection": false,
@@ -584,7 +584,7 @@
         "height": 0.1638888888888889
       },
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -666,7 +666,7 @@
       "soundDetectionRange": 800,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -755,7 +755,7 @@
         "height": 0.15092592592592594
       },
       "bobberSensitivity": 1,
-      "bobberDensity": 1,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
