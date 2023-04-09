@@ -4,20 +4,7 @@ const { ipcRenderer } = require("electron");
 const renderLogo = () => {
   return elt(
     "div",
-    { className: "logo" },
-    elt("h1", { className: "logo_name" }, `AutoFish`),
-    elt(
-      "span",
-      { className: "logo_link" },
-      `by `,
-      elt(`img`, { className: `logo_link_img`, src: `img/youtube.jpg` }),
-      elt(
-        "a",
-        { href: `#`, onclick: () => ipcRenderer.send("open-link-youtube") },
-        "jsbots"
-      )
-    ),
-    elt(`img`,{ className: `premium_crown`, src: `img/premium.png`})
+    { className: "logo" }
   );
 };
 
