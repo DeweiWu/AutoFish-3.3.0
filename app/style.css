@@ -500,7 +500,10 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 
 .profiles {
   width: 150px;
-  margin-top: 6px;
+  height: 20px;
+  margin-top: 7px;
+  display: flex;
+  justify-content: space-around;
 }
 
 .profiles input[type=text] {
@@ -509,11 +512,12 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 }
 
 .profiles input[type=button] {
-  width: 21px;
-  height: 21px;
+  width: 20px;
+  height: 20px;
   border: 1px solid grey;
   border-radius: 5px;
-    margin-left: 2px;
+  margin: 0;
+  padding: 0;
 }
 
 .profiles input[type=button]:hover {
@@ -534,6 +538,21 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 .profiles input[type=text].profiles_text:focus {
   border: 1px solid grey;
 }
+
+.profile_button_add {
+  background-image: url('img/add.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.profile_button_remove {
+  background-image: url('img/remove.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
 
 .settings_premium {
   background-color: #FFDBC5;

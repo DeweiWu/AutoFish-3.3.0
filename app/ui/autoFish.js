@@ -11,8 +11,8 @@ const renderLogo = () => {
 const renderProfiles = (profiles) => {
   let select = elt(`select`, null, ...profiles.users.map(profile => elt(`option`, {selected: profile == profiles.selected}, profile)))
 
-  let add = elt(`input`, {type: `button`, style: `color: green`, className: `profile_button`, value: `+`});
-  let remove = elt(`input`, {type: `button`, style: `color: red`, className: `profile_button`, value: `x`});
+  let add = elt(`input`, {type: `button`, style: `color: green`, className: `profile_button profile_button_add`, state: `+`});
+  let remove = elt(`input`, {type: `button`, style: `color: red`, className: `profile_button profile_button_remove`, state: `x`});
 
   let dom = elt(`div`, {className: `profiles`}, select, add, remove);
   let value = ``;
@@ -52,7 +52,8 @@ class AutoFish {
       event.target.remove();
       profile.select.style = `visibility: visible; position: static;`;
       if(event.target.value == `` || !mouseOverProfileAdd) {
-        profile.add.value = `+`;
+        profile.add.state = `+`;
+        profile.add.style.backgroundImage = "url('img/add.png')"
       } else {
         ipcRenderer.invoke(`create-user`, event.target.value.trim())
         .then(() => {
@@ -78,12 +79,14 @@ class AutoFish {
     });
 
     profile.add.addEventListener(`click`, () => {
-      if(profile.add.value == `v`) {
-        profile.add.value = `+`;
+      if(profile.add.state == `v`) {
+        profile.add.state = `+`;
+        profile.add.style.backgroundImage = "url('img/add.png')"
         return;
       }
       profile.select.style = `visibility: hidden; position: absolute;`;
-      profile.add.value = `v`;
+      profile.add.state = `v`;
+      profile.add.style.backgroundImage = "url('img/ok.png')"
       let inputText = elt(`input`, {type: `text`, className: `profiles_text`});
       inputText.addEventListener(`change`, inputTextWriting);
       profile.dom.prepend(inputText);
