@@ -223,12 +223,12 @@ return elt(
         `Exclusively for Dragonflight. Use interaction key instead of mouse for catching.`
       ),
       wrapInLabel(
-        "Reuse lure: ",
+        "Reuse Lures: ",
         renderLuresDelay(config),
         `Fishing lures expiration time in minutes.`
       ),
       wrapInLabel(
-        "Reuse spare: ",
+        "Reuse Ability: ",
         renderSpareDelay(config),
         `Spare action expiration time in minutes.`
       )
@@ -252,7 +252,7 @@ return elt(
         `Check this option if you want to use fishing lures. Assign the same key you use for using fishing lures.  You can change cast delay of this key in the Advanced Settings.`
       ),
       wrapInLabel(
-        "Spare Key: ",
+        "Ability Key: ",
         renderSpareKey(config),
         `You can use this key for e.g. "waterwalking". You can change cast delay of this key in the Advanced Settings.`
       ),

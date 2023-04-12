@@ -331,7 +331,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Random mouse speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
   wrapInLabel(`Random mouse curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
   wrapInLabel(`Applying lures delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
-  wrapInLabel(`Applying spare delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
+  wrapInLabel(`Applying ability delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
   wrapInLabel(`Attempts limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
   wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `After attempts limit the bot will dynamically change threshold by the provided value.`),
   wrapInLabel("Quit after timer: ", renderTimerQuit(config),`The bot will quit the game after timer elapsed.`),
