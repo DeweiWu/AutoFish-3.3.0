@@ -69,6 +69,7 @@ section {
 }
 .logo {
   height: 100px;
+  margin-top: -5px;
   margin-bottom: -15px;
   background-image: url('img/logo.png');
   background-size: contain;
