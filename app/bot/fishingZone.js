@@ -26,7 +26,8 @@ const createFishingZone = ({ getDataFrom , zone, threshold, bobberColor, sensiti
       let bobber = rgb.findColors({
         isColor: isBobber,
         atFirstMet: true,
-        task: looksLikeBobber
+        task: looksLikeBobber,
+        reverseDir
       });
       if(!bobber) return;
       return bobber.plus({ x: zone.x, y: zone.y });
