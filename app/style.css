@@ -119,9 +119,27 @@ section {
 }
 
 .settings_header {
-  margin-top: 5px;
-  font-size: 1.2em;
+  display: inline-block;
+  text-align: center;
+  background-color: white;
+  z-index: 1000;
+  margin-left: 5px;
+  margin-bottom: -1px;
+  padding: 3px;
+  padding-right: 10px;
+  border-top: 1px solid black;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 5px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  margin-top: 7px;
+  font-size: 1.1em;
   font-weight: 500;
+}
+
+.settings_header_log {
+  margin-top: 2px;
+  background-color: #ffffe5;
 }
 
 .settings_critical {
@@ -129,8 +147,7 @@ section {
 }
 
 .logger {
-  position: relative;
-  height: 110px;
+  height: 105px;
   background-image: url("./img/fish.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -138,6 +155,7 @@ section {
   background-color: rgba(255, 255, 0, 0.1);
   border: 1px inset grey;
   border-radius: 10px;
+  border-top-left-radius: 7px;
   overflow-y: scroll;
   padding: 5px;
 }
@@ -153,6 +171,7 @@ section {
   justify-content: space-between;
   border: 1px inset grey;
   border-radius: 10px;
+  border-top-left-radius: 7px;
   padding: 5px;
   flex: 1 1 0;
 }
@@ -474,10 +493,14 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 }
 
 /* Profiles */
+.settings_profile {
+  display: flex;
+  justify-content: space-between;
+}
 
 .profiles {
-  display: inline-block;
-  margin-left: 5px;
+  width: 150px;
+  margin-top: 6px;
 }
 
 .profiles input[type=text] {
@@ -505,9 +528,7 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 
 
 .profiles select, .profiles input[type=text].profiles_text {
-  margin-top: 10px;
-  margin-bottom: 5px;
-  width: 182px;
+  width: 100px;
 }
 
 .profiles input[type=text].profiles_text:focus {
@@ -516,4 +537,16 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 
 .settings_premium {
   background-color: #FFDBC5;
+}
+
+.settings_header_premium {
+  background-color: #FFDBC5;
+}
+
+.settings_header_critical {
+  background-color: rgb(255, 221, 221);
+}
+
+.settings_advSettings {
+  display: block;
 }
