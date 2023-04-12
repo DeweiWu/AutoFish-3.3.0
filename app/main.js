@@ -189,7 +189,7 @@ const connectToTelegram = (key) => {
 
 
   win.once("ready-to-show", () => {
-    win.openDevTools({mode: `detach`});
+    //win.openDevTools({mode: `detach`});
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
