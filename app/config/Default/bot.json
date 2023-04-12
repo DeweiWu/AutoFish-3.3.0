@@ -797,6 +797,7 @@
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
       "useCustomWindow": false,
+      "likeHuman": true,
       "customWindow": "",
       "closeLoot": "mouse",
       "delay": { "from": 50, "to": 150 },
@@ -809,6 +810,7 @@
       "checkingDelay": 50,
       "mouseMoveSpeed": { "from": 0.3, "to": 0.6 },
       "mouseCurvatureStrength": { "from": 50, "to": 80 },
+      "spareDelay": 3000,
       "luresDelay": 5500,
       "randomSleep": true,
       "randomSleepEvery": { "from": 1, "to": 3 },
@@ -824,11 +826,28 @@
       "logOutEvery": { "from": 50, "to": 120 },
       "logOutFor": { "from": 30, "to": 90 },
       "logOutAfter": { "from": 30, "to": 90 },
-      "bobberSensitivityPrint": true,
-      "bobberSensitivity": 20,
-      "splashColor": 230,
-      "bobberDensity": 1,
+      "mammoth": false,
+      "mammothKey": "5",
+      "mammothKeyDelay": 3000,
+      "mammothSellDelay": { "from": 3000, "to": 5000 },
+      "mammothApplyEvery": { "from": 15, "to": 30 },
+      "mammothTraderName": "Gnimo",
+      "tmApiKey": "",
+      "detectWhisper": true,
+      "whisperThreshold": 60,
       "closeLootDelay": 250,
+      "soundDetection": false,
+      "soundDetectionRange": 800,
+      "chatZone": {
+        "x": 0.019791666666666666,
+        "y": 0.7564814814814815,
+        "width": 0.2875,
+        "height": 0.15092592592592594
+      },
+      "bobberSensitivityPrint": true,
+      "splashColor": 230,
+      "bobberSensitivity": 20,
+      "bobberDensity": 2,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -864,6 +883,6 @@
           "width": 0.073
         }
       }
-    } 
+    }
   }
 }
