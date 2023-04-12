@@ -119,6 +119,7 @@ section {
 }
 
 .settings_header {
+  margin-top: 5px;
   font-size: 1.2em;
   font-weight: 500;
 }
@@ -217,8 +218,9 @@ section {
 }
 
 .settings select.filterType {
-  width: 89px;
-  margin-left: 6px;
+  width: 78px;
+  margin-left: 11px;
+  margin-right: 16px;
 }
 
 .settings select.whitelistLanguage {
@@ -513,5 +515,5 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 }
 
 .settings_premium {
-  background-color: #FFDBC5; 
+  background-color: #FFDBC5;
 }
