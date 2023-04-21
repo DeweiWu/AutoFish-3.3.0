@@ -136,6 +136,10 @@ class AutoFish {
       ipcRenderer.send("dx11-warn");
     });
 
+    this.settings.regOnLures(() => {
+      ipcRenderer.send(`lures-warn`);
+    })
+
     this.settings.regOnWhitelistWarn(() => {
       ipcRenderer.send("whitelist-warn");
     });

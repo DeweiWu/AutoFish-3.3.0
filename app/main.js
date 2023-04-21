@@ -61,7 +61,7 @@ const showChoiceWarning = (win, warning) => {
 const showWarning = (win, warning) => {
   return result = dialog.showMessageBoxSync(win, {
     type: "warning",
-    title: `Disclaimer`,
+    title: `Warning`,
     message: warning,
     buttons: [`Ok`]
   });
@@ -218,7 +218,7 @@ const connectToTelegram = (key) => {
     const config = getJson(`./config/${profile}/bot.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
 
-    log.send(`Looking for the windows...`);
+    log.send(`Looking for the windows of the game...`);
 
     const useCustomWindow = config.patch[settings.game].useCustomWindow;
     if(useCustomWindow) {
@@ -236,7 +236,7 @@ const connectToTelegram = (key) => {
 
     const games = findGameWindows(config.game);
     if (!games) {
-      log.err(`Can't find any window of the game!`);
+      log.err(`Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
       win.webContents.send("stop-bot");
       return;
     } else {
@@ -313,6 +313,10 @@ or in connection with the use or performance of this software.`)) {
   ipcMain.on("open-link-donate", () =>
     shell.openExternal("https://www.buymeacoffee.com/jsbots/e/96734")
   );
+
+  ipcMain.on("lures-warn", () => {
+    showWarning(win, `Don't forget to make a macros as described in the Guide (Help -> Read Me) and assign it to the same key you have assigned for Lures Key.`);
+  })
 
   ipcMain.on("save-settings", (event, settings) =>
     writeFileSync(path.join(__dirname, `./config/${getProfile().selected}/settings.json`), JSON.stringify(settings))
