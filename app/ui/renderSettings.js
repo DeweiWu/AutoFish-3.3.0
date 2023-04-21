@@ -238,12 +238,12 @@ return elt(
       { className: "settings_section" },
       wrapInLabel(
         "AFK Fishing: ",
-        renderAfkmode(config),
+        elt(`div`, {className: `premium_option`}, renderAfkmode(config)),
         `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts (bringing back the previous window) and automatically focus the window of the game when it needs to catch. If you use your mouse too much during AFK fishing the whitelist feature might be unstable. `
       ),
       wrapInLabel(
         "Multiple Windows: ",
-        renderMultipleWindows(config),
+        elt(`div`, {className: `premium_option`}, renderMultipleWindows(config)),
         `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
       ),
       wrapInLabel(

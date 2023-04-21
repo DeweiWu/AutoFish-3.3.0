@@ -575,3 +575,9 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 .settings_advSettings {
   display: block;
 }
+
+.premium_option {
+  background: #FFDBC5;
+  border-radius: 5px;
+  padding-right: 1px;
+}
