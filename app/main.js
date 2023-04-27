@@ -125,6 +125,11 @@ const createWindow = async () => {
     win.webContents.send("log-data", data);
   });
 
+
+const createArduinoDevice = require(`./game/arduino.js`);
+let arduino = createArduinoDevice();
+arduino.connectTo(`COM5`, 9600);
+
 let tmBot = {
   bot: null,
   ctx: null,
@@ -276,9 +281,10 @@ or in connection with the use or performance of this software.`)) {
       return;
     }
 
-    const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot);
-
+    const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot, arduino);
+    win.hide();
     const stopAppAndBots = () => {
+      win.show();
       stopBots();
       shell.beep();
       if (!win.isFocused()) {

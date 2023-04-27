@@ -15,7 +15,7 @@ const getPercent = (value, total) => {
   return Math.ceil((value / (total || 1)) * 100 * 100) / 100;
 };
 
-const createBots = async (games, settings, config, log, tmBot) => {
+const createBots = async (games, settings, config, log, tmBot, arduino) => {
   const winSwitch = createWinSwitch(new EventLine());
 
   if(settings.whitelist) {
@@ -93,6 +93,8 @@ if (tmBot.bot) {
   }
 
   const bots = games.map((game, i) => {
+    arduino.mouse.getPos = game.mouse.getPos;
+    game = {mouse: arduino.mouse, workwindow: game.workwindow, keyboard: arduino.keyboard}
     return {
       bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1),
       log: createIdLog(log, ++i),
