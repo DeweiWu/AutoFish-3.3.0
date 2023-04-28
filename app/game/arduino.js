@@ -47,7 +47,6 @@ const random = (from, to) => {
 };
 const convertKey = (key) => {
   if(keyCodes[key]) {
-    console.log(`key`, key);
     return keyCodes[key];
   } else {
     return key.charCodeAt(0);
