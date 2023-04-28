@@ -128,7 +128,6 @@ const createWindow = async () => {
 
 const createArduinoDevice = require(`./game/arduino.js`);
 let arduino = createArduinoDevice();
-arduino.connectTo(`COM5`, 9600);
 
 let tmBot = {
   bot: null,
@@ -204,6 +203,12 @@ const connectToTelegram = (key) => {
     }
 
     let tmKey = config.patch[settings.game].tmApiKey;
+
+    if(config.patch[settings.game].arduino) {
+      arduino.connectTo(config.patch[settings.game].arduinoPort, Number(config.patch[settings.game].arduinoRate))
+      .then((msg) => log.ok(msg))
+      .catch((err) => log.err(err))
+    }
 
     if(tmKey) {
       connectToTelegram(tmKey)
@@ -282,7 +287,6 @@ or in connection with the use or performance of this software.`)) {
     }
 
     const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot, arduino);
-    win.hide();
     const stopAppAndBots = () => {
       win.show();
       stopBots();
@@ -300,6 +304,7 @@ or in connection with the use or performance of this software.`)) {
     globalShortcut.register(settings.stopKey, stopAppAndBots);
 
     win.blur();
+    setTimeout(() => win.hide(), 1000);
     startBots(stopAppAndBots);
   });
 
@@ -343,6 +348,13 @@ or in connection with the use or performance of this software.`)) {
       log.err(`Telegram error: ${e.message}`)
       return Promise.reject(e);
     })
+  });
+  ipcMain.handle("connect-arduino", (event, {port, speed}) => {
+   return arduino.connectTo(port, Number(speed))
+   .then((response) => log.ok(response), (e) => {
+     log.err(e)
+     return Promise.reject(e);
+   })
   })
   ipcMain.handle("get-bitmap", getBitmapAsync);
   ipcMain.handle("get-all-windows", getAllWindows);

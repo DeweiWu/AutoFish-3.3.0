@@ -1,6 +1,7 @@
 const { ipcRenderer } = require("electron");
 const elt = require("../../ui/utils/elt.js");
 const wrapInLabel = require("../../ui/utils/wrapInLabel.js");
+const { SerialPort } = require(`serialport`);
 
 const convertValue = (node) => {
   let value = node.value;
@@ -28,6 +29,21 @@ const renderCloseLootDelay = ({closeLootDelay}) => {
 const renderIgnorePreliminary = ({ignorePreliminary}) => {
   return elt(`input`, {type: `checkbox`, checked: ignorePreliminary, name: `ignorePreliminary`});
 };
+
+const renderArduino = ({arduino}) => {
+    return elt(`input`, {type: `checkbox`, checked: arduino, name: `arduino`});
+};
+
+const renderArduinoPort = ({arduino, arduinoPort}) => {
+    let select = elt(`select`, {disabled: !arduino, className: `arduino_select`, name: `arduinoPort`});
+    SerialPort.list()
+    .then((list) => list.forEach((port) => select.append(elt(`option`, {selected: arduinoPort == port.path, value: port.path}, port.friendlyName))));
+    return elt(`div`, null, select, elt(`input`, {type: `button`, disabled: !arduino, value: `Connect`, id:`arduino`}));
+};
+
+const renderArduinoRate = ({arduino, arduinoRate}) => {
+  return elt(`select`, {disabled: !arduino, className: `arduino_rate`, name: `arduinoRate`}, ...[9600, 14400, 19200, 38400, 57600, 115200].map((rate) => elt(`option`, {selected: rate == arduinoRate}, `${rate}`)))
+}
 
 const renderSoundDetection = ({soundDetection}) => {
     return elt(`input`, {type: `checkbox`, checked: soundDetection, name: `soundDetection`});
@@ -151,17 +167,17 @@ const renderCheckingDelay = ({checkingDelay}) => {
   return elt(`input`, {type: `number`, name:`checkingDelay`, value: checkingDelay});
 };
 
-const renderMouseMoveSpeed = ({mouseMoveSpeed}) => {
+const renderMouseMoveSpeed = ({mouseMoveSpeed, arduino}) => {
   return elt(`div`, {"data-collection": `mouseMoveSpeed`}, elt(`span`, {className: `option_text`}, `from:`),
-  elt('input', { type: `number`, step: 0.1, name: `from`, value: mouseMoveSpeed.from }), elt(`span`, {className: `option_text`}, `to:`),
-  elt('input', { type: `number`, step: 0.1, name: `to`, value: mouseMoveSpeed.to })
+  elt('input', { disabled: arduino, type: `number`, step: 0.1, name: `from`, value: mouseMoveSpeed.from }), elt(`span`, {className: `option_text`}, `to:`),
+  elt('input', { disabled: arduino, type: `number`, step: 0.1, name: `to`, value: mouseMoveSpeed.to })
   );
 };
 
-const renderMouseCurvature = ({mouseCurvatureStrength}) => {
+const renderMouseCurvature = ({mouseCurvatureStrength, arduino}) => {
   return elt(`div`, {"data-collection": `mouseCurvatureStrength`}, elt(`span`, {className: `option_text`}, `from:`),
-  elt('input', { type: `number`, name: `from`, value: mouseCurvatureStrength.from }), elt(`span`, {className: `option_text`}, `to:`),
-  elt('input', { type: `number`, name: `to`, value: mouseCurvatureStrength.to })
+  elt('input', { disabled: arduino, type: `number`, name: `from`, value: mouseCurvatureStrength.from }), elt(`span`, {className: `option_text`}, `to:`),
+  elt('input', { disabled: arduino, type: `number`, name: `to`, value: mouseCurvatureStrength.to })
   );
 };
 
@@ -269,7 +285,7 @@ const renderTimerQuit = ({timerQuit}) => {
 };
 
 const renderTmApiKey = ({tmApiKey}) => {
-  return elt('div', null, elt('input', {type: `text`, name: `tmApiKey`, value: tmApiKey, className: `tmApiKey`}), elt('input', {type: `button`, value: `Connect`}));
+  return elt('div', null, elt('input', {type: `text`, name: `tmApiKey`, value: tmApiKey, className: `tmApiKey`}), elt('input', {type: `button`, value: `Connect`, id: `tm`}));
 };
 
 const renderDetectWhisper = ({detectWhisper}) => {
@@ -340,12 +356,18 @@ const renderSettings = (config) => {
     renderShiftClick(config),
     `Use shift + click instead of Auto Loot. Check this option if you don't want to turn on Auto Loot option in the game. Your "Loot key" in the game should be assigned to shift.`
   )),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
+  elt('div', {className: "settings_section settings_premium"},
+  wrapInLabel(`Use Arduino Board: `, renderArduino(config), ``),
+  wrapInLabel(`COM Port: `, renderArduinoPort(config), ``),
+  wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), ``)
+  ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🔊 Sound Detection`),
   elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Sound Detection: `, renderSoundDetection(config), `The bot will check the change of sound instead of the change of pixels when it should catch the fish.`),
+  wrapInLabel(`Use Sound Detection: `, renderSoundDetection(config), `The bot will check the change of sound instead of the change of pixels when it should catch the fish.`),
   wrapInLabel(`Sound Detection Range: `, renderSoundDetectionRange(config), `The strength of the noise created by jerking of the bobber`),
   ),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `📲 Remote control`),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `📲 Remote Control`),
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Telegram token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
     wrapInLabel(`Detect whisper:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
@@ -412,7 +434,7 @@ const runApp = async () => {
      elt('input', {type: `button`, value: `Defaults`}))
 
   settings.addEventListener(`click`, (event) => {
-    if(event.target.value == `Connect`) {
+    if(event.target.value == `Connect` && event.target.id == "tm") {
       ipcRenderer.invoke(`connect-telegram`, config.tmApiKey)
       .then(() => {
         event.target.style.backgroundColor = `rgb(65, 255, 65)`;
@@ -428,6 +450,25 @@ const runApp = async () => {
         event.target.style.backgroundColor = `rgb(240, 240, 240)`;
       }, 1000);
     }
+
+    if(event.target.value == `Connect` && event.target.id == "arduino") {
+      console.log(config.arduinoPort, config.arduinoRate);
+      ipcRenderer.invoke(`connect-arduino`, {port: config.arduinoPort, speed: config.arduinoRate})
+      .then(() => {
+        event.target.style.backgroundColor = `rgb(65, 255, 65)`;
+        event.target.value = `Success!`
+      })
+      .catch(() => {
+        event.target.style.backgroundColor = `rgb(255, 65, 65)`;
+        event.target.value = `Error!`
+      });
+
+      setTimeout(() => {
+        event.target.value = `Connect`;
+        event.target.style.backgroundColor = `rgb(240, 240, 240)`;
+      }, 1000);
+    }
+
 
     if(event.target.name == `mammoth` && event.target.checked) {
       ipcRenderer.send("mammoth-warn");

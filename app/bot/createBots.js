@@ -93,8 +93,12 @@ if (tmBot.bot) {
   }
 
   const bots = games.map((game, i) => {
-    arduino.mouse.getPos = game.mouse.getPos;
-    game = {mouse: arduino.mouse, workwindow: game.workwindow, keyboard: arduino.keyboard}
+
+    if(config.patch[settings.game].arduino) {
+      arduino.mouse.getPos = game.mouse.getPos;
+      game = {mouse: arduino.mouse, workwindow: game.workwindow, keyboard: arduino.keyboard}
+    }
+
     return {
       bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1),
       log: createIdLog(log, ++i),

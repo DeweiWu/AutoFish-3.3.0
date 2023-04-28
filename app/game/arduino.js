@@ -70,7 +70,6 @@ const createArduinoDevice = () => {
         let cPos = this.getPos();
         let signX = x - cPos.x < 0 ? `-` : `+`;
         let signY = y - cPos.y < 0 ? `-` : `+`;
-        port.write(`03${Math.round(speed * 5)}`);
         port.write(`5${signX}${signY}${65535 * Math.abs(Math.round(x - cPos.x)) + Math.abs(Math.round(y - cPos.y))}`);
       },
 
@@ -122,7 +121,17 @@ const createArduinoDevice = () => {
             }
           }
         )
-        port.on(`open`, () => resolve(`connection oppened`));
+        port.on(`open`, () => {
+          port.write(`0`);
+          setTimeout(() => {
+            reject(`Wrong response from Arduino Board! Change COM Port or upload AutoFish sketch on your board (Help -> Arduino Sketch).`);
+          }, 1000);
+        });
+        port.on(`data`, (data) => {
+          if(data == `ready`) {
+            resolve(`Connected to Arduino Board!`);
+          }
+        })
       });
     }
   }

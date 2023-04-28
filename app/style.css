@@ -581,3 +581,11 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
   border-radius: 5px;
   padding-right: 1px;
 }
+
+.arduino_select {
+  width: 194px !important;
+}
+
+.arduino_rate {
+  width: 70px !important;
+}
