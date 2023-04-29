@@ -440,6 +440,11 @@ const menu = Menu.buildFromTemplate([
       },
       { type: "separator" },
       {
+        label: "Arduino Sketch",
+        click: () => shell.openExternal("https://github.com/jsbots/AutoFish/issues"),
+      },
+      { type: "separator" },
+      {
         label: "Report issue",
         click: () =>
           shell.openExternal("https://github.com/jsbots/AutoFish/issues"),

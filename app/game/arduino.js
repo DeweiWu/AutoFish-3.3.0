@@ -108,7 +108,11 @@ const createArduinoDevice = () => {
       },
     },
     async connectTo(com, rate) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(async function(resolve, reject) {
+        if(port) {
+          port.close();
+          await sleep(1000);
+        }
         port = new SerialPort(
           {
             path: com,

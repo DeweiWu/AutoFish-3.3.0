@@ -466,7 +466,7 @@ const runApp = async () => {
       setTimeout(() => {
         event.target.value = `Connect`;
         event.target.style.backgroundColor = `rgb(240, 240, 240)`;
-      }, 1000);
+      }, 3000);
     }
 
 
