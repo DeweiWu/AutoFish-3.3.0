@@ -358,9 +358,9 @@ const renderSettings = (config) => {
   )),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
   elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Arduino Board: `, renderArduino(config), ``),
-  wrapInLabel(`COM Port: `, renderArduinoPort(config), ``),
-  wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), ``)
+  wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
+  wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),
+  wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), `Don't change this value if you don't know what you are doing. The value should be the same as in Arduino Sketch provided in the guide (you can find it in the top of the sketch)`)
   ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🔊 Sound Detection`),
   elt('div', {className: "settings_section settings_premium"},
