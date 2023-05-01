@@ -105,7 +105,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
     bobberColor: settings.bobberColor,
     sensitivity: config.bobberSensitivity,
     density: config.bobberDensity,
-    reverseDir: settings.game == `Turtle WoW`,
+    direction: settings.game == `Turtle WoW` ? `reverse` : `center`,
     splashColor: config.splashColor
   });
 
@@ -731,7 +731,7 @@ if (config.soundDetection) {
       bobberColor: settings.bobberColor,
       sensitivity: config.bobberSensitivity,
       density: config.bobberDensity,
-      reverseDir: settings.game == `Turtle WoW`,
+      direction: settings.game == `Turtle WoW` ? `reverse` : `center`,
       splashColor: config.splashColor
     });
   }
