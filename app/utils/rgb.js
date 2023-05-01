@@ -103,7 +103,6 @@ const createRgb = ({ data, width, height }) => {
           if(height > width) stepDiffX = width / height;
           if(width > height) stepDiffY = height / width;
 
-          console.log(stepDiffX, stepDiffY);
           for (let step = 1; step <= Math.floor(Math.max(height, width) / 2); step++) {
             for(let angle = 0; angle < Math.PI * 2; angle += ((Math.PI * 2 / 8) / step)) {
               let x = center.x + Math.round(Math.cos(angle) * (step * stepDiffX));
