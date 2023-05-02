@@ -11,7 +11,7 @@ const isRed = (threshold, closeness) => ([r, g, b]) => isOverThreshold([r, g, b]
 
 const isBlue = (threshold, closeness) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) && isCloseEnough([b, g, r], closeness);
 
-const createFishingZone = ({ getDataFrom , zone, threshold, bobberColor, sensitivity, density, direction, splashColor }) => {
+const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberColor, sensitivity, density, direction, splashColor }) => {
   const isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
   const saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
   const looksLikeBobber = (pos, color, rgb) => pos.getPointsAround(density).every((pos) => isBobber(rgb.colorAt(pos)));
@@ -32,8 +32,9 @@ const createFishingZone = ({ getDataFrom , zone, threshold, bobberColor, sensiti
       });
 
       if(direction == `center` && bobber) {
+        const doubleZoneSize = screenSize.width > 1920 ? 100 : 50;
         let centerBobber = bobber.plus({ x: zone.x, y: zone.y });
-        let rgbAroundBobber = createRgb(await getDataFrom({x: centerBobber.x - 100, y: centerBobber.y - 100, width: 200, height: 200}));
+        let rgbAroundBobber = createRgb(await getDataFrom({x: centerBobber.x - doubleZoneSize, y: centerBobber.y - doubleZoneSize, width: doubleZoneSize * 2, height: doubleZoneSize * 2}));
         rgbAroundBobber.saturate(...saturation);
         bobber = rgbAroundBobber.findColors({
           isColor: isBobber,
@@ -41,7 +42,7 @@ const createFishingZone = ({ getDataFrom , zone, threshold, bobberColor, sensiti
           task: looksLikeBobber
         });
         if(!bobber) return;
-        return bobber.plus({x: centerBobber.x - 100, y: centerBobber.y - 100})
+        return bobber.plus({x: centerBobber.x - doubleZoneSize, y: centerBobber.y - doubleZoneSize})
       }
 
       if(!bobber) return;

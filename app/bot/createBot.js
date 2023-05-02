@@ -101,11 +101,12 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
   let fishingZone = createFishingZone({
     getDataFrom,
     zone: Zone.from(screenSize).toRel(config.relZone),
+    screenSize: screenSize,
     threshold: settings.threshold,
     bobberColor: settings.bobberColor,
     sensitivity: config.bobberSensitivity,
     density: config.bobberDensity,
-    direction: settings.game == `Turtle WoW` ? `reverse` : `center`,
+    direction: config.findBobberDirection,
     splashColor: config.splashColor
   });
 
@@ -727,11 +728,12 @@ if (config.soundDetection) {
     fishingZone = createFishingZone({
       getDataFrom,
       zone: Zone.from(screenSize).toRel(config.relZone),
+      screenSize: screenSize,
       threshold: settings.threshold,
       bobberColor: settings.bobberColor,
       sensitivity: config.bobberSensitivity,
       density: config.bobberDensity,
-      direction: settings.game == `Turtle WoW` ? `reverse` : `center`,
+      direction: config.findBobberDirection,
       splashColor: config.splashColor
     });
   }
