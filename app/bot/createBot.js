@@ -773,6 +773,7 @@ if (config.soundDetection) {
 
     let x = random(-config.rngMoveRadiusStep.x, config.rngMoveRadiusStep.x);
     let y = random(-config.rngMoveRadiusStep.y, config.rngMoveRadiusStep.y);
+
     if(x + moveMemory.x < -maxX || x + moveMemory.x > maxX) {
       x = -x;
     }
@@ -875,11 +876,37 @@ if (config.soundDetection) {
       keyMemory[key] += value;
     }
 
-    return {key, value: key == `s` ? value * 2 : value};
+    return {key, value: key == `s` ? value * 1.75 : value};
   }
 
+  const rngBalanceOut = async () => {
+    let cPos = mouse.getPos();
+    await mouse.toggle(`right`, true, delay);
+    await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)},
+                  speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
+    for(let key of Object.keys(keyMemory)) {
+      let value = keyMemory[key];
+      if(value < 0) {
+        await keyboard.toggleKey(key, true, -value);
+        await keyboard.toggleKey(key, false);
+      }
+      keyMemory[key] = 0
+    }
+
+    await mouse.toggle(`right`, false, delay);
+  }
+
+  rngBalanceOut.timer = createTimer(() => 10 * 1000 * 60 * 60);
+  rngBalanceOut.timer.start();
+
   const runRngMove = async () => {
-    await action(async () => {
+    await action(async function rngMove() {
+
+      if(!config.arduino && rngBalanceOut.timer.isElapsed()) {
+        await rngBalanceOut();
+        rngBalanceOut.timer.update();
+      }
+
       let pos = getRandomPos(mouse.getPos());
       let rngKey = getRandomKey();
 
@@ -890,18 +917,17 @@ if (config.soundDetection) {
       await keyboard.toggleKey(rngKey.key, false, delay);
 
       await moveTo({pos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
-
       if(!config.arduino && random(0, 100) > 75) {
         let newPos = getRandomPos(mouse.getPos());
         await moveTo({pos: newPos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
-        await mouse.toggle(`right`, false, delay);
-
-        if(random(0, 100) > 90) {
+        if(random(0, 100) > 75) {
+          let rngKeyNew = getRandomKey();
+          await keyboard.toggleKey(rngKeyNew.key, true, rngKeyNew.value);
+          await keyboard.toggleKey(rngKeyNew.key, false, delay);
           await mouse.toggle(`right`, false, delay);
-          await sleep(250, 1000);
-          await runRngMove();
+        } else {
+          await mouse.toggle(`right`, false, delay);
         }
-
       } else {
         await mouse.toggle(`right`, false, delay);
       }
