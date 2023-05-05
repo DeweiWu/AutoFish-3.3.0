@@ -15,7 +15,8 @@ const runBot = async ({ bot, log, state, stats }) => {
     replyToChat,
     applySpare,
     applyMammoth,
-    dx12Case
+    dx12Case,
+    runRngMove
   } = bot;
 
   const sleep = (time) => {
@@ -46,6 +47,10 @@ const runBot = async ({ bot, log, state, stats }) => {
 
       if(logOut.on) {
         logOut.timer.start();
+      }
+
+      if(runRngMove.on) {
+        runRngMove.timer.start();
       }
     }
 
@@ -133,6 +138,12 @@ const runBot = async ({ bot, log, state, stats }) => {
       if (isHooked) {
         stats.caught++;
         log.ok(`Caught ${typeof isHooked == `boolean` ? `the fish!` : isHooked}`);
+
+        if(runRngMove.on && runRngMove.timer.isElapsed()) {
+          await runRngMove();
+          runRngMove.timer.update();
+        }
+
         continue;
       }
     }

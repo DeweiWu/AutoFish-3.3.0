@@ -166,22 +166,33 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
     .split(",")
     .map((word) => word.trim());
 
-  const moveTo = async ({ pos, randomRange }) => {
+  const moveTo = async ({ pos, randomRange, speed, strength }) => {
     if (randomRange) {
       pos.x = pos.x + random(-randomRange, randomRange);
       pos.y = pos.y + random(-randomRange, randomRange);
     }
 
     if (config.likeHuman) {
+      let speedFrom = screenSize.width < 1921 ? config.mouseMoveSpeed.from : config.mouseMoveSpeed.from * 2;
+      let speedTo = screenSize.width < 1921 ? config.mouseMoveSpeed.to : config.mouseMoveSpeed.to * 2;
+      if(speed) {
+        speedFrom = speed.from;
+        speedTo = speed.to;
+      }
+
+      let strengthFrom = config.mouseCurvatureStrength.from;
+      let strengthTo = config.mouseCurvatureStrength.to
+
+      if(strength) {
+        strengthFrom = strength.from;
+        strengthTo = strength.to;
+      }
+
       await mouse.humanMoveTo(
         pos.x,
         pos.y,
-        random(screenSize.width < 3000 ? config.mouseMoveSpeed.from : config.mouseMoveSpeed.from * 2,
-               screenSize.width < 3000 ? config.mouseMoveSpeed.to : config.mouseMoveSpeed.to * 2),
-        random(
-          config.mouseCurvatureStrength.from,
-          config.mouseCurvatureStrength.to
-        )
+        random(speedFrom, speedTo),
+        random(strengthFrom, strengthTo)
       );
     } else {
       await mouse.moveTo(pos.x, pos.y, delay);
@@ -741,7 +752,166 @@ if (config.soundDetection) {
   dynamicThreshold.on = config.dynamicThreshold;
   dynamicThreshold.limit = () => settings.threshold < 20;
 
+
+  const moveMemory = {
+    x: 0,
+    y: 0,
+  };
+
+  const keyMemory = {
+    a: 0,
+    w: 0,
+    s: 0,
+    d: 0
+  };
+
+  const getRandomPos = (cPos) => {
+    /* for config */
+    let maxX = 100;
+    let maxY = 15;
+    /* end */
+
+    let x = random(0, 100) > 50 ? random(-100, -25) : random(25, 100);
+    let y = random(-5, 5);
+    if(x + moveMemory.x < -maxX || x + moveMemory.x > maxX) {
+      x = -x;
+    }
+
+    if(y + moveMemory.y < -maxY || y + moveMemory.y > maxY) {
+      y = -y;
+    }
+
+    moveMemory.x += x;
+    moveMemory.y += y;
+
+    return {x: Math.round(cPos.x + x), y: Math.round(cPos.y + y)};
+  }
+
+  const getRandomKey = () => {
+    /* for config */
+    let wMax = 100;
+    let aMax = 200;
+    let sMax = 200;
+    let dMax = 100;
+    /* end */
+
+    let key = `wads`[Math.floor(Math.random() * 4)];
+    let value = random(50, 200);
+    let degreeCoof = Math.abs(moveMemory.x) / 385;
+
+    let compensation = {
+      side: undefined,
+      value: value * degreeCoof
+    };
+
+    switch(key) {
+      case `a`: {
+        if(keyMemory[key] + value > aMax) {
+          key = `d`;
+          keyMemory[`a`] -= value;
+        } else {
+
+          if(moveMemory.x < 0) {
+            compensation.key = `s`;
+          } else {
+            compensation.key = `w`;
+          }
+
+          keyMemory[`d`] -= value;
+        }
+        break;
+      }
+
+      case `d`: {
+        if(keyMemory[key] + value > dMax) {
+          key = `a`;
+          keyMemory[`d`] -= value;
+        } else {
+          if(moveMemory.x < 0) {
+            compensation.key = `w`
+          } else {
+            compensation.key = `s`
+          }
+
+          keyMemory[`a`] -= value;
+        }
+        break;
+      }
+
+      case `w`: {
+        if(keyMemory[key] + value > wMax) {
+          key = `s`;
+          keyMemory[`w`] -= value;
+        } else {
+          if(moveMemory.x < 0) {
+            compensation.key = `a`
+          } else {
+            compensation.key = `d`
+          }
+          keyMemory[`s`] -= value;
+        }
+        break;
+      }
+
+      case `s`: {
+        if(keyMemory[key] + value > sMax) {
+          key = `w`;
+          keyMemory[`s`] -= value;
+        } else {
+          if(moveMemory.x < 0) {
+            compensation.key = `d`
+          } else {
+            compensation.key = `a`
+          }
+          keyMemory[`w`] -= value;
+        }
+      }
+    }
+
+    if(compensation.key) {
+      keyMemory[compensation.key] += compensation.value;
+      keyMemory[key] += (value - compensation.value);
+    } else {
+      keyMemory[key] += value;
+    }
+
+    return {key, value: key == `s` ? value * 2 : value};
+  }
+
+  const runRngMove = async () => {
+    let pos = getRandomPos(mouse.getPos());
+    let rngKey = getRandomKey();
+
+    await mouse.toggle(`right`, true, delay);
+    await sleep(250, 750);
+
+    await keyboard.toggleKey(rngKey.key, true, rngKey.value);
+    await keyboard.toggleKey(rngKey.key, false, delay);
+
+    await moveTo({pos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
+
+    if(!config.arduino && random(0, 100) > 75) {
+      let newPos = getRandomPos(mouse.getPos());
+      await moveTo({pos: newPos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
+      await mouse.toggle(`right`, false, delay);
+
+      if(random(0, 100) > 90) {
+        await mouse.toggle(`right`, false, delay);
+        await sleep(250, 1000);
+        await runRngMove();
+      }
+
+    } else {
+      await mouse.toggle(`right`, false, delay);
+    }
+    await sleep(random(250, 750));
+  };
+
+  runRngMove.on = () => true;
+  runRngMove.timer = createTimer(() => random(0.5 * 1000 * 60, 2 * 1000 * 60)); // config
+
   return {
+    runRngMove,
     dynamicThreshold,
     logOut,
     preliminaryChecks,
