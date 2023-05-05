@@ -767,12 +767,12 @@ if (config.soundDetection) {
 
   const getRandomPos = (cPos) => {
     /* for config */
-    let maxX = 100;
-    let maxY = 15;
+    let maxX = config.rngMoveRadiusMax.x;
+    let maxY = config.rngMoveRadiusMax.y;
     /* end */
 
-    let x = random(0, 100) > 50 ? random(-100, -25) : random(25, 100);
-    let y = random(-5, 5);
+    let x = random(-config.rngMoveRadiusStep.x, config.rngMoveRadiusStep.x);
+    let y = random(-config.rngMoveRadiusStep.y, config.rngMoveRadiusStep.y);
     if(x + moveMemory.x < -maxX || x + moveMemory.x > maxX) {
       x = -x;
     }
@@ -789,10 +789,10 @@ if (config.soundDetection) {
 
   const getRandomKey = () => {
     /* for config */
-    let wMax = 100;
-    let aMax = 200;
-    let sMax = 200;
-    let dMax = 100;
+    let wMax = config.rngMoveDirLength.w;
+    let sMax = config.rngMoveDirLength.s;
+    let aMax = config.rngMoveDirLength.a;
+    let dMax = config.rngMoveDirLength.d;
     /* end */
 
     let key = `wads`[Math.floor(Math.random() * 4)];
@@ -879,36 +879,39 @@ if (config.soundDetection) {
   }
 
   const runRngMove = async () => {
-    let pos = getRandomPos(mouse.getPos());
-    let rngKey = getRandomKey();
+    await action(async () => {
+      let pos = getRandomPos(mouse.getPos());
+      let rngKey = getRandomKey();
 
-    await mouse.toggle(`right`, true, delay);
-    await sleep(250, 750);
+      await mouse.toggle(`right`, true, delay);
+      await sleep(250, 750);
 
-    await keyboard.toggleKey(rngKey.key, true, rngKey.value);
-    await keyboard.toggleKey(rngKey.key, false, delay);
+      await keyboard.toggleKey(rngKey.key, true, rngKey.value);
+      await keyboard.toggleKey(rngKey.key, false, delay);
 
-    await moveTo({pos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
+      await moveTo({pos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
 
-    if(!config.arduino && random(0, 100) > 75) {
-      let newPos = getRandomPos(mouse.getPos());
-      await moveTo({pos: newPos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
-      await mouse.toggle(`right`, false, delay);
-
-      if(random(0, 100) > 90) {
+      if(!config.arduino && random(0, 100) > 75) {
+        let newPos = getRandomPos(mouse.getPos());
+        await moveTo({pos: newPos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
         await mouse.toggle(`right`, false, delay);
-        await sleep(250, 1000);
-        await runRngMove();
-      }
 
-    } else {
-      await mouse.toggle(`right`, false, delay);
-    }
-    await sleep(random(250, 750));
+        if(random(0, 100) > 90) {
+          await mouse.toggle(`right`, false, delay);
+          await sleep(250, 1000);
+          await runRngMove();
+        }
+
+      } else {
+        await mouse.toggle(`right`, false, delay);
+      }
+      await sleep(random(250, 750));
+    })
   };
 
-  runRngMove.on = () => true;
-  runRngMove.timer = createTimer(() => random(0.5 * 1000 * 60, 2 * 1000 * 60)); // config
+  runRngMove.on = () => config.rngMove;
+  runRngMove.timer = createTimer(() => random(config.rngMoveTimer.from * 1000 * 60,
+                                              config.rngMoveTimer.to * 1000 * 60));
 
   return {
     runRngMove,

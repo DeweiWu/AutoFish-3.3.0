@@ -340,6 +340,40 @@ const renderDynamicThreshold = ({dynamicThreshold, dynamicThresholdValue}) => {
   return elt(`div`, null, checkbox, input);
 };
 
+const renderRngMove = ({rngMove}) => {
+  return elt(`input`, {type: `checkbox`, name: `rngMove`, checked: rngMove});
+};
+
+const renderRngMoveTimer = ({rngMove, rngMoveTimer}) => {
+  return elt(`div`, {"data-collection": `rngMoveTimer`}, elt(`span`, {className: `option_text`}, `from:`),
+  elt('input', {type: `number`, className: `rngMoveTimer_from`, name: `from`, value: rngMoveTimer.from, disabled: !rngMove}), elt(`span`, {className: `option_text`}, `to:`),
+  elt('input', {type: `number`, name: `to`, value: rngMoveTimer.to, disabled: !rngMove})
+  );
+}
+
+const renderRngMoveRadiusMax = ({rngMove, rngMoveRadiusMax}) => {
+  return elt(`div`, {"data-collection": `rngMoveRadiusMax`}, elt(`span`, {className: `option_text`}, `x:`),
+  elt('input', {type: `number`, name: `x`, value: rngMoveRadiusMax.x, disabled: !rngMove}), elt(`span`, {className: `option_text`}, `y:`),
+  elt('input', {type: `number`, name: `y`, value: rngMoveRadiusMax.y, disabled: !rngMove})
+  );
+};
+
+const renderRngMoveRadiusStep = ({rngMove, rngMoveRadiusStep}) => {
+  return elt(`div`, {"data-collection": `rngMoveRadiusStep`}, elt(`span`, {className: `option_text`}, `x:`),
+  elt('input', {type: `number`, name: `x`, value: rngMoveRadiusStep.x, disabled: !rngMove}), elt(`span`, {className: `option_text`}, `y:`),
+  elt('input', {type: `number`, name: `y`, value: rngMoveRadiusStep.y, disabled: !rngMove})
+  );
+};
+
+const renderRngMoveDirLength = ({rngMove, rngMoveDirLength}) => {
+  return elt(`div`, {"data-collection": `rngMoveDirLength`},
+      elt(`span`, {className: `option_text`}, `w:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `w`, value: rngMoveDirLength.w}),
+      elt(`span`, {className: `option_text`}, `s:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `s`, value: rngMoveDirLength.s}),
+      elt(`span`, {className: `option_text`}, `a:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `a`, value: rngMoveDirLength.a}),
+      elt(`span`, {className: `option_text`}, `d:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `d`, value: rngMoveDirLength.d})
+    );
+}
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `General`),
@@ -360,6 +394,14 @@ const renderSettings = (config) => {
     renderShiftClick(config),
     `Use shift + click instead of Auto Loot. Check this option if you don't want to turn on Auto Loot option in the game. Your "Loot key" in the game should be assigned to shift.`
   )),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Camera`),
+  elt('div', {className: "settings_section settings_premium"},
+  wrapInLabel(`Use Random Camera`, renderRngMove(config), ``),
+  wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), ``),
+  wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), ``),
+  wrapInLabel(`Use Random Camera Every (min): `, renderRngMoveTimer(config), ``),
+  wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLength(config), ``),
+),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
   elt('div', {className: "settings_section settings_premium"},
   wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
