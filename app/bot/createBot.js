@@ -797,7 +797,7 @@ if (config.soundDetection) {
     /* end */
 
     let key = `wads`[Math.floor(Math.random() * 4)];
-    let value = random(50, 200);
+    let value = random(config.rngMoveDirLength.from, config.rngMoveDirLength.to);
     let degreeCoof = Math.abs(moveMemory.x) / 385;
 
     let compensation = {

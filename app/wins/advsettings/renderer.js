@@ -365,13 +365,20 @@ const renderRngMoveRadiusStep = ({rngMove, rngMoveRadiusStep}) => {
   );
 };
 
-const renderRngMoveDirLength = ({rngMove, rngMoveDirLength}) => {
-  return elt(`div`, {"data-collection": `rngMoveDirLength`},
-      elt(`span`, {className: `option_text`}, `w:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `w`, value: rngMoveDirLength.w}),
-      elt(`span`, {className: `option_text`}, `s:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `s`, value: rngMoveDirLength.s}),
-      elt(`span`, {className: `option_text`}, `a:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `a`, value: rngMoveDirLength.a}),
-      elt(`span`, {className: `option_text`}, `d:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `d`, value: rngMoveDirLength.d})
+const renderRngMoveDirLengthMax = ({rngMove, rngMoveDirLengthMax}) => {
+  return elt(`div`, {"data-collection": `rngMoveDirLengthMax`},
+      elt(`span`, {className: `option_text`}, `w:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `w`, value: rngMoveDirLengthMax.w}),
+      elt(`span`, {className: `option_text`}, `s:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `s`, value: rngMoveDirLengthMax.s}),
+      elt(`span`, {className: `option_text`}, `a:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `a`, value: rngMoveDirLengthMax.a}),
+      elt(`span`, {className: `option_text`}, `d:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `d`, value: rngMoveDirLengthMax.d})
     );
+};
+
+const renderRngMoveDirLength = ({rngMove, rngMoveDirLength}) => {
+  return elt(`div`, {"data-collection": `rngMoveDirLength`}, elt(`span`, {className: `option_text`}, `from:`),
+  elt('input', {type: `number`, className: `rngMoveTimer_from`, name: `from`, value: rngMoveDirLength.from, disabled: !rngMove}), elt(`span`, {className: `option_text`}, `to:`),
+  elt('input', {type: `number`, name: `to`, value: rngMoveDirLength.to, disabled: !rngMove})
+  );
 };
 
 const renderRngMoveBalanceTime = ({rngMove, rngMoveBalanceTime}) => {
@@ -400,12 +407,13 @@ const renderSettings = (config) => {
   )),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Movement`),
   elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Random Movement`, renderRngMove(config), ``),
-  wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), ``),
-  wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), ``),
-  wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLength(config), ``),
-  wrapInLabel(`Balancing Time (min):`, renderRngMoveBalanceTime(config), ``),
-  wrapInLabel(`Use Random Camera Every (min): `, renderRngMoveTimer(config), ``),
+  wrapInLabel(`Use Random Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
+  wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), `Maximum radius the bot will randomly move your camera.`),
+  wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), `Size of the step the bot will move your camera. The bot wil choose a random value between -value and +value and move your camera by the given value.`),
+  wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLengthMax(config), `Maximum delay of how long the bot will press w, s, a, d keys.`),
+  wrapInLabel(`Balancing Time Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
+  wrapInLabel(`Keys Moves Step:`, renderRngMoveDirLength(config), `Step delay of how long the bot will press w, s, a, d keys.`),
+  wrapInLabel(`Use Random Camera Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
 ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
   elt('div', {className: "settings_section settings_premium"},
