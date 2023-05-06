@@ -372,6 +372,10 @@ const renderRngMoveDirLength = ({rngMove, rngMoveDirLength}) => {
       elt(`span`, {className: `option_text`}, `a:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `a`, value: rngMoveDirLength.a}),
       elt(`span`, {className: `option_text`}, `d:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `d`, value: rngMoveDirLength.d})
     );
+};
+
+const renderRngMoveBalanceTime = ({rngMove, rngMoveBalanceTime}) => {
+  return elt(`input`, {disabled: !rngMove,type: `number`, value: rngMoveBalanceTime, name: `rngMoveBalanceTime`});
 }
 
 const renderSettings = (config) => {
@@ -394,13 +398,14 @@ const renderSettings = (config) => {
     renderShiftClick(config),
     `Use shift + click instead of Auto Loot. Check this option if you don't want to turn on Auto Loot option in the game. Your "Loot key" in the game should be assigned to shift.`
   )),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Camera`),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Movement`),
   elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Random Camera`, renderRngMove(config), ``),
+  wrapInLabel(`Use Random Movement`, renderRngMove(config), ``),
   wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), ``),
   wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), ``),
-  wrapInLabel(`Use Random Camera Every (min): `, renderRngMoveTimer(config), ``),
   wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLength(config), ``),
+  wrapInLabel(`Balancing Time (min):`, renderRngMoveBalanceTime(config), ``),
+  wrapInLabel(`Use Random Camera Every (min): `, renderRngMoveTimer(config), ``),
 ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
   elt('div', {className: "settings_section settings_premium"},

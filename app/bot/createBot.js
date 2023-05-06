@@ -884,6 +884,8 @@ if (config.soundDetection) {
     await mouse.toggle(`right`, true, delay);
     await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)},
                   speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
+    moveMemory.x = 0;
+    moveMemory.y = 0;
     for(let key of Object.keys(keyMemory)) {
       let value = keyMemory[key];
       if(value < 0) {
@@ -892,11 +894,10 @@ if (config.soundDetection) {
       }
       keyMemory[key] = 0
     }
-
     await mouse.toggle(`right`, false, delay);
   }
 
-  rngBalanceOut.timer = createTimer(() => 10 * 1000 * 60 * 60);
+  rngBalanceOut.timer = createTimer(() => config.rngMoveBalanceTime * 1000 * 60);
   rngBalanceOut.timer.start();
 
   const runRngMove = async () => {
