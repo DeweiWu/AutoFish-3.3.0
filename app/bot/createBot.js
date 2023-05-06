@@ -882,8 +882,10 @@ if (config.soundDetection) {
   const rngBalanceOut = async () => {
     let cPos = mouse.getPos();
     await mouse.toggle(`right`, true, delay);
+    if(config.arduino) await sleep(random(500, 1000))
     await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)},
                   speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
+    if(config.arduino) await sleep(random(500, 1000))
     moveMemory.x = 0;
     moveMemory.y = 0;
     for(let key of Object.keys(keyMemory)) {
@@ -893,6 +895,7 @@ if (config.soundDetection) {
         await keyboard.toggleKey(key, false);
       }
       keyMemory[key] = 0
+      if(config.arduino) await sleep(random(500, 1000))
     }
     await mouse.toggle(`right`, false, delay);
   }
@@ -903,7 +906,7 @@ if (config.soundDetection) {
   const runRngMove = async () => {
     await action(async function rngMove() {
 
-      if(!config.arduino && rngBalanceOut.timer.isElapsed()) {
+      if(rngBalanceOut.timer.isElapsed()) {
         await rngBalanceOut();
         rngBalanceOut.timer.update();
       }
