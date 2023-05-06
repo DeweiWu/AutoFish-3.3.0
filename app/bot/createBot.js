@@ -943,7 +943,14 @@ if (config.soundDetection) {
   runRngMove.timer = createTimer(() => random(config.rngMoveTimer.from * 1000 * 60,
                                               config.rngMoveTimer.to * 1000 * 60));
 
+  const stopAllCurrentActions = async () => {
+    await mouse.humanMoveTo.cancelCurrent();
+    await keyboard.sendKeys.cancelCurrent();
+    await keyboard.printText.cancelCurrent();
+  };
+
   return {
+    stopAllCurrentActions,
     runRngMove,
     dynamicThreshold,
     logOut,

@@ -16,7 +16,8 @@ const runBot = async ({ bot, log, state, stats }) => {
     applySpare,
     applyMammoth,
     dx12Case,
-    runRngMove
+    runRngMove,
+    stopAllCurrentActions
   } = bot;
 
   const sleep = (time) => {
@@ -154,6 +155,7 @@ const runBot = async ({ bot, log, state, stats }) => {
     }
 
   } while (state.status == "working");
+  await stopAllCurrentActions();
 };
 
 module.exports = runBot;
