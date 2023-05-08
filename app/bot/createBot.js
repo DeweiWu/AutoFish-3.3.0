@@ -7,7 +7,8 @@ const Jimp = require(`jimp`);
 
 const { BrowserWindow, ipcMain } = require(`electron`);
 
-const { screen, Region, Point } = require("@nut-tree/nut-js");
+const { screen, Region, Point, straightTo } = require("@nut-tree/nut-js");
+const nutMouse = require("../game/nut.js").mouse;
 
 let once = (fn, done) => (...args) => {
   if(!done) {
@@ -765,14 +766,14 @@ if (config.soundDetection) {
     d: 0
   };
 
-  const getRandomPos = (cPos) => {
+  const getRandomPos = () => {
     /* for config */
     let maxX = config.rngMoveRadiusMax.x;
     let maxY = config.rngMoveRadiusMax.y;
     /* end */
 
-    let x = random(-config.rngMoveRadiusStep.x, config.rngMoveRadiusStep.x);
-    let y = random(-config.rngMoveRadiusStep.y, config.rngMoveRadiusStep.y);
+    let x = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.x, -25) : random(25, config.rngMoveRadiusStep.x); // from to logic
+    let y = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.y, -5) : random(5, config.rngMoveRadiusStep.y);
 
     if(x + moveMemory.x < -maxX || x + moveMemory.x > maxX) {
       x = -x;
@@ -785,7 +786,7 @@ if (config.soundDetection) {
     moveMemory.x += x;
     moveMemory.y += y;
 
-    return {x: Math.round(cPos.x + x), y: Math.round(cPos.y + y)};
+    return {x, y};
   }
 
   const getRandomKey = () => {
@@ -882,10 +883,15 @@ if (config.soundDetection) {
   const rngBalanceOut = async () => {
     let cPos = mouse.getPos();
     await mouse.toggle(`right`, true, delay);
-    if(config.arduino) await sleep(random(500, 1000))
-    await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)},
-                  speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
-    if(config.arduino) await sleep(random(500, 1000))
+
+    if(config.arduino) {
+      await sleep(random(500, 1000));
+      await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)}});
+      await sleep(random(500, 1000));
+    } else {
+      await nutMouse.move({from: mouse.getPos(), to: {x: -moveMemory.x, y: -moveMemory.y}, speed: random(100, 300)});
+    }
+
     moveMemory.x = 0;
     moveMemory.y = 0;
     for(let key of Object.keys(keyMemory)) {
@@ -911,30 +917,49 @@ if (config.soundDetection) {
         rngBalanceOut.timer.update();
       }
 
-      let pos = getRandomPos(mouse.getPos());
+      let rngPos = getRandomPos();
       let rngKey = getRandomKey();
 
       await mouse.toggle(`right`, true, delay);
-      await sleep(250, 750);
+      await sleep(250, 750); // ???
 
       await keyboard.toggleKey(rngKey.key, true, rngKey.value);
       await keyboard.toggleKey(rngKey.key, false, delay);
 
-      await moveTo({pos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
+      let cPos = mouse.getPos()
+
+      if(config.arduino) {
+        await moveTo({pos: {x: cPos.x + rngPos.x, y: cPos.y + rngPos.y}});
+      } else {
+        await nutMouse.move({from: cPos, to: rngPos, speed: random(100, 300)});
+      }
+
       if(!config.arduino && random(0, 100) > 75) {
-        let newPos = getRandomPos(mouse.getPos());
-        await moveTo({pos: newPos, speed: {from: 0.02, to: 0.02}, strength: {from: 0, to: 0}});
+        await mouse.toggle(`right`, false, delay);
+
+        if(config.arduino){
+          await sleep(500, 1000);
+        } else {
+          await sleep(250, 1500);
+        }
+
+        await mouse.toggle(`right`, true, delay);
+        let rngPosNew = getRandomPos();
+        await nutMouse.move({from: mouse.getPos(), to: rngPosNew, speed: random(100, 300)});
+
         if(random(0, 100) > 75) {
           let rngKeyNew = getRandomKey();
           await keyboard.toggleKey(rngKeyNew.key, true, rngKeyNew.value);
           await keyboard.toggleKey(rngKeyNew.key, false, delay);
           await mouse.toggle(`right`, false, delay);
         } else {
+          await sleep(250, 750);
           await mouse.toggle(`right`, false, delay);
         }
       } else {
         await mouse.toggle(`right`, false, delay);
       }
+
       await sleep(random(250, 750));
     })
   };
@@ -944,9 +969,11 @@ if (config.soundDetection) {
                                               config.rngMoveTimer.to * 1000 * 60));
 
   const stopAllCurrentActions = async () => {
-    await mouse.humanMoveTo.cancelCurrent();
-    await keyboard.sendKeys.cancelCurrent();
-    await keyboard.printText.cancelCurrent();
+    if(!config.arduino) {
+      await mouse.humanMoveTo.cancelCurrent();
+      await keyboard.sendKeys.cancelCurrent();
+      await keyboard.printText.cancelCurrent();
+    }
   };
 
   return {
