@@ -964,7 +964,7 @@ if (config.soundDetection) {
     })
   };
 
-  runRngMove.on = () => config.rngMove;
+  runRngMove.on = config.rngMove;
   runRngMove.timer = createTimer(() => random(config.rngMoveTimer.from * 1000 * 60,
                                               config.rngMoveTimer.to * 1000 * 60));
 
