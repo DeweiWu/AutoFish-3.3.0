@@ -60,6 +60,9 @@ const createAdvSettings = (appPath) => {
     return showWarning(win, `Turn on interaction key in the game. You don't need to turn it on in the bot (Int.key section), but the bot will use the same key assigned there (even if disabled).`);
   });
 
+  ipcMain.on("rngMove-warn", () => {
+    return showWarning(win, `In game go to Options -> Controls -> Camera Following Style and change it to "Never adjust camera", otherwise the feature won't work properly. This feature aslo might trigger a bug that changes your cursor type to "Move Cursor" (4-arrow cursor). It should disappear after relaunching the game.`);
+  })
 
   ipcMain.on("sound-warn", () => {
     return showWarning(win, `Turn off Music and Ambient Sounds in the game, leave only Sound Effects. Your volume should be normal. Try to find a place secluded from the sounds made by other players to avoid false detections.`);

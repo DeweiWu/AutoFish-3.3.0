@@ -405,22 +405,6 @@ const renderSettings = (config) => {
     renderShiftClick(config),
     `Use shift + click instead of Auto Loot. Check this option if you don't want to turn on Auto Loot option in the game. Your "Loot key" in the game should be assigned to shift.`
   )),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Movement`),
-  elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Random Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
-  wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), `Maximum radius the bot will randomly move your camera.`),
-  wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), `Size of the step the bot will move your camera. The bot wil choose a random value between -value and +value and move your camera by the given value.`),
-  wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLengthMax(config), `Maximum delay of how long the bot will press w, s, a, d keys.`),
-  wrapInLabel(`Balancing Time Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
-  wrapInLabel(`Keys Moves Step:`, renderRngMoveDirLength(config), `Step delay of how long the bot will press w, s, a, d keys.`),
-  wrapInLabel(`Use Random Camera Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
-),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
-  elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
-  wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),
-  wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), `Don't change this value if you don't know what you are doing. The value should be the same as in Arduino Sketch provided in the guide (you can find it in the top of the sketch)`)
-  ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🔊 Sound Detection`),
   elt('div', {className: "settings_section settings_premium"},
   wrapInLabel(`Use Sound Detection: `, renderSoundDetection(config), `The bot will check the change of sound instead of the change of pixels when it should catch the fish.`),
@@ -433,6 +417,22 @@ const renderSettings = (config) => {
     wrapInLabel(`Whisper Threshold:`, renderWhisperThreshold(config), `The intensity of purple color the bot will recognize as whispering.`),
     wrapInLabel(`Chat zone (%):`, renderChatZone(config), `The same logic as with Fishing Zone. The bot will analyze this zone for Whisper Threshold purple colors.`),
   ),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
+  elt('div', {className: "settings_section settings_premium"},
+  wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
+  wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),
+  wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), `Don't change this value if you don't know what you are doing. The value should be the same as in Arduino Sketch provided in the guide (you can find it in the top of the sketch)`)
+  ),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Movement`),
+  elt('div', {className: "settings_section settings_premium"},
+  wrapInLabel(`Use Random Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
+  wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), `Maximum radius the bot will randomly move your camera.`),
+  wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), `Size of the step the bot will move your camera. The bot wil choose a random value between -value and +value and move your camera by the given value.`),
+  wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLengthMax(config), `Maximum delay of how long the bot will press w, s, a, d keys.`),
+  wrapInLabel(`Balancing Time Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
+  wrapInLabel(`Keys Moves Step:`, renderRngMoveDirLength(config), `Step delay of how long the bot will press w, s, a, d keys.`),
+  wrapInLabel(`Use Random Camera Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
+),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🐘 Mammoth Selling`),
   elt('div', {className: "settings_section settings_premium"},
   wrapInLabel(`Use mammoth for selling: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),
@@ -532,6 +532,10 @@ const runApp = async () => {
 
     if(event.target.name == `mammoth` && event.target.checked) {
       ipcRenderer.send("mammoth-warn");
+    }
+
+    if(event.target.name == `rngMove` && event.target.checked) {
+      ipcRenderer.send("rngMove-warn");
     }
 
     if(event.target.name == `soundDetection` && event.target.checked) {
