@@ -271,7 +271,8 @@ with regard to this software. In no event shall the author be liable for
 any special, direct, indirect, or consequential damages or any damages
 whatsoever resulting from loss of use or data, whether in an
 action of contract, negligence or other tortious action, arising out of
-or in connection with the use or performance of this software.`)) {
+or in connection with the use or performance of this software.
+`)) {
         win.webContents.send('stop-bot');
         return;
       } else {
@@ -425,7 +426,7 @@ const menu = Menu.buildFromTemplate([
   {
     label: `Help`,
     submenu: [
-      { label: "AutoFish 1.19.1 Premium" },
+      { label: "AutoFish 2.0.0 (beta) Premium" },
       { type: "separator" },
       {
         label: "Read Me",
