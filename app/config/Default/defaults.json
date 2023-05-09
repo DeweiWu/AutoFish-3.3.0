@@ -65,6 +65,7 @@
       "bobberSensitivityPrint": true,
       "bobberSensitivity": 5,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
       "soundDetection": false,
@@ -174,6 +175,7 @@
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 750,
       "soundDetection": false,
@@ -278,6 +280,7 @@
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "closeLootDelay": 750,
       "soundDetection": false,
       "soundDetectionRange": 800,
@@ -377,6 +380,7 @@
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "soundDetection": false,
@@ -475,6 +479,7 @@
       "whisperThreshold": 60,
       "bobberSensitivity": 1,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "soundDetection": false,
@@ -574,6 +579,7 @@
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 1,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "soundDetection": false,
@@ -677,6 +683,7 @@
       },
       "bobberSensitivity": 1,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -770,6 +777,7 @@
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 1,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -870,6 +878,7 @@
       },
       "bobberSensitivity": 1,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -973,6 +982,7 @@
       "splashColor": 230,
       "bobberSensitivity": 20,
       "bobberDensity": 1,
+      "autoSensDens": true,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {

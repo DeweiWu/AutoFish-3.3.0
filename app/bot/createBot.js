@@ -976,7 +976,20 @@ if (config.soundDetection) {
     }
   };
 
+  const detectSens = async () => {
+    if(settings.game == `Turtle WoW`) return;
+
+    if(settings.game == `Dragonflight`) {
+      await fishingZone.adjustSensitivity(`sensitivity`);
+    } else if(screenSize.width > 1920) {
+      await fishingZone.adjustSensitivity(`density`);
+    }
+  }
+
+  detectSens.on = config.autoSensDens;
+
   return {
+    detectSens,
     stopAllCurrentActions,
     runRngMove,
     dynamicThreshold,

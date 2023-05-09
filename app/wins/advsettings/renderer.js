@@ -242,7 +242,7 @@ const renderSleepAfterHook = ({sleepAfterHook}) => {
   return elt(`input`, {type: `checkbox`, name: `sleepAfterHook`, checked: sleepAfterHook});
 };
 
-const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensitivityPrint}) => {
+const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensitivityPrint, autoSensDens}) => {
   let min = 1;
   let max = 3;
   if(bobberSensitivityPrint) {
@@ -252,19 +252,19 @@ const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensi
 
   if(bobberSensitivity > max) bobberSensitivity = max;
   if(bobberSensitivity < min) bobberSensitivity = min;
-  let bobberSensitivityWin = elt(`input`, {type: `number`, name: `bobberSensitivity`, value: bobberSensitivity, disabled: soundDetection});
+  let bobberSensitivityWin = elt(`input`, {type: `number`, name: `bobberSensitivity`, value: bobberSensitivity, disabled: soundDetection || autoSensDens});
 
-  return elt(`div`, null, elt('input', {type: `range`, min, max, value: bobberSensitivity, disabled: soundDetection, oninput: function() {bobberSensitivityWin.value = this.value}, name: `bobberSensitivity`}),
+  return elt(`div`, null, elt('input', {type: `range`, min, max, value: bobberSensitivity, disabled: soundDetection || autoSensDens, oninput: function() {bobberSensitivityWin.value = this.value}, name: `bobberSensitivity`}),
    bobberSensitivityWin);
 };
 
-const renderBobberDensity = ({bobberDensity}) => {
+const renderBobberDensity = ({bobberDensity, autoSensDens}) => {
 
   if(bobberDensity > 10) bobberDensity = 10;
   if(bobberDensity < 1) bobberDensity = 1;
-  let bobberDensityWin = elt(`input`, {type: `number`, name: `bobberDensity`, value: bobberDensity});
+  let bobberDensityWin = elt(`input`, {type: `number`, disabled: autoSensDens, name: `bobberDensity`, value: bobberDensity});
 
-  return elt(`div`, null, elt('input', {type: `range`, min: 1, max: 10, value: bobberDensity, oninput: function() {bobberDensityWin.value = this.value}, name: `bobberDensity`}),
+  return elt(`div`, null, elt('input', {type: `range`, disabled: autoSensDens, min: 1, max: 10, value: bobberDensity, oninput: function() {bobberDensityWin.value = this.value}, name: `bobberDensity`}),
    bobberDensityWin);
 };
 
@@ -383,6 +383,10 @@ const renderRngMoveDirLength = ({rngMove, rngMoveDirLength}) => {
 
 const renderRngMoveBalanceTime = ({rngMove, rngMoveBalanceTime}) => {
   return elt(`input`, {disabled: !rngMove,type: `number`, value: rngMoveBalanceTime, name: `rngMoveBalanceTime`});
+};
+
+const renderAutoSensDens = ({autoSensDens, game}) => {
+  return elt(`input`, {type: `checkbox`, disabled: game == `Turtle WoW`, checked: autoSensDens, name: `autoSensDens`});
 }
 
 const renderSettings = (config) => {
@@ -466,7 +470,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Reaction random delay (ms):`, renderReactionDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot needs to move/press/click something: so the next time the bot uses your mouse/keyboard the reaction time will be always different(randomly generated)`)),
   elt(`p`, {className: `settings_header`}, `Sleep after hook`),
   elt('div', {className: "settings_section"},
-  wrapInLabel(`Sleep after hook:`, renderSleepAfterHook(config), `The bot will sleep after it hooked the fish for the random duration.`),
+  wrapInLabel(`Sleep After hook:`, renderSleepAfterHook(config), `The bot will sleep after it hooked the fish for the random duration.`),
   wrapInLabel(`After hook random delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
   ),
   elt(`p`, {className: `settings_header settings_header_critical`}, `Critical`),
@@ -475,7 +479,8 @@ const renderSettings = (config) => {
   wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting.`),
   wrapInLabel(`Max Check Time (ms):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do after Max Check Time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
-  wrapInLabel(`${config.game == `Turtle WoW` ? `Splash` : `Bobber`} sensitivity (px):`, renderBobberSensitivity(config), config.game != `Turtle WoW` ? `How sensitive the bot is to any movements of the bobber. If the bot often clicks too early, decrease this value (don't confuse it with when the bot missclicks on purpose). If the bot often doesn't react to bobber, increase this value.` : `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value.`),
+  wrapInLabel(`Auto-adjust Density and Sensitivity:`, renderAutoSensDens(config), `The bot will auto-adjust both Sensitivity and Density values per each cast.`),
+  wrapInLabel(`${config.game == `Turtle WoW` ? `Splash` : `Bobber`} Sensitivity (px):`, renderBobberSensitivity(config), config.game != `Turtle WoW` ? `How sensitive the bot is to any movements of the bobber. If the bot often clicks too early, decrease this value (don't confuse it with when the bot missclicks on purpose). If the bot often doesn't react to bobber, increase this value.` : `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value.`),
   config.game == `Turtle WoW` ? wrapInLabel(`Splash color: `, renderSplashColor(config), `Whitness of the splash effect: should be smaller at night and higher during the day. `) : ``,
   wrapInLabel(`Bobber Density (px):`, renderBobberDensity(config), `Density decides where exactly the bot sticks on the feather. The larger the feather the larger the value should be. This value is mostly for 4k resolution users and if the bot clicks too early.`),
   wrapInLabel(`Bobber Check Time (ms):`, renderCheckingDelay(config), `How often the bot checks the bobber for any movements. Use this option in addition to Bobber Sensativity to find an optimal sensitivity.`),

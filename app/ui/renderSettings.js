@@ -290,7 +290,7 @@ return elt(
       ),
       /*wrapInLabel(elt('span', null, "Loot all ", elt('span', {style: `color:#4DDF3F; font-weight: bold`}, `Uncommon `), `and `, elt(`span`, {style: `color: #015CB4; font-weight: bold`}, `Rare `), `and `, elt('span', {style: `color:#950c95; font-weight: bold`}, `Epic `), `items:`), renderWhiteListGreenBlue(config), `If you use whitelist, you can check this option to loot every green, blue and purple items in addition to the items in the whitelist.`)*/
     ),
-    elt("p", {className: 'settings_header'}, "Threshold"),
+    elt("p", {className: 'settings_header'}, "Color"),
     elt(
       "div",
       { className: "settings_section threshold_settings" },

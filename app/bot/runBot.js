@@ -17,7 +17,8 @@ const runBot = async ({ bot, log, state, stats }) => {
     applyMammoth,
     dx12Case,
     runRngMove,
-    stopAllCurrentActions
+    stopAllCurrentActions,
+    detectSens
   } = bot;
 
   const sleep = (time) => {
@@ -105,6 +106,11 @@ const runBot = async ({ bot, log, state, stats }) => {
 
     log.send(`Casting fishing...`);
     await castFishing(state);
+
+    if(detectSens.on) {
+      log.send(`Adjusting sensitivity...`);
+      await detectSens();
+    }
 
     log.send(`Looking for the bobber...`);
     let bobber = await findBobber();

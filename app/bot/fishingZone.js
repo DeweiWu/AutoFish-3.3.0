@@ -49,6 +49,39 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
       return bobber.plus({ x: zone.x, y: zone.y });
     },
 
+    async adjustSensitivity(type) {
+      let rgb = createRgb(await getDataFrom(zone));
+      rgb.saturate(...saturation);
+      let bobber = rgb.findColors({
+        isColor: isBobber,
+        atFirstMet: true,
+        task: (pos, color, rgb) => pos.getPointsAround().every((pos) => isBobber(rgb.colorAt(pos))),
+        direction
+      });
+
+      if(bobber) {
+        const doubleZoneSize = screenSize.width > 1920 ? 100 : 50;
+        let centerBobber = bobber.plus({ x: zone.x, y: zone.y });
+        let rgbAroundBobber = createRgb(await getDataFrom({x: centerBobber.x - doubleZoneSize, y: centerBobber.y - doubleZoneSize, width: doubleZoneSize * 2, height: doubleZoneSize * 2}));
+        rgbAroundBobber.saturate(...saturation);
+        let bobberSize = rgbAroundBobber.findColors({
+            isColor: isBobber
+          });
+        if(type == `sensitivity`) {
+          let calculatedSens = Math.round(bobberSize.length / 80);
+          if(calculatedSens < 3) calculatedSens = 3;
+          sensitivity = calculatedSens;
+        }
+
+        if(type == `density`) {
+          let calculatedDensity = Math.round(bobberSize.length / 350);
+          if(calculatedDensity < 1) calculatedDensity = 1;
+          if(calculatedDensity > 10) calculatedDensity = 10;
+          density = calculatedDensity;
+        }
+      }
+    },
+
     async checkBobberPrint(pos) {
       let rgb = createRgb(await getDataFrom({x: pos.x - sensitivity, y: pos.y - sensitivity, width: sensitivity * 2, height: sensitivity * 2}));
       rgb.saturate(...saturation);
