@@ -37,6 +37,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`advanced-click`);
     ipcMain.removeAllListeners(`mammoth-warn`);
     ipcMain.removeAllListeners(`sound-warn`);
+    ipcMain.removeAllListeners(`rngMove-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
   });
