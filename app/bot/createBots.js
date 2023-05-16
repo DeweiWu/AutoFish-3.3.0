@@ -98,11 +98,12 @@ if (tmBot.bot) {
       arduino.mouse.getPos = game.mouse.getPos;
       game = {mouse: arduino.mouse, workwindow: game.workwindow, keyboard: arduino.keyboard}
     }
+    let state = { status: "initial", startTime: Date.now() };
 
     return {
-      bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1),
+      bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1, state),
       log: createIdLog(log, ++i),
-      state: { status: "initial", startTime: Date.now() },
+      state,
       stats: new Stats()
   }
   });
@@ -168,6 +169,7 @@ if (tmBot.bot) {
       log.send('Stopping the bots...');
       if(tmBot.ctx) {
         tmBot.ctx.reply(`Stopped the bot!`);
+        tmBot.stats.forEach(({stats, state}, i) => tmBot.ctx.reply(`State: <b>${state.status == `working` ? `ON` : state.status == `initial` ? `INITIAL` : `OFF`}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
       }
       log.setState(false);
       bots.forEach(({state}) => state.status = "stop");

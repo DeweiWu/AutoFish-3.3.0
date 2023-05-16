@@ -5,7 +5,7 @@ const renderBobberImg = (bobberColor) => {
   return elt(`img`, {className: `threshold_canvas`, src:`img/bobber_${bobberColor}.png`, width: 80, height: 49});
 };
 
-const renderThreshold = ({ threshold, bobberColor }) => {
+const renderThreshold = ({ threshold, bobberColor, autoTh }) => {
 
 	if(threshold < 1) threshold = 1;
 	else if(threshold > 150) threshold = 150;
@@ -17,19 +17,19 @@ const renderThreshold = ({ threshold, bobberColor }) => {
                                 style: `background-image: url("./img/switch_${bobberColor == `red` ? `red` : `blue`}_new.png")`,
                                });
 
-  const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold` });
+  const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold`, disabled: autoTh, className: `${autoTh ? `threshold_disabled` : ``}` });
   if(bobberColor == `blue`) {
     document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
   } else {
     document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
   }
 
-  const number = elt(`input`, { type: `number`, value: threshold, name: `threshold` });
+  const number = elt(`input`, { type: `number`, value: threshold, disabled: autoTh, name: `threshold` });
 
 	const canvas = renderBobberImg(bobberColor);
-
+  const autoThContainer = elt(`div`, {className: `autoTh`}, elt(`span`, null, `Auto Color:`), elt(`input`, {type: `checkbox`, name: `autoTh`, checked: autoTh}));
   const bobberContainer = elt(`div`, { className: `bobberContainer` }, canvas, number);
-  return elt(`div`, { className: `thresholdRange` }, bobberColorSwitch, range, bobberContainer);
+  return elt(`div`, { className: `thresholdRange` }, bobberColorSwitch, range, bobberContainer, autoThContainer);
 };
 
 const renderGameNames = ({game}) => {

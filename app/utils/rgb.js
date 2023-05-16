@@ -39,7 +39,7 @@ const createRgb = ({ data, width, height }) => {
       })
     },
 
-    findColors({ isColor, atFirstMet, task, limit, direction }) {
+    findColors({ isColor, atFirstMet, task, limit, direction, saveColor }) {
       let colors = [];
 
       if(!direction) direction = `normal`;
@@ -62,7 +62,11 @@ const createRgb = ({ data, width, height }) => {
                   if (atFirstMet) {
                     return pos;
                   } else {
-                    colors.push(pos);
+                    if(saveColor) {
+                      colors.push({pos, color})
+                    } else {
+                      colors.push(pos);
+                    }
                   }
                 }
               }
@@ -87,7 +91,11 @@ const createRgb = ({ data, width, height }) => {
                   if (atFirstMet) {
                     return pos;
                   } else {
-                    colors.push(pos);
+                    if(saveColor) {
+                      colors.push({pos, color})
+                    } else {
+                      colors.push(pos);
+                    }
                   }
                 }
               }
@@ -124,7 +132,11 @@ const createRgb = ({ data, width, height }) => {
                   if (atFirstMet) {
                     return pos;
                   } else {
-                    colors.push(pos);
+                    if(saveColor) {
+                      colors.push({pos, color})
+                    } else {
+                      colors.push(pos);
+                    }
                   }
                 }
               }

@@ -19,6 +19,7 @@
   "filterType": "whitelist",
   "atMouse": true,
   "threshold": 60,
+  "autoTh": true,
   "bobberColor": "red",
   "afkmode": false,
   "multipleWindows": false,

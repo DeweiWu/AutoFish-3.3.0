@@ -498,6 +498,10 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
   opacity: 0.9;
 }
 
+input[type=range][name=threshold].threshold_disabled::-webkit-slider-thumb {
+  visibility: hidden;
+}
+
 /* Profiles */
 .settings_profile {
   display: flex;
@@ -588,4 +592,10 @@ input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
 
 .arduino_rate {
   width: 70px !important;
+}
+
+.autoTh {
+  position: absolute;
+  top: 13px;
+  left: 70px;
 }

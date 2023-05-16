@@ -37,7 +37,7 @@ const random = (from, to) => {
 
 let chatMsgs = [];
 
-const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
+const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) => {
   const { keyboard, mouse, workwindow } = game;
   const delay = [config.delay.from, config.delay.to];
 
@@ -51,6 +51,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
  }
 
   const action = async (callback) => {
+    if(state.status == `stop`) return;
     if(settings.afkmode && config.reaction) {
        await sleep(random(config.reaction.from, config.reaction.to))
     }
@@ -108,7 +109,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
     sensitivity: config.bobberSensitivity,
     density: config.bobberDensity,
     direction: config.findBobberDirection,
-    splashColor: config.splashColor
+    splashColor: config.splashColor,
+    autoThreshold: settings.autoTh
   });
 
   const notificationZone = createNotificationZone({
@@ -249,17 +251,18 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
     if (screenSize.x == -32000 && screenSize.y == -32000) {
       throw new Error("The window is either in fullscreen mode or minimized. Switch to windowed or windowed(maximized).");
     }
+    if(!settings.autoTh) {
+      let bobber = await fishingZone.findBobber();
+      if (bobber) {
+        screen.config.highlightOpacity = 1;
+        screen.config.highlightDurationMs = 1000;
+        const highlightRegion = new Region(screenSize.x + (bobber.x - 30), screenSize.y + (bobber.y - 30), 30, 30);
+        await screen.highlight(highlightRegion);
 
-    let bobber = await fishingZone.findBobber();
-    if (bobber) {
-      screen.config.highlightOpacity = 1;
-      screen.config.highlightDurationMs = 1000;
-      const highlightRegion = new Region(screenSize.x + (bobber.x - 30), screenSize.y + (bobber.y - 30), 30, 30);
-      await screen.highlight(highlightRegion);
-
-      throw new Error(
-        `Found ${settings.bobberColor == `red` ? `red` : `blue`} colors before casting. Change your Fishing Zone or increase the Threshold value or change the fishing place.`
-      );
+        throw new Error(
+          `Found ${settings.bobberColor == `red` ? `red` : `blue`} colors before casting. Change your Fishing Zone or increase the Threshold value or change the fishing place.`
+        );
+      }
     }
   };
 
@@ -364,6 +367,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
   });
 
   const findAllBobberColors = async () => {
+    if(settings.autoTh) {
+      return null;
+    }
+
     if(settings.useInt && config.soundDetection) {
       return null;
     }
@@ -390,7 +397,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
   };
 
   const highlightBobber = async (pos) => {
-    if (settings.useInt || settings.afkmode || (config.likeHuman && random(0, 100) > 85)) {
+
+    if (settings.useInt || settings.afkmode || (config.likeHuman && random(0, 100) > 100)) {
         return pos;
     }
 
@@ -402,14 +410,14 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum) => {
       await moveTo({ pos, randomRange: 5 });
     });
 
-    return await findBobber();
+   return await findBobber();
   };
 
   const findBobber = async () => {
     if(settings.useInt && config.soundDetection) {
       return true;
     }
-    return await fishingZone.findBobber(findBobber.memory);
+    return await fishingZone.findBobber(findBobber.memory, detectSens());
   };
   findBobber.memory = null;
   findBobber.maxAttempts = config.maxAttempts;
@@ -746,11 +754,12 @@ if (config.soundDetection) {
       sensitivity: config.bobberSensitivity,
       density: config.bobberDensity,
       direction: config.findBobberDirection,
-      splashColor: config.splashColor
+      splashColor: config.splashColor,
+      autoThreshold: settings.autoTh
     });
   }
 
-  dynamicThreshold.on = config.dynamicThreshold;
+  dynamicThreshold.on = config.dynamicThreshold && !settings.autoTh;
   dynamicThreshold.limit = () => settings.threshold < 20;
 
 
@@ -976,17 +985,15 @@ if (config.soundDetection) {
     }
   };
 
-  const detectSens = async () => {
-    if(settings.game == `Turtle WoW`) return;
+  const detectSens = () => {
+    if(!config.autoSensDens || settings.game == `Turtle WoW`) return;
 
     if(settings.game == `Dragonflight`) {
-      await fishingZone.adjustSensitivity(`sensitivity`);
+      return `sensitivity`;
     } else if(screenSize.width > 1920) {
-      await fishingZone.adjustSensitivity(`density`);
+      return `density`;
     }
   }
-
-  detectSens.on = config.autoSensDens;
 
   return {
     detectSens,

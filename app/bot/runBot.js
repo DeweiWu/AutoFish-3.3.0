@@ -107,12 +107,8 @@ const runBot = async ({ bot, log, state, stats }) => {
     log.send(`Casting fishing...`);
     await castFishing(state);
 
-    if(detectSens.on) {
-      log.send(`Adjusting sensitivity...`);
-      await detectSens();
-    }
-
     log.send(`Looking for the bobber...`);
+
     let bobber = await findBobber();
 
     if(bobber) {
@@ -136,6 +132,12 @@ const runBot = async ({ bot, log, state, stats }) => {
           );
         }
       }
+
+      if(runRngMove.on && runRngMove.timer.isElapsed()) {
+        await runRngMove();
+        runRngMove.timer.update();
+      }
+
       continue;
     }
 
@@ -158,6 +160,10 @@ const runBot = async ({ bot, log, state, stats }) => {
     if (state.status == "working") {
       stats.miss++;
       log.warn(`Missed the fish!`);
+      if(runRngMove.on && runRngMove.timer.isElapsed()) {
+        await runRngMove();
+        runRngMove.timer.update();
+      }
     }
 
   } while (state.status == "working");
