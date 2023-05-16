@@ -407,17 +407,21 @@ section {
 .bobberColorSwitch {
   transition: 0.1s all;
   position: absolute;
-  width: 60px;
-  height: 26px;
-  top: 10px;
+  width: 50px;
+  height: 22px;
+  top: 27px;
   left: 2px;
   border: 1px solid black;
   border-radius: 5px;
   background-color: white;
-  background-size: 60px 26px;
+  background-size: 50px 22px;
   background-position: -1px -1px;
   background-repeat: no-repeat;
   cursor: pointer;
+}
+
+.bobberColorSwitch_disabled {
+  opacity: 0.8;
 }
 
 .settings_section input[type=text].tmApiKey {
@@ -492,6 +496,10 @@ input[type=range][name=threshold]::-webkit-slider-runnable-track {
   background-image: linear-gradient(to right, black, red);
   border-radius: 10px;
   border: 0.2px solid #010101;
+}
+
+input[type=range][name=threshold].threshold_disabled::-webkit-slider-runnable-track {
+  opacity: 0.8;
 }
 
 input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
@@ -595,7 +603,23 @@ input[type=range][name=threshold].threshold_disabled::-webkit-slider-thumb {
 }
 
 .autoTh {
+  transition: 0.1s all;
   position: absolute;
-  top: 13px;
-  left: 70px;
+  top: 0;
+  left: 2px;
+  width: 50px;
+  height: 22px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+  background-size: 50px 22px;
+  background-position: -1px -1px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.bobberColorSwitchText {
+  width: 70px;
+  display: inline-block;
+  margin-left: 55px;
 }

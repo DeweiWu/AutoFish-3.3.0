@@ -72,8 +72,14 @@ class Settings {
 
     this.dom.addEventListener('click', (event) => {
       if(event.target.name == `bobberColor`) {
-        event.target.style = `background-image: url("./img/switch_${this.value == `red` ? `red` : `blue`}.png")`;
+        if(config.autoTh) return; 
         event.target.value = event.target.value == `blue` ? `red` : `blue`;
+        saveSettings(event);
+        this.reRender();
+      }
+
+      if(event.target.name == `autoTh`) {
+        event.target.value = event.target.value == true ? false : true;
         saveSettings(event);
         this.reRender();
       }

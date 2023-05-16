@@ -1,35 +1,40 @@
 const elt = require("./utils/elt.js");
 const wrapInLabel = require("./utils/wrapInLabel.js");
 
-const renderBobberImg = (bobberColor) => {
-  return elt(`img`, {className: `threshold_canvas`, src:`img/bobber_${bobberColor}.png`, width: 80, height: 49});
+const renderBobberImg = (bobberColor, autoTh) => {
+  return elt(`img`, {className: `threshold_canvas ${autoTh ? `bobberColorSwitch_disabled` : ``}`, src:`img/bobber_${bobberColor}.png`, width: 80, height: 49});
 };
 
 const renderThreshold = ({ threshold, bobberColor, autoTh }) => {
 
 	if(threshold < 1) threshold = 1;
 	else if(threshold > 150) threshold = 150;
-  const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch`,
-                                type: `text`,
+  const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch ${autoTh ? `bobberColorSwitch_disabled` : ``}`,
                                 name: `bobberColor`,
                                 title: `Switch between blue and red feathers.`,
                                 value: bobberColor,
                                 style: `background-image: url("./img/switch_${bobberColor == `red` ? `red` : `blue`}_new.png")`,
-                               });
+                              }, elt(`span`, {className: `bobberColorSwitchText`}, `${bobberColor == `red` ? `Red Feather` : `Blue Feather`}`));
+
+const autoThSwitch = elt(`radio`, { className: `autoTh`,
+                              name: `autoTh`,
+                              title: `Switch between auto and manual modes.`,
+                              value: autoTh,
+                              style: `background-image: url("./img/switch_${autoTh == true ? `auto` : `manual`}_new.png")`,
+                            },  elt(`span`, {className: `bobberColorSwitchText`},  `${autoTh ? `Auto` : `Manual`}`));
 
   const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold`, disabled: autoTh, className: `${autoTh ? `threshold_disabled` : ``}` });
   if(bobberColor == `blue`) {
-    document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
+    document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
   } else {
-    document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
+    document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
   }
 
   const number = elt(`input`, { type: `number`, value: threshold, disabled: autoTh, name: `threshold` });
 
-	const canvas = renderBobberImg(bobberColor);
-  const autoThContainer = elt(`div`, {className: `autoTh`}, elt(`span`, null, `Auto Color:`), elt(`input`, {type: `checkbox`, name: `autoTh`, checked: autoTh}));
+	const canvas = renderBobberImg(bobberColor, autoTh);
   const bobberContainer = elt(`div`, { className: `bobberContainer` }, canvas, number);
-  return elt(`div`, { className: `thresholdRange` }, bobberColorSwitch, range, bobberContainer, autoThContainer);
+  return elt(`div`, { className: `thresholdRange` }, bobberColorSwitch, range, bobberContainer, autoThSwitch);
 };
 
 const renderGameNames = ({game}) => {
@@ -290,7 +295,7 @@ return elt(
       ),
       /*wrapInLabel(elt('span', null, "Loot all ", elt('span', {style: `color:#4DDF3F; font-weight: bold`}, `Uncommon `), `and `, elt(`span`, {style: `color: #015CB4; font-weight: bold`}, `Rare `), `and `, elt('span', {style: `color:#950c95; font-weight: bold`}, `Epic `), `items:`), renderWhiteListGreenBlue(config), `If you use whitelist, you can check this option to loot every green, blue and purple items in addition to the items in the whitelist.`)*/
     ),
-    elt("p", {className: 'settings_header'}, "Color"),
+    elt("p", {className: 'settings_header'}, "Threshold"),
     elt(
       "div",
       { className: "settings_section threshold_settings" },
