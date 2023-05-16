@@ -70,7 +70,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
           }
         }
       } else if(direction == `center` || detectSens) {
-        const doubleZoneSize = screenSize.width > 1920 ? 100 : 50;
+        const doubleZoneSize = screenSize.height > 1080 ? 100 : 50;
 
         let rgbAroundBobber = createRgb(await getDataFrom({x: zone.x + bobber.x - doubleZoneSize,
                                                           y: zone.y + bobber.y - doubleZoneSize,
@@ -156,8 +156,8 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
         let [rA, gA, bA] = a.color;
         let [rB, gB, bB] = b.color;
 
-        let distanceA = Math.sqrt(Math.pow(Math.abs(center.x - a.pos.x), 2) + Math.pow(Math.abs(center.y - a.pos.y), 2)) / 5;
-        let distanceB = Math.sqrt(Math.pow(Math.abs(center.x - b.pos.x), 2) + Math.pow(Math.abs(center.y - b.pos.y), 2)) / 5;
+        let distanceA = Math.sqrt(Math.pow(Math.abs(center.x - a.pos.x), 2) + Math.pow(Math.abs(center.y - a.pos.y), 2)) / screenSize.height > 1080 ? 10 : 5;
+        let distanceB = Math.sqrt(Math.pow(Math.abs(center.x - b.pos.x), 2) + Math.pow(Math.abs(center.y - b.pos.y), 2)) / screenSize.height > 1080 ? 10 : 5;
 
         let closenessARed = Math.abs(gA - bA);
         let closenessBRed = Math.abs(gB - bB);
