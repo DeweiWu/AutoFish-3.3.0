@@ -420,10 +420,6 @@ section {
   cursor: pointer;
 }
 
-.bobberColorSwitch_disabled {
-  opacity: 0.8;
-}
-
 .settings_section input[type=text].tmApiKey {
   width: 194px;
 }
@@ -496,10 +492,6 @@ input[type=range][name=threshold]::-webkit-slider-runnable-track {
   background-image: linear-gradient(to right, black, red);
   border-radius: 10px;
   border: 0.2px solid #010101;
-}
-
-input[type=range][name=threshold].threshold_disabled::-webkit-slider-runnable-track {
-  opacity: 0.8;
 }
 
 input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {

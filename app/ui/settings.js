@@ -72,7 +72,6 @@ class Settings {
 
     this.dom.addEventListener('click', (event) => {
       if(event.target.name == `bobberColor`) {
-        if(config.autoTh) return; 
         event.target.value = event.target.value == `blue` ? `red` : `blue`;
         saveSettings(event);
         this.reRender();

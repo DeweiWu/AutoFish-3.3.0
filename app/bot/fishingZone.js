@@ -34,7 +34,6 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
   return {
 
     async findBobber(exception, detectSens) {
-
       let rgb = createRgb(await getDataFrom(zone));
       rgb.saturate(...saturation)
       if(exception) {
@@ -67,7 +66,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
             saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
             return await this.findBobber(exception, detectSens)
           } else {
-            throw e;
+            throw new Error(`The bot can't figure out the background color. Change your Fishing Zone and avoid either red or blue colors.`);
           }
         }
       } else if(direction == `center` || detectSens) {
@@ -117,6 +116,8 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
             size: 10,
             dir: {x: 0, y: 1}
           });
+
+          if(!filledBobber.pos) return;
         }
 
         if(density > 1) {
@@ -191,8 +192,6 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
           }
         }
       }
-
-      if(memory.length < 2) return;
 
       let mostTop = memory.reduce((a, b) => a.y < b.y ? a : b);
       return {length: memory.length, pos: mostTop, points: memory};
