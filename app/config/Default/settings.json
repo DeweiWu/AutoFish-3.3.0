@@ -6,7 +6,7 @@
   "luresKey": "2",
   "intKey": "f",
   "useInt": false,
-  "stopKey": "space",
+  "stopKey": "delete",
   "spare": false,
   "spareKey": "4",
   "spareDelayMin": 9.8,
