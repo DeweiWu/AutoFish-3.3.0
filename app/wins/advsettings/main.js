@@ -43,6 +43,7 @@ const createAdvSettings = (appPath) => {
   });
 
   win.once("ready-to-show", () => {
+    //win.openDevTools({mode: `detach`});
     win.show();
   });
 

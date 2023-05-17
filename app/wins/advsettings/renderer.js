@@ -284,8 +284,28 @@ const renderCustomWindow = ({useCustomWindow, customWindow}) => {
 
 };
 
-const renderTimerQuit = ({timerQuit}) => {
-  return elt('input', {type: 'checkbox', checked: timerQuit, name: "timerQuit"});
+const renderAfterTimer = ({afterTimer}) => {
+  let options = [
+    `Stop`,
+    `HS`,
+    `Quit`,
+    `HS + Quit`
+  ]
+  return elt('select', {value: afterTimer, name: "afterTimer"}, ...options.map(option => elt(`option`, {value: option, selected: option == afterTimer}, option)));
+};
+
+const renderHsKey = ({hsKey, afterTimer}) => {
+  const key = elt('input', {type: `text`, name: `hsKey`, disabled: afterTimer != `HS` && afterTimer != `HS + Quit`, value: hsKey});
+  key.setAttribute(`readonly`, `true`);
+  return key;
+};
+
+const renderHsKeyDelay = ({hsKeyDelay, afterTimer}) => {
+  return elt(`input`, {type: `number`, value: hsKeyDelay, disabled: afterTimer != `HS` && afterTimer != `HS + Quit`, name: `hsKeyDelay`})
+}
+
+const renderShutDown = ({timerShutDown, afterTimer}) => {
+  return elt(`input`, {type: `checkbox`, checked: timerShutDown, disabled: afterTimer != `Quit` && afterTimer != `HS + Quit`, name: `timerShutDown`});
 };
 
 const renderTmApiKey = ({tmApiKey}) => {
@@ -403,12 +423,18 @@ const renderSettings = (config) => {
   wrapInLabel(`Applying ability delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
   wrapInLabel(`Attempts limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
   wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `After attempts limit the bot will dynamically change threshold by the provided value.`),
-  wrapInLabel("Quit after timer: ", renderTimerQuit(config),`The bot will quit the game after timer elapsed.`),
   wrapInLabel(
     "Use shift+click: ",
     renderShiftClick(config),
     `Use shift + click instead of Auto Loot. Check this option if you don't want to turn on Auto Loot option in the game. Your "Loot key" in the game should be assigned to shift.`
   )),
+  elt(`p`, {className: `settings_header`}, `Timer`),
+  elt('div', {className: "settings_section"},
+  wrapInLabel("Do after timer: ", renderAfterTimer(config),``),
+  wrapInLabel("HS Key: ", renderHsKey(config), ``),
+  wrapInLabel("HS Delay: ", renderHsKeyDelay(config), ``),
+  wrapInLabel("Shutdown computer after quitting: ", renderShutDown(config), ``),
+  ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🔊 Sound Detection`),
   elt('div', {className: "settings_section settings_premium"},
   wrapInLabel(`Use Sound Detection: `, renderSoundDetection(config), `The bot will check the change of sound instead of the change of pixels when it should catch the fish.`),
@@ -556,7 +582,7 @@ const runApp = async () => {
   }
 
   settings.addEventListener('mousedown', (event) => {
-    if(event.target.name == `mammothKey` && !event.target.disabled) {
+    if(event.target.name == `mammothKey` || event.target.name == `hsKey` && !event.target.disabled) {
       event.target.style.backgroundColor = `rgb(255, 104, 101)`;
       event.target.style.border = `1px solid grey`;
 

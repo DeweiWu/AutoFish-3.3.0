@@ -1,4 +1,4 @@
-const runBot = async ({ bot, log, state, stats }) => {
+const runBot = async ({ bot, log, state, stats }, onError, wins) => {
   const {
     dynamicThreshold,
     logOut,
@@ -18,7 +18,8 @@ const runBot = async ({ bot, log, state, stats }) => {
     dx12Case,
     runRngMove,
     stopAllCurrentActions,
-    detectSens
+    detectSens,
+    doAfterTimer,
   } = bot;
 
   const sleep = (time) => {
@@ -54,10 +55,20 @@ const runBot = async ({ bot, log, state, stats }) => {
       if(runRngMove.on) {
         runRngMove.timer.start();
       }
+
+      if(doAfterTimer.on) {
+        doAfterTimer.timer.start();
+      }
+    }
+
+    console.log(doAfterTimer.on, doAfterTimer.timer.timeRemains(), doAfterTimer.timer.isElapsed());
+    if(doAfterTimer.on && doAfterTimer.timer.isElapsed()) {
+      await doAfterTimer(onError, wins);
     }
 
     await replyToChat();
     await checkWhisper();
+
 
     if(logOut.on && logOut.timer.isElapsed()) {
       log.send(`Logging out...`)
@@ -165,7 +176,6 @@ const runBot = async ({ bot, log, state, stats }) => {
         runRngMove.timer.update();
       }
     }
-
   } while (state.status == "working");
   await stopAllCurrentActions();
 };

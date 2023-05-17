@@ -230,11 +230,11 @@ section {
 }
 
 
-.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="intKey"], .settings input[name="spareKey"], .settings input[name="mammothKey"] {
+.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="intKey"], .settings input[name="spareKey"], .settings input[name="mammothKey"], .settings input[name="hsKey"] {
   cursor: pointer;
 }
 
-.settings input[name="stopKey"]:active, .settings input[name="luresKey"]:active, .settings input[name="fishingKey"]:active, .settings input[name="intKey"]:active, .settings input[name="mammothKey"]:active {
+.settings input[name="stopKey"]:active, .settings input[name="luresKey"]:active, .settings input[name="fishingKey"]:active, .settings input[name="intKey"]:active, .settings input[name="mammothKey"]:active, .settings input[name="hsKey"]:active {
   cursor: default;
 }
 
@@ -654,7 +654,7 @@ input[type=range]::-webkit-slider-thumb {
   background-size: 10px;
   background-repeat: no-repeat;
   cursor: pointer;
-  margin-top: -6px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  margin-top: -7px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
 }
 
 input[type=range]::-webkit-slider-thumb:hover {
@@ -665,7 +665,7 @@ input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 8px;
   cursor: pointer;
-  background-color: rgba(0, 117, 255, 0.6);
+  background-image: linear-gradient(to left, rgba(0, 117, 255, 0.6), rgba(0, 117, 255, 0.8));
   border-radius: 10px;
   border: 0.2px solid #010101;
 }

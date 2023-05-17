@@ -5,7 +5,7 @@ const createLootZone = require("./lootZone.js");
 const createChatZone = require('./chatZone');
 const Jimp = require(`jimp`);
 
-const { BrowserWindow, ipcMain } = require(`electron`);
+const { BrowserWindow, ipcMain, app } = require(`electron`);
 
 const { screen, Region, Point, straightTo } = require("@nut-tree/nut-js");
 const nutMouse = require("../game/nut.js").mouse;
@@ -995,7 +995,40 @@ if (config.soundDetection) {
     }
   }
 
+  const doAfterTimer = async (onError, wins) => {
+    if(config.afterTimer == `HS` || config.afterTimer == `HS + Quit`) {
+      await action(async () => {
+        await keyboard.sendKey(config.hsKey, delay);
+      }, true);
+      await sleep(config.hsKeyDelay);
+    }
+
+    state.status = `stop`;
+
+    if(config.afterTimer == `HS + Quit` || config.afterTimer == `Quit`) {
+      if(wins.every(win => win.state.status == `stop`)) {
+        if(config.timerShutDown) {
+            await keyboard.sendKey(`lWin`, delay);
+            await sleep(random(1000, 2000));
+            await keyboard.printText(`cmd`, delay);
+            await sleep(random(1000, 2000));
+            await keyboard.sendKey(`enter`, delay);
+            await sleep(random(1000, 2000));
+            await keyboard.printText(`shutdown -s -t 10`, delay);
+            await keyboard.sendKey(`enter`, delay);
+        }
+        onError();
+        app.quit();
+      }
+      workwindow.close();
+    }
+  }
+
+  doAfterTimer.timer = createTimer(() => settings.timer * 1000 * 60)
+  doAfterTimer.on = settings.timer;
+
   return {
+    doAfterTimer,
     detectSens,
     stopAllCurrentActions,
     runRngMove,
