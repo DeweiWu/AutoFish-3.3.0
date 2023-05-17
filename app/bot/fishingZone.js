@@ -156,8 +156,8 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
         let [rA, gA, bA] = a.color;
         let [rB, gB, bB] = b.color;
 
-        let distanceA = Math.sqrt(Math.pow(Math.abs(center.x - a.pos.x), 2) + Math.pow(Math.abs(center.y - a.pos.y), 2)) / screenSize.height > 1080 ? 10 : 5;
-        let distanceB = Math.sqrt(Math.pow(Math.abs(center.x - b.pos.x), 2) + Math.pow(Math.abs(center.y - b.pos.y), 2)) / screenSize.height > 1080 ? 10 : 5;
+        let distanceA = Math.sqrt(Math.pow(Math.abs(center.x - a.pos.x), 2) + Math.pow(Math.abs(center.y - a.pos.y), 2)) / (screenSize.height > 1080 ? 10 : 5);
+        let distanceB = Math.sqrt(Math.pow(Math.abs(center.x - b.pos.x), 2) + Math.pow(Math.abs(center.y - b.pos.y), 2)) / (screenSize.height > 1080 ? 10 : 5);
 
         let closenessARed = Math.abs(gA - bA);
         let closenessBRed = Math.abs(gB - bB);
