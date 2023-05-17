@@ -782,7 +782,7 @@ if (config.soundDetection) {
     /* end */
 
     let x = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.x, -25) : random(25, config.rngMoveRadiusStep.x); // from to logic
-    let y = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.y, -5) : random(5, config.rngMoveRadiusStep.y);
+    let y = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.y, 1) : random(1, config.rngMoveRadiusStep.y);
 
     if(x + moveMemory.x < -maxX || x + moveMemory.x > maxX) {
       x = -x;
@@ -917,7 +917,27 @@ if (config.soundDetection) {
 
   rngBalanceOut.timer = createTimer(() => config.rngMoveBalanceTime * 1000 * 60);
   rngBalanceOut.timer.start();
+/*
+  const getRngMoveMouseBalance = (pos) => {
+    let x = 0;
+    let y = 0;
+    let randomX = random(25, 100);
+    let ranodmY = random(10, 25);
+    if(pos.x < 0) {
+      x = randomX;
+    } else {
+      x = -randomX;
+    }
 
+    if(pos.y < 0) {
+      y = ranodmY;
+    } else {
+      y = -ranodmY;
+    }
+
+    return {x, y};
+  }
+*/
   const runRngMove = async () => {
     await action(async function rngMove() {
 

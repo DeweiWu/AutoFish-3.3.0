@@ -35,7 +35,7 @@
       "reaction": true,
       "reactionDelay": { "from": 150, "to": 400 },
       "maxAttempts": 5,
-      "afterTimer": "HS",
+      "afterTimer": "Stop",
       "hsKey": "6",
       "hsKeyDelay": 15000,
       "timerShutDown": false,
