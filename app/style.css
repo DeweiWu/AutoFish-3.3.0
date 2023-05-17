@@ -669,3 +669,30 @@ input[type=range]::-webkit-slider-runnable-track {
   border-radius: 10px;
   border: 0.2px solid #010101;
 }
+
+
+.switch_thumb {
+  position: absolute;
+  top: 1px;
+  width: 20px;
+  height: 18px;
+  background-color: rgb(240,240,240);
+  background-image: url("img/grate.png");
+  background-position: center 3px;
+  background-size: 10px;
+  background-repeat: no-repeat;
+  border-radius: 3px;
+  border: 1px solid grey;
+}
+
+.switch_thumb_left {
+    left: 2px;
+}
+
+.switch_thumb_right {
+    left: 26px;
+}
+
+.switch_thumb:hover {
+  border: 1px solid black;
+}

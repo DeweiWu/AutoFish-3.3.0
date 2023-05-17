@@ -6,28 +6,27 @@ const renderBobberImg = (bobberColor, autoTh) => {
 };
 
 const renderThreshold = ({ threshold, bobberColor, autoTh }) => {
-
 	if(threshold < 1) threshold = 1;
 	else if(threshold > 150) threshold = 150;
   const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch ${autoTh ? `bobberColorSwitch_disabled` : ``}`,
                                 name: `bobberColor`,
                                 title: `Switch between blue and red feathers.`,
                                 value: bobberColor,
-                                style: `background-image: url("./img/switch_${bobberColor == `red` ? `red` : `blue`}_new.png")`,
-                              }, elt(`span`, {className: `bobberColorSwitchText`}, `${bobberColor == `red` ? `Red Feather` : `Blue Feather`}`));
+                                style: `background-image: linear-gradient(to right, ${bobberColor == `red` ? `rgb(100, 0, 0), red` : `rgb(0, 90, 200), rgb(0, 0, 100)`});`
+                              }, elt(`div`, {className: `switch_thumb ${bobberColor == `red` ? `switch_thumb_left` : `switch_thumb_right`}`}), elt(`span`, {className: `bobberColorSwitchText`}, `${bobberColor == `red` ? `Red Feather` : `Blue Feather`}`));
 
 const autoThSwitch = elt(`radio`, { className: `autoTh`,
                               name: `autoTh`,
                               title: `Switch between auto and manual modes.`,
                               value: autoTh,
-                              style: `background-image: url("./img/switch_${autoTh == true ? `auto` : `manual`}_new.png")`,
-                            },  elt(`span`, {className: `bobberColorSwitchText`},  `${autoTh ? `Auto` : `Manual`}`));
+                              style: `background-image: linear-gradient(to right, ${autoTh ? `#663c20, #fe954d` : `#a8a8a8, #4b4b4b`});`
+                            }, elt(`div`, {className: `switch_thumb ${autoTh ? `switch_thumb_left` : `switch_thumb_right`}`}), elt(`span`, {className: `bobberColorSwitchText`},  `${autoTh ? `Auto` : `Manual`}`));
 
   const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold`, disabled: autoTh, className: `${autoTh ? `threshold_disabled` : ``}` });
   if(bobberColor == `blue`) {
-    document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 40), rgb(0, 90, 200))"
+    document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
   } else {
-    document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(40, 0, 0), rgb(250, 0, 0))"
+    document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
   }
 
   const number = elt(`input`, { type: `number`, value: threshold, disabled: autoTh, name: `threshold` });
