@@ -34,7 +34,8 @@ const keyCodes = {
   f12: 205,
   numlock: 219,
   scrolllock: 207,
-  shift: 129
+  shift: 129,
+  lWin: 131
 };
 
 const sleep = (time) => {
