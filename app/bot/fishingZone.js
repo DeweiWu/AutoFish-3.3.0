@@ -69,6 +69,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
             throw new Error(`The bot can't figure out the background color. Resize or reposition your Fishing Zone or try manual mode.`);
           }
         }
+        colorSwitchesCount = 0; // reset recursive
       } else if(direction == `center` || detectSens) {
         const doubleZoneSize = screenSize.height > 1080 ? 100 : 50;
 
@@ -176,7 +177,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
       });
 
       let newThreshold = Math.round((
-        ([r, g, b]) => bobberColor == `red` ? r - Math.max(g, b) : b - Math.max(g, r))(bobber.color) * .75); //.75 // for doubleZoneSearching searching half of the color foundo on threshold
+        ([r, g, b]) => bobberColor == `red` ? r - Math.max(g, b) : b - Math.max(g, r))(bobber.color) * .75); // for doubleZoneSearching searching half of the color foundo on threshold
 
       isBobber = bobberColor == `red` ? isRed(newThreshold, 50) : isBlue(newThreshold, 50); // 50
       return bobber.pos;
