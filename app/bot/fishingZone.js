@@ -66,7 +66,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
             saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
             return await this.findBobber(exception, detectSens)
           } else {
-            throw new Error(`The bot can't figure out the background color. Change your Fishing Zone and avoid either red or blue colors.`);
+            throw new Error(`The bot can't figure out the background color. Resize or reposition your Fishing Zone or try manual mode.`);
           }
         }
       } else if(direction == `center` || detectSens) {
