@@ -61,7 +61,6 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       }
     }
 
-    console.log(doAfterTimer.on, doAfterTimer.timer.timeRemains(), doAfterTimer.timer.isElapsed());
     if(doAfterTimer.on && doAfterTimer.timer.isElapsed()) {
       await doAfterTimer(onError, wins);
     }
