@@ -1041,10 +1041,13 @@ if (config.soundDetection) {
             await keyboard.printText(`shutdown -s -t 10`, delay);
             await keyboard.sendKey(`enter`, delay);
         }
-        onError();
         app.quit();
       }
       workwindow.close();
+    }
+
+    if(wins.every(win => win.state.status == `stop`)) {
+      onError();
     }
   }
 
