@@ -386,7 +386,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
 
     if (state.status == "initial") {
       await sleep(250);
-      if (!config.ignorePreliminary && await notificationZone.check("error")) {
+      if (!settings.autoTh && !config.ignorePreliminary && await notificationZone.check("error")) {
         throw new Error(`Game error notification occured on casting fishing.`);
       } else {
         state.status = "working";
