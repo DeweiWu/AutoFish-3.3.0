@@ -289,6 +289,7 @@ or in connection with the use or performance of this software.
 
     const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot, arduino);
     const stopAppAndBots = () => {
+      if(config.patch[settings.game].hideWin) win.show(); 
       stopBots();
       shell.beep();
       if (!win.isFocused()) {
@@ -304,6 +305,11 @@ or in connection with the use or performance of this software.
     globalShortcut.register(settings.stopKey, stopAppAndBots);
 
     win.blur();
+    if(config.patch[settings.game].hideWin) {
+      setTimeout(() => {
+        win.hide();
+      }, 500 + Math.random() * 1500);
+    }
     startBots(stopAppAndBots);
   });
 
