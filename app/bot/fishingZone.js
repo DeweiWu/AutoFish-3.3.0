@@ -18,13 +18,13 @@ const getPosWithin = ({points, pos, size, dir}) => {
 const isOverThreshold = ([r, g, b], threshold) => (r - Math.max(g, b)) > threshold;
 const isCloseEnough = ([r, g, b], closeness) => Math.abs(g - b) <= closeness;
 
-const isRed = (threshold, closeness, size = 255) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
+const isRed = (threshold, closeness, size = 255, upperLimit = 295) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
                                                        isCloseEnough([r, g, b], closeness) &&
-                                                       g < size && b < size;
+                                                       g < size && b < size && r <= upperLimit;
 
-const isBlue = (threshold, closeness, size = 255) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) &&
+const isBlue = (threshold, closeness, size = 255, upperLimit = 295) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) &&
                                                         isCloseEnough([b, g, r], closeness) &&
-                                                        r < size && g < size;
+                                                        r < size && g < size && b <= upperLimit;
 
 const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberColor, sensitivity, density, direction, splashColor, autoThreshold }) => {
   let isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
@@ -143,7 +143,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
     },
 
     adjustThreshold(rgb) {
-      isBobber = bobberColor == `red` ? isRed(0, 50, 100) : isBlue(0, 50, 100); // or all colors?
+      isBobber = bobberColor == `red` ? isRed(0, 50, 100, 275) : isBlue(0, 50, 100, 275); // or all colors?
 
       let initialThColors = rgb.findColors({
         isColor: isBobber,
