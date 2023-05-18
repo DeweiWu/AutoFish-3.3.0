@@ -39,6 +39,7 @@ const runApp = async () => {
     profiles
   );
   document.body.append(autoFish.dom);
+  ipcRenderer.send(`onload`);
 };
 
 runApp();

@@ -191,9 +191,7 @@ const connectToTelegram = (key) => {
   return tmBot.bot.launch();
 };
 
-
-  win.once("ready-to-show", () => {
-    //win.openDevTools({mode: `detach`});
+  ipcMain.on(`onload`, () => {
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
@@ -218,9 +216,13 @@ const connectToTelegram = (key) => {
       log.warn(`Provide a Telegram token!`);
     }
 
-    win.show();
     let { version } = getJson('../package.json');
     win.webContents.send('set-version', version);
+  });
+
+  win.once("ready-to-show", () => {
+    //win.openDevTools({mode: `detach`});
+    win.show();
   });
 
   ipcMain.on("start-bot", async (event, type) => {
@@ -289,7 +291,7 @@ or in connection with the use or performance of this software.
 
     const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot, arduino);
     const stopAppAndBots = () => {
-      if(config.patch[settings.game].hideWin) win.show(); 
+      if(config.patch[settings.game].hideWin) win.show();
       stopBots();
       shell.beep();
       if (!win.isFocused()) {
