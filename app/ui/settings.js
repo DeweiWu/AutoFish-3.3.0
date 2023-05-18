@@ -19,7 +19,7 @@ const convertValue = (node) => {
 class Settings {
   constructor(config) {
     this.config = config;
-    this.dom = elt('form', null , renderSettings(config));
+    this.dom = elt('form', {className: `settings_dom`} , renderSettings(config));
 
     const saveSettings = (event) => {
       if(Object.keys(this.config).includes(event.target.name)) {

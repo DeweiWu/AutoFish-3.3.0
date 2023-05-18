@@ -175,13 +175,28 @@ class AutoFish {
       this.logger.show(data);
     });
 
+    let settingsVisibility = true;
+    let foldSettingsContainer = elt(`img`, {src: `img/arrow.png`, className: `settingsFolder`})
+    foldSettingsContainer.addEventListener(`click`, (event) => {
+        if(settingsVisibility) {
+          this.settings.dom.style = `display: none;`;
+          ipcRenderer.send(`resize-win`, {width: 341, height: 400})
+          event.target.src = `img/arrow_down.png`;
+        } else {
+          this.settings.dom.style = `display: block`;
+          ipcRenderer.send(`resize-win`, {width: 341, height: 805})
+          event.target.src = `img/arrow.png`
+        }
+        settingsVisibility = !settingsVisibility;
+    })
+
     this.dom = elt(
       "div",
       { className: "AutoFish" },
       renderLogo(),
-      elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header" }, "Settings"), profile.dom),
+      elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header settings_header_main"}, "Settings"), foldSettingsContainer,  profile.dom),
       this.settings.dom,
-      elt("p", { className: "settings_header settings_header_log" }, "Log"),
+      elt("p", { className: "settings_header settings_header_log settings_header_main" }, "Log"),
       this.logger.dom,
       this.button.dom,
       footer

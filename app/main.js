@@ -99,10 +99,10 @@ const random = (from, to) => {
 const createWindow = async () => {
   let win = new BrowserWindow({
     title: generateName(Math.floor(random(5, 15))),
-    width: 325,
-    height: 795,
+    width: 341,
+    height: 805,
     show: false,
-    resizable: false,
+    resizable: true,
     webPreferences: {
       spellcheck: false,
       contextIsolation: false,
@@ -339,6 +339,10 @@ or in connection with the use or performance of this software.
   ipcMain.on("save-settings", (event, settings) =>
     writeFileSync(path.join(__dirname, `./config/${getProfile().selected}/settings.json`), JSON.stringify(settings))
   );
+
+  ipcMain.on(`resize-win`, (event, size) => {
+    win.setSize(size.width, size.height);
+  })
 
   let settWin;
   ipcMain.on("advanced-settings", () => {

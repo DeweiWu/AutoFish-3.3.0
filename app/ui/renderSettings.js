@@ -24,9 +24,9 @@ const autoThSwitch = elt(`radio`, { className: `autoTh`,
 
   const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold`, disabled: autoTh, className: `${autoTh ? `threshold_disabled` : ``}` });
   if(bobberColor == `blue`) {
-    document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
+    document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
   } else {
-    document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
+    document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
   }
 
   const number = elt(`input`, { type: `number`, value: threshold, disabled: autoTh, name: `threshold` });
@@ -280,7 +280,7 @@ return elt(
         `Advanced settings that allow you to fine-tune the bot. The settings will be saved under the chosen game version.`
       ),
     ),
-    elt("p", {className: 'settings_header'}, "Filter"),
+    elt("p", {className: 'settings_header settings_header_main'}, "Filter"),
     elt(
       "div",
       { className: "settings_section" },
@@ -294,7 +294,7 @@ return elt(
       ),
       /*wrapInLabel(elt('span', null, "Loot all ", elt('span', {style: `color:#4DDF3F; font-weight: bold`}, `Uncommon `), `and `, elt(`span`, {style: `color: #015CB4; font-weight: bold`}, `Rare `), `and `, elt('span', {style: `color:#950c95; font-weight: bold`}, `Epic `), `items:`), renderWhiteListGreenBlue(config), `If you use whitelist, you can check this option to loot every green, blue and purple items in addition to the items in the whitelist.`)*/
     ),
-    elt("p", {className: 'settings_header'}, "Threshold"),
+    elt("p", {className: 'settings_header settings_header_main'}, "Threshold"),
     elt(
       "div",
       { className: "settings_section threshold_settings" },
