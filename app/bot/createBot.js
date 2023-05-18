@@ -718,6 +718,10 @@ if (config.soundDetection) {
       tmBot.ctx.reply(`Someone whispered on Window: ${winNum}!`);
       tmBot.ctx.sendChatAction(`upload_photo`);
       tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
+      if(config.closeAtWhisper) {
+        state.status = `stop`;
+        workwindow.close();
+      }
     }
   };
 

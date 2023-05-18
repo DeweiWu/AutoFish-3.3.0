@@ -151,6 +151,8 @@ const renderMaxFishTime = ({maxFishTime}) => {
   return elt(`input`, {type: `number`, name: `maxFishTime`, value: maxFishTime});
 };
 
+const renderCloseAtWhisper = ({closeAtWhisper}) => elt(`input`, {type: `checkbox`, checked: closeAtWhisper, name: `closeAtWhisper`});
+
 const renderRelZone = ({relZone}) => {
   return elt(`div`, {"data-collection": `relZone`},
       elt(`span`, {className: `option_text`}, `x:`), elt(`input`, {type: `number`, step: 0.1, name: `x`, value: relZone.x}),
@@ -447,6 +449,7 @@ const renderSettings = (config) => {
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Telegram token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
     wrapInLabel(`Detect whisper:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
+    wrapInLabel(`Stop and close the game at whisper:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
     wrapInLabel(`Whisper Threshold:`, renderWhisperThreshold(config), `The intensity of purple color the bot will recognize as whispering.`),
     wrapInLabel(`Chat zone (%):`, renderChatZone(config), `The same logic as with Fishing Zone. The bot will analyze this zone for Whisper Threshold purple colors.`),
   ),
