@@ -398,7 +398,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
 
   const highlightBobber = async (pos) => {
 
-    if (settings.useInt || settings.afkmode || (config.likeHuman && random(0, 100) > 100)) {
+    if (settings.useInt || settings.afkmode || (config.likeHuman && random(0, 100) > 50)) {
         return pos;
     }
 
