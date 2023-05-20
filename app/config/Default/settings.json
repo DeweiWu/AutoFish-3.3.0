@@ -23,5 +23,6 @@
   "bobberColor": "red",
   "afkmode": false,
   "multipleWindows": false,
-  "initial": true
+  "initial": true,
+  "initialZone": true
 }

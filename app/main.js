@@ -47,12 +47,12 @@ if (handleSquirrelEvent(app)) {
 /* Squirrel end */
 
 
-const showChoiceWarning = (win, warning) => {
+const showChoiceWarning = (win, warning, title, button1, button2) => {
   return result = dialog.showMessageBoxSync(win, {
     type: "warning",
-    title: `Disclaimer`,
+    title: `${title}`,
     message: warning,
-    buttons: [`I agree`, `I don't agree`],
+    buttons: [`${button1}`, `${button2}`],
     defaultId: 0,
     cancelId: 1,
   });
@@ -161,7 +161,7 @@ const connectToTelegram = (key) => {
     if(!tmBot.ctx) tmBot.ctx = ctx;
     let text = ctx.update.message.text;
     let newThreshold = Number(text.slice((`/th`).length));
-    console.log(newThreshold);
+
     if(!isNaN(newThreshold) && newThreshold > 1 && newThreshold < 150) {
       let settings = getJson(`./config/${profile}/settings.json`);
       settings.threshold = newThreshold;
@@ -195,6 +195,22 @@ const connectToTelegram = (key) => {
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
+
+    if(settings.initial) {
+      showWarning(win, `The shortcut to AutoFish was created on you desktop`);
+
+      if(showChoiceWarning(win, `The software is provided "as is" and the author disclaims all warranties
+with regard to this software. In no event shall the author be liable for
+any special, direct, indirect, or consequential damages or any damages
+whatsoever resulting from loss of use or data, whether in an
+action of contract, negligence or other tortious action, arising out of
+or in connection with the use or performance of this software.`, `Disclaimer`, `I agree`, `I don't agree`)) {
+        app.quit();
+      } else {
+        settings.initial = false;
+        writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
+      }
+    }
 
     if(settings.initial) {
       log.send(`Thank you for purchasing Premium!`);
@@ -255,6 +271,17 @@ const connectToTelegram = (key) => {
       log.ok(`Found ${games.length} window${games.length > 1 ? `s` : ``} of the game!`);
     }
 
+    if(type != `relZone` && settings.initialZone && !(showChoiceWarning(win, `This is your first launch. Do you want to set your Fishing Zone first? (recommended)`, `Fishing Zone`, `Yes`, `No`))){
+      type = `relZone`;
+      win.webContents.send("stop-bot");
+    }
+
+    if(settings.initialZone) {
+      settings.initialZone = false;
+      writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
+    }
+
+
     if(type == `relZone` || type == `chatZone`) {
       log.send(`Setting ${type == `relZone` ? `Fishing` : `Chat`} Zone...`);
       let data = await setFishingZone(games[0], config.patch[settings.game][type], type, config.patch[settings.game], settings);
@@ -265,22 +292,6 @@ const connectToTelegram = (key) => {
       log.ok(`Set ${type == `relZone` ? `Fishing` : `Chat`} Zone successfully!`);
       win.focus();
       return;
-    }
-
-    if (settings.initial && (settings.game == "Dragonflight" || settings.game == "WotLK Classic" || settings.game == "Classic")) {
-      if(showChoiceWarning(win, `The software is provided "as is" and the author disclaims all warranties
-with regard to this software. In no event shall the author be liable for
-any special, direct, indirect, or consequential damages or any damages
-whatsoever resulting from loss of use or data, whether in an
-action of contract, negligence or other tortious action, arising out of
-or in connection with the use or performance of this software.
-`)) {
-        win.webContents.send('stop-bot');
-        return;
-      } else {
-        settings.initial = false;
-        writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
-      }
     }
 
     if(settings.fishingKey === `` || settings.luresKey === ``) {
