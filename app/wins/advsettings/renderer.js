@@ -71,7 +71,7 @@ const renderSoundDetectionRange = ({soundDetection, soundDetectionRange}) => {
     if(soundDetectionRange < 128) soundDetectionRange = 128;
     let soundDetectionRangeWin = elt(`input`, {type: `number`, name: `soundDetectionRange`, value: soundDetectionRange, disabled: !soundDetection});
 
-    return elt(`div`, null, elt('input', {type: `range`, min: 128, max: 1100, value: soundDetectionRange, disabled: !soundDetection,  oninput: function() {soundDetectionRangeWin.value = this.value}, name: `soundDetectionRange`}),
+    return elt(`div`, null, elt('input', {type: `range`, min: 128, max: 1100, value: soundDetectionRange, disabled: !soundDetection,  oninput: function() {soundDetectionRangeWin.value = this.value}, name: `soundDetectionRange`, className: `${!soundDetection ? `threshold_disabled` : ``}`}),
      soundDetectionRangeWin);
 };
 
@@ -258,7 +258,7 @@ const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensi
   if(bobberSensitivity < min) bobberSensitivity = min;
   let bobberSensitivityWin = elt(`input`, {type: `number`, name: `bobberSensitivity`, value: bobberSensitivity, disabled: soundDetection || autoSensDens});
 
-  return elt(`div`, null, elt('input', {type: `range`, min, max, value: bobberSensitivity, disabled: soundDetection || autoSensDens, oninput: function() {bobberSensitivityWin.value = this.value}, name: `bobberSensitivity`}),
+  return elt(`div`, null, elt('input', {type: `range`, min, max, value: bobberSensitivity, disabled: soundDetection || autoSensDens, className: `${soundDetection || autoSensDens ? `threshold_disabled` : ``}`, oninput: function() {bobberSensitivityWin.value = this.value}, name: `bobberSensitivity`}),
    bobberSensitivityWin);
 };
 
@@ -268,7 +268,7 @@ const renderBobberDensity = ({bobberDensity, autoSensDens}) => {
   if(bobberDensity < 1) bobberDensity = 1;
   let bobberDensityWin = elt(`input`, {type: `number`, disabled: autoSensDens, name: `bobberDensity`, value: bobberDensity});
 
-  return elt(`div`, null, elt('input', {type: `range`, disabled: autoSensDens, min: 1, max: 10, value: bobberDensity, oninput: function() {bobberDensityWin.value = this.value}, name: `bobberDensity`}),
+  return elt(`div`, null, elt('input', {type: `range`, disabled: autoSensDens, className: `${autoSensDens ? `threshold_disabled` : ``}`,min: 1, max: 10, value: bobberDensity, oninput: function() {bobberDensityWin.value = this.value}, name: `bobberDensity`}),
    bobberDensityWin);
 };
 
@@ -320,9 +320,9 @@ const renderDetectWhisper = ({detectWhisper}) => {
   return elt('input', {type: `checkbox`, checked: detectWhisper, name: `detectWhisper`});
 };
 
-const renderWhisperThreshold = ({whisperThreshold}) => {
+const renderWhisperThreshold = ({whisperThreshold, detectWhisper}) => {
   let colorWin = elt(`div`, {className: `whisperColorBox`, style: `background-color: rgb(${whisperThreshold},0,${whisperThreshold})`}, `${whisperThreshold}`);
-  let range = elt('input', {type: `range`, min: 0, max: 255, oninput: function () {colorWin.style = `background-color: rgb(${this.value},0,${this.value})`; colorWin.innerHTML = this.value}, value: whisperThreshold, name: `whisperThreshold`, className: `whisperRange`});
+  let range = elt('input', {type: `range`, min: 0, max: 255, oninput: function () {colorWin.style = `background-color: rgb(${this.value},0,${this.value})`; colorWin.innerHTML = this.value}, value: whisperThreshold, name: `whisperThreshold`, className: `whisperRange ${!detectWhisper ? `threshold_disabled` : ``}`, disabled: !detectWhisper});
   return elt(`div`, null, range, colorWin);
 };
 

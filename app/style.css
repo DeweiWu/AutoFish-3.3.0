@@ -432,12 +432,13 @@ section {
 }
 
 .settings_section input[type=range].whisperRange {
-  width: 230px;
+  width: 216px;
 }
 
 .whisperColorBox {
   height: 20px;
-  width: 40px;
+  width: 50px;
+  margin-right: 3px;
   border: 1px solid grey;
   color: white;
   text-align: center;
@@ -501,11 +502,15 @@ input[type=range][name=threshold]::-webkit-slider-runnable-track {
   border: 0.2px solid #010101;
 }
 
-input[type=range][name=threshold]:focus::-webkit-slider-runnable-track {
+input[type=range].threshold_disabled::-webkit-slider-runnable-track {
+  opacity: 0.8;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
   opacity: 0.9;
 }
 
-input[type=range][name=threshold].threshold_disabled::-webkit-slider-thumb {
+input[type=range].threshold_disabled::-webkit-slider-thumb {
   visibility: hidden;
 }
 
