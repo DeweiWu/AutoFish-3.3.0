@@ -176,16 +176,16 @@ class AutoFish {
     });
 
     let settingsVisibility = true;
-    let foldSettingsContainer = elt(`img`, {src: `img/arrow.png`, className: `settingsFolder`})
+    let foldSettingsContainer = elt(`img`, {src: `img/unfold.png`, className: `settingsFolder`})
     foldSettingsContainer.addEventListener(`click`, (event) => {
         if(settingsVisibility) {
           this.settings.dom.style = `display: none;`;
           ipcRenderer.send(`resize-win`, {width: 341, height: 400})
-          event.target.src = `img/arrow_down.png`;
+          event.target.src = `img/fold.png`;
         } else {
           this.settings.dom.style = `display: block`;
           ipcRenderer.send(`resize-win`, {width: 341, height: 805})
-          event.target.src = `img/arrow.png`
+          event.target.src = `img/unfold.png`
         }
         settingsVisibility = !settingsVisibility;
     })

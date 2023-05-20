@@ -710,9 +710,10 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 .settingsFolder{
-  height: 20px;
+  height: 16px;
   position: absolute;
-  left: 85px;
-  top: 94px;
-  cursor: pointer
+  left: 90px;
+  top: 96px;
+  cursor: pointer;
+  opacity: 0.5;
 }
