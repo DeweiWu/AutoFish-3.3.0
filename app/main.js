@@ -191,10 +191,37 @@ const connectToTelegram = (key) => {
   return tmBot.bot.launch();
 };
 
-  ipcMain.on(`onload`, () => {
+  ipcMain.on(`onload`, async () => {
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
+
+    if(settings.initial) {
+      log.send(`Thank you for your support!`);
+    }
+
+    let tmKey = config.patch[settings.game].tmApiKey;
+
+    if(config.patch[settings.game].arduino) {
+      arduino.connectTo(config.patch[settings.game].arduinoPort, Number(config.patch[settings.game].arduinoRate))
+      .then((msg) => log.ok(msg))
+      .catch((err) => log.err(err))
+    }
+
+    if(tmKey) {
+      connectToTelegram(tmKey)
+      .then(() => log.ok(`Connected to Telegram!`))
+      .catch(e => log.err(`Telegram error: ${e.message}`))
+    } else {
+      log.warn(`Provide a Telegram token!`);
+    }
+
+    let { version } = getJson('../package.json');
+    win.webContents.send('set-version', version);
+
+    await new Promise(function(resolve, reject) {
+      setTimeout(resolve, 350);
+    });
 
     if(settings.initial) {
       showWarning(win, `The shortcut to AutoFish was created on you desktop`);
@@ -223,29 +250,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
         writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
       }
     }
-
-    if(settings.initial) {
-      log.send(`Thank you for purchasing Premium!`);
-    }
-
-    let tmKey = config.patch[settings.game].tmApiKey;
-
-    if(config.patch[settings.game].arduino) {
-      arduino.connectTo(config.patch[settings.game].arduinoPort, Number(config.patch[settings.game].arduinoRate))
-      .then((msg) => log.ok(msg))
-      .catch((err) => log.err(err))
-    }
-
-    if(tmKey) {
-      connectToTelegram(tmKey)
-      .then(() => log.ok(`Connected to Telegram!`))
-      .catch(e => log.err(`Telegram error: ${e.message}`))
-    } else {
-      log.warn(`Provide a Telegram token!`);
-    }
-
-    let { version } = getJson('../package.json');
-    win.webContents.send('set-version', version);
   });
 
   win.once("ready-to-show", () => {
@@ -283,9 +287,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
       log.ok(`Found ${games.length} window${games.length > 1 ? `s` : ``} of the game!`);
     }
 
-    if(type != `relZone` && settings.initialZone && !(showChoiceWarning(win, `This is your first launch. Do you want to set your Fishing Zone first? (recommended)`, `Fishing Zone`, `Yes`, `No`))){
-      type = `relZone`;
-      win.webContents.send("stop-bot");
+    if(type != `relZone` && type != `chatZone` && settings.initialZone){
+      await new Promise(function(resolve, reject) {
+        setTimeout(resolve, 50);
+      });
+      if(!(showChoiceWarning(win, `This is your first launch. Do you want to set your Fishing Zone first? (recommended)`, `Fishing Zone`, `Yes`, `No`))) {
+        type = `relZone`;
+        win.webContents.send("stop-bot");
+      }
     }
 
     if(settings.initialZone) {
