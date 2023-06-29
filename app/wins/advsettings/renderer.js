@@ -410,7 +410,7 @@ const renderRngMoveBalanceTime = ({rngMove, rngMoveBalanceTime}) => {
 };
 
 const renderAutoSensDens = ({autoSensDens, game}) => {
-  return elt(`input`, {type: `checkbox`, disabled: game == `Turtle WoW`, checked: autoSensDens, name: `autoSensDens`});
+  return elt(`input`, {type: `checkbox`, disabled: game == `Vanilla (splash)`, checked: autoSensDens, name: `autoSensDens`});
 }
 
 const renderSettings = (config) => {
@@ -512,8 +512,8 @@ const renderSettings = (config) => {
   wrapInLabel(`Max Check Time (ms):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do after Max Check Time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
   wrapInLabel(`Auto-adjust Density and Sensitivity:`, renderAutoSensDens(config), `The bot will auto-adjust both Sensitivity and Density values per each cast.`),
-  wrapInLabel(`${config.game == `Turtle WoW` ? `Splash` : `Bobber`} Sensitivity (px):`, renderBobberSensitivity(config), config.game != `Turtle WoW` ? `How sensitive the bot is to any movements of the bobber. If the bot often clicks too early, decrease this value (don't confuse it with when the bot missclicks on purpose). If the bot often doesn't react to bobber, increase this value.` : `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value.`),
-  config.game == `Turtle WoW` ? wrapInLabel(`Splash color: `, renderSplashColor(config), `Whitness of the splash effect: should be smaller at night and higher during the day. `) : ``,
+  wrapInLabel(`${config.game == `Vanilla (splash)` ? `Splash` : `Bobber`} Sensitivity (px):`, renderBobberSensitivity(config), config.game != `Vanilla (splash)` ? `How sensitive the bot is to any movements of the bobber. If the bot often clicks too early, decrease this value (don't confuse it with when the bot missclicks on purpose). If the bot often doesn't react to bobber, increase this value.` : `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value.`),
+  config.game == `Vanilla (splash)` ? wrapInLabel(`Splash color: `, renderSplashColor(config), `Whitness of the splash effect: should be smaller at night and higher during the day. `) : ``,
   wrapInLabel(`Bobber Density (px):`, renderBobberDensity(config), `Density decides where exactly the bot sticks on the feather. The larger the feather the larger the value should be. This value is mostly for 4k resolution users and if the bot clicks too early.`),
   wrapInLabel(`Bobber Check Time (ms):`, renderCheckingDelay(config), `How often the bot checks the bobber for any movements. Use this option in addition to Bobber Sensativity to find an optimal sensitivity.`),
   wrapInLabel(`Fishing Zone (%):`, renderRelZone(config), `A zone in which the bot looks for the bobber. The values are percentages of the dimensions of the window: 0.3 = 30%, 0.4 = 40% etc.`),

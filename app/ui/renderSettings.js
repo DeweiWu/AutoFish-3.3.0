@@ -38,34 +38,30 @@ const autoThSwitch = elt(`radio`, { className: `autoTh`,
 
 const renderGameNames = ({game}) => {
   const gamesOfficial = [
-    `Dragonflight`,
-    `WotLK Classic`,
+    `Retail`,
+    `LK Classic`,
     `Classic`
   ];
 
   const gamesPrivate = [
-    "Legion",
+    "Leg",
     "MoP",
-    "Cataclysm",
-    "WotLK Private",
+    "Cata",
+    "LK Private",
     "TBC",
-    "Vanilla"
+    "Vanilla",
+    "Vanilla (splash)"
   ];
-
-  const gamesCustom = ["Turtle WoW"]
 
   return elt(
     "select",
     { name: "game", className: "option game-option" },
-    elt(`optgroup`, {label: `Official`}, ...gamesOfficial.map((name) =>
+    elt(`optgroup`, {label: `Official-like`}, ...gamesOfficial.map((name) =>
           elt("option", { selected: name == game }, name)
         )),
-    elt(`optgroup`, {label: `Private`}, ...gamesPrivate.map((name) =>
+    elt(`optgroup`, {label: `Private-like`}, ...gamesPrivate.map((name) =>
           elt("option", { selected: name == game }, name)
-        )),
-    elt(`optgroup`, {label: `Custom`}, ...gamesCustom.map((name) =>
-          elt("option", { selected: name == game }, name)
-       )),
+        ))
   );
 };
 
@@ -119,7 +115,7 @@ const renderLures = ({lures, luresKey}) => {
 const renderPoleKey = ({lures, game, intKey, useInt}) => {
   let key = elt('input', {type: 'text', value: intKey, disabled: !useInt, name: "intKey"});
   key.setAttribute(`readonly`, `true`);
-  const checkbox = elt(`input`, {type: `checkbox`, disabled: game != `Dragonflight`, checked: game != `Dragonflight` ? false : useInt, style: `margin-right: 7px`, name: "useInt"});
+  const checkbox = elt(`input`, {type: `checkbox`, disabled: game != `Retail`, checked: game != `Retail` ? false : useInt, style: `margin-right: 7px`, name: "useInt"});
   const container = elt(`div`, null, checkbox, key)
   return container;
 };
@@ -165,11 +161,11 @@ const renderChatZone = () => {
 
 const renderFilterType = ({game, whitelist, filterType, atMouse}) => {
 
-  if(game != `Dragonflight` && game != `Vanilla`) {
+  if(game != `Retail` && game != `Vanilla`) {
     atMouse = true;
   }
 
-  const atMouseContainer = elt(`input`, {name: `atMouse`, type:`checkbox`, checked: atMouse, className: `atMouse`, disabled: !whitelist || (game != `Dragonflight` && game != `Vanilla`)});
+  const atMouseContainer = elt(`input`, {name: `atMouse`, type:`checkbox`, checked: atMouse, className: `atMouse`, disabled: !whitelist || (game != `Retail` && game != `Vanilla`)});
   const modeContainer =  elt(`select`, {name: `filterType`, className: `filterType`, disabled: !whitelist},
     elt(`option`, {selected: filterType == `whitelist`}, `whitelist`),
     elt(`option`, {selected: filterType == `blacklist`}, `blacklist`)
@@ -188,7 +184,7 @@ const renderWhitelist = ({game, whitelist, whitelistWords, whitelistLanguage}) =
 
   return elt('div', null,
   langContainer,
-  elt('input', {type: 'text', name:"whitelistWords", placeholder: `e.g. Glacial Salmon, Pygmy Suckerfish`, className: "whitelist_input", value: whitelistWords, disabled}),
+  elt('input', {type: 'text', name:"whitelistWords", placeholder: `Red Salmon, Curcian Carp, Dragon Goby`, className: "whitelist_input", value: whitelistWords, disabled}),
   elt('input', {type: 'checkbox', name: "whitelist", checked}))
 };
 
@@ -228,7 +224,7 @@ return elt(
       wrapInLabel(
         "Int. Key: ",
         renderPoleKey(config),
-        `Exclusively for Dragonflight. Use interaction key instead of mouse for catching.`
+        `Exclusively for Retail. Use interaction key instead of mouse for catching.`
       ),
       wrapInLabel(
         "Reuse Lures: ",

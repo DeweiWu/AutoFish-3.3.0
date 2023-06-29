@@ -456,11 +456,11 @@ if (config.soundDetection) {
   });
 
   if (caught) return pos;
-} else if(settings.game == `Dragonflight`) {
+} else if(settings.game == `Retail`) {
    if(!(await fishingZone.checkBobberPrint(pos))) {
      return pos;
    }
-} else if (settings.game == `Turtle WoW`) {
+} else if (settings.game == `Vanilla (splash)`) {
   if(await fishingZone.checkBobberPrintSplash(pos)) {
     return pos;
     }
@@ -507,7 +507,7 @@ if (config.soundDetection) {
       await sleep(150); // open loot window
     }
 
-    if(settings.game != `Dragonflight`) {
+    if(settings.game != `Retail`) {
       let pos = {
         x: cursorPos.x + lootWindow.toItemX,
         y: cursorPos.y - lootWindow.toItemY - 10,
@@ -530,7 +530,7 @@ if (config.soundDetection) {
 
     const lootScale = screenSize.width <= 1536 ? 3 : screenSize.width <= 1920 ? 2 : 1;
     let recognizedWords = await readTextFrom(await getDataFrom(lootWindowDim), lootScale);
-    let items = sortWordsByItem(recognizedWords, lootWindow, settings.game == `Dragonflight`);
+    let items = sortWordsByItem(recognizedWords, lootWindow, settings.game == `Retail`);
     let itemPos = 0;
 
     let itemsPicked = [];
@@ -608,14 +608,14 @@ if (config.soundDetection) {
         itemsPicked.push(item);
       }
 
-      itemPos += settings.game == `Dragonflight` ? lootWindow.itemHeight + lootWindow.itemHeightAdd : lootWindow.itemHeight;
+      itemPos += settings.game == `Retail` ? lootWindow.itemHeight + lootWindow.itemHeightAdd : lootWindow.itemHeight;
     }
 
     if(settings.useInt && itemsPicked.length > 1) {
       await moveTo({pos: cursorPos, randomRange: 5});
     }
 
-    if ((settings.game == `WotLK Classic` || settings.game == `Classic`|| settings.game == `Dragonflight`) ? await isLootOpened(cursorPos) : items.length != itemsPicked.length) {
+    if ((settings.game == `LK Classic` || settings.game == `Classic`|| settings.game == `Retail`) ? await isLootOpened(cursorPos) : items.length != itemsPicked.length) {
 
       if (config.reaction) {
         await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
@@ -1010,9 +1010,9 @@ if (config.soundDetection) {
   };
 
   const detectSens = () => {
-    if(!config.autoSensDens || settings.game == `Turtle WoW`) return;
+    if(!config.autoSensDens || settings.game == `Vanilla (splash)`) return;
 
-    if(settings.game == `Dragonflight`) {
+    if(settings.game == `Retail`) {
       return `sensitivity`;
     } else if(screenSize.width > 1920) {
       return `density`;

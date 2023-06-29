@@ -4,7 +4,7 @@
     "classNames": ["GxWindowClass", "GxWindowClassD3d"]
   },
   "patch": {
-    "Dragonflight": {
+    "Retail": {
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
       "useCustomWindow": false,
@@ -120,7 +120,7 @@
         }
       }
     },
-    "WotLK Classic": {
+    "LK Classic": {
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
       "useCustomWindow": false,
@@ -340,7 +340,7 @@
         }
       }
     },
-    "Legion": {
+    "Leg": {
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
       "useCustomWindow": false,
@@ -557,7 +557,7 @@
         }
       }
     },
-    "Cataclysm": {
+    "Cata": {
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
       "useCustomWindow": false,
@@ -663,7 +663,7 @@
         }
       }
     },
-    "WotLK Private": {
+    "LK Private": {
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
       "useCustomWindow": false,
@@ -989,8 +989,8 @@
         }
       }
     },
-    "Turtle WoW": {
-      "game": "Turtle WoW",
+    "Vanilla (splash)": {
+      "game": "Vanilla (splash)",
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
       "useCustomWindow": false,

@@ -92,7 +92,7 @@ class Settings {
         this.onDx11();
       }
 
-      if((event.target.name == `lures` && event.target.checked) && (config.game == `Dragonflight` || config.game == `Classic` || config.game == `Vanilla` || config.game == `Turtle WoW`)) {
+      if((event.target.name == `lures` && event.target.checked) && (config.game == `Retail` || config.game == `Classic` || config.game == `Vanilla` || config.game == `Vanilla (splash)`)) {
         this.onLures();
       }
 
