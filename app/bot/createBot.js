@@ -100,18 +100,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
    })
   }
 
-  let fishingZone = createFishingZone({
-    getDataFrom,
-    zone: Zone.from(screenSize).toRel(config.relZone),
-    screenSize: screenSize,
-    threshold: settings.threshold,
-    bobberColor: settings.bobberColor,
-    sensitivity: config.bobberSensitivity,
-    density: config.bobberDensity,
-    direction: config.findBobberDirection,
-    splashColor: config.splashColor,
-    autoThreshold: settings.autoTh
-  });
+  let fishingZone = createFishingZone(getDataFrom, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
 
   const notificationZone = createNotificationZone({
     getDataFrom,
@@ -367,13 +356,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
   });
 
   const findAllBobberColors = async () => {
-    if(settings.autoTh) {
+    if(settings.game != `LK Private` && settings.game != `TBC` && settings.game != `Vanilla` && settings.game != `Vanilla (splash)`) {
       return null;
     }
 
-    if(settings.useInt && config.soundDetection) {
-      return null;
-    }
     return await fishingZone.getBobberPrint(7);
   };
 
@@ -749,18 +735,7 @@ if (config.soundDetection) {
 
   const dynamicThreshold = () => {
     settings.threshold = settings.threshold - config.dynamicThresholdValue;
-    fishingZone = createFishingZone({
-      getDataFrom,
-      zone: Zone.from(screenSize).toRel(config.relZone),
-      screenSize: screenSize,
-      threshold: settings.threshold,
-      bobberColor: settings.bobberColor,
-      sensitivity: config.bobberSensitivity,
-      density: config.bobberDensity,
-      direction: config.findBobberDirection,
-      splashColor: config.splashColor,
-      autoThreshold: settings.autoTh
-    });
+    fishingZone = createFishingZone(getDataFrom, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
   }
 
   dynamicThreshold.on = config.dynamicThreshold && !settings.autoTh;
@@ -1014,7 +989,7 @@ if (config.soundDetection) {
 
     if(settings.game == `Retail`) {
       return `sensitivity`;
-    } else if(screenSize.width > 1920) {
+    } else {
       return `density`;
     }
   }

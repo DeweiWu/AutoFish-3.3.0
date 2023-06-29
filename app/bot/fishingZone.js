@@ -16,7 +16,7 @@ const getPosWithin = ({points, pos, size, dir}) => {
   }
 
 const isOverThreshold = ([r, g, b], threshold) => (r - Math.max(g, b)) > threshold;
-const isCloseEnough = ([r, g, b], closeness) => Math.abs(g - b) <= closeness;
+const isCloseEnough = ([_, g, b], closeness) => Math.abs(g - b) <= closeness;
 
 const isRed = (threshold, closeness, size = 255, upperLimit = 295) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
                                                        isCloseEnough([r, g, b], closeness) &&
@@ -26,10 +26,11 @@ const isBlue = (threshold, closeness, size = 255, upperLimit = 295) => ([r, g, b
                                                         isCloseEnough([b, g, r], closeness) &&
                                                         r < size && g < size && b <= upperLimit;
 
-const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberColor, sensitivity, density, direction, splashColor, autoThreshold }) => {
+const createFishingZone = (getDataFrom , zone, screenSize, { threshold, bobberColor, autoTh: autoThreshold }, {bobberSensitivity: sensitivity, bobberDensity: density, findBobberDirection: direction, splashColor}) => {
   let isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
   let saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
   const looksLikeBobber = (pos, color, rgb) => pos.getPointsAround(density).every((pos) => isBobber(rgb.colorAt(pos)));
+  let filledBobberForPrint = [];
   let colorSwitchesCount = 0;
   return {
 
@@ -59,6 +60,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
       if(autoThreshold) {
         try {
           filledBobber = await this.getBobberPointsAround(rgb, bobber);
+          filledBobberForPrint = filledBobber.points;
         } catch(e) {
           if(e.message == `color` && colorSwitchesCount++ < 2) {
             bobberColor = bobberColor == `red` ? `blue` : `red`;
@@ -102,7 +104,9 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
       }
 
       if(detectSens) {
-        await this.adjustSensitivity(filledBobber.length, detectSens);
+        let mostBottom = filledBobber.points.reduce((a, b) => a.y > b.y ? a : b);
+        let mostTop = filledBobber.pos;
+        await this.adjustSensitivity(mostTop, mostBottom, detectSens);
       }
 
       if(autoThreshold) {
@@ -110,35 +114,17 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
         let mostRight = filledBobber.points.reduce((a, b) => a.x > b.x ? a : b);
         let center = mostLeft.x + Math.round((mostRight.x - mostLeft.x) /  2);
 
-        if(density <= 1 && bobberColor == `blue`) {
-          filledBobber.pos = getPosWithin({
-            points: filledBobber.points,
-            pos: {x: center, y: filledBobber.pos.y + 1},
-            size: 10,
-            dir: {x: 0, y: 1}
-          });
+        filledBobber.pos = getPosWithin({
+          points: filledBobber.points,
+          pos: {x: center, y: filledBobber.pos.y + density},
+          size: 10,
+          dir: {x: 0, y: 1}
+        });
 
-          if(!filledBobber.pos) return;
-        }
+      if(!filledBobber.pos) return;
 
-        if(density > 1) {
-          let mostLeft = filledBobber.points.reduce((a, b) => a.x < b.x ? a : b);
-          let mostRight = filledBobber.points.reduce((a, b) => a.x > b.x ? a : b);
-          let center = mostLeft.x + Math.round((mostRight.x - mostLeft.x) /  2);
-
-          filledBobber.pos = getPosWithin({
-            points: filledBobber.points,
-            pos: {x: center, y: filledBobber.pos.y + density},
-            size: 10,
-            dir: {x: 0, y: 1}
-          });
-
-          if(!filledBobber.pos) return;
-        }
-
-        return filledBobber.pos.plus(zone);
-      }
-
+      return filledBobber.pos.plus(zone);
+    }
       return bobber.plus(zone);
     },
 
@@ -157,9 +143,6 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
         let [rA, gA, bA] = a.color;
         let [rB, gB, bB] = b.color;
 
-        let distanceA = Math.sqrt(Math.pow(Math.abs(center.x - a.pos.x), 2) + Math.pow(Math.abs(center.y - a.pos.y), 2)) / (screenSize.height > 1080 ? 10 : 5);
-        let distanceB = Math.sqrt(Math.pow(Math.abs(center.x - b.pos.x), 2) + Math.pow(Math.abs(center.y - b.pos.y), 2)) / (screenSize.height > 1080 ? 10 : 5);
-
         let closenessARed = Math.abs(gA - bA);
         let closenessBRed = Math.abs(gB - bB);
 
@@ -169,7 +152,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
         let colorA = bobberColor == `red` ? (rA - Math.max(gA, bA)) - closenessARed : (bA - Math.max(gA, rA)) - closenessABlue;
         let colorB = bobberColor == `red` ? (rB - Math.max(gB, bB)) - closenessBRed : (bB - Math.max(gB, rB)) - closenessBBlue;
 
-        if((colorA - distanceA) > (colorB - distanceB)) {
+        if(colorA > colorB) {
           return a;
         } else {
           return b;
@@ -185,7 +168,7 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
 
     async getBobberPointsAround(rgb, bobber) {
       let memory = [bobber];
-      for(let point of memory) {;
+      for(let point of memory) {
         if(memory.length > 10000) throw new Error(`color`);
         for(let pointAround of point.getPointsAround()) {
           if(isBobber(rgb.colorAt(pointAround)) && !memory.some(mPoint => mPoint.isEqual(pointAround))) {
@@ -198,15 +181,15 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
       return {length: memory.length, pos: mostTop, points: memory};
     },
 
-    async adjustSensitivity(bobberSize, detectSens) {
+    async adjustSensitivity(mostTop, mostBottom, detectSens) {
       if(detectSens == `sensitivity`) {
-        let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 2 : 1.5)));
+        let calculatedSens = Math.round((mostBottom.y - mostTop.y) * .65); // 65% from the top of the feather
         if(calculatedSens < 3) calculatedSens = 3;
         sensitivity = calculatedSens;
       }
 
       if(detectSens == `density`) {
-        let calculatedDens = Math.round((bobberSize / 1000) * 10);
+        let calculatedDens = Math.round((mostBottom.y - mostTop.y) * .25); // 25% from the top of the feather
         if(calculatedDens > 10) calculatedDens = 10;
         density = calculatedDens;
       }
@@ -255,9 +238,15 @@ const createFishingZone = ({ getDataFrom , zone, screenSize, threshold, bobberCo
     },
 
     async getBobberPrint(wobble) {
-      let rgb = createRgb(await getDataFrom(zone));
-      rgb.saturate(...saturation)
-      let rest = rgb.findColors({ isColor: isBobber, limit: 5000});
+      let rest = [];
+      if(!autoThreshold) {
+        let rgb = createRgb(await getDataFrom(zone));
+        rgb.saturate(...saturation);
+        rest = rgb.findColors({ isColor: isBobber, limit: 5000});
+      } else {
+        rest = filledBobberForPrint;
+      }
+
       if(!rest) return;
       let result = [...rest];
       rest.forEach(restPoint => {
