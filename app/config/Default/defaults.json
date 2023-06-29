@@ -1,6 +1,6 @@
 {
   "game": {
-    "names": ["World of Warcraft"],
+    "names": ["World of"],
     "classNames": ["GxWindowClass", "GxWindowClassD3d"]
   },
   "patch": {
