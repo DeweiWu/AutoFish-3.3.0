@@ -1125,7 +1125,7 @@
         "height": 0.15092592592592594
       },
       "bobberSensitivityPrint": true,
-      "splashColor": 230,
+      "splashColor": 220,
       "bobberSensitivity": 20,
       "bobberDensity": 1,
       "autoSensDens": true,
