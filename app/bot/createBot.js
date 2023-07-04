@@ -163,7 +163,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
     .split(",")
     .map((word) => word.trim());
 
-  const moveTo = async ({ pos, randomRange, speed, strength }) => {
+  const moveTo = async ({ pos, randomRange, speed, strength, fineTune}) => {
     if (randomRange) {
       pos.x = pos.x + random(-randomRange, randomRange);
       pos.y = pos.y + random(-randomRange, randomRange);
@@ -191,6 +191,19 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
         random(speedFrom, speedTo),
         random(strengthFrom, strengthTo)
       );
+
+      if(fineTune && (settings.game == `Retail` || settings.game == `LK Classic` || settings.game == `Classic`)) {
+        let times = random(fineTune.steps[0], fineTune.steps[1]);
+        for(let i = 1; i <= times; i++) {
+          await mouse.humanMoveTo(
+            pos.x + random(-fineTune.offset / i, fineTune.offset / i),
+            pos.y + random(-fineTune.offset / i, fineTune.offset / i),
+            random(speedFrom / 3, speedTo / 3),
+            random(strengthFrom, strengthTo)
+          );
+          await sleep(random(1, 350));
+        }
+      }
     } else {
       await mouse.moveTo(pos.x, pos.y, delay);
     }
@@ -398,7 +411,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
     }
 
     await action(async () => {
-      await moveTo({ pos, randomRange: 5 });
+      await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [1, 6]}});
     });
 
    return await findBobber();
@@ -666,7 +679,7 @@ if (config.soundDetection) {
         await keyboard.toggleKey(settings.intKey, true, delay);
         await keyboard.toggleKey(settings.intKey, false, delay);
       } else {
-        await moveTo({ pos, randomRange: 5 });
+        await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [1, 2]}});
 
         if (config.shiftClick) {
           await keyboard.toggleKey("shift", true, delay);
