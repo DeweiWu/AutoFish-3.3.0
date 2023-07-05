@@ -192,7 +192,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
         random(strengthFrom, strengthTo)
       );
 
-      if(fineTune && (settings.game == `Retail` || settings.game == `LK Classic` || settings.game == `Classic`)) {
+      if(config.likeHumanFineTune && fineTune && (settings.game == `Retail` || settings.game == `LK Classic` || settings.game == `Classic`)) {
         let times = random(fineTune.steps[0], fineTune.steps[1]);
         for(let i = 1; i <= times; i++) {
           await mouse.humanMoveTo(

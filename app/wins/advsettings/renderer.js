@@ -98,6 +98,16 @@ const renderLikeHuman = ({likeHuman}) => {
   return dom;
 };
 
+const renderLikeHumanFineTune = ({likeHumanFineTune}) => {
+  let dom = elt("input", {
+    type: "checkbox",
+    className: "option",
+    checked: likeHumanFineTune,
+    name: "likeHumanFineTune",
+  });
+  return dom;
+}
+
 const renderCastDelay = ({castDelay}) => {
   return elt('input', {type: `number`, name: `castDelay`, value: castDelay})
 };
@@ -421,6 +431,7 @@ const renderSettings = (config) => {
   elt(`p`, {className: `settings_header advanced_settings_header`}, `General`),
   elt('div', {className: "settings_section"},
   wrapInLabel(`Like a human: `, renderLikeHuman(config), `The bot will move your mouse in a human way: random speed and with a slight random deviation in the movement. Otherwise it will move the mouse instantly, which might be a better option if you use a lot of windows.`),
+  wrapInLabel(`Like a human fine-tunning: `, renderLikeHumanFineTune(config), `The bot will "fine-tune" the mouse position after moving to the bobber, imitating a human-like way of reaching the mouse-movement target position.`),
   wrapInLabel(`Hide window after start: `, renderHideWin(config), `The window will be hidden and you will be able to stop it only by using stop key.`),
   wrapInLabel(`Custom window: `, renderCustomWindow(config), `If for some reason your game window isn't "World of Warcraft" you can choose a custom window from all the windows opened on your computer.`),
   wrapInLabel(`Close loot window with: `, renderCloseLoot(config), `The bot will use mouse/esc or randomly one of them to close the loot window while filtering the loot.`),
