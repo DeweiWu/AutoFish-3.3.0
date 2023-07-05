@@ -470,7 +470,7 @@ const menu = Menu.buildFromTemplate([
   {
     label: `Help`,
     submenu: [
-      { label: "AutoFish ver. 2.1.0 Beta Premium" },
+      { label: "AutoFish ver. 2.1.2 Beta Premium" },
       { type: "separator" },
       {
         label: "Read Me",
