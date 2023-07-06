@@ -182,10 +182,12 @@ class AutoFish {
           this.settings.dom.style = `display: none;`;
           ipcRenderer.send(`resize-win`, {width: 341, height: 400})
           event.target.src = `img/fold.png`;
+          document.querySelector(`.settings_header_fold`).style = `border-bottom: 1px solid grey; border-radius: 5px`;
         } else {
           this.settings.dom.style = `display: block`;
           ipcRenderer.send(`resize-win`, {width: 341, height: 805})
           event.target.src = `img/unfold.png`
+          document.querySelector(`.settings_header_fold`).style = ``;
         }
         settingsVisibility = !settingsVisibility;
     })
@@ -194,7 +196,7 @@ class AutoFish {
       "div",
       { className: "AutoFish" },
       renderLogo(),
-      elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header settings_header_main"}, "Settings"), foldSettingsContainer,  profile.dom),
+      elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header settings_header_main settings_header_fold"}, "Settings"), foldSettingsContainer,  profile.dom),
       this.settings.dom,
       elt("p", { className: "settings_header settings_header_log settings_header_main" }, "Log"),
       this.logger.dom,

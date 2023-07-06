@@ -246,13 +246,13 @@ section {
 }
 
 .settings input[type="text"].whitelist_input  {
-  width: 215px;
+  width: 219px;
 }
 
 .settings select.filterType {
   width: 78px;
   margin-left: 11px;
-  margin-right: 16px;
+  margin-right: 20px;
 }
 
 .settings select.whitelistLanguage {
@@ -265,7 +265,7 @@ section {
 
 .advanced_settings_button {
   height: 22px;
-  width: 123px;
+  width: 125px;
   margin-right: 3px;
   text-align: center;
   border-radius: 5px;
@@ -283,7 +283,7 @@ section {
 }
 
 .option.game-option {
-  width: 121px;
+  width: 125px;
 }
 
 .startButton {
@@ -389,7 +389,7 @@ section {
 }
 
 .thresholdRange input[type=range] {
-  width: 233px;
+  width: 239px;
   height: 10px;
   margin-bottom: 5px;
   z-index: 10;
