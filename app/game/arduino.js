@@ -1,9 +1,9 @@
 const { SerialPort } = require(`serialport`);
-const { ReadlineParser } = require(`@serialport/parser-readline`);
 
 const keyCodes = {
   backspace: 178,
   tab: 179,
+  alt: 130,
   enter: 224,
   pause: 208,
   capsLock: 193,
@@ -38,14 +38,16 @@ const keyCodes = {
   lWin: 131
 };
 
+const random = (from, to) => {
+  return from + Math.random() * (to - from);
+};
+
 const sleep = (time) => {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
 };
-const random = (from, to) => {
-  return from + Math.random() * (to - from);
-};
+
 const convertKey = (key) => {
   if(keyCodes[key]) {
     return keyCodes[key];
@@ -54,86 +56,184 @@ const convertKey = (key) => {
   }
 };
 
+  const createKeyboard = (write) => {
+    return {
+      sendKey(key, delay) {
+        return new Promise(function(resolve, reject) {
+          write(`1,${convertKey(key)},${delay[0]},${delay[1]}\n`, resolve, reject);
+        });
+      },
+      toggleKey(key, type, delay) {
+        if(!Array.isArray(delay)) {
+          delay = [delay, delay];
+        }
+
+        return new Promise(function(resolve, reject) {
+          write(`2,${convertKey(key)},${Number(type)},${delay[0]},${delay[1]}\n`, resolve, reject)
+        });
+      },
+      printText(text, delay) {
+        return new Promise(function(resolve, reject) {
+          write(`3,${text},${delay[0]},${delay[1]}\n`, resolve, reject);
+        });
+      }
+    }
+  };
+
+const createMouse = (write) => {
+  return {
+    click(button, delay) {
+      return new Promise(function(resolve, reject) {
+        let numButton = 1;
+        switch(button) {
+          case 'left': {
+            numButton = 1;
+            break;
+          }
+
+          case 'right': {
+            numButton = 2;
+          break;
+        }
+          case 'middle': {
+            numButton = 4;
+          }
+        }
+
+        write(`4,${numButton},${delay[0]},${delay[1]}\n`, resolve, reject);
+      });
+    },
+
+    toggle(button, type, delay) {
+      if(!Array.isArray(delay)) {
+        delay = [delay, delay];
+      }
+      return new Promise(function(resolve, reject) {
+        let numButton = 1;
+        switch(button) {
+          case 'left': {
+            numButton = 1;
+            break;
+          }
+
+          case 'right': {
+            numButton = 2;
+          break;
+        }
+          case 'middle': {
+            numButton = 4;
+          }
+        }
+
+        write(`5,${numButton},${Number(type)},${delay[0]},${delay[1]}\n`, resolve, reject);
+      });
+    },
+
+    moveTo(x, y) {
+      let cPos = this.getPos();
+      x = x - cPos.x;
+      y = y - cPos.y;
+
+      let speedByDistance = 10;
+
+      let minDelay = 0;
+      let maxDelay = 0;
+
+      let minControlDistance = 10
+      let maxControlDistance = 10
+
+      let offset = 10
+
+
+      return new Promise(function(resolve, reject) {
+        write(`7,${Math.floor(x)},${Math.floor(y)},${Math.round(speedByDistance)},${minDelay},${maxDelay},${minControlDistance},${maxControlDistance},${offset}\n`, resolve, reject);
+      });
+    },
+
+    humanMoveTo(x, y) {
+      let cPos = this.getPos();
+      x = x - cPos.x;
+      y = y - cPos.y;
+      let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+      let speedByDistance = Math.round(distance * (distance < 50 ? 0.75 : distance < 150 ? 0.50 : distance < 300 ? 0.35 : 0.25)); // distance / 4 (0.25 + (1 - (distance / 400)))
+
+      let minDelay = 0;
+      let maxDelay = 15;
+
+      let minControlDistance = Math.round(distance * 0.050); // 10 at 400 px
+      let maxControlDistance = Math.round(distance * 0.250); // 50 at 400 px
+
+      let offset = Math.round(distance * 0.25); // 100 at 400px
+
+      return new Promise(function(resolve, reject) {
+        write(`7,${Math.floor(x)},${Math.floor(y)},${Math.round(speedByDistance)},${minDelay},${maxDelay},${minControlDistance},${maxControlDistance},${offset}\n`, resolve, reject);
+      });
+    },
+  }
+}
+
+const createEventLine = (port) => {
+  let line = [];
+  port.on(`data`, (data) => {
+    if(String(data) == `ready` && line[0]) {
+      line[0].resolve();
+      line.shift();
+      if(line[0]) {
+        port.write(line[0].data);
+      }
+    }
+  });
+
+  return {
+    write(data, resolve, reject) {
+      line.push({data, resolve, reject});
+      if(line.length == 1) {
+        port.write(data);
+      }
+    }
+  }
+};
 
 const createArduinoDevice = () => {
+  let keyboard = {};
+  let mouse = {};
   let port;
   return {
-    mouse: {
-      async moveTo(x, y, delay) {
-        let cPos = this.getPos();
-        let signX = x - cPos.x < 0 ? `-` : `+`;
-        let signY = y - cPos.y < 0 ? `-` : `+`;
-        port.write(`5${signX}${signY}${65535 * Math.abs(Math.round(x - cPos.x)) + Math.abs(Math.round(y - cPos.y))}`);
-      },
-
-      async humanMoveTo(x, y, speed, deviation) {
-        let cPos = this.getPos();
-        let signX = x - cPos.x < 0 ? `-` : `+`;
-        let signY = y - cPos.y < 0 ? `-` : `+`;
-        port.write(`5${signX}${signY}${65535 * Math.abs(Math.round(x - cPos.x)) + Math.abs(Math.round(y - cPos.y))}`);
-      },
-
-      async toggle(button, pressed, delay) {
-        port.write(`${pressed ? 7 : 8}${button == `left` ? 1 : button == `right` ? 2 : 3}`);
-        if(Array.isArray(delay)) {
-          await sleep(random(delay[0], delay[1]));
-        } else {
-          await sleep(delay);
-        }
-      }
-    },
-    keyboard: {
-      async sendKey(key, delay) {
-          await this.toggleKey(key, true, delay);
-          await this.toggleKey(key, false, delay);
-      },
-
-      async printText(message, delay) {
-        for (char of message) {
-          await this.sendKey(char, delay);
-        }
-      },
-
-      async toggleKey(key, pressed, delay) {
-        if(Array.isArray(key)) {
-          key.forEach((k) => port.write(`${pressed ? 3 : 4 }${convertKey(key)}`))
-        } else {
-          port.write(`${pressed ? 3 : 4 }${convertKey(key)}`);
-        }
-
-          if(Array.isArray(delay)) {
-            await sleep(random(delay[0], delay[1]));
-          } else {
-            await sleep(delay);
-          }
-      },
-    },
-    async connectTo(com, rate) {
+    keyboard,
+    mouse,
+    connectTo(com, rate) {
+      let initial = true;
       return new Promise(async function(resolve, reject) {
-        if(port) {
+        if(port && port.isOpen) {
           port.close();
           await sleep(1000);
         }
-        port = new SerialPort(
-          {
-            path: com,
-            baudRate: rate,
-          },
-          (err) => {
-            if (err) {
-              reject(err.message);
+
+          port = new SerialPort(
+            {
+              path: com,
+              baudRate: rate,
+            },
+            (err) => {
+              if (err) {
+                reject(err.message);
+              }
             }
-          }
-        )
+          )
+
         port.on(`open`, () => {
-          port.write(`0`);
+          port.write(`0\n`);
           setTimeout(() => {
             reject(`Wrong response from Arduino Board! Change COM Port or upload AutoFish sketch on your board (Help -> Arduino Sketch).`);
           }, 1000);
         });
         port.on(`data`, (data) => {
-          if(data == `ready`) {
+          if(initial && data.toString() == `ready`) {
+            let {write} = createEventLine(port);
+            Object.assign(keyboard, createKeyboard(write));
+            Object.assign(mouse, createMouse(write));;
             resolve(`Connected to Arduino Board!`);
+            initial = false;
           }
         })
       });
