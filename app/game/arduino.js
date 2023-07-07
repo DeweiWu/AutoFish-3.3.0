@@ -58,12 +58,18 @@ const convertKey = (key) => {
 
   const createKeyboard = (write) => {
     return {
-      sendKey(key, delay) {
+      sendKey(key, delay = 0) {
+
+        if(!Array.isArray(delay)) {
+          delay = [delay, delay];
+        }
+
         return new Promise(function(resolve, reject) {
           write(`1,${convertKey(key)},${delay[0]},${delay[1]}\n`, resolve, reject);
         });
       },
-      toggleKey(key, type, delay) {
+      toggleKey(key, type, delay = 0) {
+
         if(!Array.isArray(delay)) {
           delay = [delay, delay];
         }
@@ -72,7 +78,12 @@ const convertKey = (key) => {
           write(`2,${convertKey(key)},${Number(type)},${delay[0]},${delay[1]}\n`, resolve, reject)
         });
       },
-      printText(text, delay) {
+      printText(text, delay = 0) {
+
+        if(!Array.isArray(delay)) {
+          delay = [delay, delay];
+        }
+
         return new Promise(function(resolve, reject) {
           write(`3,${text},${delay[0]},${delay[1]}\n`, resolve, reject);
         });
@@ -82,7 +93,12 @@ const convertKey = (key) => {
 
 const createMouse = (write) => {
   return {
-    click(button, delay) {
+    click(button, delay = 0) {
+
+      if(!Array.isArray(delay)) {
+        delay = [delay, delay];
+      }
+
       return new Promise(function(resolve, reject) {
         let numButton = 1;
         switch(button) {
@@ -104,10 +120,12 @@ const createMouse = (write) => {
       });
     },
 
-    toggle(button, type, delay) {
+    toggle(button, type, delay = 0) {
+
       if(!Array.isArray(delay)) {
         delay = [delay, delay];
       }
+
       return new Promise(function(resolve, reject) {
         let numButton = 1;
         switch(button) {
