@@ -381,6 +381,11 @@ const renderRngMove = ({rngMove}) => {
   return elt(`input`, {type: `checkbox`, name: `rngMove`, checked: rngMove});
 };
 
+const renderRngMoveKeys = ({rngMoveKeys, rngMove}) => {
+  const checkBox = elt(`input`, {type: `checkbox`, name: `rngMoveKeys`, checked: rngMoveKeys, disabled: !rngMove});
+  return checkBox;
+};
+
 const renderRngMoveTimer = ({rngMove, rngMoveTimer}) => {
   return elt(`div`, {"data-collection": `rngMoveTimer`}, elt(`span`, {className: `option_text`}, `from:`),
   elt('input', {type: `number`, className: `rngMoveTimer_from`, name: `from`, value: rngMoveTimer.from, disabled: !rngMove}), elt(`span`, {className: `option_text`}, `to:`),
@@ -402,19 +407,19 @@ const renderRngMoveRadiusStep = ({rngMove, rngMoveRadiusStep}) => {
   );
 };
 
-const renderRngMoveDirLengthMax = ({rngMove, rngMoveDirLengthMax}) => {
+const renderRngMoveDirLengthMax = ({rngMove, rngMoveDirLengthMax, rngMoveKeys}) => {
   return elt(`div`, {"data-collection": `rngMoveDirLengthMax`},
-      elt(`span`, {className: `option_text`}, `w:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `w`, value: rngMoveDirLengthMax.w}),
-      elt(`span`, {className: `option_text`}, `s:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `s`, value: rngMoveDirLengthMax.s}),
-      elt(`span`, {className: `option_text`}, `a:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `a`, value: rngMoveDirLengthMax.a}),
-      elt(`span`, {className: `option_text`}, `d:`), elt(`input`, {disabled: !rngMove, type: `number`, step: 1, name: `d`, value: rngMoveDirLengthMax.d})
+      elt(`span`, {className: `option_text`}, `w:`), elt(`input`, {disabled: !rngMove || !rngMoveKeys, type: `number`, step: 1, name: `w`, value: rngMoveDirLengthMax.w}),
+      elt(`span`, {className: `option_text`}, `s:`), elt(`input`, {disabled: !rngMove || !rngMoveKeys, type: `number`, step: 1, name: `s`, value: rngMoveDirLengthMax.s}),
+      elt(`span`, {className: `option_text`}, `a:`), elt(`input`, {disabled: !rngMove || !rngMoveKeys, type: `number`, step: 1, name: `a`, value: rngMoveDirLengthMax.a}),
+      elt(`span`, {className: `option_text`}, `d:`), elt(`input`, {disabled: !rngMove || !rngMoveKeys, type: `number`, step: 1, name: `d`, value: rngMoveDirLengthMax.d})
     );
 };
 
-const renderRngMoveDirLength = ({rngMove, rngMoveDirLength}) => {
+const renderRngMoveDirLength = ({rngMove, rngMoveDirLength, rngMoveKeys}) => {
   return elt(`div`, {"data-collection": `rngMoveDirLength`}, elt(`span`, {className: `option_text`}, `from:`),
-  elt('input', {type: `number`, className: `rngMoveTimer_from`, name: `from`, value: rngMoveDirLength.from, disabled: !rngMove}), elt(`span`, {className: `option_text`}, `to:`),
-  elt('input', {type: `number`, name: `to`, value: rngMoveDirLength.to, disabled: !rngMove})
+  elt('input', {type: `number`, className: `rngMoveTimer_from`, name: `from`, value: rngMoveDirLength.from, disabled: !rngMove || !rngMoveKeys}), elt(`span`, {className: `option_text`}, `to:`),
+  elt('input', {type: `number`, name: `to`, value: rngMoveDirLength.to, disabled: !rngMove || !rngMoveKeys})
   );
 };
 
@@ -476,13 +481,14 @@ const renderSettings = (config) => {
   ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Movement`),
   elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Random Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
+  wrapInLabel(`Use Random Camera Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
   wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), `Maximum radius the bot will randomly move your camera.`),
   wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), `Size of the step the bot will move your camera. The bot wil choose a random value between -value and +value and move your camera by the given value.`),
+  wrapInLabel(`Use Random Keys Movement`, renderRngMoveKeys(config), `The bot will move your character within the delays of w, a, s, d keys (how the key is pressed)`),
   wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLengthMax(config), `Maximum delay of how long the bot will press w, s, a, d keys.`),
-  wrapInLabel(`Balancing Time Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
   wrapInLabel(`Keys Moves Step:`, renderRngMoveDirLength(config), `Step delay of how long the bot will press w, s, a, d keys.`),
-  wrapInLabel(`Use Random Camera Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
+  wrapInLabel(`Repeat Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
+  wrapInLabel(`Balance Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
 ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🐘 Mammoth Selling`),
   elt('div', {className: "settings_section settings_premium"},

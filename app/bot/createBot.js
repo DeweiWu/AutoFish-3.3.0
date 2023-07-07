@@ -780,7 +780,7 @@ if (config.soundDetection) {
 
     let x = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.x, -25) : random(25, config.rngMoveRadiusStep.x); // from to logic
     let y = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.y, 1) : random(1, config.rngMoveRadiusStep.y);
-
+    
     if(x + moveMemory.x < -maxX || x + moveMemory.x > maxX) {
       x = -x;
     }
@@ -796,6 +796,7 @@ if (config.soundDetection) {
   }
 
   const getRandomKey = () => {
+    if(!config.rngMoveKeys) return false;
     /* for config */
     let wMax = config.rngMoveDirLength.w;
     let sMax = config.rngMoveDirLength.s;
@@ -891,24 +892,24 @@ if (config.soundDetection) {
     await mouse.toggle(`right`, true, delay);
 
     if(config.arduino) {
-      await sleep(random(500, 1000));
       await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)}});
-      await sleep(random(500, 1000));
     } else {
       await nutMouse.move({from: mouse.getPos(), to: {x: -moveMemory.x, y: -moveMemory.y}, speed: random(100, 300)});
     }
 
     moveMemory.x = 0;
     moveMemory.y = 0;
-    for(let key of Object.keys(keyMemory)) {
-      let value = keyMemory[key];
-      if(value < 0) {
-        await keyboard.toggleKey(key, true, -value);
-        await keyboard.toggleKey(key, false);
+    if(config.rgnMoveKeys) {
+      for(let key of Object.keys(keyMemory)) {
+        let value = keyMemory[key];
+        if(value < 0) {
+          await keyboard.toggleKey(key, true, -value);
+          await keyboard.toggleKey(key, false);
+        }
+        keyMemory[key] = 0
       }
-      keyMemory[key] = 0
-      if(config.arduino) await sleep(random(500, 1000))
     }
+
     await mouse.toggle(`right`, false, delay);
   }
 
@@ -947,10 +948,13 @@ if (config.soundDetection) {
       let rngKey = getRandomKey();
 
       await mouse.toggle(`right`, true, delay);
-      await sleep(250, 750); // ???
+      await sleep(250, 750);
 
-      await keyboard.toggleKey(rngKey.key, true, rngKey.value);
-      await keyboard.toggleKey(rngKey.key, false, delay);
+      if(rngKey) {
+        await keyboard.toggleKey(rngKey.key, true, rngKey.value);
+        await keyboard.toggleKey(rngKey.key, false, delay);
+      }
+
 
       let cPos = mouse.getPos()
 
@@ -960,14 +964,10 @@ if (config.soundDetection) {
         await nutMouse.move({from: cPos, to: rngPos, speed: random(100, 300)});
       }
 
-      if(!config.arduino && random(0, 100) > 75) {
+      if(random(0, 100) > 75) {
         await mouse.toggle(`right`, false, delay);
 
-        if(config.arduino){
-          await sleep(500, 1000);
-        } else {
-          await sleep(250, 1500);
-        }
+        await sleep(250, 1500);
 
         await mouse.toggle(`right`, true, delay);
         let rngPosNew = getRandomPos();
@@ -975,8 +975,11 @@ if (config.soundDetection) {
 
         if(random(0, 100) > 75) {
           let rngKeyNew = getRandomKey();
-          await keyboard.toggleKey(rngKeyNew.key, true, rngKeyNew.value);
-          await keyboard.toggleKey(rngKeyNew.key, false, delay);
+          if(rngKeyNew) {
+            await keyboard.toggleKey(rngKeyNew.key, true, rngKeyNew.value);
+            await keyboard.toggleKey(rngKeyNew.key, false, delay);
+          }
+
           await mouse.toggle(`right`, false, delay);
         } else {
           await sleep(250, 750);
