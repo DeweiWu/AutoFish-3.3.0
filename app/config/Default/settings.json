@@ -26,5 +26,5 @@
   "initial": true,
   "initialZone": true,
   "soundDetection": false,
-  "soundDetectionRange": 800
+  "soundDetectionRange": 500
 }
