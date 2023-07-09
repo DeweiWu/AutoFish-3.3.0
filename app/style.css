@@ -808,3 +808,11 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   right: -12px;
   height: 45px;
 }
+
+.settings .option_hint {
+  transition: 0.7s all;
+}
+
+.settings .option_hint:hover {
+  transform: rotate(1turn);
+}
