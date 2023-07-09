@@ -372,6 +372,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
     writeFileSync(path.join(__dirname, `./config/${getProfile().selected}/settings.json`), JSON.stringify(settings))
   );
 
+  ipcMain.on("unsupported-key", () => {
+    showWarning(win, `The key you pressed is not supported by AutoFish.`);
+  });
+
   ipcMain.on(`resize-win`, (event, size) => {
     win.setSize(size.width, size.height);
   })

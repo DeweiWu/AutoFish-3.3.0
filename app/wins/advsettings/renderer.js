@@ -2,6 +2,7 @@ const { ipcRenderer } = require("electron");
 const elt = require("../../ui/utils/elt.js");
 const wrapInLabel = require("../../ui/utils/wrapInLabel.js");
 const { SerialPort } = require(`serialport`);
+const keySupport = require("./../../utils/keySupport.js");
 
 const convertValue = (node) => {
   let value = node.value;
@@ -602,10 +603,21 @@ const runApp = async () => {
   });
 
   const keyAssigning = (event) => {
-    event.target.value = event.key == ` `? `space` : event.key.toLowerCase();
+    if(event.key == ` `) {
+      event.target.value = `space`;
+    } else {
+      let firstChar = event.key[0].toLowerCase();
+      let resultKey = firstChar + event.key.slice(1);
+      if(keySupport.isSupported(resultKey)) {
+        event.target.value = resultKey;
+      } else {
+        ipcRenderer.send(`unsupported-key-win`);
+      }
+    }
     gatherConfig();
     document.removeEventListener(`keydown`, keyAssigning);
     event.target.blur();
+    event.preventDefault();
   }
 
   settings.addEventListener('mousedown', (event) => {

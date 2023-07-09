@@ -37,6 +37,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`advanced-click`);
     ipcMain.removeAllListeners(`mammoth-warn`);
     ipcMain.removeAllListeners(`sound-warn`);
+    ipcMain.removeAllListeners(`unsupported-key-win`);
     ipcMain.removeAllListeners(`rngMove-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
@@ -64,7 +65,11 @@ const createAdvSettings = (appPath) => {
 
   ipcMain.on("rngMove-warn", () => {
     return showWarning(win, `In game go to Options -> Controls -> Camera Following Style and change it to "Never adjust camera", otherwise the feature won't work properly.\n\nThis feature might trigger a bug that changes your cursor type to "Move Cursor" (4-arrow cursor). It should disappear after relaunching the game.\n\nFind a fishing place where you character can move freely within a couple of yards.\n\n All the sensitivity settings should be set to default.`);
-  })
+  });
+
+  ipcMain.on("unsupported-key-win", () => {
+    showWarning(win, `The key you pressed is not supported by AutoFish.`);
+  });
 
   ipcMain.on("sound-warn", () => {
     return showWarning(win, `Turn off Music and Ambient Sounds in the game, leave only Sound Effects. Your volume should be normal. Try to find a place secluded from the sounds made by other players to avoid false detections.`);
