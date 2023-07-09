@@ -712,10 +712,12 @@ input[type=range]::-webkit-slider-runnable-track {
 .settingsFolder{
   height: 16px;
   position: absolute;
-  left: 90px;
+  left: 88px;
   top: 96px;
   cursor: pointer;
   opacity: 0.5;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 
 .advSettings input[type=range] {
