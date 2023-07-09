@@ -81,8 +81,6 @@
       "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "chatZone": {
         "x": 0.01875,
         "y": 0.8407407407407408,
@@ -204,8 +202,6 @@
       "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 750,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "chatZone": {
         "x": 0.022395833333333334,
         "y": 0.6787037037037037,
@@ -321,8 +317,6 @@
       "bobberDensity": 1,
       "autoSensDens": true,
       "closeLootDelay": 750,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "spareDelay": 3000,
       "ignorePreliminary": false,
       "chatZone": {
@@ -442,8 +436,6 @@
       "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "chatZone": {
         "x": 0.0171875,
         "y": 0.7768518518518519,
@@ -558,8 +550,6 @@
       "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "chatZone": {
         "x": 0.0171875,
         "y": 0.7768518518518519,
@@ -676,8 +666,6 @@
       "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "confirmationWindow": {
         "1536": {
           "x": 0.41142,
@@ -785,8 +773,6 @@
       "closeAtWhisper": false,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "chatZone": {
         "x": 0.021875,
         "y": 0.725,
@@ -902,8 +888,6 @@
       "closeAtWhisper": false,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
       "bobberSensitivity": 1,
       "bobberDensity": 1,
@@ -1016,8 +1000,6 @@
       "closeAtWhisper": false,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "chatZone": {
         "x": 0.019791666666666666,
         "y": 0.7564814814814815,
@@ -1136,8 +1118,6 @@
       "closeAtWhisper": false,
       "whisperThreshold": 60,
       "closeLootDelay": 250,
-      "soundDetection": false,
-      "soundDetectionRange": 800,
       "chatZone": {
         "x": 0.019791666666666666,
         "y": 0.7564814814814815,
