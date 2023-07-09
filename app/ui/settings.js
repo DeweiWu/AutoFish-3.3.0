@@ -1,6 +1,7 @@
 const elt = require("./utils/elt.js");
 const renderSettings = require("./renderSettings.js");
 const keySupport = require("./../utils/keySupport.js");
+const { ipcRenderer } = require('electron');
 
 const convertValue = (node) => {
   let value = node.value;
@@ -84,6 +85,24 @@ class Settings {
     });
 
     this.dom.addEventListener('click', (event) => {
+
+      if(event.target["data-soundDetectionHeader"] == true) {
+        if(!this.config.soundDetection) {
+          setTimeout(() => {
+            ipcRenderer.send("sound-warn");
+          }, 50); 
+
+        }
+        this.config.soundDetection = true;
+        this.onChange(this.config);
+        this.reRender();
+      }
+
+      if(event.target["data-thresholdHeader"] == true) {
+        this.config.soundDetection = false;
+        this.onChange(this.config);
+        this.reRender();
+      }
 
       if(event.target.name == `bobberColor` || event.target.parentNode.name == `bobberColor`) {
         let bobberColorNode = this.dom.querySelector(`.bobberColorSwitch`);

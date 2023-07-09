@@ -36,7 +36,6 @@ const createAdvSettings = (appPath) => {
   win.on("closed", () => {
     ipcMain.removeAllListeners(`advanced-click`);
     ipcMain.removeAllListeners(`mammoth-warn`);
-    ipcMain.removeAllListeners(`sound-warn`);
     ipcMain.removeAllListeners(`unsupported-key-win`);
     ipcMain.removeAllListeners(`rngMove-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
@@ -69,10 +68,6 @@ const createAdvSettings = (appPath) => {
 
   ipcMain.on("unsupported-key-win", () => {
     showWarning(win, `The key you pressed is not supported by AutoFish.`);
-  });
-
-  ipcMain.on("sound-warn", () => {
-    return showWarning(win, `Turn off Music and Ambient Sounds in the game, leave only Sound Effects. Your volume should be normal. Try to find a place secluded from the sounds made by other players to avoid false detections.`);
   });
 
   ipcMain.handle("advanced-defaults", () => {

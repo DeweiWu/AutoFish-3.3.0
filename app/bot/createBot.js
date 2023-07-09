@@ -417,7 +417,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
   };
 
   const findBobber = async () => {
-    if(settings.useInt && config.soundDetection) {
+    if(settings.useInt && settings.soundDetection) {
       return true;
     }
     return await fishingZone.findBobber(findBobber.memory, detectSens());
@@ -450,10 +450,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
         return pos;
       }
 
-if (config.soundDetection) {
+if (settings.soundDetection) {
   let caught = await new Promise((resolve, reject) => {
     ipcMain.once("get-waveform", (event, waveform) => {
-      resolve(waveform.filter((n) => n != 128).length > Number(config.soundDetectionRange) ? true : false);
+      resolve(waveform.filter((n) => n != 128).length > Number(settings.soundDetectionRange) ? true : false);
     });
     BrowserWindow.getAllWindows()[0].webContents.send("get-audio");
   });

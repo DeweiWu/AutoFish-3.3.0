@@ -378,7 +378,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
   ipcMain.on(`resize-win`, (event, size) => {
     win.setSize(size.width, size.height);
-  })
+  });
+
+  ipcMain.on("sound-warn", () => {
+    return showWarning(win, `Turn off Music and Ambient Sounds in the game, leave only Sound Effects. Your volume should be normal. Try to find a place secluded from the sounds made by other players to avoid false detections.`);
+  });
 
   let settWin;
   ipcMain.on("advanced-settings", () => {

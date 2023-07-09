@@ -721,3 +721,90 @@ input[type=range]::-webkit-slider-runnable-track {
 .advSettings input[type=range] {
   width: 180px;
 }
+
+.soundDeteaction-header, .threshold-header {
+  cursor: pointer;
+}
+
+.soundDetection-container {
+    height: 70px;
+    width: 288px;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+}
+
+.thClosed {
+  border-bottom: 1px solid grey;
+}
+
+.soundDetection-container input[type=range] {
+  width: 239px;
+  height: 10px;
+  margin-bottom: 5px;
+  z-index: 10;
+}
+
+.soundDetection-container input[type=number] {
+  width: 45px;
+  margin: 0;
+}
+
+
+input[type=range][name=soundDetectionRange] {
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type=range][name=soundDetectionRange]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+input[type=range][name=soundDetectionRange]:focus {
+  outline: none;
+}
+
+input[type=range][name=soundDetectionRange]::-ms-track {
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+input[type=range][name=soundDetectionRange]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1px solid grey;
+  height: 32px;
+  width: 16px;
+  border-radius: 3px;
+  background: rgb(240,240,240);
+  background-image: url("img/grate.png");
+  background-position: center center;
+  background-size: 10px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  margin-top: -12px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+}
+
+input[type=range][name=soundDetectionRange]::-webkit-slider-thumb:hover {
+  border: 1px solid black;
+}
+
+input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  background-image: linear-gradient(to right, black, green);
+  border-radius: 10px;
+  border: 0.2px solid #010101;
+}
+
+.soundDetection-image {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -12px;
+  height: 45px;
+}

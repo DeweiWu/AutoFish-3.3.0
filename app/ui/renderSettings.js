@@ -5,36 +5,47 @@ const renderBobberImg = (bobberColor, autoTh) => {
   return elt(`img`, {className: `threshold_canvas ${autoTh ? `bobberColorSwitch_disabled` : ``}`, src:`img/bobber_${bobberColor}.png`, width: 80, height: 49});
 };
 
-const renderThreshold = ({ threshold, bobberColor, autoTh, game }) => {
-	if(threshold < 1) threshold = 1;
-	else if(threshold > 150) threshold = 150;
-  const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch ${autoTh ? `bobberColorSwitch_disabled` : ``}`,
-                                name: `bobberColor`,
-                                title: `Switch between blue and red feathers.`,
-                                value: bobberColor,
-                                style: `background-image: linear-gradient(to right, ${bobberColor == `red` ? `rgb(100, 0, 0), red` : `rgb(0, 90, 200), rgb(0, 0, 100)`});`
-                              }, elt(`div`, {className: `switch_thumb ${bobberColor == `red` ? `switch_thumb_left` : `switch_thumb_right`}`}), elt(`span`, {className: `bobberColorSwitchText`}, `${bobberColor == `red` ? `Red Feather` : `Blue Feather`}`));
-if(game == `Vanilla (splash)`) autoTh = false;
-const autoThSwitch = elt(`radio`, { className: `autoTh`,
-                              name: `autoTh`,
-                              title: `Switch between auto and manual modes.`,
-                              value: autoTh,
-                              disabled: game == `Vanilla (splash)`,
-                              style: `background-image: linear-gradient(to right, ${autoTh ? `#663c20, #fe954d` : `#a8a8a8, #4b4b4b`});`
-                            }, elt(`div`, {className: `switch_thumb ${autoTh ? `switch_thumb_left` : `switch_thumb_right`}`}), elt(`span`, {className: `bobberColorSwitchText`},  `${autoTh ? `Auto` : `Manual`}`));
+const renderThreshold = ({ threshold, bobberColor, autoTh, game, soundDetection, soundDetectionRange }) => {
+  if(!soundDetection) {
+    if(threshold < 1) threshold = 1;
+    else if(threshold > 150) threshold = 150;
+    const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch ${autoTh ? `bobberColorSwitch_disabled` : ``}`,
+                                  name: `bobberColor`,
+                                  title: `Switch between blue and red feathers.`,
+                                  value: bobberColor,
+                                  style: `background-image: linear-gradient(to right, ${bobberColor == `red` ? `rgb(100, 0, 0), red` : `rgb(0, 90, 200), rgb(0, 0, 100)`});`
+                                }, elt(`div`, {className: `switch_thumb ${bobberColor == `red` ? `switch_thumb_left` : `switch_thumb_right`}`}), elt(`span`, {className: `bobberColorSwitchText`}, `${bobberColor == `red` ? `Red Feather` : `Blue Feather`}`));
+    if(game == `Vanilla (splash)`) autoTh = false;
+    const autoThSwitch = elt(`radio`, { className: `autoTh`,
+                                name: `autoTh`,
+                                title: `Switch between auto and manual modes.`,
+                                value: autoTh,
+                                disabled: game == `Vanilla (splash)`,
+                                style: `background-image: linear-gradient(to right, ${autoTh ? `#663c20, #fe954d` : `#a8a8a8, #4b4b4b`});`
+                              }, elt(`div`, {className: `switch_thumb ${autoTh ? `switch_thumb_left` : `switch_thumb_right`}`}), elt(`span`, {className: `bobberColorSwitchText`},  `${autoTh ? `Auto` : `Manual`}`));
 
-  const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold`, disabled: autoTh, className: `${autoTh ? `threshold_disabled` : ``}` });
-  if(bobberColor == `blue`) {
-    document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
+    const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold`, disabled: autoTh, className: `${autoTh ? `threshold_disabled` : ``}` });
+    if(bobberColor == `blue`) {
+      document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
+    } else {
+      document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
+    }
+
+    const number = elt(`input`, { type: `number`, value: threshold, disabled: autoTh, name: `threshold` });
+
+    const canvas = renderBobberImg(bobberColor, autoTh);
+    const bobberContainer = elt(`div`, { className: `bobberContainer` }, canvas, number);
+    return elt(`div`, { className: `thresholdRange` }, bobberColorSwitch, range, bobberContainer, autoThSwitch);
   } else {
-    document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
+    if(soundDetectionRange > 1100) soundDetectionRange = 1100;
+    if(soundDetectionRange < 128) soundDetectionRange = 128;
+    let soundDetectionRangeWin = elt(`input`, {type: `number`, name: `soundDetectionRange`, value: soundDetectionRange, disabled: !soundDetection});
+
+    const img = elt(`img`, {className: `soundDetection-image`, src: `img/sound-icon.png`});
+
+    return elt(`div`, {className: `soundDetection-container`}, elt('input', {type: `range`, min: 128, max: 1100, value: soundDetectionRange, disabled: !soundDetection,  oninput: function() {soundDetectionRangeWin.value = this.value}, name: `soundDetectionRange`, className: `${!soundDetection ? `threshold_disabled` : ``}`}),
+     soundDetectionRangeWin, img);
   }
-
-  const number = elt(`input`, { type: `number`, value: threshold, disabled: autoTh, name: `threshold` });
-
-	const canvas = renderBobberImg(bobberColor, autoTh);
-  const bobberContainer = elt(`div`, { className: `bobberContainer` }, canvas, number);
-  return elt(`div`, { className: `thresholdRange` }, bobberColorSwitch, range, bobberContainer, autoThSwitch);
 };
 
 const renderGameNames = ({game}) => {
@@ -193,8 +204,6 @@ const renderWhiteListGreenBlue = ({whitelist, whiteListBlueGreen}) => {
   return elt('input', {type: `checkbox`, checked: whitelist && whiteListBlueGreen, name: `whiteListBlueGreen`, disabled: !whitelist });
 };
 
-
-
 const renderSettings = (config) => {
 return elt(
     "section",
@@ -291,7 +300,8 @@ return elt(
       ),
       /*wrapInLabel(elt('span', null, "Loot all ", elt('span', {style: `color:#4DDF3F; font-weight: bold`}, `Uncommon `), `and `, elt(`span`, {style: `color: #015CB4; font-weight: bold`}, `Rare `), `and `, elt('span', {style: `color:#950c95; font-weight: bold`}, `Epic `), `items:`), renderWhiteListGreenBlue(config), `If you use whitelist, you can check this option to loot every green, blue and purple items in addition to the items in the whitelist.`)*/
     ),
-    elt("p", {className: 'settings_header settings_header_main'}, "Threshold"),
+    elt("p", {className: `settings_header settings_header_main threshold-header ${config.soundDetection ? `thClosed`: ``}`, "data-thresholdHeader": true}, "Threshold"),
+    elt("p", {className: `settings_header settings_hedaer_main soundDeteaction-header ${config.soundDetection ? ``: `thClosed`}`, "data-soundDetectionHeader": true}, "Sound"),
     elt(
       "div",
       { className: "settings_section threshold_settings" },

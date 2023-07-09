@@ -58,10 +58,6 @@ const renderArduinoRate = ({arduino, arduinoRate}) => {
   return elt(`select`, {disabled: !arduino, className: `arduino_rate`, name: `arduinoRate`}, ...[9600, 14400, 19200, 38400, 57600, 115200].map((rate) => elt(`option`, {selected: rate == arduinoRate}, `${rate}`)))
 }
 
-const renderSoundDetection = ({soundDetection}) => {
-    return elt(`input`, {type: `checkbox`, checked: soundDetection, name: `soundDetection`});
-};
-
 const renderSplashColor = ({splashColor}) => {
 let min = 100;
 let max = 255;
@@ -466,11 +462,6 @@ const renderSettings = (config) => {
   wrapInLabel("HS Delay: ", renderHsKeyDelay(config), `How long it take to use HS`),
   wrapInLabel("Shut down computer after quitting: ", renderShutDown(config), `The bot will press Left Windows Key and launch command line, after that it will write shutdown -s -t 10 command which will shut down your computer in 10 seconds. `),
   ),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `🔊 Sound Detection`),
-  elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Sound Detection: `, renderSoundDetection(config), `The bot will check the change of sound instead of the change of pixels when it should catch the fish.`),
-  wrapInLabel(`Sound Detection Range: `, renderSoundDetectionRange(config), `The strength of the noise created by jerking of the bobber`),
-  ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `📲 Remote Control`),
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Telegram token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
@@ -600,10 +591,6 @@ const runApp = async () => {
 
     if(event.target.name == `rngMove` && event.target.checked) {
       ipcRenderer.send("rngMove-warn");
-    }
-
-    if(event.target.name == `soundDetection` && event.target.checked) {
-      ipcRenderer.send("sound-warn");
     }
   });
 
