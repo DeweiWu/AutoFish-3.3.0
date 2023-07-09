@@ -717,3 +717,7 @@ input[type=range]::-webkit-slider-runnable-track {
   cursor: pointer;
   opacity: 0.5;
 }
+
+.advSettings input[type=range] {
+  width: 180px;
+}

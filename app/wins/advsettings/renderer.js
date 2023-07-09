@@ -25,8 +25,11 @@ const renderDelay = ({delay}) => {
      elt('input', {type: `number`, name: `to`, value: delay.to}));
 };
 
-const renderHighlightPercent = ({highlightPercent}) => elt(`input`, {type: `number`, value: highlightPercent, name: `highlightPercent`});
-
+const renderHighlightPercent = ({highlightPercent}) => {
+  const winRange = elt(`input`, {type: `number`, value: highlightPercent, name: "highlightPercent"})
+  const range = elt('input', {type: `range`, max: 100, value: highlightPercent, oninput: function() {winRange.value = this.value}, name: "highlightPercent"});
+  return elt(`div`, null, range, winRange);
+};
 
 const renderFindBobberDirection = ({findBobberDirection}) => {
   return elt(`select`, {name: `findBobberDirection`}, ...([`normal`, `reverse`, `center`].map(dir => elt(`option`, {value: dir, selected: findBobberDirection == dir}, dir.slice(0, 1).toUpperCase() + dir.slice(1)))))
@@ -189,18 +192,16 @@ const renderCheckingDelay = ({checkingDelay}) => {
   return elt(`input`, {type: `number`, name:`checkingDelay`, value: checkingDelay});
 };
 
-const renderMouseMoveSpeed = ({mouseMoveSpeed, arduino}) => {
-  return elt(`div`, {"data-collection": `mouseMoveSpeed`}, elt(`span`, {className: `option_text`}, `from:`),
-  elt('input', { disabled: arduino, type: `number`, step: 0.1, name: `from`, value: mouseMoveSpeed.from }), elt(`span`, {className: `option_text`}, `to:`),
-  elt('input', { disabled: arduino, type: `number`, step: 0.1, name: `to`, value: mouseMoveSpeed.to })
-  );
+const renderMouseMoveSpeed = ({mouseMoveSpeed, likeHuman}) => {
+  const winRange = elt(`input`, {type: `number`, value: mouseMoveSpeed, name: "mouseMoveSpeed", disabled: !likeHuman})
+  const range = elt('input', {type: `range`, min: 0, className: !likeHuman ? `threshold_disabled` : ``, max: 100, value: mouseMoveSpeed, disabled: !likeHuman, oninput: function() {winRange.value = this.value}, name: "mouseMoveSpeed"});
+  return elt(`div`, null, range, winRange);
 };
 
-const renderMouseCurvature = ({mouseCurvatureStrength, arduino}) => {
-  return elt(`div`, {"data-collection": `mouseCurvatureStrength`}, elt(`span`, {className: `option_text`}, `from:`),
-  elt('input', { disabled: arduino, type: `number`, name: `from`, value: mouseCurvatureStrength.from }), elt(`span`, {className: `option_text`}, `to:`),
-  elt('input', { disabled: arduino, type: `number`, name: `to`, value: mouseCurvatureStrength.to })
-  );
+const renderMouseCurvature = ({mouseCurvatureStrength, likeHuman}) => {
+  const winRange = elt(`input`, {type: `number`, value: mouseCurvatureStrength, disabled: !likeHuman, name: "mouseCurvatureStrength"})
+  const range = elt('input', {type: `range`, className: !likeHuman ? `threshold_disabled` : ``, min: 0, max: 150, value: mouseCurvatureStrength, disabled: !likeHuman, oninput: function() {winRange.value = this.value}, name: "mouseCurvatureStrength"});
+  return elt(`div`, null, range, winRange);
 };
 
 const renderLuresDelay = ({luresDelay}) => {
