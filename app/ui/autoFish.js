@@ -114,7 +114,7 @@ class AutoFish {
     const footer = elt(`p`, { className: "version" }, versionNode, premiumIcon);
 
     ipcRenderer.on("set-version", (event, version) => {
-      versionNode.textContent = `ver. 2.2.0 Premium `;
+      versionNode.textContent = `ver. 2.3.0 Premium `;
     });
     this.settings.regOnChange((config) => {
       ipcRenderer.send("save-settings", config);
