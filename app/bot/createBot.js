@@ -119,45 +119,49 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
 
   const chatZone = createChatZone({getDataFrom, zone: Zone.from(screenSize).toRel(config.chatZone), threshold: config.whisperThreshold});
 
-  const lootWindowPatch =
-    config.lootWindow[screenSize.width <= 1536 ? `1536` : `1920`];
+  let lootWinResType = screenSize.width <= 1536 ? `1536` : (screenSize.height == 1440 && config.lootWindow[`2560`]) ? `2560` : `1920`;
 
-  const confirmationWindowPatch =
-    config.confirmationWindow[screenSize.width <= 1536 ? `1536` : `1920`];
+  let ultrawide = (screenSize.width / screenSize.height) > 2;
 
-  const lootWindow = {
-    upperLimit: lootWindowPatch.upperLimit * screenSize.height,
-    toItemX: lootWindowPatch.toItemX * screenSize.width,
-    toItemY: lootWindowPatch.toItemY * screenSize.height,
-    width: lootWindowPatch.width * screenSize.width,
-    height: lootWindowPatch.height * screenSize.height,
-    itemHeight: lootWindowPatch.itemHeight * screenSize.height,
-  };
+const lootWindowPatch =
+  config.lootWindow[lootWinResType];
 
-  if(lootWindowPatch.itemHeightAdd) {
-    lootWindow.itemHeightAdd = lootWindowPatch.itemHeightAdd * screenSize.height;
+const confirmationWindowPatch =
+  config.confirmationWindow[screenSize.width <= 1536 ? `1536` : `1920`];
+
+const lootWindow = {
+  upperLimit: lootWindowPatch.upperLimit * screenSize.height,
+  toItemX: lootWindowPatch.toItemX * (ultrawide ? Number(lootWinResType) : screenSize.width),
+  toItemY: lootWindowPatch.toItemY * screenSize.height,
+  width: lootWindowPatch.width * (ultrawide ? Number(lootWinResType) : screenSize.width),
+  height: lootWindowPatch.height * screenSize.height,
+  itemHeight: lootWindowPatch.itemHeight * screenSize.height,
+};
+
+if(lootWindowPatch.itemHeightAdd) {
+  lootWindow.itemHeightAdd = lootWindowPatch.itemHeightAdd * screenSize.height;
+}
+
+const confirmationWindow = {
+  x: confirmationWindowPatch.x * screenSize.width,
+  y: confirmationWindowPatch.y * screenSize.height,
+  width: confirmationWindowPatch.width * screenSize.width,
+  height: confirmationWindowPatch.height * screenSize.height
+};
+
+if(lootWindowPatch.cursorPos) {
+  lootWindow.cursorPos = {
+    x: lootWindowPatch.cursorPos.x * (ultrawide ? Number(lootWinResType) : screenSize.width),
+    y: lootWindowPatch.cursorPos.y * screenSize.height
   }
+}
 
-  const confirmationWindow = {
-    x: confirmationWindowPatch.x * screenSize.width,
-    y: confirmationWindowPatch.y * screenSize.height,
-    width: confirmationWindowPatch.width * screenSize.width,
-    height: confirmationWindowPatch.height * screenSize.height
-  };
-
-  if(lootWindowPatch.cursorPos) {
-    lootWindow.cursorPos = {
-      x: lootWindowPatch.cursorPos.x * screenSize.width,
-      y: lootWindowPatch.cursorPos.y * screenSize.height
-    }
+if(lootWindowPatch.exitButton) {
+  lootWindow.exitButton = {
+    x: lootWindowPatch.exitButton.x * (ultrawide ? Number(lootWinResType) : screenSize.width),
+    y: lootWindowPatch.exitButton.y * screenSize.height
   }
-
-  if(lootWindowPatch.exitButton) {
-    lootWindow.exitButton = {
-      x: lootWindowPatch.exitButton.x * screenSize.width,
-      y: lootWindowPatch.exitButton.y * screenSize.height
-    }
-  }
+}
 
   const whitelist = settings.whitelistWords
     .split(",")
