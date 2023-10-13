@@ -38,6 +38,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`mammoth-warn`);
     ipcMain.removeAllListeners(`unsupported-key-win`);
     ipcMain.removeAllListeners(`rngMove-warn`);
+    ipcMain.removeAllListeners(`lures-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
   });
@@ -65,6 +66,10 @@ const createAdvSettings = (appPath) => {
   ipcMain.on("rngMove-warn", () => {
     return showWarning(win, `In game go to Options -> Controls -> Camera Following Style and change it to "Never adjust camera", otherwise the feature won't work properly.\n\nThis feature might trigger a bug that changes your cursor type to "Move Cursor" (4-arrow cursor). It should disappear after relaunching the game.\n\nFind a fishing place where you character can move freely within a couple of yards.\n\n All the sensitivity settings should be set to default.`);
   });
+
+  ipcMain.on("lures-warn", () => {
+    showWarning(win, `Don't forget to make a macros as described in the Guide (Help -> Read Me) and assign it to the same key you have assigned for Lures Key.`);
+  })
 
   ipcMain.on("unsupported-key-win", () => {
     showWarning(win, `The key you pressed is not supported by AutoFish.`);

@@ -224,7 +224,7 @@ const connectToTelegram = (key) => {
     });
 
     if(settings.initial) {
-      showWarning(win, `The shortcut to AutoFish was created on you desktop`);
+      //showWarning(win, `The shortcut to AutoFish was created on you desktop`);
 
       if(showChoiceWarning(win, `Copyright (c) 2023 jsbots
 
@@ -315,12 +315,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
       return;
     }
 
-    if(settings.fishingKey === `` || settings.luresKey === ``) {
-      dialog.showErrorBox('', `Fishing and lures key values can't be empty`);
-      win.webContents.send('stop-bot');
-      return;
-    }
-
     const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot, arduino);
     const stopAppAndBots = () => {
       if(config.patch[settings.game].hideWin) win.show();
@@ -363,10 +357,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
   ipcMain.on("open-link-donate", () =>
     shell.openExternal("https://www.buymeacoffee.com/jsbots/e/96734")
   );
-
-  ipcMain.on("lures-warn", () => {
-    showWarning(win, `Don't forget to make a macros as described in the Guide (Help -> Read Me) and assign it to the same key you have assigned for Lures Key.`);
-  })
 
   ipcMain.on("save-settings", (event, settings) =>
     writeFileSync(path.join(__dirname, `./config/${getProfile().selected}/settings.json`), JSON.stringify(settings))

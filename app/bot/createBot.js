@@ -244,7 +244,7 @@ if(lootWindowPatch.exitButton) {
 
     await sleep(random(config.logOutAfter.from * 1000, config.logOutAfter.from * 1000));
 
-    if(settings.lures) {
+    if(config.lures) {
       applyLures.timer.update(() => addTimeLures);
     }
 
@@ -327,7 +327,7 @@ if(lootWindowPatch.exitButton) {
 
   const applyLures = async () => {
     await action(async () => {
-      await keyboard.sendKey(settings.luresKey, delay);
+      await keyboard.sendKey(config.luresKey, delay);
     });
 
     if(settings.afkmode) {
@@ -336,9 +336,9 @@ if(lootWindowPatch.exitButton) {
 
     await sleep(config.luresDelay);
   };
-  applyLures.on = settings.lures;
+  applyLures.on = config.lures;
   applyLures.timer = createTimer(() => {
-    return settings.luresDelayMin * 60 * 1000;
+    return config.luresDelayMin * 60 * 1000;
   });
 
   const applySpare = async () => {
@@ -1050,8 +1050,8 @@ if (settings.soundDetection) {
     }
   }
 
-  doAfterTimer.timer = createTimer(() => settings.timer * 1000 * 60)
-  doAfterTimer.on = settings.timer;
+  doAfterTimer.timer = createTimer(() => config.timer * 1000 * 60)
+  doAfterTimer.on = config.timer;
 
   return {
     doAfterTimer,

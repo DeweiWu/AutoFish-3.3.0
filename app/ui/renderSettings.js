@@ -101,18 +101,6 @@ const renderMultipleWindows = ({multipleWindows, afkmode}) => {
   return checkbox;
 };
 
-const renderLures = ({lures, luresKey}) => {
-  let checkbox = elt("input", {
-    type: "checkbox",
-    className: "option",
-    checked: lures,
-    name: "lures",
-  });
-  let key = elt('input', {type: 'text', value: luresKey, disabled: !lures, name: "luresKey"});
-  key.setAttribute(`readonly`, `true`);
-  return elt('div', null, key, checkbox);
-};
-
 const renderPoleKey = ({lures, game, intKey, useInt}) => {
   let key = elt('input', {type: 'text', value: intKey, disabled: !useInt, name: "intKey"});
   key.setAttribute(`readonly`, `true`);
@@ -132,10 +120,6 @@ const renderStopKey = ({stopKey}) => {
   let key = elt('input', {type: 'text', value: stopKey, name: "stopKey"});
   key.setAttribute(`readonly`, `true`);
   return key;
-};
-
-const renderLuresDelay = ({lures, luresDelayMin}) => {
-  return elt('input', {type: 'number', value: luresDelayMin, step: 0.1, disabled: !lures, name: "luresDelayMin"});
 };
 
 const renderSpareDelay = ({spare, spareDelayMin}) => {
@@ -211,19 +195,14 @@ return elt(
         `Assign the same key you use for fishing. If you use /castFishing instead, then you should assign a key for fishing.`
       ),
       wrapInLabel(
-        "Stop Key: ",
-        renderStopKey(config),
-        `Assign a key that you will use to stop the bot.`
-      ),
-      wrapInLabel(
         "Int. Key: ",
         renderPoleKey(config),
         `Exclusively for Retail. Use interaction key instead of mouse for catching.`
       ),
       wrapInLabel(
-        "Reuse Lures: ",
-        renderLuresDelay(config),
-        `Fishing lures expiration time in minutes.`
+        "Stop Key: ",
+        renderStopKey(config),
+        `Assign a key that you will use to stop the bot.`
       ),
       wrapInLabel(
         "Reuse Ability: ",
@@ -243,11 +222,6 @@ return elt(
         "Multiple Windows: ",
         elt(`div`, {className: `premium_option`}, renderMultipleWindows(config)),
         `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
-      ),
-      wrapInLabel(
-        "Lures Key: ",
-        renderLures(config),
-        `Check this option if you want to use fishing lures. Assign the same key you use for using fishing lures.  You can change cast delay of this key in the Advanced Settings.`
       ),
       wrapInLabel(
         "Ability Key: ",
