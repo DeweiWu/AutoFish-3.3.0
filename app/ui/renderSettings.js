@@ -74,14 +74,6 @@ const renderGameNames = ({game}) => {
   );
 };
 
-const renderTimer = ({timer}) => {
-  return elt(
-    "input",
-    { type: "number", min: "0", value: timer, name: "timer", title: ""},
-    `(min)`
-  );
-};
-
 
 const renderAfkmode = ({afkmode, multipleWindows}) => {
   const checkbox = elt("input", {
@@ -214,11 +206,6 @@ return elt(
         `Choose the version of the game you want the bot to work on.`
       ),
       wrapInLabel(
-        "Timer: ",
-        renderTimer(config),
-        `The bot will work for the given period of minutes. If it's 0, it will never stop.`
-      ),
-      wrapInLabel(
         "Fishing Key: ",
         renderFishingKey(config),
         `Assign the same key you use for fishing. If you use /castFishing instead, then you should assign a key for fishing.`
@@ -248,7 +235,7 @@ return elt(
       "div",
       { className: "settings_section" },
       wrapInLabel(
-        "AFK Fishing: ",
+        "Alt-Tab Fishing: ",
         elt(`div`, {className: `premium_option`}, renderAfkmode(config)),
         `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts (bringing back the previous window) and automatically focus the window of the game when it needs to catch. If you use your mouse too much during AFK fishing the whitelist feature might be unstable. `
       ),

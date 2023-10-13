@@ -428,7 +428,15 @@ const renderRngMoveBalanceTime = ({rngMove, rngMoveBalanceTime}) => {
 
 const renderAutoSensDens = ({autoSensDens, game}) => {
   return elt(`input`, {type: `checkbox`, disabled: game == `Vanilla (splash)`, checked: autoSensDens, name: `autoSensDens`});
-}
+};
+
+const renderTimer = ({timer}) => {
+  return elt(
+    "input",
+    { type: "number", min: "0", value: timer, name: "timer", title: ""},
+    `(min)`
+  );
+};
 
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
@@ -457,6 +465,11 @@ const renderSettings = (config) => {
   ),
   elt(`p`, {className: `settings_header`}, `Timer`),
   elt('div', {className: "settings_section"},
+  wrapInLabel(
+  "Timer: ",
+  renderTimer(config),
+  `The bot will work for the given period of minutes. If it's 0, it will never stop.`
+  ),
   wrapInLabel("Do after timer: ", renderAfterTimer(config),`What the bot should do after the timer elapses (you can set it in the main window)`),
   wrapInLabel("HS Key: ", renderHsKey(config), `A key your HS is assigned.`),
   wrapInLabel("HS Delay: ", renderHsKeyDelay(config), `How long it take to use HS`),
