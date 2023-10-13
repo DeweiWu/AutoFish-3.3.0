@@ -109,21 +109,10 @@ const renderPoleKey = ({lures, game, intKey, useInt}) => {
   return container;
 };
 
-const renderSpareKey = ({spare, spareKey}) => {
-  const checkbox = elt(`input`, {type: `checkbox`, name: `spare`, checked: spare});
-  let key = elt('input', {type: 'text', value: spareKey, disabled: !spare, name: "spareKey"});
-  key.setAttribute(`readonly`, `true`);
-  return elt(`div`, null, key, checkbox);
-}
-
 const renderStopKey = ({stopKey}) => {
   let key = elt('input', {type: 'text', value: stopKey, name: "stopKey"});
   key.setAttribute(`readonly`, `true`);
   return key;
-};
-
-const renderSpareDelay = ({spare, spareDelayMin}) => {
-  return elt('input', {type: 'number', value: spareDelayMin, step: 0.1, disabled: !spare, name: "spareDelayMin"});
 };
 
 const renderFishingKey = ({fishingKey}) => {
@@ -204,11 +193,6 @@ return elt(
         renderStopKey(config),
         `Assign a key that you will use to stop the bot.`
       ),
-      wrapInLabel(
-        "Reuse Ability: ",
-        renderSpareDelay(config),
-        `Spare action expiration time in minutes.`
-      )
     ),
     elt(
       "div",
@@ -222,11 +206,6 @@ return elt(
         "Multiple Windows: ",
         elt(`div`, {className: `premium_option`}, renderMultipleWindows(config)),
         `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
-      ),
-      wrapInLabel(
-        "Ability Key: ",
-        renderSpareKey(config),
-        `You can use this key for e.g. "waterwalking". You can change cast delay of this key in the Advanced Settings.`
       ),
       wrapInLabel(
         "",

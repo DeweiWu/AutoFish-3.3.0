@@ -248,7 +248,7 @@ if(lootWindowPatch.exitButton) {
       applyLures.timer.update(() => addTimeLures);
     }
 
-    if(settings.spare) {
+    if(config.spare) {
       applySpare.timer.update(() => addTimeSpare);
     }
 
@@ -343,7 +343,7 @@ if(lootWindowPatch.exitButton) {
 
   const applySpare = async () => {
     await action(async () => {
-      await keyboard.sendKey(settings.spareKey, delay);
+      await keyboard.sendKey(config.spareKey, delay);
     });
 
     if(settings.afkmode) {
@@ -352,9 +352,9 @@ if(lootWindowPatch.exitButton) {
 
     await sleep(config.spareDelay);
   };
-  applySpare.on = settings.spare;
+  applySpare.on = config.spare;
   applySpare.timer = createTimer(() => {
-    return settings.spareDelayMin * 60 * 1000;
+    return config.spareDelayMin * 60 * 1000;
   });
 
   const randomSleep = async () => {

@@ -6,6 +6,9 @@
   "patch": {
     "Retail": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -143,6 +146,9 @@
     },
     "LK Classic": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -273,6 +279,9 @@
     },
     "Classic": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -403,6 +412,9 @@
     },
     "Leg": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -522,6 +534,9 @@
     },
     "MoP": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -640,6 +655,9 @@
     },
     "Cata": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -756,6 +774,9 @@
     },
     "LK Private": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -875,6 +896,9 @@
     },
     "TBC": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -991,6 +1015,9 @@
     },
     "Vanilla": {
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,
@@ -1113,6 +1140,9 @@
     "Vanilla (splash)": {
       "game": "Vanilla (splash)",
       "timer": 0,
+      "spare": false,
+      "spareKey": "4",
+      "spareDelayMin": 9.8,
       "lures": false,
       "luresKey": "2",
       "luresDelayMin": 10,

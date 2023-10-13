@@ -458,6 +458,20 @@ const renderLuresDelayMin = ({lures, luresDelayMin}) => {
   return elt('input', {type: 'number', value: luresDelayMin, step: 0.1, disabled: !lures, name: "luresDelayMin"});
 };
 
+const renderSpareDelayMin = ({spare, spareDelayMin}) => {
+  return elt('input', {type: 'number', value: spareDelayMin, step: 0.1, disabled: !spare, name: "spareDelayMin"});
+};
+
+const renderSpare = ({spare}) => {
+  return elt(`input`, {type: `checkbox`, name: `spare`, checked: spare});
+}
+
+const renderSpareKey = ({spare, spareKey}) => {
+  let key = elt('input', {type: 'text', value: spareKey, disabled: !spare, name: "spareKey"});
+  key.setAttribute(`readonly`, `true`);
+  return key;
+}
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `General`),
@@ -468,7 +482,6 @@ const renderSettings = (config) => {
   wrapInLabel(`Random mouse curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
   wrapInLabel(`Highlight bobber (%): `, renderHighlightPercent(config), `How often the bot should highlight the bobber before checking on it (if in your game the bobber become brigther or more colourfull after highlighting, then change this value to 100% if you don't care for randomness)`),
   wrapInLabel(`Mouse/keyboard random delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
-  wrapInLabel(`Applying ability delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
   wrapInLabel(`Attempts limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
   wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `After attempts limit the bot will dynamically change threshold by the provided value.`),
   wrapInLabel(
@@ -500,12 +513,26 @@ const renderSettings = (config) => {
   `Fishing lures expiration time in minutes.`
   ),
   wrapInLabel(`Applying lures delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
-
   ),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🧙 Additional Ability`),
+    elt(`div`, {className: `settings_section settings_premium`},
+      wrapInLabel("Use Ability: ", renderSpare(config), `You can use this key for e.g. "waterwalking". `),
+    wrapInLabel(
+      "Ability Key: ",
+      renderSpareKey(config),
+      ``
+    ),
+    wrapInLabel(
+    "Reuse Ability (min):",
+    renderSpareDelayMin(config),
+    `Spare action expiration time in minutes.`
+  ),
+    wrapInLabel(`Applying ability delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
+),
   elt(`p`, {className: `settings_header`}, `Timer`),
   elt('div', {className: "settings_section"},
   wrapInLabel(
-  "Timer: ",
+  "Timer (min): ",
   renderTimer(config),
   `The bot will work for the given period of minutes. If it's 0, it will never stop.`
   ),
@@ -513,40 +540,6 @@ const renderSettings = (config) => {
   wrapInLabel("HS Key: ", renderHsKey(config), `A key your HS is assigned.`),
   wrapInLabel("HS Delay: ", renderHsKeyDelay(config), `How long it take to use HS`),
   wrapInLabel("Shut down computer after quitting: ", renderShutDown(config), `The bot will press Left Windows Key and launch command line, after that it will write shutdown -s -t 10 command which will shut down your computer in 10 seconds. `),
-  ),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `📲 Remote Control`),
-  elt(`div`, {className: `settings_section settings_premium`},
-    wrapInLabel(`Telegram token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
-    wrapInLabel(`Detect whisper:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
-    wrapInLabel(`Stop and close the game at whisper:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
-    wrapInLabel(`Whisper Threshold:`, renderWhisperThreshold(config), `The intensity of purple color the bot will recognize as whispering.`),
-    wrapInLabel(`Chat zone (%):`, renderChatZone(config), `The same logic as with Fishing Zone. The bot will analyze this zone for Whisper Threshold purple colors.`),
-  ),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
-  elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
-  wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),
-  wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), `Don't change this value if you don't know what you are doing. The value should be the same as in Arduino Sketch provided in the guide (you can find it in the top of the sketch)`)
-  ),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Movement`),
-  elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use Random Camera Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
-  wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), `Maximum radius the bot will randomly move your camera.`),
-  wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), `Size of the step the bot will move your camera. The bot wil choose a random value between -value and +value and move your camera by the given value.`),
-  wrapInLabel(`Use Random Keys Movement`, renderRngMoveKeys(config), `The bot will move your character within the delays of w, a, s, d keys (how the key is pressed)`),
-  wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLengthMax(config), `Maximum delay of how long the bot will press w, s, a, d keys.`),
-  wrapInLabel(`Keys Moves Step:`, renderRngMoveDirLength(config), `Step delay of how long the bot will press w, s, a, d keys.`),
-  wrapInLabel(`Repeat Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
-  wrapInLabel(`Balance Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
-),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `🐘 Mammoth Selling`),
-  elt('div', {className: "settings_section settings_premium"},
-  wrapInLabel(`Use mammoth for selling: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),
-  wrapInLabel(`Mammoth Key: `, renderMammothKey(config), `A key that will be used to summon a mammoth mount.`),
-  wrapInLabel(`Mammoth Key Delay(ms): `, renderMammothKeyDelay(config), `How long the bot will wait after summoning a mammoth mount.`),
-  wrapInLabel(`Mammoth Sell Delay(ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
-  wrapInLabel(`Mammoth Apply Every(min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
-  wrapInLabel(`Mammoth Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
   ),
   elt(`p`, {className: `settings_header`}, `Miss on purpose`),
   elt('div', {className: "settings_section"},
@@ -575,6 +568,42 @@ const renderSettings = (config) => {
   wrapInLabel(`Sleep After hook:`, renderSleepAfterHook(config), `The bot will sleep after it hooked the fish for the random duration.`),
   wrapInLabel(`After hook random delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
   ),
+
+  elt(`p`, {className: `settings_header settings_header_premium`}, `📲 Remote Control`),
+  elt(`div`, {className: `settings_section settings_premium`},
+    wrapInLabel(`Telegram token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
+    wrapInLabel(`Detect whisper:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
+    wrapInLabel(`Stop and close the game at whisper:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
+    wrapInLabel(`Whisper Threshold:`, renderWhisperThreshold(config), `The intensity of purple color the bot will recognize as whispering.`),
+    wrapInLabel(`Chat zone (%):`, renderChatZone(config), `The same logic as with Fishing Zone. The bot will analyze this zone for Whisper Threshold purple colors.`),
+  ),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
+  elt('div', {className: "settings_section settings_premium"},
+  wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
+  wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),
+  wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), `Don't change this value if you don't know what you are doing. The value should be the same as in Arduino Sketch provided in the guide (you can find it in the top of the sketch)`)
+  ),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🤖 Random Movement`),
+  elt('div', {className: "settings_section settings_premium"},
+  wrapInLabel(`Use Random Camera Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
+  wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), `Maximum radius the bot will randomly move your camera.`),
+  wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), `Size of the step the bot will move your camera. The bot wil choose a random value between -value and +value and move your camera by the given value.`),
+  wrapInLabel(`Use Random Keys Movement`, renderRngMoveKeys(config), `The bot will move your character within the delays of w, a, s, d keys (how the key is pressed)`),
+  wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLengthMax(config), `Maximum delay of how long the bot will press w, s, a, d keys.`),
+  wrapInLabel(`Keys Moves Step:`, renderRngMoveDirLength(config), `Step delay of how long the bot will press w, s, a, d keys.`),
+  wrapInLabel(`Repeat Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
+  wrapInLabel(`Balance Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
+  ),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🐘 Mammoth Selling`),
+  elt('div', {className: "settings_section settings_premium"},
+  wrapInLabel(`Use mammoth for selling: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),
+  wrapInLabel(`Mammoth Key: `, renderMammothKey(config), `A key that will be used to summon a mammoth mount.`),
+  wrapInLabel(`Mammoth Key Delay(ms): `, renderMammothKeyDelay(config), `How long the bot will wait after summoning a mammoth mount.`),
+  wrapInLabel(`Mammoth Sell Delay(ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
+  wrapInLabel(`Mammoth Apply Every(min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
+  wrapInLabel(`Mammoth Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
+  ),
+
   elt(`p`, {className: `settings_header settings_header_critical`}, `Critical`),
   elt('div', {className: "settings_section settings_critical"},
   wrapInLabel(`Ignore Preliminary Checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
@@ -589,7 +618,9 @@ const renderSettings = (config) => {
   wrapInLabel(`Fishing Zone (%):`, renderRelZone(config), `A zone in which the bot looks for the bobber. The values are percentages of the dimensions of the window: 0.3 = 30%, 0.4 = 40% etc.`),
   wrapInLabel(`Cast Animation Delay (ms):`, renderCastDelay(config), `How long the bot will wait before starting to look for the bobber in the fishing zone. This value is related to appearing and casting animations.`),
   wrapInLabel(`Looking For Bobber Direction:`, renderFindBobberDirection(config), `The direction how the bot will look for the bobber in the fishing zone. Normal means from left to right and from top to bottom, Reverse means from left to right and from bottom to top, Center means from the very center of the Fishing Zone to its borders.`),
-  ));
+),
+
+);
 }
 
 const runApp = async () => {
@@ -669,7 +700,7 @@ const runApp = async () => {
   }
 
   settings.addEventListener('mousedown', (event) => {
-    if((event.target.name == `mammothKey` || event.target.name == `hsKey` || event.target.name == `luresKey`) && !event.target.disabled) {
+    if((event.target.name == `mammothKey` || event.target.name == `hsKey` || event.target.name == `luresKey` || event.target.name == `spareKey`) && !event.target.disabled) {
       event.target.style.backgroundColor = `rgb(255, 104, 101)`;
       event.target.style.border = `1px solid grey`;
 
