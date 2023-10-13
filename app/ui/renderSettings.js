@@ -126,11 +126,11 @@ const renderAdvancedSettings = () => {
 };
 
 const renderFishingZone = () => {
-  return elt('input', {type: 'button', name:"fishingZone", value: "Set Fishing Zone", className: "advanced_settings_button"});
+  return elt('input', {type: 'button', name:"fishingZone", value: "Fishing Zone", className: "advanced_settings_button"});
 };
 
 const renderChatZone = () => {
-  return elt('input', {type: 'button', name:"chatZone", value: "Set Chat Zone", className: "advanced_settings_button"});
+  return elt('input', {type: 'button', name:"chatZone", value: "Chat Zone", className: "advanced_settings_button"});
 };
 
 const renderFilterType = ({game, whitelist, filterType, atMouse}) => {
@@ -193,10 +193,6 @@ return elt(
         renderStopKey(config),
         `Assign a key that you will use to stop the bot.`
       ),
-    ),
-    elt(
-      "div",
-      { className: "settings_section" },
       wrapInLabel(
         "Alt-Tab Fishing: ",
         elt(`div`, {className: `premium_option`}, renderAfkmode(config)),
@@ -207,21 +203,22 @@ return elt(
         elt(`div`, {className: `premium_option`}, renderMultipleWindows(config)),
         `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
       ),
-      wrapInLabel(
-        "",
-        renderChatZone(config),
-        `The application will open the window of your game and show you the Chat Zone that will be used by your Telegram bot, you can change it as you like. You can reset the fishing zone to default values in Advanced Settings.`
-      ),
+    ),
+    elt(
+      "div",
+      { className: "settings_section " },
       wrapInLabel(
         "",
         renderFishingZone(config),
-        `The application will open the window of your game and show you the Fishing Zone, you can change it as you like. You can reset the fishing zone to default values in Advanced Settings.`
+      ),
+      wrapInLabel(
+        "",
+        renderChatZone(config),
       ),
       wrapInLabel(
         "",
         renderAdvancedSettings(config),
-        `Advanced settings that allow you to fine-tune the bot. The settings will be saved under the chosen game version.`
-      ),
+        ),
     ),
     elt("p", {className: 'settings_header settings_header_main'}, "Filter"),
     elt(

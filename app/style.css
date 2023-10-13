@@ -66,7 +66,7 @@ section {
 .AutoFish {
   padding: 5px;
   width: 325px;
-  height: 795px;
+  height: 775px;
 }
 .logo {
   height: 100px;
@@ -264,8 +264,9 @@ section {
 }
 
 .advanced_settings_button {
-  height: 22px;
-  width: 125px;
+  height: 43px;
+  font-size: 1.1em;
+  width: 140px;
   margin-right: 3px;
   text-align: center;
   border-radius: 5px;
