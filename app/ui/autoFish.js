@@ -70,7 +70,7 @@ class AutoFish {
 
       ipcRenderer.invoke("delete-user", user)
       .then(async (another) => {
-        if(!another) return; 
+        if(!another) return;
         if(user == `Default`) return;
         [...profile.select.options].find(child => child.value == user).remove();
         profile.select.value = another;
@@ -116,7 +116,7 @@ class AutoFish {
     const footer = elt(`p`, { className: "version" }, versionNode, premiumIcon);
 
     ipcRenderer.on("set-version", (event, version) => {
-      versionNode.textContent = `ver. 2.3.0 Premium `;
+      versionNode.textContent = `ver. 2.3.1 Premium `;
     });
     this.settings.regOnChange((config) => {
       ipcRenderer.send("save-settings", config);
@@ -178,12 +178,12 @@ class AutoFish {
     foldSettingsContainer.addEventListener(`click`, (event) => {
         if(settingsVisibility) {
           this.settings.dom.style = `display: none;`;
-          ipcRenderer.send(`resize-win`, {width: 341, height: 400})
+          ipcRenderer.send(`resize-win`, {width: 341, height: 403})
           event.target.src = `img/fold.png`;
           document.querySelector(`.settings_header_fold`).style = `border-bottom: 1px solid grey; border-radius: 5px`;
         } else {
           this.settings.dom.style = `display: block`;
-          ipcRenderer.send(`resize-win`, {width: 341, height: 778})
+          ipcRenderer.send(`resize-win`, {width: 341, height: 780})
           event.target.src = `img/unfold.png`
           document.querySelector(`.settings_header_fold`).style = ``;
         }

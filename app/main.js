@@ -100,7 +100,7 @@ const createWindow = async () => {
   let win = new BrowserWindow({
     title: generateName(Math.floor(random(5, 15))),
     width: 341,
-    height: 778,
+    height: 780,
     show: false,
     resizable: true,
     webPreferences: {
