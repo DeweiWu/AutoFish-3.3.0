@@ -224,7 +224,7 @@ const connectToTelegram = (key) => {
     });
 
     if(settings.initial) {
-      //showWarning(win, `The shortcut to AutoFish was created on you desktop`);
+      showWarning(win, `The shortcut to AutoFish was created on you desktop`);
 
       if(showChoiceWarning(win, `Copyright (c) 2023 jsbots
 
@@ -404,7 +404,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 ipcMain.handle("delete-user", (event, user) => {
   if(showChoiceWarning(win, `Are you sure you want to delete this profile?`, `Warning`, `Yes`, `No`)) {
-    return false; 
+    return false;
   }
 
   if (user == `Default`) {
