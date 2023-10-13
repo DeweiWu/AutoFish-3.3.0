@@ -403,6 +403,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
   ipcMain.handle("get-settings", () => getJson(`./config/${getProfile().selected}/settings.json`));
 
 ipcMain.handle("delete-user", (event, user) => {
+  if(showChoiceWarning(win, `Are you sure you want to delete this profile?`, `Warning`, `Yes`, `No`)) {
+    return false; 
+  }
+
   if (user == `Default`) {
     log.err(`You can't delete Default profile.`);
     return;

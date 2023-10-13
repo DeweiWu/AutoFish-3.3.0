@@ -70,12 +70,14 @@ class AutoFish {
 
       ipcRenderer.invoke("delete-user", user)
       .then(async (another) => {
+        if(!another) return; 
         if(user == `Default`) return;
         [...profile.select.options].find(child => child.value == user).remove();
         profile.select.value = another;
         this.settings.config = await ipcRenderer.invoke("get-settings");
         this.settings.reRender();
-      });
+      })
+      .catch(e => console.log(e))
     });
 
     profile.add.addEventListener(`click`, () => {
