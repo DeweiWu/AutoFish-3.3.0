@@ -505,6 +505,9 @@ const renderSpares = ({spares}) => {
   return elt('div', {className: `sparesContainer`}, ...sparesNodes, addButton);
 }
 
+const renderLuresOmitInitial = ({luresOmitInitial, lures}) => elt('input', {type: 'checkbox', name: "luresOmitInitial", disabled: !lures, checked: luresOmitInitial})
+const renderSparesOmitInitial = ({sparesOmitInitial}) => elt('input', {type: 'checkbox', name: "sparesOmitInitial", checked: sparesOmitInitial})
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `General`),
@@ -549,10 +552,12 @@ const renderSettings = (config) => {
   renderLuresDelayMin(config),
   `Fishing lures expiration time in minutes.`
   ),
-  wrapInLabel(`Applying lures delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
+  wrapInLabel(`Applying Lures Delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
+  wrapInLabel(`Omit Initial Application`, renderLuresOmitInitial(config), `Don't apply lures at the beggining, wait until timer elapses.`)
   ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🧙 Additional Actions`),
     elt(`div`, {className: `settings_section settings_premium`},
+        wrapInLabel(`Omit Initial Application`, renderSparesOmitInitial(config), `Don't apply additional actions at the beggining, wait until timer elapses.`),
       renderSpares(config)
       /*
       wrapInLabel("Use Ability: ", renderSpare(config), `You can use this key for e.g. "waterwalking". `),

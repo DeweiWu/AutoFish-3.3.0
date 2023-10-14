@@ -342,6 +342,10 @@ if(lootWindowPatch.exitButton) {
     return config.luresDelayMin * 60 * 1000;
   });
 
+  if(config.luresOmitInitial) {
+    applyLures.timer.start();
+  }
+
   let spares = config.spares.map((spare) => {
       const applySpare = async () => {
         await action(async () => {
@@ -357,6 +361,10 @@ if(lootWindowPatch.exitButton) {
       applySpare.timer = createTimer(() => {
         return spare.repeatTime * 60 * 1000;
       });
+
+      if(config.sparesOmitInitial) {
+        applySpare.timer.start(); 
+      }
 
       return applySpare;
   })
