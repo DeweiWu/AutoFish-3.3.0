@@ -454,33 +454,15 @@ const renderLuresDelayMin = ({lures, luresDelayMin}) => {
   return elt('input', {type: 'number', value: luresDelayMin, step: 0.1, disabled: !lures, name: "luresDelayMin"});
 };
 
-const renderSpareDelayMin = ({spare, spareDelayMin}) => {
-  return elt('input', {type: 'number', value: spareDelayMin, step: 0.1, disabled: !spare, name: "spareDelayMin"});
-};
-
-const renderSpare = ({spare}) => {
-  return elt(`input`, {type: `checkbox`, name: `spare`, checked: spare});
-}
-
-const renderSpareKey = ({spare, spareKey}) => {
-  let key = elt('input', {type: 'text', value: spareKey, disabled: !spare, name: "spareKey"});
-  key.setAttribute(`readonly`, `true`);
-  return key;
-}
-
-const renderSpareDelay = ({spareDelay}) => {
-  return elt(`input`, {type: `number`, name: `spareDelay`, value: spareDelay});
-};
-
 const renderSpares = ({spares}) => {
   const addButton = elt('input', {type: 'button', className: "spares-addButton", onclick() {
-    let key = elt('input', {type: 'text', value: `1`,  className: "spares-key", "data-spares": "key"});
+    let key = elt('input', {type: 'text', value: `1`, className: "spares-key", "data-spares": "key"});
     key.setAttribute('readonly', true);
     this.parentNode.insertBefore(elt('div', {className: "spareContainer"}, `Name: `,
-      elt('input', {type: `text`, value: `Unknown`, className: "spares-name", "data-spares": "name"}), `Key: `,
+      elt('input', {type: `text`, value: `My Action`, className: "spares-name", "data-spares": "name"}), `Key: `,
       key, `Time: `,
-      elt('input', {type: 'number', value: 10, step: 0.1, "data-spares": "repeatTime"}), `Delay: `,
-      elt(`input`, {type: `number`, value: 3000, "data-spares": "delay"}),
+      elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"}), `Delay: `,
+      elt(`input`, {type: `number`, value: 3000, title: "Milliseconds", "data-spares": "delay"}),
       elt('input', {type: 'button', className: "spares-removeButton", onclick(){
         ipcRenderer.invoke('remove-spare-confirm')
         .then((confirm) => confirm ? this.parentNode.remove() : null)
@@ -494,8 +476,8 @@ const renderSpares = ({spares}) => {
     return elt('div', {className: "spareContainer"}, `Name: `,
       elt('input', {type: `text`, value: spare.name, className: "spares-name", "data-spares": "name"}), `Key: `,
       key, `Time: `,
-      elt('input', {type: 'number', value: spare.repeatTime, step: 0.1, "data-spares": "repeatTime"}), `Delay: `,
-      elt(`input`, {type: `number`, value: spare.delay, "data-spares": "delay"}),
+      elt('input', {type: 'number', value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"}), `Delay: `,
+      elt(`input`, {type: `number`, value: spare.delay,  title: "Milliseconds",  "data-spares": "delay"}),
       elt('input', {type: 'button', className: "spares-removeButton", onclick(){
         ipcRenderer.invoke('remove-spare-confirm')
         .then((confirm) => confirm ? this.parentNode.remove() : null)
@@ -559,20 +541,6 @@ const renderSettings = (config) => {
     elt(`div`, {className: `settings_section settings_premium`},
         wrapInLabel(`Omit Initial Application`, renderSparesOmitInitial(config), `Don't apply additional actions at the beggining, wait until timer elapses.`),
       renderSpares(config)
-      /*
-      wrapInLabel("Use Ability: ", renderSpare(config), `You can use this key for e.g. "waterwalking". `),
-    wrapInLabel(
-      "Ability Key: ",
-      renderSpareKey(config),
-      `A key used for your additinal ability.`
-    ),
-    wrapInLabel(
-    "Reuse Ability (min):",
-    renderSpareDelayMin(config),
-    `Spare action expiration time in minutes.`
-  ),
-    wrapInLabel(`Applying ability delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
-    */
 ),
   elt(`p`, {className: `settings_header`}, `Timer`),
   elt('div', {className: "settings_section"},

@@ -347,7 +347,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
   );
 
   ipcMain.on("dx11-warn", () => {
-    showWarning(win, `If you play on official servers, don't forget to switch to DirectX 11 in the game.`);
+    showWarning(win, `Don't forget to switch to DirectX 11 in the game.\n\nTurn off Fine-Tunning feature and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.`);
   });
 
   ipcMain.on("whitelist-warn", () => {
