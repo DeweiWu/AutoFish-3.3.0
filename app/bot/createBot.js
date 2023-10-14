@@ -230,8 +230,7 @@ if(lootWindowPatch.exitButton) {
     await sleep(20000);
 
     const addTimeLures = applyLures.timer.timeRemains();
-    const addTimeSpare = applySpare.timer.timeRemains();
-
+    const addTimeSpares = spares.map(spare => spare.timer.timeRemains());
     await sleep(random(config.logOutFor.from * 1000, config.logOutFor.to * 1000));
     if(state.status == 'stop') {
       return;
@@ -248,8 +247,10 @@ if(lootWindowPatch.exitButton) {
       applyLures.timer.update(() => addTimeLures);
     }
 
-    if(config.spare) {
-      applySpare.timer.update(() => addTimeSpare);
+    if(spares.length > 0) {
+      spares.forEach((spare, i) => {
+        spare.timer.update(() => addTimeSpares[i]);
+      })
     }
 
   };
@@ -341,21 +342,25 @@ if(lootWindowPatch.exitButton) {
     return config.luresDelayMin * 60 * 1000;
   });
 
-  const applySpare = async () => {
-    await action(async () => {
-      await keyboard.sendKey(config.spareKey, delay);
-    });
+  let spares = config.spares.map((spare) => {
+      const applySpare = async () => {
+        await action(async () => {
+          await keyboard.sendKey(spare.key, delay);
+        });
 
-    if(settings.afkmode) {
-      await altTab();
-    }
+        if(settings.afkmode) {
+          await altTab();
+        }
 
-    await sleep(config.spareDelay);
-  };
-  applySpare.on = config.spare;
-  applySpare.timer = createTimer(() => {
-    return config.spareDelayMin * 60 * 1000;
-  });
+        await sleep(spare.delay);
+      };
+      applySpare.timer = createTimer(() => {
+        return spare.repeatTime * 60 * 1000;
+      });
+
+      return applySpare;
+  })
+
 
   const randomSleep = async () => {
     if(settings.afkmode) await altTab();
@@ -1065,7 +1070,7 @@ if (settings.soundDetection) {
     randomSleep,
     applyMammoth,
     applyLures,
-    applySpare,
+    spares,
     castFishing,
     findBobber,
     highlightBobber,

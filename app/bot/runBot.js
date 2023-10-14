@@ -13,7 +13,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     hookBobber,
     checkWhisper,
     replyToChat,
-    applySpare,
+    spares,
     applyMammoth,
     dx12Case,
     runRngMove,
@@ -88,10 +88,13 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       randomSleep.timer.update();
     }
 
-    if(applySpare.on && applySpare.timer.isElapsed()) {
-      log.send(`Applying spare...`);
-      await applySpare();
-      applySpare.timer.update();
+    let checkSpares = spares.filter(spare => spare.timer.isElapsed());
+    if(checkSpares.length > 0) {
+      log.send(`Applying spares...`);
+      for(const elapsedSpare of checkSpares) {
+        await elapsedSpare();
+        elapsedSpare.timer.update()
+      }
     }
 
     if (applyLures.on && applyLures.timer.isElapsed()) {

@@ -236,12 +236,15 @@ section {
   height: 20px;
 }
 
+input[data-spares] {
 
-.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="intKey"], .settings input[name="spareKey"], .settings input[name="mammothKey"], .settings input[name="hsKey"] {
+}
+
+.settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="intKey"], .settings input[name="spareKey"], .settings input[name="mammothKey"], .settings input[name="hsKey"], .settings .spares-key {
   cursor: pointer;
 }
 
-.settings input[name="stopKey"]:active, .settings input[name="luresKey"]:active, .settings input[name="fishingKey"]:active, .settings input[name="intKey"]:active, .settings input[name="mammothKey"]:active, .settings input[name="hsKey"]:active {
+.settings input[name="stopKey"]:active, .settings input[name="luresKey"]:active, .settings input[name="fishingKey"]:active, .settings input[name="intKey"]:active, .settings input[name="mammothKey"]:active, .settings input[name="hsKey"]:active, .settings .spares-key:active {
   cursor: default;
 }
 
@@ -941,4 +944,38 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 
 .threshold_number_input {
   z-index: 3;
+}
+
+.sparesContainer {
+  text-align: center;
+}
+
+.advSettings .settings .settings_section .spareContainer {
+  margin-bottom: 5px;
+}
+
+.advSettings .settings .settings_section .sparesContainer .spares-name {
+  width: 80px;
+}
+
+.advSettings .settings .settings_section .sparesContainer .spares-addButton {
+  display: block;
+  margin: 0 auto;
+  background-image: url('img/add.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 20px;
+  width: 75px;
+}
+
+.advSettings .settings .settings_section .sparesContainer .spares-removeButton {
+  display: inline-block;
+  margin-bottom: -5px;
+  background-image: url('img/remove.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 20px;
+  width: 25px;
 }

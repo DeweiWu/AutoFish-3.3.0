@@ -205,10 +205,6 @@ const renderLuresDelay = ({luresDelay}) => {
   return elt(`input`, {type: `number`, name: `luresDelay`, value: luresDelay});
 };
 
-const renderSpareDelay = ({spareDelay}) => {
-  return elt(`input`, {type: `number`, name: `spareDelay`, value: spareDelay});
-};
-
 const renderRandomSleep = ({randomSleep}) => {
   return elt(`input`, {type: `checkbox`, name: `randomSleep`, checked: randomSleep});
 };
@@ -472,6 +468,43 @@ const renderSpareKey = ({spare, spareKey}) => {
   return key;
 }
 
+const renderSpareDelay = ({spareDelay}) => {
+  return elt(`input`, {type: `number`, name: `spareDelay`, value: spareDelay});
+};
+
+const renderSpares = ({spares}) => {
+  const addButton = elt('input', {type: 'button', className: "spares-addButton", onclick() {
+    let key = elt('input', {type: 'text', value: `1`,  className: "spares-key", "data-spares": "key"});
+    key.setAttribute('readonly', true);
+    this.parentNode.insertBefore(elt('div', {className: "spareContainer"}, `Name: `,
+      elt('input', {type: `text`, value: `Unknown`, className: "spares-name", "data-spares": "name"}), `Key: `,
+      key, `Time: `,
+      elt('input', {type: 'number', value: 10, step: 0.1, "data-spares": "repeatTime"}), `Delay: `,
+      elt(`input`, {type: `number`, value: 3000, "data-spares": "delay"}),
+      elt('input', {type: 'button', className: "spares-removeButton", onclick(){
+        ipcRenderer.invoke('remove-spare-confirm')
+        .then((confirm) => confirm ? this.parentNode.remove() : null)
+      }})
+    ), this);
+  }});
+
+  const sparesNodes = spares.map(spare => {
+    const key = elt('input', {type: 'text', value: spare.key, className: "spares-key", "data-spares": "key"});
+    key.setAttribute('readonly', true);
+    return elt('div', {className: "spareContainer"}, `Name: `,
+      elt('input', {type: `text`, value: spare.name, className: "spares-name", "data-spares": "name"}), `Key: `,
+      key, `Time: `,
+      elt('input', {type: 'number', value: spare.repeatTime, step: 0.1, "data-spares": "repeatTime"}), `Delay: `,
+      elt(`input`, {type: `number`, value: spare.delay, "data-spares": "delay"}),
+      elt('input', {type: 'button', className: "spares-removeButton", onclick(){
+        ipcRenderer.invoke('remove-spare-confirm')
+        .then((confirm) => confirm ? this.parentNode.remove() : null)
+      }})
+    )
+  });
+  return elt('div', {className: `sparesContainer`}, ...sparesNodes, addButton);
+}
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `General`),
@@ -518,8 +551,10 @@ const renderSettings = (config) => {
   ),
   wrapInLabel(`Applying lures delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
   ),
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🧙 Additional Ability`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🧙 Additional Actions`),
     elt(`div`, {className: `settings_section settings_premium`},
+      renderSpares(config)
+      /*
       wrapInLabel("Use Ability: ", renderSpare(config), `You can use this key for e.g. "waterwalking". `),
     wrapInLabel(
       "Ability Key: ",
@@ -532,6 +567,7 @@ const renderSettings = (config) => {
     `Spare action expiration time in minutes.`
   ),
     wrapInLabel(`Applying ability delay (ms):`, renderSpareDelay(config), `How much it takes the bot to apply the spare.`),
+    */
 ),
   elt(`p`, {className: `settings_header`}, `Timer`),
   elt('div', {className: "settings_section"},
@@ -704,7 +740,7 @@ const runApp = async () => {
   }
 
   settings.addEventListener('mousedown', (event) => {
-    if((event.target.name == `mammothKey` || event.target.name == `hsKey` || event.target.name == `luresKey` || event.target.name == `spareKey`) && !event.target.disabled) {
+    if((event.target.name == `mammothKey` || event.target["data-spares"] == "key" || event.target.name == `hsKey` || event.target.name == `luresKey` || event.target.name == `spareKey`) && !event.target.disabled) {
       event.target.style.backgroundColor = `rgb(255, 104, 101)`;
       event.target.style.border = `1px solid grey`;
 
@@ -743,6 +779,17 @@ const runApp = async () => {
   document.body.append(advancedSettings);
 
   const gatherConfig = () => {
+
+    let spares = [...settings.querySelectorAll('.spareContainer')]
+    .map((spare) =>
+      [...spare.children].reduce((a, b) => {
+        if(b['data-spares']) {
+          a[b["data-spares"]] = convertValue(b);
+        }
+        return a;
+      }, {}));
+    config['spares'] = spares;
+
     [...settings.elements].forEach(option => {
       if(!option.name) return;
 

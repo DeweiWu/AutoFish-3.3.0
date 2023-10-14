@@ -8,6 +8,19 @@ const getProfile = (appPath) => {
   return getJson(path.join(appPath, `./config/config.json`)).selected;
 };
 
+
+const showChoiceWarning = (win, warning, title, button1, button2) => {
+  return result = dialog.showMessageBoxSync(win, {
+    type: "warning",
+    title: `${title}`,
+    message: warning,
+    buttons: [`${button1}`, `${button2}`],
+    defaultId: 0,
+    cancelId: 1,
+  });
+};
+
+
 const showWarning = (win, warning) => {
   return result = dialog.showMessageBoxSync(win, {
     type: "warning",
@@ -41,6 +54,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`lures-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
+    ipcMain.removeHandler("remove-spare-confirm");
   });
 
   win.once("ready-to-show", () => {
@@ -80,6 +94,10 @@ const createAdvSettings = (appPath) => {
     const settings = getJson(path.join(appPath, `./config/${profile}/settings.json`));
     const defaults = getJson(path.join(appPath, `./config/${profile}/defaults.json`));
     return defaults.patch[settings.game];
+  })
+
+  ipcMain.handle("remove-spare-confirm", () => {
+    return !showChoiceWarning(win, `Are you sure you want to delete this ability?`, `Warning`, `Yes`, `No`);;
   })
 
   ipcMain.handle("get-game-config", () => {
