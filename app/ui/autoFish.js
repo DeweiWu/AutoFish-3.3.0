@@ -23,8 +23,8 @@ const renderProfiles = (profiles) => {
 const renderLogger = () => {
   return {
     dom: elt("section", { className: `logger` }),
-    show({ text, type }) {
-      let row = elt("p", null, text);
+    show({ text, type, position, margin }) {
+      let row = elt("p", {style: `text-align: ${position ? position : "left"}; margin: ${margin ? margin : ``}`}, text);
       row.style.color = type;
       this.dom.append(row);
       this.dom.scrollTop += 30;

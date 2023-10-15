@@ -197,7 +197,7 @@ const connectToTelegram = (key) => {
     const settings = getJson(`./config/${profile}/settings.json`);
 
     if(settings.initial) {
-      log.send(`Thank you for your support!`);
+      log.msg(`Thank you for your support!❤️`);
     }
 
     let tmKey = config.patch[settings.game].tmApiKey;
@@ -213,7 +213,7 @@ const connectToTelegram = (key) => {
       .then(() => log.ok(`Connected to Telegram!`))
       .catch(e => log.err(`Telegram error: ${e.message}`))
     } else {
-      log.warn(`Provide a Telegram token!`);
+      log.warn(`Provide a Telegram Token! (from BotFather)`);
     }
 
     let { version } = getJson('../package.json');
