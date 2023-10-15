@@ -97,7 +97,7 @@ const createAdvSettings = (appPath) => {
   })
 
   ipcMain.handle("remove-spare-confirm", () => {
-    return !showChoiceWarning(win, `Are you sure you want to delete this ability?`, `Warning`, `Yes`, `No`);;
+    return !showChoiceWarning(win, `Are you sure you want to delete this action?`, `Warning`, `Yes`, `No`);;
   })
 
   ipcMain.handle("get-game-config", () => {
