@@ -510,13 +510,13 @@ if (settings.soundDetection) {
       cursorPos.y = lootWindow.upperLimit;
     }
 
-    for(let times = 0; times <= 20; times++) { // Wait for 2 seconds max until loot appears
+    for(let times = 0; times <= 30; times++) { // Wait for 2 seconds max until loot appears
       await sleep(100);
       if(await lootExitZone.isLootOpened(cursorPos)) {
         break;
       }
 
-      if(times == 20) {
+      if(times == 30) {
         return [];
       }
     }
@@ -635,6 +635,7 @@ if (settings.soundDetection) {
       await moveTo({pos: cursorPos, randomRange: 5});
     }
 
+    await sleep(350); // disappearing loot window delay
     if ((settings.game == `LK Classic` || settings.game == `Classic`|| settings.game == `Retail`) ? await lootExitZone.isLootOpened(cursorPos) : items.length != itemsPicked.length) {
 
       if (config.reaction) {
