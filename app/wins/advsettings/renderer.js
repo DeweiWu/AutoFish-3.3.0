@@ -139,8 +139,8 @@ const renderMaxAttempts = ({ maxAttempts }) => {
   return elt('input', {type: 'number', name:"maxAttempts", value: maxAttempts})
 };
 
-const renderCloseLoot = ({ closeLoot }) => {
-  return elt(`select`, {className: `closeLoot`, value: closeLoot, name: `closeLoot`},
+const renderCloseLoot = ({ closeLoot, whitelist }) => {
+  return elt(`select`, {className: `closeLoot`, disabled: !whitelist, value: closeLoot, name: `closeLoot`},
     elt(`option`, {selected: closeLoot == `mouse`, value: `mouse`}, `Mouse`),
     elt(`option`, {selected: closeLoot == `esc`, value: `esc`}, `Escape`),
     elt(`option`, {selected: closeLoot == `mouse+esc`, value: `mouse+esc`}, `Mouse + Escape`)
@@ -201,8 +201,8 @@ const renderMouseCurvature = ({mouseCurvatureStrength, likeHuman}) => {
   return elt(`div`, null, range, winRange);
 };
 
-const renderLuresDelay = ({luresDelay}) => {
-  return elt(`input`, {type: `number`, name: `luresDelay`, value: luresDelay});
+const renderLuresDelay = ({luresDelay, lures}) => {
+  return elt(`input`, {type: `number`, disabled: !lures, name: `luresDelay`, value: luresDelay});
 };
 
 const renderRandomSleep = ({randomSleep}) => {
