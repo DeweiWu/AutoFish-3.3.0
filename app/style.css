@@ -954,8 +954,6 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
-  height: 20px;
-  width: 75px;
 }
 
 .advSettings .settings .settings_section .sparesContainer .spares-removeButton {
