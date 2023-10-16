@@ -11,6 +11,8 @@ const { setWorker } = require("../utils/textReader.js");
 const createWinSwitch = require("../game/winSwitch.js");
 const { app } = require("electron");
 
+let properLanguages = {eng: `English`, spa: "Spanish", spa_old: "Spanish Old", deu: "Deutsch", por: "Português", fra: "Français", ita: "Italiano", chi_sim: "Simplified Chinese", chi_tra: "Traditional Chinese", kor: "Korean", rus: "Russian"};
+
 const getPercent = (value, total) => {
   return Math.ceil((value / (total || 1)) * 100 * 100) / 100;
 };
@@ -19,7 +21,7 @@ const createBots = async (games, settings, config, log, tmBot, arduino) => {
   const winSwitch = createWinSwitch(new EventLine());
 
   if(config.patch[settings.game].whitelist) {
-    log.send(`Downloading data for ${config.whitelistLanguage} language, it might take a while...`);
+    log.send(`Downloading data for ${properLanguages[config.patch[settings.game].whitelistLanguage]} language, it might take a while...`);
     await setWorker(config.patch[settings.game].whitelistLanguage);
   }
 
