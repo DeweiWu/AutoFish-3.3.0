@@ -1,12 +1,10 @@
 const Jimp = require("jimp");
 const { createWorker } = require("tesseract.js");
 
-const worker = createWorker();
+let worker = createWorker();
 
 const setWorker = async (language) => {
-  await worker.load();
-  await worker.loadLanguage(language);
-  await worker.initialize(language);
+  await createWorker(language)
 };
 
 const readTextFrom = async (buffer, scale) => {
@@ -16,7 +14,7 @@ const readTextFrom = async (buffer, scale) => {
   if(scale > 1) {
     img.scale(scale);
   }
-  
+
   let result = await worker.recognize(await img.getBase64Async(Jimp.MIME_PNG));
   let words = result.data.words.map(({ text, baseline }) => ({
     text,
