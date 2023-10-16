@@ -248,22 +248,11 @@ input[data-spares] {
   cursor: default;
 }
 
-.settings input[type="text"].whitelist_input  {
-  width: 219px;
-}
-
-.settings select.filterType {
-  width: 78px;
-  margin-left: 11px;
-  margin-right: 20px;
-}
-
-.settings select.whitelistLanguage {
-  width: 43px;
-}
-
-.settings input.atMouse {
-  margin-left: 6px;
+.settings textarea.whitelist_input  {
+  width: 405px !important;
+  height: 50px;
+  max-width: 405px;
+  min-height: 50px;
 }
 
 .advanced_settings_button {
