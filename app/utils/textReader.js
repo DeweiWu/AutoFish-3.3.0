@@ -1,10 +1,10 @@
 const Jimp = require("jimp");
 const { createWorker } = require("tesseract.js");
 
-let worker = createWorker();
+let worker;
 
 const setWorker = async (language) => {
-  await createWorker(language)
+  worker = await createWorker(language)
 };
 
 const readTextFrom = async (buffer, scale) => {
