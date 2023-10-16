@@ -5,6 +5,7 @@
   },
   "patch": {
     "Retail": {
+      "game": "Retail",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
@@ -152,6 +153,7 @@
       }
     },
     "LK Classic": {
+      "game": "LK Classic",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
@@ -292,6 +294,7 @@
       }
     },
     "Classic": {
+      "game": "Classic",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
@@ -432,6 +435,7 @@
       }
     },
     "Leg": {
+      "game": "Leg",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
@@ -561,6 +565,7 @@
       }
     },
     "MoP": {
+      "game": "MoP",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
@@ -689,6 +694,7 @@
       }
     },
     "Cata": {
+      "game": "Cata",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
@@ -815,6 +821,7 @@
       }
     },
     "LK Private": {
+      "game": "LK Private",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
@@ -944,6 +951,7 @@
       }
     },
     "TBC": {
+      "game": "TBC",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
@@ -1070,6 +1078,7 @@
       }
     },
     "Vanilla": {
+      "game": "Vanilla",
       "timer": 0,
       "whitelist": false,
       "whitelistWords": "",
