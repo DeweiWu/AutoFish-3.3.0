@@ -18,9 +18,9 @@ const getPercent = (value, total) => {
 const createBots = async (games, settings, config, log, tmBot, arduino) => {
   const winSwitch = createWinSwitch(new EventLine());
 
-  if(settings.whitelist) {
-    log.send(`Downloading data for ${settings.whitelistLanguage} language, it might take a while...`)
-    await setWorker(settings.whitelistLanguage);
+  if(config.patch[settings.game].whitelist) {
+    log.send(`Downloading data for ${config.whitelistLanguage} language, it might take a while...`);
+    await setWorker(config.patch[settings.game].whitelistLanguage);
   }
 
 if (tmBot.bot) {
