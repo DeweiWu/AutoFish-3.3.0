@@ -407,18 +407,16 @@ if(lootWindowPatch.exitButton) {
     let prevDiff = 0;
 
     checkChanges.blocked = false;
-    checkChanges.block = () => {
-      if(config.checkChanges && config.checkChangesIgnoreActions) {
+    checkChanges.block = (inner) => {
+      if(config.checkChanges && (config.checkChangesIgnoreActions || inner)) {
         checkChanges.blocked = true;
         prevImg = null;
       }
     };
 
-    checkChanges.unblock = () => {
-      if(config.checkChanges && config.checkChangesIgnoreActions) {
-        setTimeout(() => {
-          checkChanges.blocked = false;
-        }, 250);
+    checkChanges.unblock = (inner) => {
+      if(config.checkChanges && (config.checkChangesIgnoreActions || inner)) {
+        checkChanges.blocked = false;
       }
     };
 
@@ -459,14 +457,13 @@ if(lootWindowPatch.exitButton) {
               app.quit();
             }
 
-            checkChanges.blocked = true;
+            checkChanges.block(true);
             setTimeout(() => {
-              checkChanges.blocked = false;
+              checkChanges.unblock(true);
             }, config.checkChangesIntervalAfter * 1000);
-
+          } else {
+            prevImg = newImg;
           }
-
-          prevImg = newImg;
         }
 
         if(state.status != "stop") {
@@ -1011,6 +1008,7 @@ if (settings.soundDetection) {
     await action(async function rngMove() {
 
       if(rngBalanceOut.timer.isElapsed()) {
+        console.log(`blocked`, checkChanges.blocked);
         await rngBalanceOut();
         rngBalanceOut.timer.update();
       }
