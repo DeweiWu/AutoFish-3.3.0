@@ -7,6 +7,18 @@
     "Retail": {
       "game": "Retail",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -155,6 +167,18 @@
     "LK Classic": {
       "game": "LK Classic",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -296,6 +320,18 @@
     "Classic": {
       "game": "Classic",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -437,6 +473,18 @@
     "Leg": {
       "game": "Leg",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -567,6 +615,18 @@
     "MoP": {
       "game": "MoP",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -696,6 +756,18 @@
     "Cata": {
       "game": "Cata",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -823,6 +895,18 @@
     "LK Private": {
       "game": "LK Private",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -953,6 +1037,18 @@
     "TBC": {
       "game": "TBC",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -1080,6 +1176,18 @@
     "Vanilla": {
       "game": "Vanilla",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
@@ -1212,6 +1320,18 @@
     "Vanilla (splash)": {
       "game": "Vanilla (splash)",
       "timer": 0,
+      "checkChanges": false,
+      "checkChangesSens": 900,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
       "whitelist": false,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
