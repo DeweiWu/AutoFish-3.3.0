@@ -287,7 +287,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
       log.ok(`Found ${games.length} window${games.length > 1 ? `s` : ``} of the game!`);
     }
 
-    if(type != `relZone` && type != `chatZone` && settings.initialZone){
+    if(type != `relZone` && type != `chatZone` && type != `detectZone` && settings.initialZone){
       await new Promise(function(resolve, reject) {
         setTimeout(resolve, 50);
       });
