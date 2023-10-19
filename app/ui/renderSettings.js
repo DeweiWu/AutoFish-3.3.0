@@ -129,6 +129,10 @@ const renderFishingZone = () => {
   return elt('input', {type: 'button', name:"fishingZone", value: "Fishing Zone", className: "advanced_settings_button"});
 };
 
+const renderDetectZone = () => {
+  return elt('input', {type: 'button', name:"detectZone", value: "Detection Zone", className: "advanced_settings_button"});
+};
+
 const renderChatZone = () => {
   return elt('input', {type: 'button', name:"chatZone", value: "Chat Zone", className: "advanced_settings_button"});
 };
@@ -181,6 +185,10 @@ return elt(
       wrapInLabel(
         "",
         renderChatZone(config),
+      ),
+      wrapInLabel(
+        "",
+        renderDetectZone(config),
       ),
       wrapInLabel(
         "",

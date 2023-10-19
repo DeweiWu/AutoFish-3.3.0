@@ -90,7 +90,7 @@ class Settings {
         if(!this.config.soundDetection) {
           setTimeout(() => {
             ipcRenderer.send("sound-warn");
-          }, 50); 
+          }, 50);
 
         }
         this.config.soundDetection = true;
@@ -140,6 +140,10 @@ class Settings {
         this.onFishingZoneClick();
       }
 
+      if(event.target.name == `detectZone`) {
+        this.onDetectZoneClick();
+      }
+
       if(event.target.name == `chatZone`) {
         this.onChatZoneClick();
       }
@@ -169,6 +173,10 @@ class Settings {
 
   regOnFishingZoneClick(callback) {
     this.onFishingZoneClick = callback;
+  }
+
+  regOnDetectZoneClick(callback) {
+    this.onDetectZoneClick = callback;
   }
 
   regOnChatZoneClick(callback) {

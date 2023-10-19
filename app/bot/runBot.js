@@ -1,3 +1,13 @@
+const sleep = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};
+
+const random = (from, to) => {
+  return from + Math.random() * (to - from);
+};
+
 const runBot = async ({ bot, log, state, stats }, onError, wins) => {
   const {
     dynamicThreshold,
@@ -20,17 +30,12 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     stopAllCurrentActions,
     detectSens,
     doAfterTimer,
+    checkChanges
   } = bot;
 
-  const sleep = (time) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, time);
-    });
-  };
-
-  const random = (from, to) => {
-    return from + Math.random() * (to - from);
-  };
+  setTimeout(() => {
+    checkChanges(onError, log);
+  }, 2000) // Don't run check changes imidiately, let the bot open the win of the game and cast
 
   let failedCast = false;
   let attempts = 0;

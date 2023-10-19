@@ -29,7 +29,7 @@ const createFishingZone = ({pos, screenSize, type, config, settings, scale}, fin
 		icon: `./img/icon.png`
   });
 
-  win.loadFile(path.join(__dirname, `${type == `relZone` ? `fishing.html` : `chat.html`}`));
+  win.loadFile(path.join(__dirname, `${type == `relZone` ? `fishing.html` : type == `chatZone` ? `chat.html` : `detect.html`}`));
 
   win.once("ready-to-show", () => {
     win.show();

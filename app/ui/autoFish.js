@@ -130,6 +130,10 @@ class AutoFish {
       ipcRenderer.send("start-bot", `relZone`);
     });
 
+    this.settings.regOnDetectZoneClick(() => {
+      ipcRenderer.send("start-bot", `detectZone`);
+    });
+
     this.settings.regOnChatZoneClick(() => {
       ipcRenderer.send("start-bot", `chatZone`);
     });

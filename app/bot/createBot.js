@@ -4,6 +4,7 @@ const createNotificationZone = require("./notificationZone.js");
 const createLootZone = require("./lootZone.js");
 const createChatZone = require('./chatZone');
 const createLootExitZone = require("./lootExitZone.js");
+const pixelmatch = require('pixelmatch');
 
 const Jimp = require(`jimp`);
 
@@ -256,7 +257,6 @@ if(lootWindowPatch.exitButton) {
         spare.timer.update(() => addTimeSpares[i]);
       })
     }
-
   };
   logOut.timer = logOutTimer;
   logOut.on = config.logOut > 0;
@@ -398,6 +398,64 @@ if(lootWindowPatch.exitButton) {
       return await fishingZone.getBobberPrint(7);
     } else {
       return null;
+    }
+  };
+
+  const detectZone = Zone.from(screenSize).toRel(config.detectZone);
+  const checkChanges = (onError, log) => {
+    let prevImg = null;
+    let prevDiff = 0;
+    checkChanges.blocked = false;
+    if(config.checkChanges) {
+      setTimeout(async function checkChangesRepeat () {
+        if(!prevImg) {
+          prevImg = await getDataFrom(detectZone);
+        } else {
+          let newImg = await getDataFrom(detectZone);
+          let res = pixelmatch(prevImg.data, newImg.data, null, detectZone.width, detectZone.height,  {threshold: (1000 - config.checkChangesSens) / 1000 });
+
+          let difference = (res / (detectZone.width * detectZone.height)) * 100;
+          let differenceResult = Math.abs(difference - prevDiff);
+          prevDiff = difference;
+
+          if(differenceResult > 1 && !checkChanges.blocked) {
+            log.warn(`Something happened!`);
+
+            if(tmBot.ctx) {
+              if(state.status != "stop") {
+                tmBot.ctx.reply(`Something happened on WIN:${winNum}!`);
+                if(config.checkChangesSendImg) {
+                  Jimp.read(newImg)
+                  .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
+                  .then((screenshot) => {
+                    tmBot.ctx.replyWithPhoto({source: screenshot});
+                  })
+                }
+              }
+
+              if(config.checkChangesDoAfter == `stop`) {
+                onError();
+              }
+
+              if(config.checkChangesDoAfter == `quit`) {
+                workwindow.close();
+                app.quit();
+              }
+            }
+
+            checkChanges.blocked = true;
+            setTimeout(() => {
+              checkChanges.blocked = false;
+            }, config.checkChangesIntervalAfter * 1000);
+
+          }
+          prevImg = newImg;
+        }
+
+        if(state.status != "stop") {
+          setTimeout(checkChangesRepeat, config.checkChangesInterval * 1000);
+        }
+      }, config.checkChangesInterval * 1000);
     }
   };
 
@@ -729,7 +787,6 @@ if (settings.soundDetection) {
     if (config.sleepAfterHook) {
       await sleep(random(config.afterHookDelay.from, config.afterHookDelay.to));
     }
-
     return caught;
   };
 
@@ -932,28 +989,12 @@ if (settings.soundDetection) {
 
   rngBalanceOut.timer = createTimer(() => config.rngMoveBalanceTime * 1000 * 60);
   rngBalanceOut.timer.start();
-/*
-  const getRngMoveMouseBalance = (pos) => {
-    let x = 0;
-    let y = 0;
-    let randomX = random(25, 100);
-    let ranodmY = random(10, 25);
-    if(pos.x < 0) {
-      x = randomX;
-    } else {
-      x = -randomX;
-    }
 
-    if(pos.y < 0) {
-      y = ranodmY;
-    } else {
-      y = -ranodmY;
-    }
-
-    return {x, y};
-  }
-*/
   const runRngMove = async () => {
+    if(config.checkChanges) {
+      checkChanges.blocked = true;
+    }
+
     await action(async function rngMove() {
 
       if(rngBalanceOut.timer.isElapsed()) {
@@ -1008,6 +1049,11 @@ if (settings.soundDetection) {
 
       await sleep(random(250, 750));
     })
+
+    if(config.checkChanges) {
+      checkChanges.blocked = false;
+    }
+
   };
 
   runRngMove.on = config.rngMove;
@@ -1087,7 +1133,8 @@ if (settings.soundDetection) {
     hookBobber,
     checkWhisper,
     replyToChat,
-    dx12Case
+    dx12Case,
+    checkChanges
   };
 };
 

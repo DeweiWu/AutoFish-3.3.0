@@ -303,8 +303,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
     }
 
 
-    if(type == `relZone` || type == `chatZone`) {
-      log.send(`Setting ${type == `relZone` ? `Fishing` : `Chat`} Zone...`);
+    if(type == `relZone` || type == `chatZone` || type == `detectZone`) {
+      log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : `Detect Changes`} Zone...`);
       let data = await setFishingZone(games[0], config.patch[settings.game][type], type, config.patch[settings.game], settings);
       if(data) {
         config.patch[settings.game][type] = data;

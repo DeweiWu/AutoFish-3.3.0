@@ -518,6 +518,17 @@ const renderWhitelist = ({whitelist}) => {
 const renderLuresOmitInitial = ({luresOmitInitial, lures}) => elt('input', {type: 'checkbox', name: "luresOmitInitial", disabled: !lures, checked: luresOmitInitial})
 const renderSparesOmitInitial = ({sparesOmitInitial}) => elt('input', {type: 'checkbox', name: "sparesOmitInitial", checked: sparesOmitInitial})
 
+const renderCheckChanges = ({checkChanges}) => elt('input', {type: 'checkbox', name:"checkChanges", checked: checkChanges});
+const renderCheckChangesSens = ({checkChanges, checkChangesSens}) => {
+  const winRange = elt(`input`, {type: `number`, value: checkChangesSens, disabled: !checkChanges, name: "checkChangesSens"})
+  const range = elt('input', {type: `range`, max: 1000, min: 1, step: 1, value: checkChangesSens, className: `${!checkChanges ? `threshold_disabled` : ``}`, disabled: !checkChanges,  oninput: function() {winRange.value = this.value}, name: "checkChangesSens"});
+  return elt(`div`, null, range, winRange);
+}
+const renderCheckChangesInterval = ({checkChanges, checkChangesInterval}) => elt('input', {type: "number", name:"checkChangesInterval", value: checkChangesInterval, disabled: !checkChanges});
+const renderCheckChangesIntervalAfter = ({checkChanges, checkChangesIntervalAfter}) => elt('input', {type: "number", name: "checkChangesIntervalAfter", value: checkChangesIntervalAfter, disabled: !checkChanges});
+const renderCheckChangesSendImg = ({checkChanges, checkChangesSendImg}) => elt('input', {type: 'checkbox', name: `checkChangesSendImg`, checked: checkChangesSendImg, disabled: !checkChanges});
+const renderCheckChangesDoAfter = ({checkChanges, checkChangesDoAfter}) => elt('select', {name: `checkChangesDoAfter`, disabled: !checkChanges}, ...['nothing', 'stop', 'quit'].map(type => elt('option', {value: type, selected: checkChangesDoAfter == type}, `${type[0].toUpperCase()}${type.slice(1)}`)))
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `General`),
@@ -592,11 +603,20 @@ const renderSettings = (config) => {
   wrapInLabel("HS Delay: ", renderHsKeyDelay(config), `How long it take to use HS`),
   wrapInLabel("Shut Down Computer After Quitting: ", renderShutDown(config), `The bot will press Left Windows Key and launch command line, after that it will write shutdown -s -t 10 command which will shut down your computer in 10 seconds. `),
   ),
-
   elt(`p`, {className: `settings_header settings_header_premium`}, `🧙 Additional Actions`),
   elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel(`Omit Initial Application`, renderSparesOmitInitial(config), `Don't apply additional actions at the beggining, wait until timer elapses.`),
     renderSpares(config)
+),
+
+elt(`p`, {className: `settings_header settings_header_premium`}, `🚨 Motion Detection`),
+elt(`div`, {className: `settings_section settings_premium`},
+wrapInLabel('Use Motion Detection: ', renderCheckChanges(config), `The bot will detect changes within Detection Zone. The bot will notify you in Telegram if some movement happens within Detection Zone.`),
+wrapInLabel('Send Screenshot Of The Event To Telegram:', renderCheckChangesSendImg(config), `The bot will send a screenshot of what exactly triggered the event.`),
+wrapInLabel('Sensitivity: ', renderCheckChangesSens(config), `Old good sensitivity value for a typical motion detection. Doesn't need an explanation, right?`),
+wrapInLabel('Interval (sec): ', renderCheckChangesInterval(config), `The bot will check for motion every given interval value.`),
+wrapInLabel('Ignore Time After Event Occured (sec): ', renderCheckChangesIntervalAfter(config), `After some event happened how long to ignore all the events after. `),
+wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do after the event occured.`),
 ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `📲 Remote Control`),
