@@ -13,6 +13,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -173,6 +174,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -326,6 +328,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -479,6 +482,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -621,6 +625,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -762,6 +767,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -901,6 +907,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1043,6 +1050,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1182,6 +1190,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1326,6 +1335,7 @@
       "checkChangesIntervalAfter": 3,
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,

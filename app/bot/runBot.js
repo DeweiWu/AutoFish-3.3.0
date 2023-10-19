@@ -33,9 +33,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     checkChanges
   } = bot;
 
-  setTimeout(() => {
-    checkChanges(onError, log);
-  }, 2000) // Don't run check changes imidiately, let the bot open the win of the game and cast
+  checkChanges(onError, log);
 
   let failedCast = false;
   let attempts = 0;
@@ -73,10 +71,13 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     await replyToChat();
     await checkWhisper();
 
-
     if(logOut.on && logOut.timer.isElapsed()) {
       log.send(`Logging out...`)
+
+      checkChanges.block();
       await logOut(state);
+      checkChanges.unblock();
+
       if(state.status == 'stop') {
         return;
       }
@@ -97,20 +98,26 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     if(checkSpares.length > 0) {
       log.send(`Applying spares...`);
       for(const elapsedSpare of checkSpares) {
+        checkChanges.block();
         await elapsedSpare();
+        checkChanges.unblock();
         elapsedSpare.timer.update()
       }
     }
 
     if (applyLures.on && applyLures.timer.isElapsed()) {
       log.send(`Applying lures...`);
+      checkChanges.block()
       await applyLures();
+      checkChanges.unblock();
       applyLures.timer.update();
     }
 
     if(applyMammoth.on && applyMammoth.timer.isElapsed()) {
       log.send(`Applying mammoth...`);
+      checkChanges.block();
       await applyMammoth();
+      checkChanges.unblock();
       applyMammoth.timer.update();
     }
 
@@ -123,7 +130,9 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     }
 
     log.send(`Casting fishing...`);
+    checkChanges.block()
     await castFishing(state);
+    checkChanges.unblock();
 
     log.send(`Looking for the bobber...`);
 
@@ -152,7 +161,9 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       }
 
       if(runRngMove.on && runRngMove.timer.isElapsed()) {
+        checkChanges.block();
         await runRngMove();
+        checkChanges.unblock();
         runRngMove.timer.update();
       }
 
@@ -161,13 +172,17 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
 
     log.send(`Checking the hook...`);
     if ((bobber = await checkBobber(bobber, state))) {
+      checkChanges.block();
       let isHooked = await hookBobber(bobber);
+      checkChanges.unblock();
       if (isHooked) {
         stats.caught++;
         log.ok(`Caught ${typeof isHooked == `boolean` ? `the fish!` : isHooked}`);
 
         if(runRngMove.on && runRngMove.timer.isElapsed()) {
+          checkChanges.block();
           await runRngMove();
+          checkChanges.unblock();
           runRngMove.timer.update();
         }
 
@@ -179,7 +194,9 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       stats.miss++;
       log.warn(`Missed the fish!`);
       if(runRngMove.on && runRngMove.timer.isElapsed()) {
+        checkChanges.block();
         await runRngMove();
+        checkChanges.unblock();
         runRngMove.timer.update();
       }
     }

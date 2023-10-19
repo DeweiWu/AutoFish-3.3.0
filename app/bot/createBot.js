@@ -403,16 +403,30 @@ if(lootWindowPatch.exitButton) {
 
   const detectZone = Zone.from(screenSize).toRel(config.detectZone);
   const checkChanges = (onError, log) => {
+    let prevImg = null;
+    let prevDiff = 0;
+
+    checkChanges.blocked = false;
+    checkChanges.block = () => {
+      if(config.checkChanges && config.checkChangesIgnoreActions) {
+        checkChanges.blocked = true;
+        prevImg = null;
+      }
+    };
+
+    checkChanges.unblock = () => {
+      if(config.checkChanges && config.checkChangesIgnoreActions) {
+        setTimeout(() => {
+          checkChanges.blocked = false;
+        }, 250);
+      }
+    };
+
     if(config.checkChanges) {
-
-      let prevImg = null;
-      let prevDiff = 0;
-      checkChanges.blocked = false;
-
       setTimeout(async function checkChangesRepeat () {
-        if(!prevImg) {
+        if(!prevImg && !checkChanges.blocked) {
           prevImg = await getDataFrom(detectZone);
-        } else {
+        } else if(!checkChanges.blocked) {
           let newImg = await getDataFrom(detectZone);
           let res = pixelmatch(prevImg.data, newImg.data, null, detectZone.width, detectZone.height,  {threshold: (1000 - config.checkChangesSens) / 1000 });
 
@@ -420,7 +434,7 @@ if(lootWindowPatch.exitButton) {
           let differenceResult = Math.abs(difference - prevDiff);
           prevDiff = difference;
 
-          if(differenceResult > 1 && !checkChanges.blocked) {
+          if(differenceResult > 1) {
             log.warn(`Something happened!`);
 
             if(tmBot.ctx) {
@@ -451,6 +465,7 @@ if(lootWindowPatch.exitButton) {
             }, config.checkChangesIntervalAfter * 1000);
 
           }
+
           prevImg = newImg;
         }
 
@@ -993,10 +1008,6 @@ if (settings.soundDetection) {
   rngBalanceOut.timer.start();
 
   const runRngMove = async () => {
-    if(config.checkChanges) {
-      checkChanges.blocked = true;
-    }
-
     await action(async function rngMove() {
 
       if(rngBalanceOut.timer.isElapsed()) {
@@ -1051,11 +1062,6 @@ if (settings.soundDetection) {
 
       await sleep(random(250, 750));
     })
-
-    if(config.checkChanges) {
-      checkChanges.blocked = false;
-    }
-
   };
 
   runRngMove.on = config.rngMove;
