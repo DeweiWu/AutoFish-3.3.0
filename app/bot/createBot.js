@@ -582,17 +582,6 @@ if (settings.soundDetection) {
       cursorPos.y = lootWindow.upperLimit;
     }
 
-    for(let times = 0; times <= 30; times++) { // Wait for 2 seconds max until loot appears
-      await sleep(100);
-      if(await lootExitZone.isLootOpened(cursorPos)) {
-        break;
-      }
-
-      if(times == 30) {
-        return [];
-      }
-    }
-
     if (config.reaction) {
       await sleep(random(config.reactionDelay.from, config.reactionDelay.to)); // react to opening loot win
     } else {
@@ -612,6 +601,18 @@ if (settings.soundDetection) {
     } else {
       await sleep(150); // hint dissappearing
     }
+
+      for (let times = 0; times <= 30; times++) {
+        // Wait for 2 seconds max until loot appears
+        await sleep(100);
+        if (await lootExitZone.isLootOpened(cursorPos)) {
+          break;
+        }
+
+        if (times == 30) {
+          return [];
+        }
+      }
 
     const lootWindowDim = {
       x: cursorPos.x + lootWindow.toItemX,
