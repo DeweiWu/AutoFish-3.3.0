@@ -432,15 +432,15 @@ if(lootWindowPatch.exitButton) {
                   })
                 }
               }
+            }
 
-              if(config.checkChangesDoAfter == `stop`) {
-                onError();
-              }
+            if(config.checkChangesDoAfter == `stop`) {
+              onError();
+            }
 
-              if(config.checkChangesDoAfter == `quit`) {
-                workwindow.close();
-                app.quit();
-              }
+            if(config.checkChangesDoAfter == `quit`) {
+              workwindow.close();
+              app.quit();
             }
 
             checkChanges.blocked = true;
