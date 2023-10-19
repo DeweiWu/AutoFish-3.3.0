@@ -403,10 +403,12 @@ if(lootWindowPatch.exitButton) {
 
   const detectZone = Zone.from(screenSize).toRel(config.detectZone);
   const checkChanges = (onError, log) => {
-    let prevImg = null;
-    let prevDiff = 0;
-    checkChanges.blocked = false;
     if(config.checkChanges) {
+
+      let prevImg = null;
+      let prevDiff = 0;
+      checkChanges.blocked = false;
+
       setTimeout(async function checkChangesRepeat () {
         if(!prevImg) {
           prevImg = await getDataFrom(detectZone);
