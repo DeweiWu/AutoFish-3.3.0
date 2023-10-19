@@ -772,12 +772,12 @@ if (settings.soundDetection) {
 
         if (config.shiftClick) {
           await keyboard.toggleKey("shift", true, delay);
-          await mouse.toggle("right", true, delay);
-          await mouse.toggle("right", false, delay);
+          await mouse.toggle(config.catchFishButton, true, delay);
+          await mouse.toggle(config.catchFishButton, false, delay);
           await keyboard.toggleKey("shift", false, delay);
         } else {
-          await mouse.toggle("right", true, delay);
-          await mouse.toggle("right", false, delay);
+          await mouse.toggle(config.catchFishButton, true, delay);
+          await mouse.toggle(config.catchFishButton, false, delay);
         }
       }
 

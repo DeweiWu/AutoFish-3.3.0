@@ -529,6 +529,7 @@ const renderCheckChangesIntervalAfter = ({checkChanges, checkChangesIntervalAfte
 const renderCheckChangesSendImg = ({checkChanges, checkChangesSendImg}) => elt('input', {type: 'checkbox', name: `checkChangesSendImg`, checked: checkChangesSendImg, disabled: !checkChanges});
 const renderCheckChangesDoAfter = ({checkChanges, checkChangesDoAfter}) => elt('select', {name: `checkChangesDoAfter`, disabled: !checkChanges}, ...['nothing', 'stop', 'quit'].map(type => elt('option', {value: type, selected: checkChangesDoAfter == type}, `${type[0].toUpperCase()}${type.slice(1)}`)))
 const renderCheckChangesIgnoreActions = ({checkChanges, checkChangesIgnoreActions}) => elt('input', {type: 'checkbox', name: `checkChangesIgnoreActions`, disabled: !checkChanges, checked: checkChangesIgnoreActions});
+const renderCatchFishButton = ({catchFishButton}) => elt("select", {name: "catchFishButton"}, ...["right", "left", "middle"].map(button => elt('option', {selected: catchFishButton == button}, button)))
 
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
@@ -543,6 +544,7 @@ const renderSettings = (config) => {
   ),
   wrapInLabel(`Attempts Limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
   wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `After attempts limit the bot will dynamically change threshold by the provided value.`),
+  wrapInLabel(`Catch With Mouse Button: `, renderCatchFishButton(config), `Choose the button you want the bot to click when it wants to catch the fish.`),
   ),
   elt(`p`, {className: `settings_header`}, `Mouse and Keyboard`),
   elt(`div`, {className: `settings_section`},
