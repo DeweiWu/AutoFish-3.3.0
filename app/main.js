@@ -250,6 +250,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
         writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
       }
     }
+
+    if(screen.getAllDisplays().length > 1) {
+      log.warn("The bot detected more than 1 display: use both the game and the bot on the primary one.")
+    }
   });
 
   win.once("ready-to-show", () => {
