@@ -31,8 +31,8 @@ const renderHighlightPercent = ({highlightPercent}) => {
   return elt(`div`, null, range, winRange);
 };
 
-const renderFindBobberDirection = ({findBobberDirection}) => {
-  return elt(`select`, {name: `findBobberDirection`}, ...([`normal`, `reverse`, `center`].map(dir => elt(`option`, {value: dir, selected: findBobberDirection == dir}, dir.slice(0, 1).toUpperCase() + dir.slice(1)))))
+const renderFindBobberDirection = ({findBobberDirection, game}) => {
+  return elt(`select`, {name: `findBobberDirection`, disabled: game == "Vanilla (splash)"}, ...([`normal`, `reverse`, `center`].map(dir => elt(`option`, {value: dir, selected: findBobberDirection == dir}, dir.slice(0, 1).toUpperCase() + dir.slice(1)))))
 }
 
 const renderCloseLootDelay = ({closeLootDelay}) => {
