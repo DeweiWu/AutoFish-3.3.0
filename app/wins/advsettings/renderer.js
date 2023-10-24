@@ -530,6 +530,7 @@ const renderCheckChangesSendImg = ({checkChanges, checkChangesSendImg}) => elt('
 const renderCheckChangesDoAfter = ({checkChanges, checkChangesDoAfter}) => elt('select', {name: `checkChangesDoAfter`, disabled: !checkChanges}, ...['nothing', 'stop', 'quit'].map(type => elt('option', {value: type, selected: checkChangesDoAfter == type}, `${type[0].toUpperCase()}${type.slice(1)}`)))
 const renderCheckChangesIgnoreActions = ({checkChanges, checkChangesIgnoreActions}) => elt('input', {type: 'checkbox', name: `checkChangesIgnoreActions`, disabled: !checkChanges, checked: checkChangesIgnoreActions});
 const renderCatchFishButton = ({catchFishButton}) => elt("select", {name: "catchFishButton"}, ...["right", "left", "middle"].map(button => elt('option', {selected: catchFishButton == button}, button)))
+const renderLibraryType = ({libraryType}) => elt('select', { name: "libraryType" }, ...['nut.js', 'keysender'].map(lib => elt('option', {selected: lib == libraryType}, lib)));
 
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
@@ -688,6 +689,7 @@ wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do a
 
   elt(`p`, {className: `settings_header settings_header_critical`}, `Critical`),
   elt('div', {className: "settings_section settings_critical"},
+  wrapInLabel(`Visual Library: `, renderLibraryType(config), `If something doesn't work with default library you can choose another one. Mind that keysender works only with dx11 and will be force for Multiple Fishing or Alt-Tab Fishing modes.`),
   wrapInLabel(`Ignore Preliminary Checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
   wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting.`),
   wrapInLabel(`Max Check Time (ms):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),

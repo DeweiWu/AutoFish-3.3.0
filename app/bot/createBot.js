@@ -79,11 +79,15 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
     if(zone.width > screenSize.width) zone.width = screenSize.width;
     if(zone.height > screenSize.height) zone.height = screenSize.height;
 
-    if(settings.multipleWindows || settings.afkmode) {
-      return workwindow.capture(zone);
-    } else {
-      let grabbed = await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
-      return grabbed;
+    switch(true) {
+      case settings.multipleWindows || settings.afkmode || config.libraryType == 'keysender': {
+        return workwindow.capture(zone);
+      }
+
+      case config.libraryType == 'nut.js': {
+        let grabbed = await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
+        return grabbed;
+      }
     }
   };
 
