@@ -22,6 +22,12 @@ const getJson = (jsonPath) => {
   return JSON.parse(readFileSync(path.join(__dirname, jsonPath), "utf8"));
 };
 
+const sleep = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};
+
 const getProfile = () => {
   return getJson(`./config/config.json`);
 };
@@ -322,10 +328,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
     const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot, arduino);
     const stopAppAndBots = () => {
 
-      games.forEach(({mouse, keyboard}) => {
-         mouse.humanMoveTo.cancelCurrent();
-         keyboard.sendKeys.cancelCurrent();
-         keyboard.printText.cancelCurrent();
+      games.forEach(async ({mouse, keyboard, workwindow}) => {
+        while(!workwindow.isForeground()) await sleep(100);
+          mouse.humanMoveTo.cancelCurrent();
+          keyboard.sendKeys.cancelCurrent();
+          keyboard.printText.cancelCurrent();
       });
 
       if(config.patch[settings.game].hideWin) win.show();
