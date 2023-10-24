@@ -1456,7 +1456,7 @@
       "splashColor": 220,
       "bobberSensitivity": 20,
       "bobberDensity": 1,
-      "autoSensDens": true,
+      "autoSensDens": false,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
