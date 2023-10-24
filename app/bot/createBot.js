@@ -436,6 +436,7 @@ if(lootWindowPatch.exitButton) {
       setTimeout(async function checkChangesRepeat () {
         if(!prevImg && !checkChanges.blocked) {
           prevImg = await getDataFrom(detectZone);
+          prevDiff = 0;
         } else if(!checkChanges.blocked) {
           let newImg = await getDataFrom(detectZone);
           let res = pixelmatch(prevImg.data, newImg.data, null, detectZone.width, detectZone.height,  {threshold: (1000 - config.checkChangesSens) / 1000 });
@@ -1021,7 +1022,6 @@ if (settings.soundDetection) {
     await action(async function rngMove() {
 
       if(rngBalanceOut.timer.isElapsed()) {
-        console.log(`blocked`, checkChanges.blocked);
         await rngBalanceOut();
         rngBalanceOut.timer.update();
       }
