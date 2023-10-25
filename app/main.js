@@ -314,13 +314,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 
     if(type == `relZone` || type == `chatZone` || type == `detectZone`) {
-      log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : `Detect Changes`} Zone...`);
+      log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : `Motion Detection`} Zone...`);
       let data = await setFishingZone(games[0], config.patch[settings.game][type], type, config.patch[settings.game], settings);
       if(data) {
         config.patch[settings.game][type] = data;
         writeFileSync(path.join(__dirname, `./config/${profile}/bot.json`), JSON.stringify(config));
       }
-      log.ok(`Set ${type == `relZone` ? `Fishing` : `Chat`} Zone successfully!`);
+      log.ok(`Set ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : `Motion Detection`} Zone successfully!`);
       win.focus();
       return;
     }
