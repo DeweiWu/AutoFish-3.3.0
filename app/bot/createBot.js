@@ -594,7 +594,7 @@ if (settings.soundDetection) {
   };
 
   const pickLoot = async () => {
-    let cursorPos = config.atMouse || !lootWindow.cursorPos? mouse.getPos() : lootWindow.cursorPos;
+    let cursorPos = config.atMouse || !lootWindow.cursorPos ? mouse.getPos() : lootWindow.cursorPos;
     if (cursorPos.y - lootWindow.upperLimit < 0) {
       cursorPos.y = lootWindow.upperLimit;
     }
@@ -619,6 +619,7 @@ if (settings.soundDetection) {
       await sleep(150); // hint dissappearing
     }
 
+    if(lootWindow.exitButton) {
       for (let times = 0; times <= 30; times++) {
         // Wait for 2 seconds max until loot appears
         await sleep(100);
@@ -630,6 +631,7 @@ if (settings.soundDetection) {
           return [];
         }
       }
+    }
 
     const lootWindowDim = {
       x: cursorPos.x + lootWindow.toItemX,
