@@ -1098,15 +1098,40 @@ if (settings.soundDetection) {
                                               config.rngMoveTimer.to * 1000 * 60));
 
 
-  const detectSens = () => {
-    if(!config.autoSensDens || settings.game == `Vanilla (splash)`) return;
-
-    if(settings.game == `Retail`) {
-      return `sensitivity`;
-    } else {
-      return `density`;
-    }
+const detectSens = () => {
+  if (!config.autoSensDens || settings.game == `Vanilla (splash)`) {
+    return;
   }
+
+  if (settings.game == `Retail`) {
+    return `sensitivity`; // L and H reses for AutoThreshold and Manual
+  }
+
+  if (
+    settings.autoTh &&
+    (settings.game == "LK Classic" ||
+      settings.game == "Classic" ||
+      settings.game == "Leg" ||
+      settings.game == "Cata")
+  ) {
+    return `density`; // LR && HR for AutoThreshold everywhere (if manual = none, because of "lookingLikeBobber" function)
+  }
+
+  if (
+    settings.autoTh &&
+    (settings.game == "LK Private" ||
+      settings.game == "TBC" ||
+      settings.game == "MoP" ||
+      settings.game == "Vanilla") &&
+    screenSize.height > 1080
+  ) {
+    return `densityHRlk`;
+  }
+
+  if (screenSize.height > 1080) {
+    return `densityHRManual`;
+  }
+};
 
   const doAfterTimer = async (onError, wins) => {
     if(config.afterTimer == `HS` || config.afterTimer == `HS + Quit`) {
