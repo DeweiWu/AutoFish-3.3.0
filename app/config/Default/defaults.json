@@ -963,7 +963,7 @@
       "customWindow": "",
       "closeLoot": "mouse",
       "delay": { "from": 50, "to": 150 },
-      "castDelay": 1250,
+      "castDelay": 2500,
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "maxFishTime": 45000,
