@@ -5,6 +5,7 @@ const createLootZone = require("./lootZone.js");
 const createChatZone = require('./chatZone');
 const createLootExitZone = require("./lootExitZone.js");
 const pixelmatch = require('pixelmatch');
+const Vec = require('../utils/vec.js');
 
 const Jimp = require(`jimp`);
 
@@ -135,6 +136,11 @@ const lootWindowPatch =
 
 const confirmationWindowPatch =
   config.confirmationWindow[screenSize.width <= 1536 ? `1536` : `1920`];
+
+let ignoreInterruptedPatch;
+if (config.ignoreInterrupted) {
+  ignoreInterruptedPatch = config.ignoreInterrupted[screenSize.width <= 1536 ? `1536` : `1920`];
+}
 
 const lootWindow = {
   upperLimit: lootWindowPatch.upperLimit * screenSize.height,
@@ -409,9 +415,32 @@ if(lootWindowPatch.exitButton) {
     );
   });
 
+  const cutOutNotification = (zone) => {
+    let noteZone = Zone.from(screenSize).toRel(zone);
+    let fZone = Zone.from(screenSize).toRel(config.relZone)
+    let result = [];
+    for(let y = noteZone.y - fZone.y; y < (noteZone.y - fZone.y) + noteZone.height; y++) {
+      for(let x = noteZone.x - fZone.x; x < (noteZone.x - fZone.x) + noteZone.width; x++) {
+        result.push(new Vec(x, y));
+      }
+    }
+    return result;
+  }
+
   const findAllBobberColors = async () => {
     if(settings.game != `Retail` && settings.game != `LK Classic` && settings.game != `Classic` && settings.game != `Vanilla (splash)`) {
-      return await fishingZone.getBobberPrint(7);
+      let bobber = await fishingZone.getBobberPrint(7);
+
+      if(!bobber) {
+        return;
+      }
+
+      if(config.ignoreInterrupted) {
+        let interruptedArea = cutOutNotification(ignoreInterruptedPatch);
+        bobber = [...bobber, ...interruptedArea];
+      }
+
+      return bobber;
     } else {
       return null;
     }
