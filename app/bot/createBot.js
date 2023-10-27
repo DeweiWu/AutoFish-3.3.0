@@ -182,23 +182,6 @@ if(lootWindowPatch.exitButton) {
     .split(",")
     .map((word) => word.trim());
 
-    const humanMoveTo = (x, y, randomSpeed, randomDeviation) =>
-      new Promise(async (resolve, reject) => {
-        mouse.humanMoveTo(x, y,
-           random(randomSpeed.from, randomSpeed.to),
-           random(randomDeviation.from, randomDeviation.to));
-
-      for(;state.status != 'stop';) {
-        await sleep(100);
-        let cPos = mouse.getPos();
-        if(humanMoveTo.closeEnough(cPos, {x, y})) {
-          return resolve();
-        }
-      }
-      return resolve();
-    });
-    humanMoveTo.closeEnough = (v1, v2, size = 1) => Math.abs(v1.x - v2.x) <= size && Math.abs(v1.y - v2.y) <= size;
-
     const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange, steps: [1, 3]}}) => {
       if (randomRange) {
         pos.x = pos.x + random(-randomRange, randomRange);
@@ -220,7 +203,7 @@ if(lootWindowPatch.exitButton) {
           randomDeviation.from = 0;
         }
 
-        await humanMoveTo(pos.x, pos.y, randomSpeed, randomDeviation);
+        await mouse.humanMoveTo(pos.x, pos.y, randomSpeed, randomDeviation);
 
         if(config.likeHumanFineTune && fineTune && state.status != "stop") {
           let times = random(fineTune.steps[0], fineTune.steps[1]);
