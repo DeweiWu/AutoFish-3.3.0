@@ -203,7 +203,7 @@ if(lootWindowPatch.exitButton) {
           randomDeviation.from = 0;
         }
 
-        await mouse.humanMoveTo(pos.x, pos.y, randomSpeed, randomDeviation);
+        await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
 
         if(config.likeHumanFineTune && fineTune && state.status != "stop") {
           let times = random(fineTune.steps[0], fineTune.steps[1]);
