@@ -52,6 +52,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`unsupported-key-win`);
     ipcMain.removeAllListeners(`rngMove-warn`);
     ipcMain.removeAllListeners(`lures-warn`);
+    ipcMain.removeAllListeners(`whitelist-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
     ipcMain.removeHandler("remove-spare-confirm");
@@ -87,6 +88,10 @@ const createAdvSettings = (appPath) => {
 
   ipcMain.on("unsupported-key-win", () => {
     showWarning(win, `The key you pressed is not supported by AutoFish.`);
+  });
+
+  ipcMain.on("whitelist-warn", () => {
+    showWarning(win, `Turn off AutoLoot option in the game.\n\nTurn off UI addons and UI scaling in the game.\n\nTurn on Open Loot Window at Mouse option in the game. (optional for Retail, Vanilla, Vanilla(splash), but if you do then check respective option in this section).\n\nBest works with standard resolutions like: 1366x768, 1920x1080 and 3840x2160.`);
   });
 
   ipcMain.handle("advanced-defaults", () => {
