@@ -342,6 +342,13 @@ input[data-spares] {
   background-color: rgb(230, 230, 230);
 }
 
+.advSettings input[type=button].disabledButton {
+  cursor: default;
+  background-color: rgb(240, 240, 240);
+  border: 1px solid rgb(220, 220, 220);
+}
+
+
 .advSettings input[type=button]:active {
   background-color: rgb(240, 240, 240);
 }

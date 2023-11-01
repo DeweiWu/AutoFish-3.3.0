@@ -51,7 +51,7 @@ const renderArduinoPort = ({arduino, arduinoPort}) => {
     let select = elt(`select`, {disabled: !arduino, className: `arduino_select`, name: `arduinoPort`});
     SerialPort.list()
     .then((list) => list.forEach((port) => select.append(elt(`option`, {selected: arduinoPort == port.path, value: port.path}, port.friendlyName))));
-    return elt(`div`, null, select, elt(`input`, {type: `button`, disabled: !arduino, value: `Connect`, id:`arduino`}));
+    return elt(`div`, null, select, elt(`input`, {type: `button`, disabled: !arduino, className: `${!arduino ? `disabledButton` : ``}`, value: `Connect`, id:`arduino`}));
 };
 
 const renderArduinoRate = ({arduino, arduinoRate}) => {
