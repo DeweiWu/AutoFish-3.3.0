@@ -586,7 +586,7 @@ const renderSettings = (config) => {
   ),
   wrapInLabel("Do After Timer: ", renderAfterTimer(config),`What the bot should do after the timer elapses (you can set it in the main window)`),
   wrapInLabel("HS Key: ", renderHsKey(config), `A key your HS is assigned.`),
-  wrapInLabel("HS Delay: ", renderHsKeyDelay(config), `How long it take to use HS`),
+  wrapInLabel("HS Delay (ms): ", renderHsKeyDelay(config), `How long it take to use HS`),
   wrapInLabel("Shut Down Computer After Quitting: ", renderShutDown(config), `The bot will press Left Windows Key and launch command line, after that it will write shutdown -s -t 10 command which will shut down your computer in 10 seconds. `),
   ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
