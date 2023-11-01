@@ -1,4 +1,4 @@
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, shell } = require("electron");
 const elt = require("../../ui/utils/elt.js");
 const wrapInLabel = require("../../ui/utils/wrapInLabel.js");
 const { SerialPort } = require(`serialport`);
@@ -624,7 +624,7 @@ wrapInLabel('Ignore Time After Event Occured (sec): ', renderCheckChangesInterva
 wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do after the event occured.`),
 ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `📲 Remote Control`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `📲 Remote Control`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `Guide`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
       wrapInLabel(`Detect Whisper:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
@@ -632,7 +632,7 @@ wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do a
       wrapInLabel(`Whisper Threshold:`, renderWhisperThreshold(config), `The intensity of purple color the bot will recognize as whispering.`),
       wrapInLabel(`Chat Zone (%):`, renderChatZone(config), `The same logic as with Fishing Zone. The bot will analyze this zone for Whisper Threshold purple colors.`),
     ),
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🎮 Arduino Control`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#arduino-control-joystick")}}, `Guide`),
     elt('div', {className: "settings_section settings_premium"},
     wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
     wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),

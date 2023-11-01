@@ -499,12 +499,6 @@ const menu = Menu.buildFromTemplate([
         label: "Video",
         click: () => shell.openExternal("https://youtu.be/A3W8UuVIZTo"),
       },
-      { type: "separator" },
-      {
-        label: "Arduino Guide",
-        click: () => shell.openExternal("https://github.com/jsbots/AutoFish#arduino-control-joystick"),
-      },
-      { type: "separator" },
       {
         label: "Report issue",
         click: () =>
