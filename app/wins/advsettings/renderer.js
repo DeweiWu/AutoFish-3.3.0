@@ -575,7 +575,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
   wrapInLabel(`Hide bot after start: `, renderHideWin(config), `The window of the bot will be hidden and you will be able to focus it only after using stop key.`),
 ),
-  elt(`p`, {className: `settings_header`}, `Lures`),
+  elt(`p`, {className: `settings_header`}, `Lures`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `Guide`),
   elt(`div`, {className: `settings_section`},
     wrapInLabel(
       "Use Lures: ",
