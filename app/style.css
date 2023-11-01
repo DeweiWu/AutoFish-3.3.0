@@ -978,3 +978,13 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   height: 20px;
   width: 25px;
 }
+
+.advanced_settings_header {
+  width: 40px;
+}
+
+.advanced_settings_header_text {
+  font-size: 1.1em;
+  font-weight: 500;
+  margin-left: 5px
+}
