@@ -172,7 +172,7 @@ return elt(
       wrapInLabel(
         "Multiple Fishing: ",
         elt(`div`, {className: `premium_option`}, renderMultipleWindows(config)),
-        `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. This option uses a different library to analyze your screen, you can check it even for one window if for some reason the default way doesn't work for you.`
+        `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. The bot will switch between windows automatically.`
       ),
     ),
     elt(
