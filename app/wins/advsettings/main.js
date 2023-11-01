@@ -34,7 +34,7 @@ const createAdvSettings = (appPath) => {
   let win = new BrowserWindow({
     title: 'Advanced Settings',
     width: 455,
-    height: 715,
+    height: 627,
     show: false,
     resizable: false,
     webPreferences: {
@@ -57,6 +57,8 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeHandler(`get-game-config`);
     ipcMain.removeHandler("remove-spare-confirm");
   });
+
+  win.removeMenu();
 
   win.once("ready-to-show", () => {
     //win.openDevTools({mode: `detach`});

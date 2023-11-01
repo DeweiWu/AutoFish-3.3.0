@@ -309,7 +309,7 @@ input[data-spares] {
 }
 
 .advSettings_settings {
-  height: 625px;
+  height: 558px;
   padding-right: 3px;
   margin-bottom: 7px;
   overflow-y: scroll;
@@ -317,6 +317,11 @@ input[data-spares] {
 
 .advSettings .buttons {
   text-align: center;
+}
+
+.advSettings .buttons input[type=button] {
+  outline: 2px solid rgba(250, 0, 0, .2);
+  margin: 0 3px;
 }
 
 .advSettings .option_text {
