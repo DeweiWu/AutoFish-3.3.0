@@ -102,8 +102,9 @@ const random = (from, to) => {
   return from + Math.random() * (to - from);
 };
 
+let win;
 const createWindow = async () => {
-  let win = new BrowserWindow({
+  win = new BrowserWindow({
     title: generateName(Math.floor(random(5, 15))),
     width: 341,
     height: 687,
@@ -519,6 +520,19 @@ const menu = Menu.buildFromTemplate([
       },
       { type: "separator" },
       { role: "quit" },
+    ],
+  },
+  {
+    label: `Cache`,
+    submenu: [
+      {
+        label: "Clear Cache",
+        click: () => {
+          win.webContents.session.clearStorageData();
+          showWarning(win, `Cache Cleared. Application Reload May Be Required`);
+        },
+      },
+      { type: "separator" },
     ],
   },
 ]);
