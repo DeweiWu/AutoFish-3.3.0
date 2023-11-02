@@ -386,8 +386,11 @@ By pressing "Accept" you agree to everything stated above.`,
 
   ipcMain.on("turtle-warn", () => {
     return showWarning(win, `For Turtle WoW you need to manually set Sensitivity in the Advanced Settings in the Critical section. If the bot often clicks too early - increase it. If the bot doesn't react at all (which might seem like it reacts with some delay), then decrease it.\n\n As an alternative you can try "Vanilla (splash)" settings.`);
-  }
-  );
+  });
+
+  ipcMain.on("ascension-warn", () => {
+    return showWarning(win, `If you play on some custom servers like Ascension, don't forget to run the bot as admin, otherwise it won't work.`);
+  })
 
   let settWin;
   ipcMain.on("advanced-settings", () => {
@@ -490,7 +493,7 @@ const menu = Menu.buildFromTemplate([
       { label: "AutoFish ver. 2.4.3 Premium" },
       { type: "separator" },
       {
-        label: "Read Me",
+        label: "📘 Read Me",
         click: () =>
           shell.openExternal(
             "https://github.com/jsbots/AutoFish#guide-blue_book"
