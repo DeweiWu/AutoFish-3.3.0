@@ -411,7 +411,7 @@ if(lootWindowPatch.exitButton) {
   }
 
   const findAllBobberColors = async () => {
-    if(settings.game != `Retail` && settings.game != `LK Classic` && settings.game != `Classic` && settings.game != `Vanilla (splash)`) {
+    if(settings.game != `Retail` && settings.game != `LK Classic` && settings.game != `Classic`) {
       let bobber = await fishingZone.getBobberPrint(7);
 
       if(!bobber) {
@@ -581,7 +581,7 @@ if (settings.soundDetection) {
   });
 
   if (caught) return pos;
-} else if(settings.game == `Retail`) {
+} else if(settings.game == `Retail` || settings.game == `Turtle WoW`) {
    if(!(await fishingZone.checkBobberPrint(pos))) {
      return pos;
    }
@@ -1099,7 +1099,7 @@ if (settings.soundDetection) {
 
 
 const detectSens = () => {
-  if (!config.autoSensDens || settings.game == `Vanilla (splash)`) {
+  if (!config.autoSensDens || settings.game == `Vanilla (splash)` || settings.game == `Turtle WoW`) {
     return;
   }
 

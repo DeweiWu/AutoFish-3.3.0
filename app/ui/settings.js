@@ -84,6 +84,12 @@ class Settings {
       }
     });
 
+    this.dom.addEventListener('change', (event) => {
+      if(event.target.name == 'game' && event.target.value == "Turtle WoW") {
+        ipcRenderer.send("turtle-warn");
+      }
+    })
+
     this.dom.addEventListener('click', (event) => {
 
       if(event.target["data-soundDetectionHeader"] == true) {
