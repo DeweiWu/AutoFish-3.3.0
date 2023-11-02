@@ -1641,7 +1641,7 @@
         "width": 0.2875,
         "height": 0.15092592592592594
       },
-      "bobberSensitivity": 5,
+      "bobberSensitivity": 3,
       "bobberDensity": 1,
       "autoSensDens": false,
       "ignorePreliminary": false,
