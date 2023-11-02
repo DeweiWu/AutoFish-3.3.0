@@ -1164,9 +1164,8 @@ const detectSens = () => {
       onError();
     }
   }
-
-  doAfterTimer.timer = createTimer(() => config.timer * 1000 * 60)
   doAfterTimer.on = config.timer;
+  doAfterTimer.timer = createTimer(() => config.timerTime * 1000 * 60)
 
   return {
     doAfterTimer,

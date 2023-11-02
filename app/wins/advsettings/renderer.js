@@ -278,14 +278,14 @@ const renderCustomWindow = ({useCustomWindow, customWindow}) => {
 
 };
 
-const renderAfterTimer = ({afterTimer}) => {
+const renderAfterTimer = ({afterTimer, timer}) => {
   let options = [
     `Stop`,
     `HS`,
     `Quit`,
     `HS + Quit`
   ]
-  return elt('select', {value: afterTimer, name: "afterTimer"}, ...options.map(option => elt(`option`, {value: option, selected: option == afterTimer}, option)));
+  return elt('select', {value: afterTimer, disabled: !timer, name: "afterTimer"}, ...options.map(option => elt(`option`, {value: option, selected: option == afterTimer}, option)));
 };
 
 const renderHsKey = ({hsKey, afterTimer}) => {
@@ -408,10 +408,12 @@ const renderAutoSensDens = ({autoSensDens, game}) => {
   return elt(`input`, {type: `checkbox`, disabled: game == `Vanilla (splash)`, checked: autoSensDens, name: `autoSensDens`});
 };
 
-const renderTimer = ({timer}) => {
+const renderTimer = ({timer}) => elt('input', {type: 'checkbox', checked: timer, name: "timer"});
+
+const renderTimerTime = ({timer, timerTime}) => {
   return elt(
     "input",
-    { type: "number", min: "0", value: timer, name: "timer", title: ""},
+    { type: "number", min: 0, value: timerTime, name: "timerTime", disabled: !timer, title: "Minutes"},
     `(min)`
   );
 };
@@ -579,11 +581,8 @@ const renderSettings = (config) => {
   ),
   elt(`p`, {className: `settings_header`}, `⏲️`), elt(`span`, {className: `advanced_settings_header_text`}, `Timer`),
   elt('div', {className: "settings_section"},
-  wrapInLabel(
-  "Timer (min): ",
-  renderTimer(config),
-  `The bot will work for the given period of minutes. If it's 0, it will never stop.`
-  ),
+  wrapInLabel("Use Timer: ", renderTimer(config),`It's timer. It's too dificult to explain here, so you can ask AI what is it exactly.`),
+  wrapInLabel("Time (min): ", renderTimerTime(config), `The bot will work for the given period of minutes.`),
   wrapInLabel("Do After Timer: ", renderAfterTimer(config),`What the bot should do after the timer elapses (you can set it in the main window)`),
   wrapInLabel("HS Key: ", renderHsKey(config), `A key your HS is assigned.`),
   wrapInLabel("HS Delay (ms): ", renderHsKeyDelay(config), `How long it take to use HS`),
