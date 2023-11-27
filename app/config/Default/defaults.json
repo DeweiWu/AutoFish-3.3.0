@@ -1589,7 +1589,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 50,
+      "checkingDelay": 0,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "spareDelay": 3000,
