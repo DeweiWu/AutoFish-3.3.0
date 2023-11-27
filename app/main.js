@@ -52,6 +52,7 @@ if (handleSquirrelEvent(app)) {
 }
 /* Squirrel end */
 
+app.setPath('sessionData', path.resolve(app.getAppPath(), `cache`)); // Set cache folder in the app folder
 
 const showChoiceWarning = (win, warning, title, button1, button2) => {
   return result = dialog.showMessageBoxSync(win, {
@@ -520,9 +521,15 @@ const menu = Menu.buildFromTemplate([
       { role: "quit" },
     ],
   },
-  {
+    {
     label: `Cache`,
     submenu: [
+      {
+        label: "Open Cache",
+        click: () => {
+          shell.openExternal(win.webContents.session.storagePath);
+        },
+      },
       {
         label: "Clear Cache",
         click: () => {
