@@ -242,6 +242,12 @@ const renderSleepAfterHook = ({sleepAfterHook}) => {
   return elt(`input`, {type: `checkbox`, name: `sleepAfterHook`, checked: sleepAfterHook});
 };
 
+const renderSleepAfterHookChance = ({sleepAfterHook, sleepAfterHookChance}) => {
+  const winRange = elt(`input`, {type: `number`, disabled: !sleepAfterHook, value: sleepAfterHookChance, name: "sleepAfterHookChance"})
+  const range = elt('input', {type: `range`, max: 100, disabled: !sleepAfterHook,  className: sleepAfterHook ? `` : `threshold_disabled`, value: sleepAfterHookChance, oninput: function() {winRange.value = this.value}, name: "sleepAfterHookChance"});
+  return elt(`div`, null, range, winRange);
+};
+
 const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensitivityPrint, autoSensDens}) => {
   let min = 1;
   let max = 3;
@@ -611,9 +617,9 @@ const renderSettings = (config) => {
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Random Sleep`),
     elt('div', {className: "settings_section"},
     wrapInLabel(`Random Sleep:`, renderRandomSleep(config), `The bot will sleep randomly from time to time for the random duration.`),
+    wrapInLabel(`Random Sleep Chance (%):`, renderRandomSleepChance(config), `Likelihood that the bot will go to sleep.`),
     wrapInLabel(`Random Sleep Every (min):`, renderRandomSleepEvery(config), `The bot will generate a random number from the provided values. The number is generated every time the bot goes to sleep: so the next time the bot goes to sleep it will be always different (randomly generated). You can use decimal notation for seconds. `),
     wrapInLabel(`Random Sleep For (sec):`, renderRandomSleepDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot goes to sleep: so the next time the bot goes to sleep it will be always different(randomly generated).`),
-    wrapInLabel(`Random Sleep Chance (%):`, renderRandomSleepChance(config), `Likelihood that the bot will go to sleep.`)
     ),
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Reaction Time`),
     elt('div', {className: "settings_section"},
@@ -622,6 +628,7 @@ const renderSettings = (config) => {
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Sleep After Catch`),
     elt('div', {className: "settings_section"},
     wrapInLabel(`Sleep After Catch:`, renderSleepAfterHook(config), `The bot will sleep after it hooked the fish for the random duration.`),
+    wrapInLabel(`After Catch Chance (%): `, renderSleepAfterHookChance(config), `Likelihood that the bot will sleep after it caches fish.`),
     wrapInLabel(`After Catch Random Delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
     ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),

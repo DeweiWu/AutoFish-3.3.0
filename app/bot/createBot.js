@@ -835,7 +835,7 @@ if (settings.soundDetection) {
       await sleep(150);
     }
 
-    if (config.sleepAfterHook) {
+    if (config.sleepAfterHook && random(0, 100) < config.sleepAfterHookChance) {
       await sleep(random(config.afterHookDelay.from, config.afterHookDelay.to));
     }
     return caught;
