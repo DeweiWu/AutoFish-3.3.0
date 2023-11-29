@@ -205,6 +205,12 @@ const renderRandomSleepDelay = ({randomSleepDelay, randomSleep}) => {
   );
 };
 
+const renderRandomSleepChance = ({randomSleepChance, randomSleep}) => {
+  const winRange = elt(`input`, {type: `number`, disabled: !randomSleep, value: randomSleepChance, name: "randomSleepChance"})
+  const range = elt('input', {type: `range`, max: 100, disabled: !randomSleep,  className: randomSleep ? `` : `threshold_disabled`, value: randomSleepChance, oninput: function() {winRange.value = this.value}, name: "randomSleepChance"});
+  return elt(`div`, null, range, winRange);
+};
+
 const renderReaction = ({reaction}) => {
   return elt(`input`, {type: `checkbox`, name:`reaction`, checked: reaction});
 };
@@ -520,8 +526,9 @@ const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `⚙️`), elt(`span`, {className: `advanced_settings_header_text`}, `General`),
   elt('div', {className: "settings_section"},
-  wrapInLabel(`Like a Human: `, renderLikeHuman(config), `The bot will move your mouse in a human way: random speed and with a slight random deviation in the movement. Otherwise it will move the mouse instantly, which might be a better option if you use a lot of windows.`),
-  wrapInLabel(`Like a Human Fine-Tunning: `, renderLikeHumanFineTune(config), `The bot will "fine-tune" the mouse position after moving to the bobber, imitating a human-like way of reaching the mouse-movement target position.`),
+  wrapInLabel(`Human-like Movement: `, renderLikeHuman(config), `The bot will move your mouse in a human way: random speed and with a slight random deviation in the movement. Otherwise it will move the mouse instantly, which might be a better option if you use a lot of windows.`),
+  wrapInLabel(`Human-like Accuracy: `, renderLikeHumanFineTune(config), `The bot will "fine-tune" the mouse position after moving to the bobber, imitating a human-like way of reaching the mouse-movement target position.`),
+  //wrapInLabel(`Human-like Fatigue: `, renderLikeHumanFatigue(config), ``),
   wrapInLabel(
     "Use Shift+Click: ",
     renderShiftClick(config),
@@ -604,8 +611,9 @@ const renderSettings = (config) => {
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Random Sleep`),
     elt('div', {className: "settings_section"},
     wrapInLabel(`Random Sleep:`, renderRandomSleep(config), `The bot will sleep randomly from time to time for the random duration.`),
-    wrapInLabel(`Random Sleep Every (min):`, renderRandomSleepEvery(config), `The bot will generate a random number from the provided values. The number is generated every time the bot goes to sleep: so the next time the bot goes to sleep it will be always different (randomly generated).`),
-    wrapInLabel(`Random Sleep For (ms):`, renderRandomSleepDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot goes to sleep: so the next time the bot goes to sleep it will be always different(randomly generated).`)
+    wrapInLabel(`Random Sleep Every (min):`, renderRandomSleepEvery(config), `The bot will generate a random number from the provided values. The number is generated every time the bot goes to sleep: so the next time the bot goes to sleep it will be always different (randomly generated). You can use decimal notation for seconds. `),
+    wrapInLabel(`Random Sleep For (sec):`, renderRandomSleepDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot goes to sleep: so the next time the bot goes to sleep it will be always different(randomly generated).`),
+    wrapInLabel(`Random Sleep Chance (%):`, renderRandomSleepChance(config), `Likelihood that the bot will go to sleep.`)
     ),
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Reaction Time`),
     elt('div', {className: "settings_section"},

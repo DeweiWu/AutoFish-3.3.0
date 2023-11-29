@@ -380,11 +380,16 @@ if(lootWindowPatch.exitButton) {
 
 
   const randomSleep = async () => {
+    let likelihood = Math.random() * 100;
+    if(likelihood > config.randomSleepChance) {
+      return;
+    }
+
     if(settings.afkmode) await altTab();
 
     let sleepFor = random(
-      config.randomSleepDelay.from,
-      config.randomSleepDelay.to
+      config.randomSleepDelay.from * 1000,
+      config.randomSleepDelay.to * 1000
     );
     await sleep(sleepFor);
   };
