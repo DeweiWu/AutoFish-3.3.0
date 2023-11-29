@@ -434,11 +434,7 @@ input[data-spares] {
 }
 
 .settings_section input[type=text].tmApiKey {
-  width: 194px;
-}
-
-.settings_section input[type=range].whisperRange {
-  width: 216px;
+  width: 225px;
 }
 
 .whisperColorBox {
