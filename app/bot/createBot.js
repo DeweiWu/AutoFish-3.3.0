@@ -345,6 +345,9 @@ if(lootWindowPatch.exitButton) {
     }
 
     await sleep(config.luresDelay);
+    if (config.reaction) {
+      await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+    }
   };
   applyLures.on = config.lures;
   applyLures.timer = createTimer(() => {
@@ -366,6 +369,9 @@ if(lootWindowPatch.exitButton) {
         }
 
         await sleep(spare.delay);
+        if (config.reaction) {
+          await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+        }
       };
       applySpare.timer = createTimer(() => {
         return spare.repeatTime * 60 * 1000;
