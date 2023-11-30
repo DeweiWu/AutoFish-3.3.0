@@ -48,7 +48,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
   };
 
   const { keyboard, mouse, workwindow } = game;
-  const delay = [config.delay.from, config.delay.to];
+  let delay = [config.delay.from, config.delay.to];
 
  const altTab = async () => {
    if(config.reaction) {
@@ -1172,7 +1172,23 @@ const detectSens = () => {
   doAfterTimer.on = config.timer;
   doAfterTimer.timer = createTimer(() => config.timerTime * 1000 * 60)
 
+  const applyFatigue = () => {
+    let rate = config.applyFatigueRate / 100;
+    delay = [delay[0] + delay[0] * rate, delay[1] + delay[1] * rate]
+    config.mouseMoveSpeed = config.mouseMoveSpeed - config.mouseMoveSpeed * rate
+    config.mouseCurvatureStrength = config.mouseCurvatureStrength + config.mouseCurvatureStrength * rate;
+    config.reactionDelay.from = config.reactionDelay.from + config.reactionDelay.from * rate;
+    config.reactionDelay.to = config.reactionDelay.to + config.reactionDelay.to * rate;
+    config.randomSleepDelay.from = config.randomSleepDelay.from + config.randomSleepDelay.from * rate;
+    config.randomSleepDelay.to = config.randomSleepDelay.to + config.randomSleepDelay.to * rate;
+    config.afterHookDelay.from = config.afterHookDelay.from + config.afterHookDelay.from * rate;
+    config.afterHookDelay.to = config.afterHookDelay.to + config.afterHookDelay.to * rate;
+    }
+  applyFatigue.on = config.applyFatigue
+  applyFatigue.timer = createTimer(() => random(config.applyFatigueEvery.from, config.applyFatigueEvery.to) * 1000 * 60)
+
   return {
+    applyFatigue,
     doAfterTimer,
     detectSens,
     runRngMove,

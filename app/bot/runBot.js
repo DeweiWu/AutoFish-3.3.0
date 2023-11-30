@@ -29,7 +29,8 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     runRngMove,
     detectSens,
     doAfterTimer,
-    checkChanges
+    checkChanges,
+    applyFatigue
   } = bot;
 
   checkChanges(onError, log);
@@ -42,6 +43,11 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       log.send(`Preliminary checks...`);
       await preliminaryChecks();
       log.ok(`Everything is fine!`);
+
+      if(applyFatigue.on) {
+        applyFatigue.timer.start();
+      }
+
       if(randomSleep.on) {
         randomSleep.timer.start();
       }
@@ -82,6 +88,12 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       }
       log.send(`Logged back!`);
       logOut.timer.update();
+    }
+
+    if(applyFatigue.on && applyFatigue.timer.isElapsed()) {
+      log.send(`Applying fatigue...`);
+      applyFatigue();
+      applyFatigue.timer.update();
     }
 
     if (randomSleep.on && randomSleep.timer.isElapsed()) {
