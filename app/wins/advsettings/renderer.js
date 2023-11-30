@@ -646,7 +646,7 @@ const renderSettings = (config) => {
     ),
     elt(`p`, {className: `settings_header`}, `🥱`), elt(`span`, {className: `advanced_settings_header_text`}, `Fatigue`),
     elt('div', {className: "settings_section"},
-    wrapInLabel(`Apply Fatigue:`, renderApplyFatigue(config), `The bot will simulate fatigueness decreasing all the delay values by given rate.`),
+    wrapInLabel(`Apply Fatigue:`, renderApplyFatigue(config), `The bot will simulate fatigueness by decreasing all the delay values by given rate.`),
     wrapInLabel(`Apply Fatigue Every (min):`, renderApplyFatigueEvery(config), `The bot will randomly apply fatigueness between the provided interval`),
     wrapInLabel(`Fatigue Rate (%):`, renderApplyFatigueRate(config), `The rate value of fatigueness which will make all the delay values increase in geometric progression.`),
     ),
