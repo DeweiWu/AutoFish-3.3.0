@@ -500,7 +500,7 @@ input[type=range][name=threshold]::-webkit-slider-runnable-track {
   height: 10px;
   cursor: pointer;
   background-image: linear-gradient(to right, black, red);
-  border-radius: 10px;
+  border-radius: 3px;
   border: 0.2px solid #010101;
 }
 
@@ -680,7 +680,7 @@ input[type=range]::-webkit-slider-runnable-track {
   height: 8px;
   cursor: pointer;
   background-image: linear-gradient(to left, rgba(0, 117, 255, 0.6), rgba(0, 117, 255, 0.8));
-  border-radius: 10px;
+  border-radius: 3px;
   border: 0.2px solid #010101;
 }
 
@@ -801,7 +801,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   height: 10px;
   cursor: pointer;
   background-image: linear-gradient(to right, black, green);
-  border-radius: 10px;
+  border-radius: 3px;
   border: 0.2px solid #010101;
 }
 
