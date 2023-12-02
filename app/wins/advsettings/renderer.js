@@ -143,7 +143,9 @@ const renderCloseLoot = ({ closeLoot, whitelist }) => {
   return elt(`select`, {className: `closeLoot`, disabled: !whitelist, value: closeLoot, name: `closeLoot`},
     elt(`option`, {selected: closeLoot == `mouse`, value: `mouse`}, `Mouse`),
     elt(`option`, {selected: closeLoot == `esc`, value: `esc`}, `Escape`),
-    elt(`option`, {selected: closeLoot == `mouse+esc`, value: `mouse+esc`}, `Mouse + Escape`)
+    elt(`option`, {selected: closeLoot == `recast`, value: `recast`}, `Recast`),
+    elt(`option`, {selected: closeLoot == `mouse+recast`, value: `mouse+recast`}, `Random: Mouse + Recast`),
+    elt(`option`, {selected: closeLoot == `mouse+esc`, value: `mouse+esc`}, `Random: Mouse + Escape`),
   );
 };
 
