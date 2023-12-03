@@ -81,7 +81,7 @@ const createAdvSettings = (appPath) => {
   });
 
   ipcMain.on("rngMove-warn", () => {
-    return showWarning(win, `In game go to Options -> Controls -> Camera Following Style and change it to "Never adjust camera", otherwise the feature won't work properly.\n\nThis feature might trigger a bug that changes your cursor type to "Move Cursor" (4-arrow cursor). It should disappear after relaunching the game.\n\nFind a fishing place where you character can move freely within a couple of yards.\n\n All the sensitivity settings should be set to default.`);
+    return showWarning(win, `In game go to Options -> Controls -> Camera Following Style and change it to "Never adjust camera", otherwise the feature won't work properly.\n\nThis feature might trigger a bug that changes your cursor type to "Move Cursor" (4-arrow cursor). It should disappear after relaunching the game.\n\nFind a fishing place where you character can move freely within a couple of yards.\n\nAll mouse sensitivity settings should be set to default (both in game and in Windows).`);
   });
 
   ipcMain.on("lures-warn", () => {
@@ -93,7 +93,7 @@ const createAdvSettings = (appPath) => {
   });
 
   ipcMain.on("whitelist-warn", () => {
-    showWarning(win, `Turn off AutoLoot option in the game.\n\nTurn off UI addons and UI scaling in the game.\n\nTurn on Open Loot Window at Mouse option in the game. (optional for Retail, Vanilla, Vanilla(splash), but if you do then check respective option in this section).\n\nBest works with standard resolutions like: 1366x768, 1920x1080 and 3840x2160.`);
+    showWarning(win, `Turn off AutoLoot option in the game.\n\nTurn off UI addons and UI scaling in the game.\n\nTurn on Open Loot Window at Mouse option in the game.\n\nBest works with standard resolutions like: 1366x768, 1920x1080 and 3840x2160.`);
   });
 
   ipcMain.handle("advanced-defaults", () => {
