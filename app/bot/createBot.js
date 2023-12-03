@@ -755,7 +755,7 @@ if (settings.soundDetection) {
     }
 
     await sleep(350); // disappearing loot window delay
-    if ((settings.game == `LK Classic` || settings.game == `Classic`|| settings.game == `Retail`) ? await lootExitZone.isLootOpened(cursorPos) : items.length != itemsPicked.length) {
+    if (settings.game == 'Leg' ? items.length != itemsPicked.length : await lootExitZone.isLootOpened(cursorPos)) {
 
       if (config.reaction) {
         await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
