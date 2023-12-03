@@ -109,7 +109,14 @@ const renderMultipleWindows = ({multipleWindows, afkmode}) => {
 const renderPoleKey = ({lures, game, intKey, useInt}) => {
   let key = elt('input', {type: 'text', value: intKey, disabled: !useInt, name: "intKey"});
   key.setAttribute(`readonly`, `true`);
-  const checkbox = elt(`input`, {type: `checkbox`, disabled: game != `Retail`, checked: game != `Retail` ? false : useInt, style: `margin-right: 7px`, name: "useInt"});
+
+  const checkbox = elt(`input`, {
+    type: `checkbox`,
+    disabled: !(game == `Retail` || game == `Classic` || game == `LK Classic`),
+    checked: !(game == `Retail` || game == `Classic` || game == `LK Classic`) ? false : useInt,
+    style: `margin-right: 7px`, name: "useInt"
+    });
+
   const container = elt(`div`, null, checkbox, key)
   return container;
 };

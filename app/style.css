@@ -236,9 +236,7 @@ section {
   height: 20px;
 }
 
-input[data-spares] {
-
-}
+input[data-spares] {}
 
 .settings input[name="stopKey"], .settings input[name="luresKey"], .settings input[name="fishingKey"], .settings input[name="intKey"], .settings input[name="spareKey"], .settings input[name="mammothKey"], .settings input[name="hsKey"], .settings .spares-key {
   cursor: pointer;
