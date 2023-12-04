@@ -584,6 +584,7 @@ if(lootWindowPatch.exitButton) {
       }
 
       if(missOnPurpose && missOnPurposeTimer.isElapsed()) {
+        pos.missedIntentionally = true;
         return pos;
       }
 
@@ -851,7 +852,7 @@ if (settings.soundDetection) {
       }
 
     await sleep(250);
-    if (!(await notificationZone.check("warning"))) {
+    if (!(await notificationZone.check("warning")) && !pos.missedIntentionally) {
       caught = true;
       if (config.whitelist) {
           let itemsPicked = await pickLoot();
