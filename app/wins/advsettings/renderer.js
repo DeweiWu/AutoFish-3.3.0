@@ -720,7 +720,7 @@ const renderSettings = (config) => {
   elt('div', {className: "settings_section settings_critical"},
   wrapInLabel(`Visual Library: `, renderLibraryType(config), `If something doesn't work with default library you can choose another one. Mind that keysender works only with dx11 and will be force for Multiple Fishing or Alt-Tab Fishing modes.`),
   wrapInLabel(`Ignore Preliminary Checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
-  wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting.`),
+  wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting. If you use some special addons which turn off loot window completely, you can set this value to 0 to make the bot work faster.`),
   wrapInLabel(`Max Check Time (sec):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do After Max Check Time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
   wrapInLabel(`Auto-Adjust Density and Sensitivity:`, renderAutoSensDens(config), `The bot will auto-adjust both Sensitivity and Density values per each cast.`),
