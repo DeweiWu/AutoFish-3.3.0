@@ -22,7 +22,7 @@ module.exports = {
         "setupIcon": "./app/img/icon-premium.ico",
         "setupExe": `AutoFish (${name}) Setup.exe`,
         "skipUpdateIcon": true,
-        "iconUrl": "https://raw.githubusercontent.com/jsbots/AutoFish/main/app/img/icon.ico",
+        "iconUrl": "https://raw.githubusercontent.com/jsbots/AutoFish/main/app/img/icon-premium.ico",
         "loadingGif": "./app/img/install.gif"
       }
     }
