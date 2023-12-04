@@ -1,16 +1,1 @@
-{
-  "game": "Retail",
-  "fishingKey": "1",
-  "intKey": "f",
-  "useInt": false,
-  "stopKey": "delete",
-  "threshold": 60,
-  "autoTh": true,
-  "bobberColor": "red",
-  "afkmode": false,
-  "multipleWindows": false,
-  "initial": true,
-  "initialZone": true,
-  "soundDetection": false,
-  "soundDetectionRange": 500
-}
+{"game":"Retail","fishingKey":"1","intKey":"f","useInt":false,"stopKey":"delete","threshold":60,"autoTh":true,"bobberColor":"red","afkmode":false,"multipleWindows":false,"initial":false,"initialZone":true,"soundDetection":false,"soundDetectionRange":500}

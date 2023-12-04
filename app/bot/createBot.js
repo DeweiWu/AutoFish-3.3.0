@@ -325,10 +325,14 @@ if(lootWindowPatch.exitButton) {
       await keyboard.sendKey(config.mammothKey, delay);
     });
 
-    await sleep(random(500, 3000));
-
     if(settings.afkmode) {
       await altTab();
+    }
+
+    await sleep(config.mammothAfterTradeDelay * 1000);
+
+    if(config.reaction) {
+      await sleep(random(config.reaction.from, config.reaction.to));
     }
   }
 

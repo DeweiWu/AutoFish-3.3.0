@@ -370,6 +370,10 @@ const renderMammothTraderName = ({mammoth, mammothTraderName}) => {
     return elt('input', {type: `text`, disabled: !mammoth, name: `mammothTraderName`, value: mammothTraderName});
 };
 
+const renderMammothAfterTradeDelay = ({mammoth, mammothAfterTradeDelay}) => {
+  return elt('input', {type: `number`, disabled: !mammoth, name: `mammothAfterTradeDelay`, value: mammothAfterTradeDelay})
+}
+
 const renderDynamicThreshold = ({dynamicThreshold, dynamicThresholdValue}) => {
   let checkbox = elt(`input`, {type: `checkbox`, name: `dynamicThreshold`, checked: dynamicThreshold});
   let input = elt(`input`, {type: `number`, name: `dynamicThresholdValue`, disabled: !dynamicThreshold, value: dynamicThresholdValue});
@@ -691,6 +695,16 @@ const renderSettings = (config) => {
     wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),
     wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), `Don't change this value if you don't know what you are doing. The value should be the same as in Arduino Sketch provided in the guide (you can find it in the top of the sketch)`)
     ),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🐘`), elt(`span`, {className: `advanced_settings_header_text`}, `Mount Selling`),
+    elt('div', {className: "settings_section settings_premium"},
+    wrapInLabel(`Use a Mount for Selling Junk: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),
+    wrapInLabel(`Mount Key: `, renderMammothKey(config), `A key that will be used to summon a mammoth mount.`),
+    wrapInLabel(`Mount Key Delay (ms): `, renderMammothKeyDelay(config), `How long the bot will wait after summoning a mammoth mount.`),
+    wrapInLabel(`Mount Sell Delay (ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
+    wrapInLabel(`Use Mount Selling Every (min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
+    wrapInLabel(`Sleep After For (sec):`, renderMammothAfterTradeDelay(config), `How long the bot should wait after all the operations. This time is usually needed to wait until traders disappear to avoid unintentional targeting.`),
+    wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
+    ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement`),
     elt('div', {className: "settings_section settings_premium"},
     wrapInLabel(`Use Random Camera Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
@@ -701,15 +715,6 @@ const renderSettings = (config) => {
     wrapInLabel(`Keys Moves Step:`, renderRngMoveDirLength(config), `Step delay of how long the bot will press w, s, a, d keys.`),
     wrapInLabel(`Use Random Movement Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
     wrapInLabel(`Balance Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
-    ),
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🐘`), elt(`span`, {className: `advanced_settings_header_text`}, `Mount Selling`),
-    elt('div', {className: "settings_section settings_premium"},
-    wrapInLabel(`Use a Mount for Selling Junk: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),
-    wrapInLabel(`Mount Key: `, renderMammothKey(config), `A key that will be used to summon a mammoth mount.`),
-    wrapInLabel(`Mount Key Delay (ms): `, renderMammothKeyDelay(config), `How long the bot will wait after summoning a mammoth mount.`),
-    wrapInLabel(`Mount Sell Delay (ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
-    wrapInLabel(`Use Mount Selling Every (min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
-    wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
     ),
   elt(`p`, {className: `settings_header settings_header_critical`}, `⚠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Critical`),
   elt('div', {className: "settings_section settings_critical"},
