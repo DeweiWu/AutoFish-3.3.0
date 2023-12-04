@@ -65,7 +65,7 @@ const convertKey = (key) => {
         }
 
         return new Promise(function(resolve, reject) {
-          write(`1,${convertKey(key)},${delay[0]},${delay[1]}\n`, resolve, reject);
+          write(`1,${convertKey(key)},${Math.round(delay[0])},${Math.round(delay[1])}\n`, resolve, reject);
         });
       },
       toggleKey(key, type, delay = 0) {
@@ -75,7 +75,7 @@ const convertKey = (key) => {
         }
 
         return new Promise(function(resolve, reject) {
-          write(`2,${convertKey(key)},${Number(type)},${delay[0]},${delay[1]}\n`, resolve, reject)
+          write(`2,${convertKey(key)},${Number(type)},${Math.round(delay[0])},${Math.round(delay[1])}\n`, resolve, reject)
         });
       },
       printText(text, delay = 0) {
@@ -85,7 +85,7 @@ const convertKey = (key) => {
         }
 
         return new Promise(function(resolve, reject) {
-          write(`3,${text},${delay[0]},${delay[1]}\n`, resolve, reject);
+          write(`3,${text},${Math.round(delay[0])},${Math.round(delay[1])}\n`, resolve, reject);
         });
       }
     }
@@ -116,7 +116,7 @@ const createMouse = (write) => {
           }
         }
 
-        write(`4,${numButton},${delay[0]},${delay[1]}\n`, resolve, reject);
+        write(`4,${numButton},${Math.round(delay[0])},${Math.round(delay[1])}\n`, resolve, reject);
       });
     },
 
@@ -143,7 +143,7 @@ const createMouse = (write) => {
           }
         }
 
-        write(`5,${numButton},${Number(type)},${delay[0]},${delay[1]}\n`, resolve, reject);
+        write(`5,${numButton},${Number(type)},${Math.round(delay[0])},${Math.round(delay[1])}\n`, resolve, reject);
       });
     },
 
