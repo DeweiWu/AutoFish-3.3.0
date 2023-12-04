@@ -98,12 +98,12 @@ const renderLikeHuman = ({likeHuman}) => {
   return dom;
 };
 
-const renderLikeHumanFineTune = ({likeHumanFineTune, likeHuman}) => {
+const renderLikeHumanFineTune = ({likeHumanFineTune, arduino, likeHuman}) => {
   let dom = elt("input", {
     type: "checkbox",
-    disabled: !likeHuman,
+    disabled: !likeHuman || arduino,
     className: "option",
-    checked: likeHumanFineTune,
+    checked: arduino ? false : likeHumanFineTune,
     name: "likeHumanFineTune",
   });
   return dom;
