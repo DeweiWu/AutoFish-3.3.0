@@ -25,6 +25,8 @@ const renderDelay = ({delay}) => {
      elt('input', {type: `number`, name: `to`, value: delay.to}));
 };
 
+const renderColorSwitchOn = ({colorSwitchOn}) => elt('input', {type: `checkbox`, checked: colorSwitchOn, name: "colorSwitchOn"});
+
 const renderHighlightPercent = ({highlightPercent}) => {
   const winRange = elt(`input`, {type: `number`, value: highlightPercent, name: "highlightPercent"})
   const range = elt('input', {type: `range`, max: 100, value: highlightPercent, oninput: function() {winRange.value = this.value}, name: "highlightPercent"});
@@ -723,7 +725,8 @@ const renderSettings = (config) => {
   wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting. If you use some special addons which turn off loot window completely, you can set this value to 0 to make the bot work faster.`),
   wrapInLabel(`Max Check Time (sec):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do After Max Check Time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
-  wrapInLabel(`Auto-Adjust Density and Sensitivity:`, renderAutoSensDens(config), `The bot will auto-adjust both Sensitivity and Density values per each cast.`),
+  wrapInLabel(`Auto Color: `, renderColorSwitchOn(config), `If there is a lot of colors of your switch in the environment the bot will automatically switch to the other color.`),
+  wrapInLabel(`Auto Density and Sensitivity:`, renderAutoSensDens(config), `The bot will auto-adjust both Sensitivity and Density values per each cast.`),
   wrapInLabel(`${config.game == `Vanilla (splash)` ? `Splash` : `Bobber`} Sensitivity (px):`,
    renderBobberSensitivity(config), config.game == `Vanilla (splash)` ?
     `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value.`
