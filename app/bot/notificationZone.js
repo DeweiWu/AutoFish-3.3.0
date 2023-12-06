@@ -2,7 +2,7 @@ const createRgb = require("../utils/rgb.js");
 
 const createNotificationZone = ({ getDataFrom, zone }) => {
   const notifications = {
-    isWarning: ([r, g, b]) => r - b > 240 && g - b > 240,
+    isWarning: ([r, g, b]) => r - b > 200 && g - b > 200,
     isError: ([r, g, b]) => r - g > 220 && r - b > 220
   }
 
