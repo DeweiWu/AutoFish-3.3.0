@@ -203,7 +203,7 @@ if(lootWindowPatch.exitButton) {
           randomDeviation.from = 0;
         }
 
-        if(config.libraryTypeInput === 'nut.js' || forcedNutMouse) {
+        if(!config.arduino && (config.libraryTypeInput === 'nut.js' || forcedNutMouse)) {
           await nutMouse.humanMoveTo({
             from: mouse.getPos(),
             to: pos,
@@ -1092,7 +1092,7 @@ if (settings.soundDetection) {
         await moveTo({pos: {x: cPos.x + rngPos.x, y: cPos.y + rngPos.y}, fineTune: false, forcedNutMouse: true});
       }
 
-      if(random(0, 100) > 75 && !config.arduino) {
+      if(random(0, 100) > 75) {
         await mouse.toggle(`right`, false, delay);
 
         if(config.reaction) {
