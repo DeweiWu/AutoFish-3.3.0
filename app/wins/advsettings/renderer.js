@@ -553,6 +553,10 @@ const renderApplyFatigueRate = ({applyFatigue, applyFatigueRate}) => {
   return elt(`div`, null, range, winRange);
 }
 
+const renderLibraryTypeInput = ({libraryTypeInput}) => {
+  const libs = ['nut.js', 'keysender'];
+  return elt('select', {name: 'libraryTypeInput'}, ...libs.map(lib => elt('option', {value: lib, selected: lib == libraryTypeInput}, lib)))
+};
 
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
@@ -574,6 +578,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Random Mouse Speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
     wrapInLabel(`Random Mouse Curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
     wrapInLabel(`Highlight Bobber (%): `, renderHighlightPercent(config), `How often the bot should highlight the bobber before checking on it (if in your game the bobber become brigther or more colourfull after highlighting, then change this value to 100% if you don't care for randomness)`),
+    wrapInLabel(`Input Library: `, renderLibraryTypeInput(config), `Different ways of simulating keyboard and mouse actions.`),
     wrapInLabel(`Mouse/keyboard Random Delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
   ),
 

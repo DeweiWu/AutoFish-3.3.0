@@ -182,7 +182,7 @@ if(lootWindowPatch.exitButton) {
     .split(",")
     .map((word) => word.trim());
 
-    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange, steps: [1, 3]}}) => {
+    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange, steps: [0, 3]}, forcedNutMouse}) => {
       if (randomRange) {
         pos.x = pos.x + random(-randomRange, randomRange);
         pos.y = pos.y + random(-randomRange, randomRange);
@@ -197,13 +197,23 @@ if(lootWindowPatch.exitButton) {
           randomSpeed.from = 0;
         }
 
-        let deviationCoof = 15;
+        let deviationCoof = config.libraryTypeInput === 'nut.js' ? 30 : 15;
         let randomDeviation = {from: config.mouseCurvatureStrength - deviationCoof, to: config.mouseCurvatureStrength + deviationCoof};
         if(randomDeviation.from < 0) {
           randomDeviation.from = 0;
         }
 
-        await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+        if(config.libraryTypeInput === 'nut.js' || forcedNutMouse) {
+          await nutMouse.humanMoveTo({
+            from: mouse.getPos(),
+            to: pos,
+            speed: random(randomSpeed.from, randomSpeed.to),
+            deviation: random(randomDeviation.from, randomDeviation.to),
+            fishingZone: Zone.from(screenSize).toRel(config.relZone)
+          });
+        } else {
+          await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+        }
 
         if(config.likeHumanFineTune && fineTune && state.status != "stop") {
           let times = random(fineTune.steps[0], fineTune.steps[1]);
@@ -547,7 +557,7 @@ if(lootWindowPatch.exitButton) {
     }
 
     await action(async () => {
-      await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [1, 5]}});
+      await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [0, 5]}});
     });
 
    return await findBobber();
@@ -1031,7 +1041,7 @@ if (settings.soundDetection) {
     if(config.arduino) {
       await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)}});
     } else {
-      await nutMouse.move({from: mouse.getPos(), to: {x: -moveMemory.x, y: -moveMemory.y}, speed: random(100, 300)});
+      await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)}, fineTune:false, forcedNutMouse: true});
     }
 
     moveMemory.x = 0;
@@ -1065,30 +1075,35 @@ if (settings.soundDetection) {
       let rngKey = getRandomKey();
 
       await mouse.toggle(`right`, true, delay);
-      await sleep(250, 750);
+      if(config.reaction) {
+        await sleep(random(config.reaction.from, config.reaction.to))
+      }
 
       if(rngKey) {
         await keyboard.toggleKey(rngKey.key, true, rngKey.value);
         await keyboard.toggleKey(rngKey.key, false, delay);
       }
 
-
       let cPos = mouse.getPos()
 
       if(config.arduino) {
         await moveTo({pos: {x: cPos.x + rngPos.x, y: cPos.y + rngPos.y}});
       } else {
-        await nutMouse.move({from: cPos, to: rngPos, speed: random(100, 300)});
+        await moveTo({pos: {x: cPos.x + rngPos.x, y: cPos.y + rngPos.y}, fineTune: false, forcedNutMouse: true});
       }
 
-      if(random(0, 100) > 75) {
+      if(random(0, 100) > 75 && !config.arduino) {
         await mouse.toggle(`right`, false, delay);
 
-        await sleep(250, 1500);
+        if(config.reaction) {
+          await sleep(random(config.reaction.from, config.reaction.to))
+        }
 
         await mouse.toggle(`right`, true, delay);
-        let rngPosNew = getRandomPos();
-        await nutMouse.move({from: mouse.getPos(), to: rngPosNew, speed: random(100, 300)});
+
+        cPos = mouse.getPos();
+        rngPos = getRandomPos();
+        await moveTo({pos: {x: cPos.x + rngPos.x, y: cPos.y + rngPos.y}, fineTune: false, forcedNutMouse: true});
 
         if(random(0, 100) > 75) {
           let rngKeyNew = getRandomKey();
@@ -1096,17 +1111,20 @@ if (settings.soundDetection) {
             await keyboard.toggleKey(rngKeyNew.key, true, rngKeyNew.value);
             await keyboard.toggleKey(rngKeyNew.key, false, delay);
           }
-
           await mouse.toggle(`right`, false, delay);
         } else {
-          await sleep(250, 750);
           await mouse.toggle(`right`, false, delay);
         }
       } else {
+        if(config.reaction) {
+          await sleep(random(config.reaction.from, config.reaction.to))
+        }
         await mouse.toggle(`right`, false, delay);
       }
 
-      await sleep(random(250, 750));
+      if(config.reaction) {
+        await sleep(random(config.reaction.from, config.reaction.to))
+      }
     })
   };
 
