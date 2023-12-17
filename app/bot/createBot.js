@@ -126,16 +126,31 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
   });
 
   const chatZone = createChatZone({getDataFrom, zone: Zone.from(screenSize).toRel(config.chatZone), threshold: config.whisperThreshold});
+  let lootWinResType;
+  switch(true) {
+    case screenSize.height <= 768: {
+      lootWinResType = `1536`
+      break;
+    }
 
-  let lootWinResType = screenSize.width <= 1536 ? `1536` : (screenSize.height == 1440 && config.lootWindow[`2560`]) ? `2560` : `1920`;
+    case screenSize.height > 768 && screenSize.height <= 1080: {
+      lootWinResType = `1920`;
+      break;
+    }
 
-  let ultrawide = (screenSize.width / screenSize.height) > 2;
+    case screenSize.height > 1080 && screenSize.height <= 1440: {
+      lootWinResType = `2560`;
+      break;
+    }
 
-const lootWindowPatch =
-  config.lootWindow[lootWinResType];
+    case screenSize.height > 1440: {
+      lootWinResType = `3840`;
+    }
+  }
+let ultrawide = (screenSize.width / screenSize.height) > 2;
 
-const confirmationWindowPatch =
-  config.confirmationWindow[screenSize.width <= 1536 ? `1536` : `1920`];
+const lootWindowPatch = config.lootWindow[lootWinResType] ? config.lootWindow[lootWinResType] : config.lootWindow[`1920`];
+const confirmationWindowPatch = config.confirmationWindow[screenSize.width <= 1536 ? `1536` : `1920`];
 
 let ignoreInterruptedPatch;
 if (config.ignoreInterrupted) {
