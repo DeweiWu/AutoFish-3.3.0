@@ -72,6 +72,7 @@ class Settings {
       if((event.target.name == `stopKey` || event.target.name == `fishingKey` || event.target.name == `luresKey` || event.target.name == `intKey` || event.target.name == `spareKey`) && !event.target.disabled) {
         event.target.style.backgroundColor = `rgb(255, 104, 101)`;
         event.target.style.border = `1px solid grey`;
+        event.target.style.paddingLeft = `3px`;
 
         event.target.addEventListener(`blur`, function bluring(event) {
           event.target.style.backgroundColor = `white`;

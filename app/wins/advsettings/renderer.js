@@ -137,6 +137,13 @@ const renderLogOutAfter = ({logOutAfter, logOut}) => {
      elt('input', {type: `number`, name: `to`, value: logOutAfter.to, disabled: !logOut}));
 };
 
+const renderLogOutMacro = ({logOut, logOutUseMacro, logOutMacroKey}) => {
+  const checkbox = elt('input', {type: 'checkbox', checked: logOutUseMacro, name: `logOutUseMacro`, disabled: !logOut });
+  const key = elt('input', {type: `text`, disabled: !logOut || !logOutUseMacro, name: `logOutMacroKey`, value: logOutMacroKey});
+  key.setAttribute(`readonly`, `true`);
+  return elt('div', null, checkbox, key);
+}
+
 const renderMaxAttempts = ({ maxAttempts }) => {
   return elt('input', {type: 'number', name:"maxAttempts", value: maxAttempts})
 };
@@ -644,6 +651,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Random Log Out Every: (min)`, renderLogOutEvery(config), `The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
     wrapInLabel(`Random Log Out For: (sec)`, renderLogOutFor(config), `How long the bot should be stayed logged out. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
     wrapInLabel(`Random Log Out After: (sec)`, renderLogOutAfter(config), `How long the bot should wait before starting fishing again. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
+    wrapInLabel(`Use Macro: `, renderLogOutMacro(config), `Use your own macro in the game instead of typing /logout command.`),
     ),
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Random Sleep`),
     elt('div', {className: "settings_section"},
@@ -819,9 +827,18 @@ const runApp = async () => {
   }
 
   settings.addEventListener('mousedown', (event) => {
-    if((event.target.name == `mammothKey` || event.target["data-spares"] == "key" || event.target.name == `hsKey` || event.target.name == `luresKey` || event.target.name == `spareKey`) && !event.target.disabled) {
+      if (
+      (event.target.name == `mammothKey` ||
+        event.target["data-spares"] == "key" ||
+        event.target.name == `hsKey` ||
+        event.target.name == `luresKey` ||
+        event.target.name == `spareKey` ||
+        event.target.name == 'logOutMacroKey') &&
+      !event.target.disabled
+    ) {
       event.target.style.backgroundColor = `rgb(255, 104, 101)`;
       event.target.style.border = `1px solid grey`;
+      event.target.style.paddingLeft = `3px`;
 
       event.target.addEventListener(`blur`, function bluring(event) {
         event.target.style.backgroundColor = `white`;
