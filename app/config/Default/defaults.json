@@ -144,14 +144,14 @@
       "lootWindow": {
         "1536": {
           "cursorPos": { "x": 0.0358711, "y": 0.2161458 },
-          "upperLimit": 0.06510416,
-          "toItemX": 0.01976573,
+          "upperLimit": 0.063802083,
+          "toItemX": 0.019765739,
           "toItemY": 0.015625,
           "itemHeight": 0.05078125,
-          "itemHeightAdd": 0.01432291,
-          "height": 0.24739583,
-          "width": 0.1120058,
-          "exitButton": { "x": 0.1295754, "y": 0.05338541 }
+          "itemHeightAdd": 0.014322916,
+          "height": 0.325520833,
+          "width": 0.112005856,
+          "exitButton": { "x": 0.131039531, "y": 0.05078125 }
         },
         "1920": {
           "cursorPos": { "x": 0.0255625, "y": 0.1546296 },
@@ -166,25 +166,25 @@
         },
         "2560": {
           "cursorPos": { "x": 0.026953125, "y": 0.1729166666 },
-          "upperLimit": 0.05138888,
-          "toItemX": 0.017578125,
-          "toItemY": 0.011111111,
-          "itemHeight": 0.034722222,
-          "itemHeightAdd": 0.015972222,
-          "height": 0.202083333,
-          "width": 0.088671875,
-          "exitButton": { "x": 0.0875, "y": 0.040972222 }
+          "upperLimit": 0.042361111,
+          "toItemX": 0.012890625,
+          "toItemY": 0.00972222222,
+          "itemHeight": 0.03402777777777,
+          "itemHeightAdd": 0.008333333333,
+          "height": 0.20833333333,
+          "width": 0.075,
+          "exitButton": { "x": 0.0875, "y": 0.0333333333 }
         },
         "3840": {
           "cursorPos": { "x": 0.0255625, "y": 0.1546296 },
-          "upperLimit": 0.046296,
-          "toItemX": 0.013541,
-          "toItemY": 0.009,
-          "itemHeight": 0.0324074,
-          "itemHeightAdd": 0.01018518,
-          "height": 0.175925,
-          "width": 0.079687,
-          "exitButton": { "x": 0.08411458333, "y": 0.032407407407 }
+          "upperLimit": 0.0412037037,
+          "toItemX": 0.0125,
+          "toItemY": 0.010648148,
+          "itemHeight": 0.033333333333,
+          "itemHeightAdd": 0.00740740740,
+          "height": 0.203703703703,
+          "width": 0.071875,
+          "exitButton": { "x": 0.08411458333, "y": 0.0319444444 }
         }
       }
     },
