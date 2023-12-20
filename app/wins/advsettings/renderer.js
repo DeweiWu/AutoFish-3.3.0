@@ -836,13 +836,19 @@ const runApp = async () => {
         event.target.name == 'logOutMacroKey') &&
       !event.target.disabled
     ) {
-      event.target.style.backgroundColor = `rgb(255, 104, 101)`;
-      event.target.style.border = `1px solid grey`;
-      event.target.style.paddingLeft = `3px`;
-
+      event.target.style.backgroundColor = `rgba(250, 0, 0, .3)`;
+      const activeKeyAnimation = (alter) => () => {
+        if(alter) {
+          event.target.style.backgroundColor = `rgba(250, 0, 0, .3)`;
+        } else {
+          event.target.style.backgroundColor = `white`;
+        }
+        alter = !alter;
+      }
+      const flashKeyAnimation = setInterval(activeKeyAnimation(false), 300);
       event.target.addEventListener(`blur`, function bluring(event) {
+        clearInterval(flashKeyAnimation)
         event.target.style.backgroundColor = `white`;
-        event.target.style.border = `1px solid grey`;
         event.target.removeEventListener(`blur`, bluring);
         event.target.removeEventListener(`keydown`, keyAssigning);
       });
