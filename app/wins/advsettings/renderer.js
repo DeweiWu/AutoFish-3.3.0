@@ -379,6 +379,13 @@ const renderMammothAfterTradeDelay = ({mammoth, mammothAfterTradeDelay}) => {
   return elt('input', {type: `number`, disabled: !mammoth, name: `mammothAfterTradeDelay`, value: mammothAfterTradeDelay})
 }
 
+const renderMammothMacro = ({mammoth, mammothUseMacro, mammothMacroKey}) => {
+  const checkbox = elt('input', {type: 'checkbox', checked: mammothUseMacro, name: `mammothUseMacro`, disabled: !mammoth });
+  const key = elt('input', {type: `text`, disabled: !mammoth || !mammothUseMacro, name: `mammothMacroKey`, value: mammothMacroKey});
+  key.setAttribute(`readonly`, `true`);
+  return elt('div', null, checkbox, key);
+}
+
 const renderDynamicThreshold = ({dynamicThreshold, dynamicThresholdValue}) => {
   let checkbox = elt(`input`, {type: `checkbox`, name: `dynamicThreshold`, checked: dynamicThreshold});
   let input = elt(`input`, {type: `number`, name: `dynamicThresholdValue`, disabled: !dynamicThreshold, value: dynamicThresholdValue});
@@ -651,7 +658,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Random Log Out Every: (min)`, renderLogOutEvery(config), `The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
     wrapInLabel(`Random Log Out For: (sec)`, renderLogOutFor(config), `How long the bot should be stayed logged out. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
     wrapInLabel(`Random Log Out After: (sec)`, renderLogOutAfter(config), `How long the bot should wait before starting fishing again. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
-    wrapInLabel(`Use Macro: `, renderLogOutMacro(config), `Use your own macro in the game instead of typing /logout command.`),
+    wrapInLabel(`Use Macro: `, renderLogOutMacro(config), `Use your own macro in the game instead of the bot typing /logout command.`),
     ),
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Random Sleep`),
     elt('div', {className: "settings_section"},
@@ -715,6 +722,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Use Mount Selling Every (min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
     wrapInLabel(`Sleep After For (sec):`, renderMammothAfterTradeDelay(config), `How long the bot should wait after all the operations. This time is usually needed to wait until traders disappear to avoid unintentional targeting.`),
     wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
+    wrapInLabel(`Use Macro: `, renderMammothMacro(config), `Use your own macro in the game instead of the bot typing /target trader_name command.`),
     ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement`),
     elt('div', {className: "settings_section settings_premium"},
@@ -833,7 +841,8 @@ const runApp = async () => {
         event.target.name == `hsKey` ||
         event.target.name == `luresKey` ||
         event.target.name == `spareKey` ||
-        event.target.name == 'logOutMacroKey') &&
+        event.target.name == 'logOutMacroKey' ||
+        event.target.name == 'mammothMacroKey') &&
       !event.target.disabled
     ) {
       event.target.style.backgroundColor = `rgba(250, 0, 0, .3)`;

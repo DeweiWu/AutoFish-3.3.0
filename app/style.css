@@ -246,7 +246,8 @@ input[data-spares] {}
 .settings input[name="mammothKey"],
 .settings input[name="hsKey"],
 .settings .spares-key,
-.settings input[name="logOutMacroKey"] {
+.settings input[name="logOutMacroKey"],
+.settings input[name="mammothMacroKey"] {
   text-align: center;
   border-radius: 2px;
   border: 1px solid grey;
@@ -261,7 +262,8 @@ input[data-spares] {}
 .settings input[name="mammothKey"]:active,
 .settings input[name="hsKey"]:active,
 .settings .spares-key:active,
-.settings input[name="logOutMacroKey"]:active {
+.settings input[name="logOutMacroKey"]:active,
+.settings input[name="mammothMacroKey"]:active {
   cursor: default;
 }
 
@@ -272,7 +274,8 @@ input[data-spares] {}
 .settings input[name="mammothKey"]:focus,
 .settings input[name="hsKey"]:focus,
 .settings .spares-key:focus,
-.settings input[name="logOutMacroKey"]:focus {
+.settings input[name="logOutMacroKey"]:focus,
+.settings input[name="mammothMacroKey"]:focus {
   outline: none;
 }
 
@@ -283,7 +286,8 @@ input[data-spares] {}
 .settings input[name="mammothKey"]:disabled,
 .settings input[name="hsKey"]:disabled,
 .settings .spares-key:disabled,
-.settings input[name="logOutMacroKey"]:disabled {
+.settings input[name="logOutMacroKey"]:disabled,
+.settings input[name="mammothMacroKey"]:disabled {
   cursor: default;
   border: 1px solid rgb(215, 215, 215);
   background-color: rgb(245, 245, 245);

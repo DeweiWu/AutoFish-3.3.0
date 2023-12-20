@@ -327,11 +327,16 @@ if(lootWindowPatch.exitButton) {
     }
 
     await action(async () => {
-      await keyboard.toggleKey(`enter`, true, delay);
-      await keyboard.toggleKey(`enter`, false, delay);
-      await keyboard.printText(`/target ${config.mammothTraderName} `, delay);
-      await keyboard.toggleKey(`enter`, true, delay);
-      await keyboard.toggleKey(`enter`, false, delay);
+      if(config.mammothUseMacro) {
+        await keyboard.toggleKey(config.mammothMacroKey, true, delay);
+        await keyboard.toggleKey(config.mammothMacroKey, false, delay);
+      } else {
+        await keyboard.toggleKey(`enter`, true, delay);
+        await keyboard.toggleKey(`enter`, false, delay);
+        await keyboard.printText(`/target ${config.mammothTraderName} `, delay);
+        await keyboard.toggleKey(`enter`, true, delay);
+        await keyboard.toggleKey(`enter`, false, delay);
+      }
     });
 
     if(config.reaction) {
