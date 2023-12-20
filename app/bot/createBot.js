@@ -197,7 +197,7 @@ if(lootWindowPatch.exitButton) {
     .split(",")
     .map((word) => word.trim());
 
-    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange, steps: [0, 3]}, forcedNutMouse}) => {
+    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange, steps: [1, 3]}, forcedNutMouse}) => {
       if (randomRange) {
         pos.x = pos.x + random(-randomRange, randomRange);
         pos.y = pos.y + random(-randomRange, randomRange);
@@ -582,7 +582,7 @@ if(lootWindowPatch.exitButton) {
     }
 
     await action(async () => {
-      await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [0, 5]}});
+      await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [1, 5]}});
     });
 
    return await findBobber();
