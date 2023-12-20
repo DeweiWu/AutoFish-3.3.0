@@ -371,8 +371,8 @@ const renderMammothApplyEvery= ({mammoth, mammothApplyEvery}) => {
   );
 };
 
-const renderMammothTraderName = ({mammoth, mammothTraderName}) => {
-    return elt('input', {type: `text`, disabled: !mammoth, name: `mammothTraderName`, value: mammothTraderName});
+const renderMammothTraderName = ({mammoth, mammothUseMacro, mammothTraderName}) => {
+    return elt('input', {type: `text`, disabled: !mammoth || mammothUseMacro, name: `mammothTraderName`, value: mammothTraderName});
 };
 
 const renderMammothAfterTradeDelay = ({mammoth, mammothAfterTradeDelay}) => {
@@ -721,8 +721,8 @@ const renderSettings = (config) => {
     wrapInLabel(`Mount Sell Delay (ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
     wrapInLabel(`Use Mount Selling Every (min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
     wrapInLabel(`Sleep After For (sec):`, renderMammothAfterTradeDelay(config), `How long the bot should wait after all the operations. This time is usually needed to wait until traders disappear to avoid unintentional targeting.`),
-    wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
     wrapInLabel(`Use Macro: `, renderMammothMacro(config), `Use your own macro in the game instead of the bot typing /target trader_name command.`),
+    wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
     ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement`),
     elt('div', {className: "settings_section settings_premium"},
