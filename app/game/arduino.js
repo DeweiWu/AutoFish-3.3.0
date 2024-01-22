@@ -74,9 +74,17 @@ const convertKey = (key) => {
           delay = [delay, delay];
         }
 
-        return new Promise(function(resolve, reject) {
-          write(`2,${convertKey(key)},${Number(type)},${Math.round(delay[0])},${Math.round(delay[1])}\n`, resolve, reject)
-        });
+        const command = (key) =>
+          new Promise((resolve, reject) => {
+            write(`2,${convertKey(key)},${Number(type)},${Math.round(delay[0])},${Math.round(delay[1])}\n`, resolve, reject)
+          });
+
+
+        if(Array.isArray(key)) {
+          return Promise.all(key.map(k => command(k)))
+        } else {
+          return command(key);
+        }
       },
       printText(text, delay = 0) {
 
