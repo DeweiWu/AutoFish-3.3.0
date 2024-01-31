@@ -103,11 +103,12 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
   });
 
   tmBot.ss.push((ctx) => {
-    getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
+    return getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
     .then(Jimp.read)
     .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
-    .then((screenshot) => {
-      ctx.replyWithPhoto({source: screenshot});
+    .then(async (screenshot) => {
+      await ctx.reply(`Screenshot for WIN:${winNum}`);
+      await ctx.replyWithPhoto({source: screenshot})
     })
    })
   }

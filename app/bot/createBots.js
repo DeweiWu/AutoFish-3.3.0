@@ -33,7 +33,7 @@ if (tmBot.bot) {
   tmBot.bot.hears(`📷 Screenshot`, (ctx) => {
     if (!tmBot.ctx) tmBot.ctx = ctx;
     ctx.sendChatAction(`upload_photo`);
-    tmBot.ss.forEach((screenshot) => screenshot(ctx));
+    tmBot.ss.reduce((a, screenshot) => a.then(() => screenshot(ctx)), Promise.resolve())
   });
 
   tmBot.bot.hears(`⌨️ Press Enter`, (ctx) => {
