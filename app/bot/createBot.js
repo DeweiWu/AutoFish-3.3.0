@@ -39,10 +39,8 @@ const random = (from, to) => {
   return from + Math.random() * (to - from);
 };
 
-let chatMsgs = [];
-
 const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) => {
-
+  let chatMsgs = [];
   if(settings.game == `Vanilla (splash)` && settings.autoTh == true) {
     settings.autoTh = false;
   };
