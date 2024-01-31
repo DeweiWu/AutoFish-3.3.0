@@ -105,7 +105,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
     .then(Jimp.read)
     .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
     .then(async (screenshot) => {
-      await ctx.reply(`Screenshot for WIN:${winNum}`);
+      await ctx.reply(`Screenshot of the window ${winNum}:`);
       await ctx.replyWithPhoto({source: screenshot})
     })
    })
@@ -519,7 +519,7 @@ if(lootWindowPatch.exitButton) {
 
             if(tmBot.ctx) {
               if(state.status != "stop") {
-                tmBot.ctx.reply(`Something happened on WIN:${winNum}!`);
+                tmBot.ctx.reply(`Something happened in the window ${winNum}:`);
                 if(config.checkChangesSendImg) {
                   Jimp.read(newImg)
                   .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
@@ -776,7 +776,7 @@ if (settings.soundDetection) {
             await mouse.toggle("right", false, delay);
 
             if(tmBot.ctx) {
-              tmBot.ctx.reply(`Confirmed Souldbound item!`);
+              tmBot.ctx.reply(`Confirmed Souldbound item in the window ${winNum}!`);
               tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
             }
 
@@ -894,7 +894,7 @@ if (settings.soundDetection) {
   const checkWhisper = async () => {
     if(tmBot.ctx == null || !config.detectWhisper) return;
     if(await chatZone.checkNewMessages()) {
-      tmBot.ctx.reply(`Someone whispered on Window: ${winNum}!`);
+      tmBot.ctx.reply(`Whisper in the window ${winNum}:`);
       tmBot.ctx.sendChatAction(`upload_photo`);
       tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
       if(config.closeAtWhisper) {
