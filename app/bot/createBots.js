@@ -97,6 +97,11 @@ if (tmBot.bot) {
   const bots = games.map((game, i) => {
 
     if(config.patch[settings.game].arduino) {
+
+      if(i == 0 && (settings.multipleWindows || settings.afkmode)) {
+        game.keyboard.sendKey('backspace', [100, 400]);
+      }
+
       arduino.mouse.getPos = game.mouse.getPos;
       game = {mouse: arduino.mouse, workwindow: game.workwindow, keyboard: arduino.keyboard}
     }
