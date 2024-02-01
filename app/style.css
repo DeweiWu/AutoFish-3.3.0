@@ -1033,7 +1033,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 
 /* Track */
 .advSettings_settings::-webkit-scrollbar {
-  width: 10px; /* Set the width of the scrollbar */
+  width: 15px; /* Set the width of the scrollbar */
 }
 
 /* Handle */
@@ -1051,7 +1051,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 
 /* Track */
 .advSettings_settings::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Set the color of the scrollbar track */
+  background: rgb(221, 221, 221); /* Set the color of the scrollbar track */
 }
 
 /* Handle when scrolling */
