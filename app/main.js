@@ -155,7 +155,7 @@ const connectToTelegram = (key) => {
 <b>🟢 Start</b> - starts the bot.
 <b>🔴 Stop</b> - stops the bot.
 <b>📢 Stats</b> - returns stats.
-<b>📷 Screenshot</b> - makes a screenshot of every game window and shows what number each window has. 
+<b>📷 Screenshot</b> - makes a screenshot of every game window and shows what number each window has.
 <b>❌ Quit</b> - closes both the game and the bot.
 
 You can also write in this chat directly to do:
@@ -218,6 +218,12 @@ You can also write in this chat directly to do:
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
+
+    if(config.patch[settings.game].startByFishingKey) {
+      globalShortcut.register(settings.fishingKey, () => {
+        win.webContents.send('start-by-fishing-key');
+      });
+    }
 
     if(settings.initial) {
       log.msg(`Thank you for your support!❤️`);
@@ -336,8 +342,18 @@ By pressing "Accept" you agree to everything stated above.`,
       return;
     }
 
+    if(config.patch[settings.game].startByFishingKey) {
+      globalShortcut.unregister(settings.fishingKey);
+    }
+
     const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot, arduino);
     const stopAppAndBots = () => {
+
+      if(config.patch[settings.game].startByFishingKey) {
+        globalShortcut.register(settings.fishingKey, () => {
+          win.webContents.send('start-by-fishing-key');
+        });
+      }
 
       games.forEach(async ({mouse, keyboard, workwindow}) => {
         while(!workwindow.isForeground()) await sleep(100);
@@ -353,7 +369,7 @@ By pressing "Accept" you agree to everything stated above.`,
         win.flashFrame(true);
         win.once("focus", () => win.flashFrame(false));
       }
-      globalShortcut.unregisterAll();
+      globalShortcut.unregister(settings.stopKey);
       win.webContents.send("stop-bot");
       ipcMain.removeAllListeners("stop-bot");
     };
@@ -370,6 +386,22 @@ By pressing "Accept" you agree to everything stated above.`,
     startBots(stopAppAndBots);
   });
 
+  ipcMain.on('reg-start-by-fishing-key', () => {
+    let profile = getProfile();
+    let settings = getJson(`./config/${profile.selected}/settings.json`);
+    let config = getJson(`./config/${profile.selected}/bot.json`);
+
+    globalShortcut.register(settings.fishingKey, () => {
+      win.webContents.send('start-by-fishing-key');
+    });
+  })
+
+  ipcMain.on('unreg-start-by-fishing-key', () => {
+    let profile = getProfile();
+    let settings = getJson(`./config/${profile.selected}/settings.json`);
+    let config = getJson(`./config/${profile.selected}/bot.json`);
+    globalShortcut.unregister(settings.fishingKey);
+  })
 
   ipcMain.on("open-link-youtube", () =>
     shell.openExternal("https://www.youtube.com/jsbots")

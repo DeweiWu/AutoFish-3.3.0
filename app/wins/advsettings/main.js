@@ -24,7 +24,7 @@ const showChoiceWarning = (win, warning, title, button1, button2) => {
 const showWarning = (win, warning) => {
   return result = dialog.showMessageBoxSync(win, {
     type: "warning",
-    title: `Disclaimer`,
+    title: `Warning!`,
     message: warning,
     buttons: [`Ok`]
   });
@@ -53,6 +53,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`rngMove-warn`);
     ipcMain.removeAllListeners(`lures-warn`);
     ipcMain.removeAllListeners(`whitelist-warn`);
+    ipcMain.removeAllListeners(`start-by-fishing-key-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
     ipcMain.removeHandler("remove-spare-confirm");
@@ -85,7 +86,11 @@ const createAdvSettings = (appPath) => {
   });
 
   ipcMain.on("lures-warn", () => {
-    showWarning(win, `Don't forget to make a macros as described in the Guide and assign it to the same key you have assigned for Lures Key.`);
+    showWarning(win, `Don't forget to make a macro as described in the Guide and assign it to the same key you have assigned for Lures Key.`);
+  });
+
+  ipcMain.on("start-by-fishing-key-warn", () => {
+    showWarning(win, `The key you assigned for Fishing Key will be blocked on your machine and if used will start the bot even if you are not in the game!\n\nTurn this feature on only after you have configured all the settings and turn it off before making any changes.`);
   })
 
   ipcMain.on("unsupported-key-win", () => {

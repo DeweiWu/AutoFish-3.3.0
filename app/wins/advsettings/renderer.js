@@ -27,6 +27,19 @@ const renderDelay = ({delay}) => {
 
 const renderColorSwitchOn = ({colorSwitchOn}) => elt('input', {type: `checkbox`, checked: colorSwitchOn, name: "colorSwitchOn"});
 
+const renderStartByFishingKey = ({startByFishingKey}) => {
+  if(startByFishingKey) {
+    ipcRenderer.send('reg-start-by-fishing-key');
+  } else {
+    ipcRenderer.send('unreg-start-by-fishing-key');
+  }
+  return elt('input', {type: 'checkbox', onchange() {
+    if(!startByFishingKey) {
+      ipcRenderer.send('start-by-fishing-key-warn')
+    }
+  }, checked: startByFishingKey, name: "startByFishingKey"});
+}
+
 const renderHighlightPercent = ({highlightPercent}) => {
   const winRange = elt(`input`, {type: `number`, value: highlightPercent, name: "highlightPercent"})
   const range = elt('input', {type: `range`, max: 100, value: highlightPercent, oninput: function() {winRange.value = this.value}, name: "highlightPercent"});
@@ -576,6 +589,7 @@ const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `⚙️`), elt(`span`, {className: `advanced_settings_header_text`}, `General`),
   elt('div', {className: "settings_section"},
+  wrapInLabel(`Start Bot By Fishing Key`, renderStartByFishingKey(config), `Your Fishing Key (the same assigned in the bot) in the game will start the bot and you don't need to alt-tab to start it manually, you still need to stop it either by Stop Key or manually (the bot won't stop if you just move away as it happens in the game). Warning! The key you assigned for Fishing Key will be blocked on your machine and if used will start the bot. Turn this feature on only after you have configured all the settings.`),
   wrapInLabel(`Human-like Movement: `, renderLikeHuman(config), `The bot will move your mouse in a human way: random speed and with a slight random deviation in the movement. Otherwise it will move the mouse instantly, which might be a better option if you use a lot of windows.`),
   wrapInLabel(`Human-like Accuracy: `, renderLikeHumanFineTune(config), `The bot will "fine-tune" the mouse position after moving to the bobber, imitating a human-like way of reaching the mouse-movement target position.`),
   wrapInLabel(
