@@ -4,6 +4,7 @@ const createNotificationZone = require("./notificationZone.js");
 const createLootZone = require("./lootZone.js");
 const createChatZone = require('./chatZone');
 const createLootExitZone = require("./lootExitZone.js");
+const createRedButtonZone = require("./redButtonZone.js");
 const pixelmatch = require('pixelmatch');
 const Vec = require('../utils/vec.js');
 
@@ -250,6 +251,24 @@ if(lootWindowPatch.exitButton) {
       }
     };
 
+    const checkRedButton = async (buttonPos) => {
+        const redButtonZone = createRedButtonZone({getDataFrom, zone: buttonPos});
+        const colorPositions = await redButtonZone.isOn(mouse.getPos());
+        if(colorPositions){
+          let colorPos = colorPositions.yellow || colorPositions.red;
+          await action(async () => {
+            await moveTo({pos: {
+              x: buttonPos.x + colorPos.x,
+              y: buttonPos.y + colorPos.y},
+              randomRange: 2,
+              });
+          });
+
+          return await redButtonZone.isOnAfterHighlight()
+        }
+    };
+
+
   const checkBobberTimer = createTimer(() => config.maxFishTime * 1000);
   const missOnPurposeTimer = createTimer(() => random(config.missOnPurposeRandomDelay.from, config.missOnPurposeRandomDelay.to) * 1000);
   const logOutTimer = createTimer(() => random(config.logOutEvery.from * 1000 * 60, config.logOutEvery.to * 1000 * 60));
@@ -382,6 +401,21 @@ if(lootWindowPatch.exitButton) {
       await keyboard.sendKey(config.luresKey, delay);
     });
 
+    if(config.confirmLures) {
+      if (config.reaction) {
+        await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+      } else {
+        await sleep(250) // wait for the window to appear
+      }
+      const needsConfirm = await checkRedButton(confirmationWindow);
+      if(needsConfirm) {
+        await action(async () => {
+          await mouse.toggle('left', true, delay);
+          await mouse.toggle('left', false, delay);
+        });
+      }
+    }
+
     if(settings.afkmode) {
       await altTab();
     }
@@ -405,6 +439,21 @@ if(lootWindowPatch.exitButton) {
         await action(async () => {
           await keyboard.sendKey(spare.key, delay);
         });
+
+        if(config.confirmLures) {
+          if (config.reaction) {
+            await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+          } else {
+            await sleep(250) // wait for the window to appear
+          }
+          const needsConfirm = await checkRedButton(confirmationWindow);
+          if(needsConfirm) {
+            await action(async () => {
+              await mouse.toggle('left', true, delay);
+              await mouse.toggle('left', false, delay);
+            });
+          }
+        }
 
         if(settings.afkmode) {
           await altTab();

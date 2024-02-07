@@ -18,7 +18,7 @@ const convertValue = (node) => {
 };
 
 const renderHideWin = ({hideWin}) => elt(`input`, {type: `checkbox`, checked: hideWin, name: `hideWin`});
-
+const renderConfirmLures = ({confirmLures, lures}) => elt(`input`, {type: `checkbox`, disabled: !lures, checked: confirmLures, name: `confirmLures`});
 const renderDelay = ({delay}) => {
   return elt(`div`, {"data-collection": `delay`}, elt(`span`, {className: `option_text`}, `from:`),
      elt('input', {type: `number`, name: `from`, value: delay.from}), elt(`span`, {className: `option_text`}, `to:`),
@@ -648,7 +648,8 @@ const renderSettings = (config) => {
   `Fishing lures expiration time in minutes.`
   ),
   wrapInLabel(`Applying Lures Delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
-  wrapInLabel(`Omit Initial Application`, renderLuresOmitInitial(config), `Don't apply lures at the beggining, wait until timer elapses.`)
+  wrapInLabel(`Omit Initial Application`, renderLuresOmitInitial(config), `Don't apply lures at the beggining, wait until timer elapses.`),
+  wrapInLabel(`Auto-Confirm Lures`, renderConfirmLures(config), `If you want the bot to apply lures earlier than they expire, some games would require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same, in that case you don't need to turn on this option.`)
   ),
   elt(`p`, {className: `settings_header`}, `⏲️`), elt(`span`, {className: `advanced_settings_header_text`}, `Timer`),
   elt('div', {className: "settings_section"},
