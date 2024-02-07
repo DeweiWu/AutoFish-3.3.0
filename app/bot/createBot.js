@@ -440,7 +440,7 @@ if(lootWindowPatch.exitButton) {
           await keyboard.sendKey(spare.key, delay);
         });
 
-        if(config.confirmLures) {
+        if(config.confirmSpares) {
           if (config.reaction) {
             await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
           } else {

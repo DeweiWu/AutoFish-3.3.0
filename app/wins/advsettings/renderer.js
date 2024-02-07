@@ -19,6 +19,7 @@ const convertValue = (node) => {
 
 const renderHideWin = ({hideWin}) => elt(`input`, {type: `checkbox`, checked: hideWin, name: `hideWin`});
 const renderConfirmLures = ({confirmLures, lures}) => elt(`input`, {type: `checkbox`, disabled: !lures, checked: confirmLures, name: `confirmLures`});
+const renderConfirmSpares = ({confirmSpares}) => elt(`input`, {type: `checkbox`, checked: confirmSpares, name: `confirmSpares`});
 const renderDelay = ({delay}) => {
   return elt(`div`, {"data-collection": `delay`}, elt(`span`, {className: `option_text`}, `from:`),
      elt('input', {type: `number`, name: `from`, value: delay.from}), elt(`span`, {className: `option_text`}, `to:`),
@@ -648,8 +649,8 @@ const renderSettings = (config) => {
   `Fishing lures expiration time in minutes.`
   ),
   wrapInLabel(`Applying Lures Delay (ms):`, renderLuresDelay(config), `How much it takes the bot to apply the lure.`),
-  wrapInLabel(`Omit Initial Application`, renderLuresOmitInitial(config), `Don't apply lures at the beggining, wait until timer elapses.`),
-  wrapInLabel(`Auto-Confirm Lures`, renderConfirmLures(config), `If you want the bot to apply lures earlier than they expire, some games would require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same, in that case you don't need to turn on this option.`)
+  wrapInLabel(`Omit Initial Application:`, renderLuresOmitInitial(config), `Don't apply lures at the beggining, wait until timer elapses.`),
+  wrapInLabel(`Auto-Confirm Lures:`, renderConfirmLures(config), `If you want the bot to apply lures earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same, in that case you don't need to turn on this option.`)
   ),
   elt(`p`, {className: `settings_header`}, `⏲️`), elt(`span`, {className: `advanced_settings_header_text`}, `Timer`),
   elt('div', {className: "settings_section"},
@@ -700,8 +701,9 @@ const renderSettings = (config) => {
     ),
   elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
   elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel(`Omit Initial Application`, renderSparesOmitInitial(config), `Don't apply additional actions at the beggining, wait until timer elapses.`),
-    renderSpares(config)
+      wrapInLabel(`Omit Initial Application:`, renderSparesOmitInitial(config), `Don't apply additional actions at the beggining, wait until timer elapses.`),
+      wrapInLabel(`Auto-Confirm Actions:`, renderConfirmSpares(config),`If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`),
+      renderSpares(config)
 ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
@@ -739,7 +741,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Use Macro: `, renderMammothMacro(config), `Use your own macro in the game instead of the bot typing /target trader_name command.`),
     wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
     ),
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement (beta)`),
     elt('div', {className: "settings_section settings_premium"},
     wrapInLabel(`Use Random Camera Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
     wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), `Maximum radius the bot will randomly move your camera.`),
