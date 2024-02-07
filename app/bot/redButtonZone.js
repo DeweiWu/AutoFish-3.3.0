@@ -1,6 +1,4 @@
 const createRgb = require("../utils/rgb.js");
-const Jimp = require('jimp');
-
 const mouseWithinZone = (mouse, zone) => {
   return (
     mouse.x - zone.x > 0 &&
