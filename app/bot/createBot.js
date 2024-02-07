@@ -805,30 +805,21 @@ if (settings.soundDetection) {
         await mouse.toggle("right", false, delay);
 
         if(typeof isInList == `boolean` && config.confirmSoulbound) {
-          await sleep(250); // wait for the confirmation to appear
-          let recognizedWords = await readTextFrom(
-           await getDataFrom(confirmationWindow),
-           screenSize.width <= 1536 ? 3 : 2
-         );
-
-
-          if(recognizedWords.some(item => percentComparison(`Okay`, item.text) > 75)) {
-            await moveTo({
-              pos: {
-                     x: confirmationWindow.x + confirmationWindow.width / 2,
-                     y: confirmationWindow.y + confirmationWindow.height / 2
-                   },
-              randomRange: 5
+          if (config.reaction) {
+            await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+          } else {
+            await sleep(250) // wait for the window to appear
+          }
+          const needsConfirm = await checkRedButton(confirmationWindow);
+          if(needsConfirm) {
+            await action(async () => {
+              await mouse.toggle('left', true, delay);
+              await mouse.toggle('left', false, delay);
             });
-
-            await mouse.toggle("right", true, delay);
-            await mouse.toggle("right", false, delay);
-
             if(tmBot.ctx) {
               tmBot.ctx.reply(`Confirmed Souldbound item in the window ${winNum}!`);
               tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
             }
-
           }
         }
 
