@@ -137,7 +137,7 @@ if (tmBot.bot) {
     log.send("Stopping the bots...");
     log.setState(false);
     bots.forEach(({ state }) => (state.status = "stop"));
-    ctx.reply(`Quit all the windows of the game and the bot.`);
+    ctx.reply(`Closed every window of the game and the bot.`);
     app.quit();
   });
 }
