@@ -18,8 +18,10 @@ const convertValue = (node) => {
 };
 
 const renderHideWin = ({hideWin}) => elt(`input`, {type: `checkbox`, checked: hideWin, name: `hideWin`});
-const renderConfirmLures = ({confirmLures, lures}) => elt(`input`, {type: `checkbox`, disabled: !lures, checked: confirmLures, name: `confirmLures`});
-const renderConfirmSpares = ({confirmSpares}) => elt(`input`, {type: `checkbox`, checked: confirmSpares, name: `confirmSpares`});
+
+const renderConfirmLures = ({confirmLures = false, lures}) => elt(`input`, {type: `checkbox`, disabled: !lures, checked: confirmLures, name: `confirmLures`});
+const renderConfirmSpares = ({confirmSpares = false}) => elt(`input`, {type: `checkbox`, checked: confirmSpares, name: `confirmSpares`});
+
 const renderDelay = ({delay}) => {
   return elt(`div`, {"data-collection": `delay`}, elt(`span`, {className: `option_text`}, `from:`),
      elt('input', {type: `number`, name: `from`, value: delay.from}), elt(`span`, {className: `option_text`}, `to:`),
@@ -28,7 +30,7 @@ const renderDelay = ({delay}) => {
 
 const renderColorSwitchOn = ({colorSwitchOn}) => elt('input', {type: `checkbox`, checked: colorSwitchOn, name: "colorSwitchOn"});
 
-const renderStartByFishingKey = ({startByFishingKey}) => {
+const renderStartByFishingKey = ({startByFishingKey = false}) => {
   if(startByFishingKey) {
     ipcRenderer.send('reg-start-by-fishing-key');
   } else {
