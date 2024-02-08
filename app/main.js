@@ -152,16 +152,18 @@ let tmBot = {
 const connectToTelegram = (key) => {
   tmBot.bot = new Telegraf(key);
   const helpMessage = `
-<b>🟢 Start</b> - starts the bot.
-<b>🔴 Stop</b> - stops the bot.
-<b>📢 Stats</b> - returns stats.
-<b>📷 Screenshot</b> - makes a screenshot of every game window and shows what number each window has.
+<b>🟢 Start</b> - Starts the bot.\n
+<b>🔴 Stop</b> - Stops the bot.\n
+<b>📢 Stats</b> - Returns stats.\n
+<b>📷 Screenshot</b> - Makes a screenshot of every window of the game.\n
+<b>⌨️ Press Enter</b> - Presses "Enter". Might help in case of manual reconnection.\n
+<b>💼 Open Bags</b> - Opens/Closes Bags (by pressing shift + b).\n
 <b>❌ Quit</b> - closes both the game and the bot.
-
+---
 You can also write in this chat directly to do:
 
-<b>/r</b> <i>win_num</i> <i>text</i> - replies to the last whispered user on the <i>win_num</i> (number of the window, use 1 if single).\n
-<b>/w</b> <i>win_num</i> <i>username</i> <i>text</i> - whispers to the <i>username</i> on the <i>win_num</i> (number of the window, use 1 if single).\n
+<b>/r</b> (<i>win_num</i>) <i>text</i> - replies to the last whispered user. If you use Multiple Fishing Mode provide the number of the window instead of <i>win_num</i>. If not, omit it.\n
+<b>/w</b> (<i>win_num</i>) <i>username</i> <i>text</i> - whispers to the <i>username</i>. If you use Multiple Fishing Mode, provide the number of the window instead of <i>win_num</i>. If not, omit it.\n
 <b>/th</b> <i>value</i> - changes threshold value.\n
 <b>/start</b> - starts the <i>telegram</i> bot.`;
   const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n${helpMessage}`;

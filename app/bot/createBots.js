@@ -56,7 +56,7 @@ if (tmBot.bot) {
       let winNum = message[3]
 
       if(!(/\d+/.test(winNum))) {
-        ctx.reply(`Message is written incorrectly. It should be "/w win_number message"`);
+        ctx.reply(`Please ensure proper formatting: Use '/w win_number username message' `);
         return;
       }
 
@@ -80,7 +80,7 @@ if (tmBot.bot) {
       let winNum = message[3]
 
       if(!(/\d+/.test(winNum))) {
-        ctx.reply(`Message writtent incorrectly! It should be "/r win_number message"`);
+        ctx.reply(`Please ensure proper formatting: Use '/r win_number message' `);
         return;
       }
 
