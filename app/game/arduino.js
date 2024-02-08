@@ -1,4 +1,5 @@
 const { SerialPort } = require(`serialport`);
+const { screen } = require("electron");
 
 const keyCodes = {
   backspace: 178,
@@ -178,9 +179,10 @@ const createMouse = (write) => {
 
     humanMoveTo(x, y) {
       let cPos = this.getPos();
-      x = x - cPos.x;
-      y = y - cPos.y;
+      x = (x - cPos.x) / (screen.getPrimaryDisplay().scaleFactor) || 1;
+      y = (y - cPos.y) / (screen.getPrimaryDisplay().scaleFactor) || 1;
       let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
       let speedByDistance = Math.round(distance * (distance < 50 ? 0.75 : distance < 150 ? 0.50 : distance < 300 ? 0.35 : 0.25)); // distance / 4 (0.25 + (1 - (distance / 400)))
 
       let minDelay = 0;
