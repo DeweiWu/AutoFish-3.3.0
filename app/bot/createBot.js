@@ -93,6 +93,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
   if(tmBot.bot) {
   tmBot.replies.push({win: winNum, fn: (message) => {
     chatMsgs.push(message);
+    if (tmBot.ctx) tmBot.ctx.reply(`Your message is queued!`);
   }});
 
   tmBot.reconnects.push(async (ctx) => {
