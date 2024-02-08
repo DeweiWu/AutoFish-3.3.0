@@ -29,6 +29,7 @@ if (tmBot.bot) {
   tmBot.ss = [];
   tmBot.replies = [];
   tmBot.reconnects = [];
+  tmBot.openBags = [];
 
   tmBot.bot.hears(`📷 Screenshot`, (ctx) => {
     if (!tmBot.ctx) tmBot.ctx = ctx;
@@ -37,7 +38,15 @@ if (tmBot.bot) {
   });
 
   tmBot.bot.hears(`⌨️ Press Enter`, (ctx) => {
-    tmBot.reconnects.forEach(reconnect => reconnect(ctx))
+    tmBot.reconnects.forEach(reconnect => reconnect(ctx));
+    ctx.reply(`Pressed Enter!`);
+  });
+
+  let bagsState = false;
+  tmBot.bot.hears(`💼 Open Bags`, (ctx) => {
+    tmBot.openBags.forEach(bag => bag(ctx));
+    ctx.reply(!bagsState ? `Opened Bags!` : `Closed Bags!`);
+    bagsState = !bagsState;
   });
 
   tmBot.bot.command(`/w`, (ctx) => {

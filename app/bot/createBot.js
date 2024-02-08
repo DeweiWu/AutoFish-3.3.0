@@ -101,6 +101,13 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
     });
   });
 
+  tmBot.openBags.push(async (ctx) => {
+    await action(async () => {
+      await keyboard.sendKeys([`shift`, `b`], delay);
+    });
+  });
+
+
   tmBot.ss.push((ctx) => {
     return getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
     .then(Jimp.read)

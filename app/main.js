@@ -172,9 +172,10 @@ You can also write in this chat directly to do:
     return await ctx.reply(
       `Before using via telegram you should configure and test the bot on your local computer.`,
       Markup.keyboard([
-        ["🟢 Start", "🔴 Stop", "❌ Quit"],
-        ["📢 Stats", "📷 Screenshot", "💬 Help"],
-        ["⌨️ Press Enter"]
+        ["🟢 Start", "🔴 Stop"],
+        ["📢 Stats", "📷 Screenshot"],
+        ["⌨️ Press Enter", "💼 Open Bags"],
+        ["💬 Help", "❌ Quit"]
       ]).resize(),
     );
   });
