@@ -170,7 +170,7 @@ if(lootWindowPatch.itemHeightAdd) {
 }
 
 const confirmationWindow = {
-  x: confirmationWindowPatch.x * screenSize.width,
+  x: (screenSize.width / 2) - (confirmationWindowPatch.x * screenSize.width),
   y: confirmationWindowPatch.y * screenSize.height,
   width: confirmationWindowPatch.width * screenSize.width,
   height: confirmationWindowPatch.height * screenSize.height
