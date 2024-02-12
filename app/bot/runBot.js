@@ -30,7 +30,8 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     detectSens,
     doAfterTimer,
     checkChanges,
-    applyFatigue
+    applyFatigue,
+    checkConfirm
   } = bot;
 
   checkChanges(onError, log);
@@ -189,6 +190,8 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       if (isHooked) {
         stats.caught++;
         log.ok(`Caught ${typeof isHooked == `boolean` ? `the fish!` : isHooked}`);
+
+        await checkConfirm();
 
         if(runRngMove.on && runRngMove.timer.isElapsed()) {
           checkChanges.block();

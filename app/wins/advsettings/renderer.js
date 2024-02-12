@@ -17,6 +17,8 @@ const convertValue = (node) => {
   return value;
 };
 
+const renderCheckConfirm = ({checkConfirm, whitelist}) => elt('input', {type: `checkbox`, disabled: whitelist, checked: checkConfirm, name: `checkConfirm`});
+
 const renderHideWin = ({hideWin}) => elt(`input`, {type: `checkbox`, checked: hideWin, name: `hideWin`});
 
 const renderConfirmLures = ({confirmLures = false, lures}) => elt(`input`, {type: `checkbox`, disabled: !lures, checked: confirmLures, name: `confirmLures`});
@@ -603,6 +605,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Attempts Limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
   wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `ONLY FOR MANUAL MODE. After attempts limit the bot will dynamically change threshold by the provided value.`),
   wrapInLabel(`Catch With Mouse Button: `, renderCatchFishButton(config), `Choose the button you want the bot to click when it wants to catch the fish.`),
+  wrapInLabel(`Auto-Confirm SB Items: `, renderCheckConfirm(config), `The bot will check for confirmation window after every catch and will auto-confirm soulbound items (even in AutoLoot mode).`)
   ),
   elt(`p`, {className: `settings_header advanced_settings_header`}, `🖱️`), elt(`span`, {className: `advanced_settings_header_text`}, `Mouse & Keyboard`),
   elt(`div`, {className: `settings_section`},

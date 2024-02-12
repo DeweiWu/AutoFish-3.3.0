@@ -1293,7 +1293,21 @@ const detectSens = () => {
   applyFatigue.on = config.applyFatigue
   applyFatigue.timer = createTimer(() => random(config.applyFatigueEvery.from, config.applyFatigueEvery.to) * 1000 * 60)
 
+  const checkConfirm = async () => {
+    if(config.checkConfirm && !config.whitelist) {
+      await sleep(250) // wait for the window to appear
+      const needsConfirm = await checkRedButton(confirmationWindow);
+      if(needsConfirm) {
+        await action(async () => {
+          await mouse.toggle('left', true, delay);
+          await mouse.toggle('left', false, delay);
+        });
+      }
+    }
+  }
+
   return {
+    checkConfirm,
     applyFatigue,
     doAfterTimer,
     detectSens,
