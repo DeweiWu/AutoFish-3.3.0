@@ -730,7 +730,7 @@ if (settings.soundDetection) {
 
     if(settings.game != `Retail`) {
       let pos = {
-        x: cursorPos.x + lootWindow.toItemX,
+        x: cursorPos.x + random(-(lootWindow.width * .25), lootWindow.width * .25),
         y: cursorPos.y - lootWindow.toItemY - 10,
       };
       await moveTo({ pos, randomRange: 5 });
