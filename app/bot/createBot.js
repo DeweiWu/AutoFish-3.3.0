@@ -631,7 +631,7 @@ if(lootWindowPatch.exitButton) {
     await sleep(config.castDelay);
   };
 
-  const highlightBobber = async (pos) => {
+  const highlightBobber = async (pos, log) => {
 
     if (settings.useInt || settings.afkmode || (config.likeHuman && random(0, 100) > config.highlightPercent)) {
         return pos;
@@ -645,14 +645,14 @@ if(lootWindowPatch.exitButton) {
       await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [1, 5]}});
     });
 
-   return await findBobber();
+   return await findBobber(log);
   };
 
-  const findBobber = async () => {
+  const findBobber = async (log) => {
     if(settings.useInt && settings.soundDetection) {
       return true;
     }
-    return await fishingZone.findBobber(findBobber.memory, detectSens());
+    return await fishingZone.findBobber(findBobber.memory, detectSens(), log);
   };
   findBobber.memory = null;
   findBobber.maxAttempts = config.maxAttempts;
@@ -663,7 +663,6 @@ if(lootWindowPatch.exitButton) {
     if(missOnPurpose) {
       missOnPurposeTimer.update();
     }
-
     while (state.status == "working") {
       if (checkBobberTimer.isElapsed()) {
         switch(config.maxFishTimeAfter) {
@@ -701,20 +700,25 @@ if (settings.soundDetection) {
     return pos;
     }
   } else {
+
   if (!(await fishingZone.isBobber(pos))) {
-    const newPos = await fishingZone.checkAroundBobber(pos);
+    const newPos = settings.autoTh ? await fishingZone.checkBelow(pos) : await fishingZone.checkAroundBobber(pos);
     if (!newPos) {
+      console.log(`CAUGHT AT`, pos);
       return pos;
     } else {
       pos = newPos;
     }
   }
+
+  if(settings.autoTh) {
+    pos = await fishingZone.checkAbove(pos);
+  }
 }
 
-
-      await sleep(config.checkingDelay);
+  await sleep(config.checkingDelay);
     }
-  };
+};
 
   const pickLoot = async () => {
     let cursorPos = config.atMouse || !lootWindow.cursorPos ? mouse.getPos() : lootWindow.cursorPos;
@@ -1218,30 +1222,7 @@ const detectSens = () => {
     return `sensitivity`; // L and H reses for AutoThreshold and Manual
   }
 
-  if (
-    settings.autoTh &&
-    (settings.game == "LK Classic" ||
-      settings.game == "Classic" ||
-      settings.game == "Leg" ||
-      settings.game == "Cata")
-  ) {
-    return `density`; // LR && HR for AutoThreshold everywhere (if manual = none, because of "lookingLikeBobber" function)
-  }
-
-  if (
-    settings.autoTh &&
-    (settings.game == "LK Private" ||
-      settings.game == "TBC" ||
-      settings.game == "MoP" ||
-      settings.game == "Vanilla") &&
-    screenSize.height > 1080
-  ) {
-    return `densityHRlk`;
-  }
-
-  if (screenSize.height > 1080) {
-    return `densityHRManual`;
-  }
+  return `density`;
 };
 
   const doAfterTimer = async (onError, wins) => {

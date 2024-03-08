@@ -297,16 +297,6 @@ const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensi
    bobberSensitivityWin);
 };
 
-const renderBobberDensity = ({bobberDensity, autoSensDens, game}) => {
-
-  if(bobberDensity > 10) bobberDensity = 10;
-  if(bobberDensity < 1) bobberDensity = 1;
-  let bobberDensityWin = elt(`input`, {type: `number`, disabled: autoSensDens || game == "Turtle WoW" || game == "Retail", name: `bobberDensity`, value: bobberDensity});
-
-  return elt(`div`, null, elt('input', {type: `range`, disabled: autoSensDens || game == "Turtle WoW" || game == "Retail", className: `${autoSensDens || game == "Turtle WoW" || game == "Retail" ? `threshold_disabled` : ``}`,min: 1, max: 10, value: bobberDensity, oninput: function() {bobberDensityWin.value = this.value}, name: `bobberDensity`}),
-   bobberDensityWin);
-};
-
 const renderCustomWindow = ({useCustomWindow, customWindow}) => {
   const select = elt(`select`, {name: `customWindow`, disabled: !useCustomWindow, value: customWindow});
   const renderUseCustomWindow = elt(`input`, {name: `useCustomWindow`, type: `checkbox`, checked: useCustomWindow});
@@ -765,13 +755,12 @@ const renderSettings = (config) => {
   wrapInLabel(`Max Check Time (sec):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do After Max Check Time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
   wrapInLabel(`Auto Color: `, renderColorSwitchOn(config), `If there is a lot of colors of your switch in the environment the bot will automatically switch to the other color.`),
-  wrapInLabel(`Auto Density and Sensitivity:`, renderAutoSensDens(config), `The bot will auto-adjust both Sensitivity and Density values per each cast.`),
+  wrapInLabel(`Auto Sensitivity:`, renderAutoSensDens(config), `The bot will auto-adjust both Sensitivity and Density values per each cast.`),
   wrapInLabel(`${config.game == `Vanilla (splash)` ? `Splash` : `Bobber`} Sensitivity (px):`,
    renderBobberSensitivity(config), config.game == `Vanilla (splash)` ?
     `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value.`
     : `How sensitive the bot is to any movements of the bobber. If the bot often clicks too early, increase this value (don't confuse it with when the bot missclicks on purpose). If the bot often doesn't react to bobber (it might look like it clicks with delay), decrease this value.`),
   config.game == `Vanilla (splash)` ? wrapInLabel(`Splash color: `, renderSplashColor(config), `Whitness of the splash effect: should be smaller at night and higher during the day. `) : ``,
-  wrapInLabel(`Bobber Density (px):`, renderBobberDensity(config), `Density decides where exactly the bot sticks on the feather. The larger the feather the larger the value should be. This value is mostly relevant for high resolutions, don't touch it if you play on anything lower than Full HD.`),
   wrapInLabel(`Bobber Check Interval (ms):`, renderCheckingDelay(config), `Every given value the bot checks the bobber for any movements. Use this option in addition to Bobber Sensativity to find an optimal sensitivity.`),
   wrapInLabel(`Cast Animation Delay (ms):`, renderCastDelay(config), `How long the bot will wait before starting to look for the bobber in the fishing zone. This value is related to appearing and casting animations.`),
   wrapInLabel(`Looking For Bobber Direction:`, renderFindBobberDirection(config), `The direction how the bot will look for the bobber in the fishing zone. Normal means from left to right and from top to bottom, Reverse means from left to right and from bottom to top, Center means from the very center of the Fishing Zone to its borders.`),

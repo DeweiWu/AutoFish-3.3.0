@@ -136,8 +136,8 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     findBobber.memory = await findAllBobberColors();
 
     if(failedCast) {
-      let randomFailed = random(500, 5000);
-      log.warn(`Failed cast before, sleeping for ${Math.floor(randomFailed)} ms`)
+      let randomFailed = random(500, 2500);
+      log.warn(`Sleeping for ${Math.floor(randomFailed)} ms`);
       await sleep(randomFailed);
     }
 
@@ -148,10 +148,10 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
 
     log.send(`Looking for the bobber...`);
 
-    let bobber = await findBobber();
+    let bobber = await findBobber(log);
 
     if(bobber) {
-      bobber = await highlightBobber(bobber);
+      bobber = await highlightBobber(bobber, log);
     }
 
     if (bobber) {
@@ -160,14 +160,14 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       attempts = 0;
     } else {
       failedCast = true;
-      log.err(`Can't find the bobber, recast.`);
+      log.err(`Can't find the bobber!`);
       if (++attempts == findBobber.maxAttempts) {
         if(dynamicThreshold.on && !dynamicThreshold.limit()) {
           dynamicThreshold();
           attempts = 0;
         } else {
           throw new Error(
-            `Have tried ${findBobber.maxAttempts} attempts to find the bobber and failed: decrease the red color "threshold" value or change the fishing place.`
+            `Have tried ${findBobber.maxAttempts} attempts to find the bobber and failed!`
           );
         }
       }
