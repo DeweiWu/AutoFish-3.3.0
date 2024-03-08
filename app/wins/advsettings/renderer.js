@@ -283,10 +283,10 @@ const renderSleepAfterHookChance = ({sleepAfterHook, sleepAfterHookChance}) => {
 
 const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensitivityPrint, autoSensDens}) => {
   let min = 1;
-  let max = 3;
+  let max = 10;
   if(bobberSensitivityPrint) {
     min = 1;
-    max = 100;
+    max = 30;
   }
 
   if(bobberSensitivity > max) bobberSensitivity = max;

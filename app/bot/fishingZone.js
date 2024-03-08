@@ -2,8 +2,6 @@ const createRgb = require('../utils/rgb.js');
 const Vec = require('../utils/vec.js');
 const Jimp = require('jimp');
 
-process.env.NODE_ENV = `dev`;
-
 const isInLimits = ({ x, y }, { width, height }) => {
   return x >= 0 && y >= 0 && x < width && y < height;
 };
@@ -19,7 +17,8 @@ const isBlue = (threshold, closeness, size = 255, upperLimit = 180) => ([r, g, b
                                                         isCloseEnough([b, g, r], closeness) &&
                                                         r < size && g < size && b <= upperLimit;
 
-const createFishingZone = (getDataFrom , zone, screenSize, { threshold, bobberColor, autoTh: autoThreshold }, {bobberSensitivity: sensitivity, findBobberDirection: direction, splashColor, colorSwitchOn}) => {
+const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bobberColor, autoTh: autoThreshold }, {bobberSensitivity: sensitivity, findBobberDirection: direction, splashColor, colorSwitchOn}) => {
+  sensitivity = game == `Retail` || game == `Vanilla (splash)` ? 30 - sensitivity : 10 - sensitivity;
   let isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
   let saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
   const looksLikeBobber = (pos, color, rgb) => pos.getPointsAround(sensitivity).every((pos) => isBobber(rgb.colorAt(pos)));

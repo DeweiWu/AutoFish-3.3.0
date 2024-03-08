@@ -124,7 +124,7 @@
       "closeAtWhisper": false,
       "whisperThreshold": 60,
       "bobberSensitivityPrint": true,
-      "bobberSensitivity": 5,
+      "bobberSensitivity": 25,
       "bobberDensity": 1,
       "autoSensDens": true,
       "ignorePreliminary": false,
