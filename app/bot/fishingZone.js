@@ -9,11 +9,11 @@ const isInLimits = ({ x, y }, { width, height }) => {
 const isOverThreshold = ([r, g, b], threshold) => (r - Math.max(g, b)) > threshold;
 const isCloseEnough = ([_, g, b], closeness) => Math.abs(g - b) <= closeness;
 
-const isRed = (threshold, closeness, size = 255, upperLimit = 180) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
+const isRed = (threshold, closeness, size = 255, upperLimit = 255) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
                                                        isCloseEnough([r, g, b], closeness) &&
                                                        g < size && b < size && r <= upperLimit;
 
-const isBlue = (threshold, closeness, size = 255, upperLimit = 180) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) &&
+const isBlue = (threshold, closeness, size = 255, upperLimit = 255) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) &&
                                                         isCloseEnough([b, g, r], closeness) &&
                                                         r < size && g < size && b <= upperLimit;
 
@@ -56,17 +56,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
           filledBobberForPrint = filledBobber.points;
         } catch(e) {
           if(e.message == `color` && colorSwitchOn && ++colorSwitchesCount < 2) {
-
-            if(process.env.NODE_ENV == `dev`) {
-              let myrgb = createRgb(await getDataFrom(zone));
-              myrgb.cutOut(memory);
-              let resultRgb = myrgb.getBitmap();
-              const img = await Jimp.read(resultRgb);
-              const date = new Date()
-              const name = `test-filledBobber-CHANGING-COLOR-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.png`
-              img.write(name);
-            }
-
             log.warn(`Too much ${bobberColor} color! Changing the color...`)
             bobberColor = bobberColor == `red` ? `blue` : `red`;
             isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
@@ -124,7 +113,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
           let pos = new Vec(filledBobber.bobber.pos.x, filledBobber.bobber.pos.y + step);
           if(isBobber(rgb.colorAt(pos.plus(new Vec(0, -1))))) {
             filledBobber.bobber.pos = pos;
-            filledBobber.bobber.color = pos;
             break;
           }
         }
@@ -177,6 +165,16 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
       let memory = [bobber];
       for(let point of memory) {
         if(memory.length > ((screenSize.height / 1080) * 2000)) {
+          if(process.env.NODE_ENV == `dev`) {
+            let myrgb = createRgb(await getDataFrom(zone));
+            myrgb.cutOut(memory);
+            let resultRgb = myrgb.getBitmap();
+            const img = await Jimp.read(resultRgb);
+            const date = new Date()
+            const name = `test-filledBobber-CHANGING-COLOR-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.png`
+            img.write(name);
+          }
+
           throw new Error(`color`);
         }
         for(let pointAround of point.getPointsAround()) {
@@ -209,7 +207,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
        }
 
       if(detectSens == `density`) {
-        sensitivity = Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 4 : 2))
+        sensitivity = Math.round((screenSize.height / 1080) * 3);
       }
     },
 
