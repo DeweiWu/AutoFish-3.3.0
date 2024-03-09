@@ -55,12 +55,23 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
           filledBobber = await this.getBobberPointsAround(rgb, bobber.pos);
           filledBobberForPrint = filledBobber.points;
         } catch(e) {
-          if(e.message == `color` && colorSwitchOn && colorSwitchesCount++ < 2) {
+          if(e.message == `color` && colorSwitchOn && ++colorSwitchesCount < 2) {
+
+            if(process.env.NODE_ENV == `dev`) {
+              let myrgb = createRgb(await getDataFrom(zone));
+              myrgb.cutOut(memory);
+              let resultRgb = myrgb.getBitmap();
+              const img = await Jimp.read(resultRgb);
+              const date = new Date()
+              const name = `test-filledBobber-CHANGING-COLOR-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.png`
+              img.write(name);
+            }
+
             log.warn(`Too much ${bobberColor} color! Changing the color...`)
             bobberColor = bobberColor == `red` ? `blue` : `red`;
             isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
             saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
-            return await this.findBobber(exception, detectSens)
+            return await this.findBobber(exception, detectSens, log)
           } else {
             log.err(`Too much ${bobberColor} color! Change the color!`)
             return;
@@ -113,18 +124,20 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
           let pos = new Vec(filledBobber.bobber.pos.x, filledBobber.bobber.pos.y + step);
           if(isBobber(rgb.colorAt(pos.plus(new Vec(0, -1))))) {
             filledBobber.bobber.pos = pos;
+            filledBobber.bobber.color = pos;
             break;
           }
         }
 
       if(!filledBobber.bobber.pos) return;
+      this._findThreshold({color: rgb.colorAt(filledBobber.bobber.pos)}); // reapply for the last one
       return filledBobber.bobber.pos.plus(zone);
     }
       return bobber.plus(zone);
     },
 
     _findMost(rgb) {
-      isBobber = bobberColor == `red` ? isRed(0, 50, 50) : isBlue(0, 50, 50); // start colors; 180 to avoid npc/mobs names
+      isBobber = bobberColor == `red` ? isRed(0, 50, 50) : isBlue(0, 50, 50);
       let initialThColors = rgb.findColors({
         isColor: isBobber,
         saveColor: true
@@ -156,7 +169,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
     _findThreshold(bobber) {
       if(!bobber) return;
       let newThreshold = (([r, g, b]) => bobberColor == `red` ? (r - (Math.max(g, b)))  * .5 : (b - Math.max(g, r))  * .5)(bobber.color); // for doubleZoneSearching searching half of the color foundo on threshold
-      let lowerLimit = (([r, g, b]) => bobberColor == `red` ? Math.max(g, b) : Math.max(r, g))(bobber.color) || 10; // 150 because of puprple
+      let lowerLimit = (([r, g, b]) => bobberColor == `red` ? Math.max(g, b) : Math.max(r, g))(bobber.color) || 25; // 150 because of puprple
       isBobber = bobberColor == `red` ? isRed(newThreshold, 50, lowerLimit * 2.5) : isBlue(newThreshold, 50, lowerLimit * 2.5); // 150
     },
 
@@ -179,7 +192,9 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
         myrgb.cutOut(memory);
         let resultRgb = myrgb.getBitmap();
         const img = await Jimp.read(resultRgb);
-        img.write(`test-filledbobber-${Math.random()}.png`);
+        const date = new Date()
+        const name = `test-filledBobber-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.png`
+        img.write(name);
       }
 
       let mostTop = memory.reduce((a, b) => a.y < b.y ? a : b);
