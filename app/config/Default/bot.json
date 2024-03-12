@@ -43,7 +43,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": true,
@@ -124,9 +123,6 @@
       "closeAtWhisper": false,
       "whisperThreshold": 60,
       "bobberSensitivityPrint": true,
-      "bobberSensitivity": 25,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 1500,
       "chatZone": {
@@ -235,7 +231,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": true,
@@ -315,9 +310,6 @@
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whisperThreshold": 60,
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 750,
       "chatZone": {
@@ -418,7 +410,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": true,
@@ -497,9 +488,6 @@
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whisperThreshold": 60,
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "closeLootDelay": 750,
       "spareDelay": 3000,
       "ignorePreliminary": false,
@@ -601,7 +589,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": false,
@@ -681,9 +668,6 @@
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whisperThreshold": 60,
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "chatZone": {
@@ -764,7 +748,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": false,
@@ -843,9 +826,6 @@
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whisperThreshold": 60,
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "chatZone": {
@@ -928,7 +908,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": false,
@@ -1009,9 +988,6 @@
       "closeAtWhisper": false,
       "whisperThreshold": 60,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "ignorePreliminary": false,
       "closeLootDelay": 250,
       "confirmationWindow": {
@@ -1102,7 +1078,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": false,
@@ -1189,9 +1164,6 @@
         "width": 0.21875,
         "height": 0.1638888888888889
       },
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -1281,7 +1253,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": false,
@@ -1363,9 +1334,6 @@
       "whisperThreshold": 60,
       "closeLootDelay": 250,
       "chatZone": { "x": 0.3, "y": 0.01, "width": 0.4, "height": 0.416 },
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -1443,7 +1411,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": false,
@@ -1530,9 +1497,6 @@
         "width": 0.2875,
         "height": 0.15092592592592594
       },
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": true,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -1610,7 +1574,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": false,
@@ -1699,9 +1662,6 @@
       },
       "bobberSensitivityPrint": true,
       "splashColor": 220,
-      "bobberSensitivity": 20,
-      "bobberDensity": 1,
-      "autoSensDens": false,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
@@ -1779,7 +1739,6 @@
       "luresDelayMin": 10,
       "dynamicThreshold": false,
       "dynamicThresholdValue": 5,
-      "colorSwitchOn": true,
       "useCustomWindow": false,
       "likeHuman": true,
       "likeHumanFineTune": false,
@@ -1867,9 +1826,6 @@
         "width": 0.2875,
         "height": 0.15092592592592594
       },
-      "bobberSensitivity": 6,
-      "bobberDensity": 1,
-      "autoSensDens": false,
       "ignorePreliminary": false,
       "confirmationWindow": {
         "1536": {
