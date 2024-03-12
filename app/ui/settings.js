@@ -108,10 +108,6 @@ class Settings {
     });
 
     this.dom.addEventListener('change', (event) => {
-      if(event.target.name == 'game' && event.target.value == "Turtle WoW") {
-        ipcRenderer.send("turtle-warn");
-      }
-
       if(event.target.name == 'game' && event.target.value == "LK Private") {
         ipcRenderer.send("ascension-warn");
       }

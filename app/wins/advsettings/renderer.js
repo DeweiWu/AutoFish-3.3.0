@@ -451,7 +451,7 @@ const renderRngMoveBalanceTime = ({rngMove, rngMoveBalanceTime}) => {
 };
 
 const renderAutoSensDens = ({autoSensDens, game}) => {
-  return elt(`input`, {type: `checkbox`, disabled: game == `Vanilla (splash)` || game == `Turtle WoW`, checked: autoSensDens, name: `autoSensDens`});
+  return elt(`input`, {type: `checkbox`, disabled: game == `Vanilla (splash)`, checked: autoSensDens, name: `autoSensDens`});
 };
 
 const renderTimer = ({timer}) => elt('input', {type: 'checkbox', checked: timer, name: "timer"});
@@ -525,7 +525,7 @@ const renderFilterType = ({whitelist, filterType}) => {
 }
 
 const renderFilterAtMouse = ({game, whitelist, atMouse}) => {
-  if(game != `Retail` && game != `Vanilla` && game != `Vanilla (splash)` && game != `Turtle WoW`) {
+  if(game != `Retail` && game != `Vanilla` && game != `Vanilla (splash)`) {
     atMouse = true;
   }
   return elt(`input`, {name: `atMouse`, type:`checkbox`, checked: atMouse, className: `atMouse`, disabled: !whitelist || game != `Retail`});

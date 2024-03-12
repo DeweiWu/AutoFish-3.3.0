@@ -13,13 +13,12 @@ const renderColorSwitch = ({bobberColor, autoColor, soundDetection}) => {
 
 
 const renderBobberSensitivity = ({game, bobberSensitivity, soundDetection, autoSens}) => {
+  let min = 1;
+  let max = 10;
 
   if(game == `Retail` || game == `Vanilla (splash)`) {
     min = 1;
     max = 30;
-  } else {
-    let min = 1;
-    let max = 10;
   }
 
   if(bobberSensitivity > max) bobberSensitivity = max;
@@ -94,8 +93,6 @@ const renderGameNames = ({game}) => {
     "Vanilla (splash)"
   ];
 
-  const gamesCustom = ["Turtle WoW"]
-
   return elt(
     "select",
     { name: "game", className: "option game-option" },
@@ -103,9 +100,6 @@ const renderGameNames = ({game}) => {
           elt("option", { selected: name == game }, name)
         )),
     elt(`optgroup`, {label: `Private-like`}, ...gamesPrivate.map((name) =>
-          elt("option", { selected: name == game }, name)
-        )),
-    elt(`optgroup`, {label: `Custom-like`}, ...gamesCustom.map((name) =>
           elt("option", { selected: name == game }, name)
         ))
   );

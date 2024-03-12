@@ -691,7 +691,7 @@ if (settings.soundDetection) {
   });
 
   if (caught) return pos;
-} else if(settings.game == `Retail` || settings.game == `Turtle WoW`) {
+} else if(settings.game == `Retail`) {
    if(!(await fishingZone.checkBobberPrint(pos))) {
      return pos;
    }
@@ -704,7 +704,6 @@ if (settings.soundDetection) {
   if (!(await fishingZone.isBobber(pos))) {
     const newPos = settings.autoTh ? await fishingZone.checkBelow(pos) : await fishingZone.checkAroundBobber(pos);
     if (!newPos) {
-      console.log(`CAUGHT AT`, pos);
       return pos;
     } else {
       pos = newPos;
@@ -1214,7 +1213,7 @@ if (settings.soundDetection) {
 
 
 const detectSens = () => {
-  if (!settings.autoSens || settings.game == `Vanilla (splash)` || settings.game == `Turtle WoW`) {
+  if (!settings.autoSens || settings.game == `Vanilla (splash)`) {
     return;
   }
 
