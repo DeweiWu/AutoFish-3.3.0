@@ -1214,7 +1214,7 @@ if (settings.soundDetection) {
 
 
 const detectSens = () => {
-  if (!config.autoSensDens || settings.game == `Vanilla (splash)` || settings.game == `Turtle WoW`) {
+  if (!settings.autoSens || settings.game == `Vanilla (splash)` || settings.game == `Turtle WoW`) {
     return;
   }
 

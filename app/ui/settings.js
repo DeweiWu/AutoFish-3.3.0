@@ -5,7 +5,7 @@ const { ipcRenderer } = require('electron');
 
 const convertValue = (node) => {
   let value = node.value;
-  if (node.type == "checkbox") {
+  if (node.type == "checkbox" || node.name == `autoTh` || node.name == `autoSens` || node.name == `autoColor`) {
     value = node.checked;
   }
 
@@ -25,14 +25,23 @@ class Settings {
 
     const saveSettings = (event) => {
       if(Object.keys(this.config).includes(event.target.name)) {
-        this.config[event.target.name] = convertValue(event.target);
+        if(event.target.name == `bobberSensitivity`) {
+          this.config[event.target.name][this.config.game] = convertValue(event.target);
+        } else {
+          this.config[event.target.name] = convertValue(event.target);
+        }
+
       }
       this.dom.innerHTML = ``;
       this.dom.append(renderSettings(this.config));
 
       [...this.dom.elements].forEach(option => {
         if(Object.keys(this.config).includes(option.name)) {
-          this.config[option.name] = convertValue(option);
+          if(option.name == `bobberSensitivity`) {
+            this.config[option.name][this.config.game] = convertValue(option);
+          } else {
+            this.config[option.name] = convertValue(option);
+          }
         }
       });
 
@@ -69,6 +78,13 @@ class Settings {
     }
 
     this.dom.addEventListener('mousedown', (event) => {
+
+      if(event.target.name == `autoTh` || event.target.name == `autoSens` || event.target.name == `autoColor`) {
+        this.config[event.target.name] = !this.config[event.target.name]
+        this.onChange(this.config);
+        this.reRender();
+      }
+
       if((event.target.name == `stopKey` || event.target.name == `fishingKey` || event.target.name == `luresKey` || event.target.name == `intKey` || event.target.name == `spareKey`) && !event.target.disabled) {
         event.target.style.backgroundColor = `rgba(250, 0, 0, .3)`;
         const activeKeyAnimation = (alter) => () => {

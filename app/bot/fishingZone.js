@@ -17,7 +17,7 @@ const isBlue = (threshold, closeness, size = 255, upperLimit = 255) => ([r, g, b
                                                         isCloseEnough([b, g, r], closeness) &&
                                                         r < size && g < size && b <= upperLimit;
 
-const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bobberColor, autoTh: autoThreshold }, {bobberSensitivity: sensitivity, findBobberDirection: direction, splashColor, colorSwitchOn}) => {
+const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bobberColor, autoTh: autoThreshold, bobberSensitivity: sensitivity, autoColor: colorSwitchOn}, {findBobberDirection: direction, splashColor}) => {
   sensitivity = game == `Retail` || game == `Vanilla (splash)` ? 30 - sensitivity : 10 - sensitivity;
   let isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
   let saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
