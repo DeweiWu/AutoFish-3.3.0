@@ -8,6 +8,8 @@ const createRedButtonZone = require("./redButtonZone.js");
 const pixelmatch = require('pixelmatch');
 const Vec = require('../utils/vec.js');
 
+const { createWriteStream } = require('fs');
+
 const Jimp = require(`jimp`);
 
 const { BrowserWindow, ipcMain, app } = require(`electron`);
@@ -619,6 +621,20 @@ if(lootWindowPatch.exitButton) {
 
     if(settings.afkmode) await altTab();
 
+    if(config.rngMove) {
+        await sleep(350);
+        for(let i = 0; i < 2 && await notificationZone.check("error"); i++) {
+          if(moveMemory.lastDir == `left`) {
+            await _rngMoveAction({delay: ((config.rngMoveRadiusMax * 2) / 360) * 500, value: 0, direction: 'right'})
+          } else {
+            await _rngMoveAction({delay: ((config.rngMoveRadiusMax * 2) / 360) * 500, value: 0, direction: 'left'})
+          }
+
+          await sleep(3000);
+          await keyboard.sendKey(settings.fishingKey, delay);
+        }
+    }
+
     if (state.status == "initial") {
       await sleep(250);
       if (!settings.autoTh && !config.ignorePreliminary && await notificationZone.check("error")) {
@@ -985,12 +1001,6 @@ if (settings.soundDetection) {
   dynamicThreshold.on = config.dynamicThreshold && !settings.autoTh;
   dynamicThreshold.limit = () => settings.threshold < 20;
 
-
-  const moveMemory = {
-    x: 0,
-    y: 0,
-  };
-
   const keyMemory = {
     a: 0,
     w: 0,
@@ -998,211 +1008,115 @@ if (settings.soundDetection) {
     d: 0
   };
 
+  let moveMemory = {
+    value: 0,
+    lastDir: null
+  };
+
   const getRandomPos = () => {
-    /* for config */
-    let maxX = config.rngMoveRadiusMax.x;
-    let maxY = config.rngMoveRadiusMax.y;
-    /* end */
+    let maxRadius = config.rngMoveRadiusMax / 360 * 500;
+    let minRadius = maxRadius * .25;
 
-    let x = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.x, -25) : random(25, config.rngMoveRadiusStep.x); // from to logic
-    let y = random(0, 100) > 50 ? random(-config.rngMoveRadiusStep.y, 1) : random(1, config.rngMoveRadiusStep.y);
+    let x = random(0, 100) > (50 + 50 * (moveMemory.value / maxRadius) ) ? random(-maxRadius, -minRadius) : random(minRadius, maxRadius);
 
-    if(x + moveMemory.x < -maxX || x + moveMemory.x > maxX) {
+    if(Math.abs(x + moveMemory.value) > maxRadius) { //maxRadius
       x = -x;
     }
 
-    if(y + moveMemory.y < -maxY || y + moveMemory.y > maxY) {
-      y = -y;
-    }
-
-    moveMemory.x += x;
-    moveMemory.y += y;
-
-    return {x, y};
+    return {delay: Math.abs(x), value: x,  direction: x < 0 ? 'left' : 'right'};
   }
 
+
   const getRandomKey = () => {
-    if(!config.rngMoveKeys) return false;
-    /* for config */
-    let wMax = config.rngMoveDirLength.w;
-    let sMax = config.rngMoveDirLength.s;
-    let aMax = config.rngMoveDirLength.a;
-    let dMax = config.rngMoveDirLength.d;
-    /* end */
+    let maxStep = config.rngMoveDirLengthMax * 50; // 1 - 10 // 50 100 150 200;
+    let minStep = maxStep * .25;
 
-    let key = `wads`[Math.floor(Math.random() * 4)];
-    let value = random(config.rngMoveDirLength.from, config.rngMoveDirLength.to);
-    let degreeCoof = Math.abs(moveMemory.x) / 385;
-
-    let compensation = {
-      side: undefined,
-      value: value * degreeCoof
-    };
+    let keys = `awsd`;
+    let key = keys.split(``).find(key => {
+      if(random(0, maxStep * 2) > keyMemory[key] + maxStep) { // the smallest value gets priority
+        return key
+      }
+    }) || keys.split(``).reduce((a, b) => keyMemory[a] < keyMemory[b] ? a : b);
+    let value = random(minStep, maxStep);
 
     switch(key) {
       case `a`: {
-        if(keyMemory[key] + value > aMax) {
+        if(keyMemory[key] + value > maxStep) {
           key = `d`;
           keyMemory[`a`] -= value;
         } else {
-
-          if(moveMemory.x < 0) {
-            compensation.key = `s`;
-          } else {
-            compensation.key = `w`;
-          }
-
           keyMemory[`d`] -= value;
         }
         break;
       }
 
       case `d`: {
-        if(keyMemory[key] + value > dMax) {
+        if(keyMemory[key] + value > maxStep) {
           key = `a`;
           keyMemory[`d`] -= value;
         } else {
-          if(moveMemory.x < 0) {
-            compensation.key = `w`
-          } else {
-            compensation.key = `s`
-          }
-
           keyMemory[`a`] -= value;
         }
         break;
       }
 
       case `w`: {
-        if(keyMemory[key] + value > wMax) {
+        if(keyMemory[key] + value > maxStep) {
           key = `s`;
           keyMemory[`w`] -= value;
         } else {
-          if(moveMemory.x < 0) {
-            compensation.key = `a`
-          } else {
-            compensation.key = `d`
-          }
           keyMemory[`s`] -= value;
         }
         break;
       }
 
       case `s`: {
-        if(keyMemory[key] + value > sMax) {
+        if(keyMemory[key] + value > maxStep) {
           key = `w`;
           keyMemory[`s`] -= value;
         } else {
-          if(moveMemory.x < 0) {
-            compensation.key = `d`
-          } else {
-            compensation.key = `a`
-          }
           keyMemory[`w`] -= value;
         }
       }
     }
 
-    if(compensation.key) {
-      keyMemory[compensation.key] += compensation.value;
-      keyMemory[key] += (value - compensation.value);
-    } else {
-      keyMemory[key] += value;
+    keyMemory[key] += value;
+
+    if(key == `s`) {
+      value *= 1.75;
     }
 
-    return {key, value: key == `s` ? value * 1.75 : value};
+    return {key, value};
   }
 
-  const rngBalanceOut = async () => {
-    let cPos = mouse.getPos();
-    await mouse.toggle(`right`, true, delay);
-
-    if(config.arduino) {
-      await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)}});
-    } else {
-      await moveTo({pos: {x: cPos.x + (-moveMemory.x), y: cPos.y + (-moveMemory.y)}, fineTune:false, forcedNutMouse: true});
+  const _rngMoveAction = async (rngPos = getRandomPos()) => {
+    if(config.reaction) {
+      await sleep(random(config.reaction.from, config.reaction.to))
     }
 
-    moveMemory.x = 0;
-    moveMemory.y = 0;
-    if(config.rgnMoveKeys) {
-      for(let key of Object.keys(keyMemory)) {
-        let value = keyMemory[key];
-        if(value < 0) {
-          await keyboard.toggleKey(key, true, -value);
-          await keyboard.toggleKey(key, false);
-        }
-        keyMemory[key] = 0
-      }
+    if(config.rngMoveKeys && (Math.abs(moveMemory.value) < ((config.rngMoveRadiusMax * .25) / 360 * 500))) { // Use keys only if we face within 10(20 combined) degrees from the center
+      let rngKey = getRandomKey();
+      await mouse.toggle(`right`, true, delay);
+      await keyboard.toggleKey(rngKey.key, true, rngKey.value);
+      await keyboard.toggleKey(rngKey.key, false, delay);
+      await mouse.toggle(`right`, false, delay);
     }
 
-    await mouse.toggle(`right`, false, delay);
+    if(config.reaction) {
+      await sleep(random(config.reaction.from, config.reaction.to))
+    }
+
+    await keyboard.toggleKey(rngPos.direction, true, rngPos.delay);
+    await keyboard.toggleKey(rngPos.direction, false, delay);
+    moveMemory.value += rngPos.value;
+    moveMemory.lastDir = rngPos.direction;
   }
-
-  rngBalanceOut.timer = createTimer(() => config.rngMoveBalanceTime * 1000 * 60);
-  rngBalanceOut.timer.start();
 
   const runRngMove = async () => {
     await action(async function rngMove() {
-
-      if(rngBalanceOut.timer.isElapsed()) {
-        await rngBalanceOut();
-        rngBalanceOut.timer.update();
-      }
-
-      let rngPos = getRandomPos();
-      let rngKey = getRandomKey();
-
-      await mouse.toggle(`right`, true, delay);
-      if(config.reaction) {
-        await sleep(random(config.reaction.from, config.reaction.to))
-      }
-
-      if(rngKey) {
-        await keyboard.toggleKey(rngKey.key, true, rngKey.value);
-        await keyboard.toggleKey(rngKey.key, false, delay);
-      }
-
-      let cPos = mouse.getPos()
-
-      if(config.arduino) {
-        await moveTo({pos: {x: cPos.x + rngPos.x, y: cPos.y + rngPos.y}});
-      } else {
-        await moveTo({pos: {x: cPos.x + rngPos.x, y: cPos.y + rngPos.y}, fineTune: false, forcedNutMouse: true});
-      }
-
-      if(random(0, 100) > 75) {
-        await mouse.toggle(`right`, false, delay);
-
-        if(config.reaction) {
-          await sleep(random(config.reaction.from, config.reaction.to))
-        }
-
-        await mouse.toggle(`right`, true, delay);
-
-        cPos = mouse.getPos();
-        rngPos = getRandomPos();
-        await moveTo({pos: {x: cPos.x + rngPos.x, y: cPos.y + rngPos.y}, fineTune: false, forcedNutMouse: true});
-
-        if(random(0, 100) > 75) {
-          let rngKeyNew = getRandomKey();
-          if(rngKeyNew) {
-            await keyboard.toggleKey(rngKeyNew.key, true, rngKeyNew.value);
-            await keyboard.toggleKey(rngKeyNew.key, false, delay);
-          }
-          await mouse.toggle(`right`, false, delay);
-        } else {
-          await mouse.toggle(`right`, false, delay);
-        }
-      } else {
-        if(config.reaction) {
-          await sleep(random(config.reaction.from, config.reaction.to))
-        }
-        await mouse.toggle(`right`, false, delay);
-      }
-
-      if(config.reaction) {
-        await sleep(random(config.reaction.from, config.reaction.to))
+      await _rngMoveAction();
+      for(let i = 0; i < 3; i++) {
+        if(Math.random() > .95) await _rngMoveAction();
       }
     })
   };
@@ -1224,7 +1138,7 @@ const detectSens = () => {
   return `density`;
 };
 
-  const doAfterTimer = async (onError, wins) => {
+  const doAfterTimer = async (onError, wins, stats) => {
     if(config.afterTimer == `HS` || config.afterTimer == `HS + Quit`) {
       await action(async () => {
         await keyboard.sendKey(config.hsKey, delay);
@@ -1236,6 +1150,13 @@ const detectSens = () => {
 
     if(config.afterTimer == `HS + Quit` || config.afterTimer == `Quit`) {
       if(wins.every(win => win.state.status == `stop`)) {
+
+        if(process.env.NODE_ENV == `dev`) {
+          const date = new Date()
+          const name = `stats-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
+          createWriteStream(`${name}.txt`).write(stats.show().toString());
+        }
+
         if(config.timerShutDown) {
             await keyboard.sendKey(`lWin`, delay);
             await sleep(random(1000, 2000));

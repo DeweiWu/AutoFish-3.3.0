@@ -417,37 +417,15 @@ const renderRngMoveTimer = ({rngMove, rngMoveTimer}) => {
 }
 
 const renderRngMoveRadiusMax = ({rngMove, rngMoveRadiusMax}) => {
-  return elt(`div`, {"data-collection": `rngMoveRadiusMax`}, elt(`span`, {className: `option_text`}, `x:`),
-  elt('input', {type: `number`, name: `x`, value: rngMoveRadiusMax.x, disabled: !rngMove}), elt(`span`, {className: `option_text`}, `y:`),
-  elt('input', {type: `number`, name: `y`, value: rngMoveRadiusMax.y, disabled: !rngMove})
-  );
-};
-
-const renderRngMoveRadiusStep = ({rngMove, rngMoveRadiusStep}) => {
-  return elt(`div`, {"data-collection": `rngMoveRadiusStep`}, elt(`span`, {className: `option_text`}, `x:`),
-  elt('input', {type: `number`, name: `x`, value: rngMoveRadiusStep.x, disabled: !rngMove}), elt(`span`, {className: `option_text`}, `y:`),
-  elt('input', {type: `number`, name: `y`, value: rngMoveRadiusStep.y, disabled: !rngMove})
-  );
+  const winRange = elt(`input`, {type: `number`, disabled: !rngMove, value: rngMoveRadiusMax, name: "rngMoveRadiusMax"})
+  const range = elt('input', {type: `range`, step: 0, max: 360, disabled: !rngMove, className: `${!rngMove ? `threshold_disabled` : ``}`, value: rngMoveRadiusMax, oninput: function() {winRange.value = this.value}, name: "rngMoveRadiusMax"});
+  return elt(`div`, null, range, winRange);
 };
 
 const renderRngMoveDirLengthMax = ({rngMove, rngMoveDirLengthMax, rngMoveKeys}) => {
-  return elt(`div`, {"data-collection": `rngMoveDirLengthMax`},
-      elt(`span`, {className: `option_text`}, `w:`), elt(`input`, {disabled: !rngMove || !rngMoveKeys, type: `number`, step: 1, name: `w`, value: rngMoveDirLengthMax.w}),
-      elt(`span`, {className: `option_text`}, `s:`), elt(`input`, {disabled: !rngMove || !rngMoveKeys, type: `number`, step: 1, name: `s`, value: rngMoveDirLengthMax.s}),
-      elt(`span`, {className: `option_text`}, `a:`), elt(`input`, {disabled: !rngMove || !rngMoveKeys, type: `number`, step: 1, name: `a`, value: rngMoveDirLengthMax.a}),
-      elt(`span`, {className: `option_text`}, `d:`), elt(`input`, {disabled: !rngMove || !rngMoveKeys, type: `number`, step: 1, name: `d`, value: rngMoveDirLengthMax.d})
-    );
-};
-
-const renderRngMoveDirLength = ({rngMove, rngMoveDirLength, rngMoveKeys}) => {
-  return elt(`div`, {"data-collection": `rngMoveDirLength`}, elt(`span`, {className: `option_text`}, `from:`),
-  elt('input', {type: `number`, className: `rngMoveTimer_from`, name: `from`, value: rngMoveDirLength.from, disabled: !rngMove || !rngMoveKeys}), elt(`span`, {className: `option_text`}, `to:`),
-  elt('input', {type: `number`, name: `to`, value: rngMoveDirLength.to, disabled: !rngMove || !rngMoveKeys})
-  );
-};
-
-const renderRngMoveBalanceTime = ({rngMove, rngMoveBalanceTime}) => {
-  return elt(`input`, {disabled: !rngMove,type: `number`, value: rngMoveBalanceTime, name: `rngMoveBalanceTime`});
+  const winRange = elt(`input`, {type: `number`, disabled: !rngMove || !rngMoveKeys, value: rngMoveDirLengthMax, name: "rngMoveDirLengthMax"})
+  const range = elt('input', {type: `range`, step: 1, min: 1, max: 10, disabled: !rngMove || !rngMoveKeys, className: `${!rngMove || !rngMoveKeys ? `threshold_disabled` : ``}`, value: rngMoveDirLengthMax, oninput: function() {winRange.value = this.value}, name: "rngMoveDirLengthMax"});
+  return elt(`div`, null, range, winRange);
 };
 
 const renderAutoSensDens = ({autoSensDens, game}) => {
@@ -736,16 +714,13 @@ const renderSettings = (config) => {
     wrapInLabel(`Use Macro: `, renderMammothMacro(config), `Use your own macro in the game instead of the bot typing /target trader_name command.`),
     wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
     ),
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement (beta)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement`),
     elt('div', {className: "settings_section settings_premium"},
-    wrapInLabel(`Use Random Camera Movement`, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
-    wrapInLabel(`Camera Movement Max (px):`, renderRngMoveRadiusMax(config), `Maximum radius the bot will randomly move your camera.`),
-    wrapInLabel(`Camera Movement Step (px):`, renderRngMoveRadiusStep(config), `Size of the step the bot will move your camera. The bot wil choose a random value between -value and +value and move your camera by the given value.`),
-    wrapInLabel(`Use Random Keys Movement`, renderRngMoveKeys(config), `The bot will move your character within the delays of w, a, s, d keys (how the key is pressed)`),
-    wrapInLabel(`Keys Moves Max:`, renderRngMoveDirLengthMax(config), `Maximum delay of how long the bot will press w, s, a, d keys.`),
-    wrapInLabel(`Keys Moves Step:`, renderRngMoveDirLength(config), `Step delay of how long the bot will press w, s, a, d keys.`),
-    wrapInLabel(`Use Random Movement Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
-    wrapInLabel(`Balance Every (min):`, renderRngMoveBalanceTime(config), `How often the bot should balance its position and camera direction to default values.`),
+    wrapInLabel(`Use Random Camera Movement: `, renderRngMove(config), `The bot will move your camera view and the character within the given x and y radius and within w, a, s, d keys (press/release) delay.`),
+    wrapInLabel(`Use Random Character Movement:`, renderRngMoveKeys(config), `The bot will move your character within the delays of w, a, s, d keys (how the key is pressed)`),
+    wrapInLabel(`Camera Movement (deg):`, renderRngMoveRadiusMax(config), `The maximum radius of the camera movement. The bigger the value, the more your character will turn the camera.`),
+    wrapInLabel(`Character Movement (steps):`, renderRngMoveDirLengthMax(config), `Maximum delay of how long the bot will press w, s, a, d keys.`),
+    wrapInLabel(`Use Movements Randomly Every (min): `, renderRngMoveTimer(config), `How often the bot should use random camera view and character position.`),
     ),
   elt(`p`, {className: `settings_header settings_header_critical`}, `⚠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Critical`),
   elt('div', {className: "settings_section settings_critical"},
