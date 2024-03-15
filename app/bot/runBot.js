@@ -71,7 +71,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     }
 
     if(doAfterTimer.on && state.status == "working" && doAfterTimer.timer.isElapsed()) {
-      await doAfterTimer(onError, wins);
+      await doAfterTimer(onError, wins, stats);
     }
 
     await replyToChat();
@@ -187,6 +187,13 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       checkChanges.block();
       let isHooked = await hookBobber(bobber);
       checkChanges.unblock();
+
+      if(bobber.missedIntentionally) {
+        stats.misspurpose++;
+        log.warn(`Missed the fish on purpose!`);
+        continue;
+      }
+
       if (isHooked) {
         stats.caught++;
         log.ok(`Caught ${typeof isHooked == `boolean` ? `the fish!` : isHooked}`);
