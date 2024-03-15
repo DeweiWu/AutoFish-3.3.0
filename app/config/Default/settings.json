@@ -19,7 +19,7 @@
   },
   "autoSens": true,
   "autoTh": true,
-  "autoColor": true,
+  "autoColor": false,
   "bobberColor": "red",
   "afkmode": false,
   "multipleWindows": false,
