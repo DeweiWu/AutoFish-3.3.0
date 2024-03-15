@@ -115,7 +115,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
@@ -303,7 +303,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -479,7 +479,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
@@ -658,7 +658,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
@@ -815,7 +815,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
@@ -975,7 +975,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
@@ -1144,7 +1144,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
@@ -1318,7 +1318,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
@@ -1475,7 +1475,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
@@ -1637,7 +1637,7 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": 2,
+      "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
       "detectWhisper": true,
