@@ -53,7 +53,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": 35,
+      "maxFishTime": 19,
       "maxFishTimeAfter": "recast",
       "highlightPercent": 85,
       "relZone": {
@@ -596,7 +596,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": 45,
+      "maxFishTime": 18,
       "maxFishTimeAfter": "recast",
       "highlightPercent": 100,
       "relZone": {
@@ -754,7 +754,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": 45,
+      "maxFishTime": 18,
       "maxFishTimeAfter": "recast",
       "highlightPercent": 100,
       "relZone": {
@@ -913,7 +913,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": 45,
+      "maxFishTime": 18,
       "maxFishTimeAfter": "recast",
       "highlightPercent": 100,
       "relZone": {
@@ -1082,7 +1082,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": 45,
+      "maxFishTime": 16,
       "maxFishTimeAfter": "recast",
       "highlightPercent": 100,
       "relZone": {
@@ -1256,7 +1256,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": 45,
+      "maxFishTime": 21,
       "maxFishTimeAfter": "recast",
       "highlightPercent": 100,
       "relZone": {
@@ -1413,7 +1413,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": 45,
+      "maxFishTime": 29,
       "maxFishTimeAfter": "recast",
       "highlightPercent": 100,
       "relZone": {
@@ -1575,7 +1575,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": 45,
+      "maxFishTime": 29,
       "maxFishTimeAfter": "recast",
       "highlightPercent": 100,
       "relZone": {
