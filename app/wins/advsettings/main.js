@@ -82,7 +82,7 @@ const createAdvSettings = (appPath) => {
   });
 
   ipcMain.on("rngMove-warn", () => {
-    return showWarning(win, `In game go to Options -> Controls -> Camera Following Style and change it to "Never adjust camera", otherwise the feature won't work properly.\n\nThis feature might trigger a bug that changes your cursor type to "Move Cursor" (4-arrow cursor). It should disappear after relaunching the game.\n\nFind a fishing place where you character can move freely within a couple of yards.\n\nAll mouse sensitivity settings should be set to default (both in game and in Windows).`);
+    return showWarning(win, `In game go to Options -> Controls -> Camera Following Style and change it to "Never adjust camera", otherwise the feature won't work properly.`);
   });
 
   ipcMain.on("lures-warn", () => {
