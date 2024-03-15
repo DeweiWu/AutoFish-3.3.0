@@ -21,6 +21,10 @@ const renderBobberSensitivity = ({game, bobberSensitivity, soundDetection, autoS
     max = 30;
   }
 
+  if(game == `Vanilla (splash)`) {
+    autoSens = false;
+  }
+
   if(bobberSensitivity > max) bobberSensitivity = max;
   if(bobberSensitivity < min) bobberSensitivity = min;
 
@@ -238,9 +242,9 @@ return elt(
     elt(
       "div",
       { className: "settings_section threshold_settings" },
-      elt('input', {type: `button`, name: `autoColor`, checked: config.autoTh && config.autoColor, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoColor ${config.autoColor && config.autoTh ? `auto_button_on` : ``}`, value: `Auto`}),
-      elt('input', {type: `button`, name: `autoTh`, checked: config.autoTh, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoTh ${config.autoTh ? `auto_button_on` : ``}`, value: `Auto`}),
-      elt('input', {type: `button`, name: `autoSens`, checked: config.autoSens, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoSens ${config.autoSens ? `auto_button_on` : ``}`, value: `Auto`}),
+      elt('input', {type: `button`,  disabled: !config.autoTh, name: `autoColor`, checked: config.autoTh && config.autoColor, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoColor ${config.autoColor && config.autoTh ? `auto_button_on` : ``}`, value: `Auto`}),
+      elt('input', {type: `button`, disabled: config.game == `Vanilla (splash)`, name: `autoTh`, checked: config.autoTh, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoTh ${config.autoTh && config.game != `Vanilla (splash)` ? `auto_button_on` : ``}`, value: `Auto`}),
+      elt('input', {type: `button`, disabled: config.game == `Vanilla (splash)`, name: `autoSens`, checked: config.autoSens, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoSens ${config.autoSens && config.game != `Vanilla (splash)` ? `auto_button_on` : ``}`, value: `Auto`}),
 
       !config.soundDetection ? wrapInLabel("Color: ", renderColorSwitch(config), `The color the bot will search within Fishing Zone (${config.bobberColor}, in your case). If the water and environment is bluish, choose red color. If the water and environment is reddish, choose blue color.`) : ``,
 

@@ -21,7 +21,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
   sensitivity = (game == `Retail` || game == `Vanilla (splash)` ? 30 - sensitivity[game] : 10 - sensitivity[game]) || 1;
   let isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
   let saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
-  const looksLikeBobber = (pos, color, rgb) => pos.getPointsAround(sensitivity).every((pos) => isBobber(rgb.colorAt(pos)));
+  const looksLikeBobber = (pos, color, rgb) => pos.getPointsAround().every((pos) => isBobber(rgb.colorAt(pos)));
   let filledBobberForPrint = [];
   let colorSwitchesCount = 0;
   return {
@@ -208,13 +208,17 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
 
     async adjustSensitivity(bobberSize, detectSens) {
       if(detectSens == `sensitivity`) {
-         let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 2 : 1.5)));
+         let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 2.5 : 2)));
          if(calculatedSens < 3) calculatedSens = 3;
          sensitivity = calculatedSens;
        }
 
       if(detectSens == `density`) {
-        sensitivity = Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 2)), 2);
+        if(game == `Vanilla`){
+          sensitivity = 2;
+        } else {
+          sensitivity = Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 2)), 2);
+        }
       }
     },
 
