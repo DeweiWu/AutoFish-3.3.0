@@ -115,9 +115,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -304,9 +303,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whisperThreshold": 60,
@@ -481,9 +479,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -661,9 +658,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -819,9 +815,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -980,9 +975,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -1150,9 +1144,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -1325,9 +1318,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -1483,9 +1475,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -1646,9 +1637,8 @@
       "rngMoveTimer": { "from": 0.5, "to": 2 },
       "rngMoveRadiusMax": 90,
 
-      "rngMoveDirLengthMax": { "w": 100, "s": 100, "a": 100, "d": 100 },
-      "rngMoveDirLength": { "from": 50, "to": 75 },
-      "rngMoveBalanceTime": 5,
+      "rngMoveDirLengthMax": 2,
+
       "tmApiKey": "",
       "detectWhisper": true,
       "closeAtWhisper": false,
