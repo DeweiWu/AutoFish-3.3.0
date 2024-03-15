@@ -9,11 +9,11 @@ const isInLimits = ({ x, y }, { width, height }) => {
 const isOverThreshold = ([r, g, b], threshold) => (r - Math.max(g, b)) > threshold;
 const isCloseEnough = ([_, g, b], closeness) => Math.abs(g - b) <= closeness;
 
-const isRed = (threshold, closeness, size = 255, upperLimit = 255) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
+const isRed = (threshold, closeness, size = 295, upperLimit = 295) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
                                                        isCloseEnough([r, g, b], closeness) &&
                                                        g < size && b < size && r <= upperLimit;
 
-const isBlue = (threshold, closeness, size = 255, upperLimit = 255) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) &&
+const isBlue = (threshold, closeness, size = 295, upperLimit = 295) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) &&
                                                         isCloseEnough([b, g, r], closeness) &&
                                                         r < size && g < size && b <= upperLimit;
 
@@ -37,7 +37,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
       if(autoThreshold) {
         bobber = this._findMost(rgb);
         let thCoof;
-        if(game != `Retail` || game != `Classic` || game != `LK Classic`) {
+        if(game != `Retail` && game != `Classic` && game != `LK Classic`) {
             thCoof = .75;
         }
 
@@ -157,12 +157,11 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
           return b;
         }
       });
-      return bobber;
+        return bobber;
     },
 
     _findThreshold(bobber, thCoof = .5, llCoof = 2.5) {
       if(!bobber) return;
-
       let newThreshold = (([r, g, b]) => bobberColor == `red` ? (r - (Math.max(g, b)))  * thCoof : (b - Math.max(g, r))  * thCoof)(bobber.color); // for doubleZoneSearching searching half of the color foundo on threshold
       let lowerLimit = (([r, g, b]) => bobberColor == `red` ? Math.max(g, b) : Math.max(r, g))(bobber.color) || 25; // 150 because of puprple
       isBobber = bobberColor == `red` ? isRed(newThreshold, 50, lowerLimit * llCoof) : isBlue(newThreshold, 50, lowerLimit * llCoof); // 150
@@ -208,7 +207,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
 
     async adjustSensitivity(bobberSize, detectSens) {
       if(detectSens == `sensitivity`) {
-         let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 2.5 : 2)));
+         let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 4 : 3.5)));
          if(calculatedSens < 3) calculatedSens = 3;
          sensitivity = calculatedSens;
        }
