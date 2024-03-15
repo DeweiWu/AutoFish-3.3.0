@@ -413,7 +413,7 @@ By pressing "Accept" you agree to everything stated above.`,
   );
 
   ipcMain.on("dx11-warn", () => {
-    showWarning(win, `Don't forget to switch to DirectX 11 in the game.\n\nTurn off Fine-Tunning feature and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.`);
+    showWarning(win, `Don't forget to switch to DirectX 11 in the game.\n\nTurn off Human-like Accuracy feature (Advanced Settings) and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.`);
   });
 
   ipcMain.on("open-link-donate", () =>
@@ -537,7 +537,7 @@ const menu = Menu.buildFromTemplate([
   {
     label: `Help`,
     submenu: [
-      { label: "AutoFish ver. 2.8.0 Premium" },
+      { label: "AutoFish ver. 2.9.0 Premium" },
       { type: "separator" },
       {
         label: "📘 Read Me",
