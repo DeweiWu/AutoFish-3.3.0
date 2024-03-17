@@ -730,7 +730,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Max Check Time (sec):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do After Max Check Time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
   config.game == `Vanilla (splash)` ? wrapInLabel(`Splash color: `, renderSplashColor(config), `Whitness of the splash effect: should be smaller at night and higher during the day. `) : ``,
-  wrapInLabel(`Bobber Check Interval (ms):`, renderCheckingDelay(config), `Every given value the bot checks the bobber for any movements. Use this option in addition to Bobber Sensativity to find an optimal sensitivity.`),
+  wrapInLabel(`Bobber Check Interval (ms):`, renderCheckingDelay(config), `Every given value the bot checks the bobber for any movements. Use this option in addition to Bobber Sensitivity to find an optimal sensitivity.`),
   wrapInLabel(`Cast Animation Delay (ms):`, renderCastDelay(config), `How long the bot will wait before starting to look for the bobber in the fishing zone. This value is related to appearing and casting animations.`),
   wrapInLabel(`Looking For Bobber Direction:`, renderFindBobberDirection(config), `The direction how the bot will look for the bobber in the fishing zone. Normal means from left to right and from top to bottom, Reverse means from left to right and from bottom to top, Center means from the very center of the Fishing Zone to its borders.`),
 ),
@@ -765,7 +765,6 @@ const runApp = async () => {
     }
 
     if(event.target.value == `Connect` && event.target.id == "arduino") {
-      console.log(config.arduinoPort, config.arduinoRate);
       ipcRenderer.invoke(`connect-arduino`, {port: config.arduinoPort, speed: config.arduinoRate})
       .then(() => {
         event.target.style.backgroundColor = `rgb(65, 255, 65)`;
