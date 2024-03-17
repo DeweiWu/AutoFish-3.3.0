@@ -113,7 +113,7 @@ const renderGameNames = ({game}) => {
 const renderAfkmode = ({afkmode, multipleWindows}) => {
   const checkbox = elt("input", {
     type: "checkbox",
-    className: "option",
+    className: "option premium_option",
     checked: afkmode,
     name: "afkmode",
   });
@@ -126,7 +126,7 @@ const renderAfkmode = ({afkmode, multipleWindows}) => {
 const renderMultipleWindows = ({multipleWindows, afkmode}) => {
   const checkbox = elt("input", {
     type: "checkbox",
-    className: "option",
+    className: "option premium_option",
     checked: multipleWindows,
     name: "multipleWindows",
   });
@@ -208,13 +208,15 @@ return elt(
       ),
       wrapInLabel(
         "Alt-Tab Fishing: ",
-        elt(`div`, {className: `premium_option`}, renderAfkmode(config)),
-        `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts (bringing back the previous window) and automatically focus the window of the game when it needs to catch. If you use your mouse too much during AFK fishing the whitelist feature might be unstable. `
+        renderAfkmode(config),
+        `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts (bringing back the previous window) and automatically focus the window of the game when it needs to catch. If you use your mouse too much during AFK fishing the whitelist feature might be unstable. `,
+        `premium_label`
       ),
       wrapInLabel(
         "Multiple Fishing: ",
-        elt(`div`, {className: `premium_option`}, renderMultipleWindows(config)),
-        `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. The bot will switch between windows automatically.`
+         renderMultipleWindows(config),
+        `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. The bot will switch between windows automatically.`,
+        `premium_label`
       ),
     ),
     elt(
@@ -237,7 +239,7 @@ return elt(
         renderAdvancedSettings(config),
         ),
     ),
-    elt("p", {className: `settings_header settings_header_main threshold-header ${config.soundDetection ? `thClosed`: ``}`, "data-thresholdHeader": true}, "🎨"),
+    elt("p", {className: `settings_header settings_header_main threshold-header ${config.soundDetection ? `thClosed`: ``}`, "data-thresholdHeader": true}, "🎣"),
     elt("p", {className: `settings_header settings_header_main soundDeteaction-header ${config.soundDetection ? ``: `thClosed`}`, "data-soundDetectionHeader": true}, "🔊"),
     elt(
       "div",

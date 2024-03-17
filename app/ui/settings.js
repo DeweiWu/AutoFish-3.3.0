@@ -86,10 +86,10 @@ class Settings {
       }
 
       if((event.target.name == `stopKey` || event.target.name == `fishingKey` || event.target.name == `luresKey` || event.target.name == `intKey` || event.target.name == `spareKey`) && !event.target.disabled) {
-        event.target.style.backgroundColor = `rgba(250, 0, 0, .3)`;
+        event.target.style.backgroundColor = `rgb(255, 219, 197)`;
         const activeKeyAnimation = (alter) => () => {
           if(alter) {
-            event.target.style.backgroundColor = `rgba(250, 0, 0, .3)`;
+            event.target.style.backgroundColor = `rgb(255, 219, 197)`;
           } else {
             event.target.style.backgroundColor = `white`;
           }

@@ -1,19 +1,19 @@
 const elt = require("./elt.js");
 
-const wrapInLabel = (name, inner, hint) => {
+const wrapInLabel = (name, inner, hint, classname) => {
   return elt(
     "label",
-    null,
+    {className: classname},
     name,
     elt(
       "div",
       { className: "option" },
       inner,
       hint ? (elt("img", {
-          src: "./img/hint.png",
-          className: "option_hint",
-          title: hint,
-        })) : ``
+        src: "./img/hint.png",
+        className: "option_hint",
+        title: hint,
+      })) : ``
     )
   );
 };

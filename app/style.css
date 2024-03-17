@@ -324,7 +324,7 @@ input[data-spares] {}
 
 .option.game-option {
   width: 125px;
-  outline: 2px solid rgba(250, 0, 0, .2);
+  outline: 2px solid #FFDBC5;
 }
 
 .startButton {
@@ -367,7 +367,7 @@ input[data-spares] {}
 }
 
 .advSettings .buttons input[type=button] {
-  outline: 2px solid rgba(250, 0, 0, .2);
+  outline: 2px solid #FFDBC5;
   margin: 0 3px;
 }
 
@@ -619,11 +619,14 @@ input[type=range].threshold_disabled::-webkit-slider-thumb {
   margin-top: -7px;
 }
 
-.premium_option {
-  background: #FFDBC5;
-  border-radius: 3px;
-  padding-right: 1px;
-  margin-right: 3px;
+.premium_label {
+  background-image: linear-gradient(to right, rgba(255, 219, 197, 0.6), white);
+  border-radius: 5px;
+  padding-left: 2px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin-left: -2px;
+  margin-top: -2px;
 }
 
 .arduino_select {
@@ -1009,30 +1012,31 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 
 /* Track */
 .advSettings_settings::-webkit-scrollbar {
-  width: 15px; /* Set the width of the scrollbar */
+  width: 12px; /* Set the width of the scrollbar */
 }
 
 /* Handle */
 .advSettings_settings::-webkit-scrollbar-thumb {
-  background-color: rgba(250, 0, 0, .2); /* Set the color of the scrollbar handle */
+  background-color: rgba(255, 209, 187); /* Set the color of the scrollbar handle */
   border-radius: 5px; /* Round the corners of the scrollbar handle */
-  border: 1px solid rgb(150, 150, 150);
+  border: 1px solid rgb(130, 130, 130);
 }
 
 /* Handle on hover */
 .advSettings_settings::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(250, 0, 0, .3); /* Change color on hover */
+  background-color: rgba(255, 189, 167);  /* Change color on hover */
   border: 1px solid grey;
 }
 
 /* Track */
 .advSettings_settings::-webkit-scrollbar-track {
-  background: rgb(221, 221, 221); /* Set the color of the scrollbar track */
+  border-radius: 5px;
+  background: rgb(211, 211, 211); /* Set the color of the scrollbar track */
 }
 
 /* Handle when scrolling */
 .advSettings_settings::-webkit-scrollbar-thumb:active {
-  background-color:  rgba(250, 0, 0, .3); /* Change color when the user is actively scrolling */
+  background-color:  rgba(255, 169, 147); /* Change color when the user is actively scrolling */
 }
 
 /* Hide the number input arrows */
@@ -1075,7 +1079,7 @@ input[type=number] {
   cursor: pointer;
   border: 1px solid rgb(130, 130, 130);
   border-radius: 2px;
-  background-color: #FFDBC5;
+  background-color: rgba(255, 219, 197, .9);
 }
 
 .auto_button_on:hover {
