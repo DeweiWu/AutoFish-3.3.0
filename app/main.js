@@ -416,6 +416,10 @@ By pressing "Accept" you agree to everything stated above.`,
     showWarning(win, `Don't forget to switch to DirectX 11 in the game.\n\nTurn off Human-like Accuracy feature (Advanced Settings) and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.`);
   });
 
+  ipcMain.on("splash-warn", () => {
+    showWarning(win, `The bot will try to detect splash animation instead of the bobber animation. If possible, increase the visual quality of the water either by installing modded textures or in the settings of the game.\n\nIf the splash isn't detected, you can increase Sensitivity and Splash Color values (You can find the Splash Color value in the Advanced Settings).`);
+  });
+
   ipcMain.on("open-link-donate", () =>
     shell.openExternal("https://www.buymeacoffee.com/jsbots/e/96734")
   );
