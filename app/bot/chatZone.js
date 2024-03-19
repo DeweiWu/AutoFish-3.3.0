@@ -11,6 +11,14 @@ const createChatZone = ({ getDataFrom, zone, threshold }) => {
   return {
     async checkNewMessages() {
       const rgb = createRgb(await getDataFrom(zone));
+
+      if(process.env.NODE_ENV == `dev`) {
+        const img = await Jimp.read(rgb.getBitmap());
+        const date = new Date()
+        const name = `test-chatZone-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.png`
+        img.write(`${__dirname}/../debug/${name}`);
+      }
+
       const whisperMsg = rgb.findColors({ isColor: whisperColor });
       if(whisperMsg) {
         if(!closeBy10(previousMsg.length, whisperMsg.length)) {

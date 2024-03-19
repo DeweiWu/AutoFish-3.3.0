@@ -1,4 +1,5 @@
 const { getCurrentTime } = require("./time.js");
+const { createWriteStream } = require('fs');
 
 const createLog = (sendToWindow) => {
   let state = true;
@@ -10,6 +11,7 @@ const createLog = (sendToWindow) => {
         sendToWindow({ text, type });
       }
     },
+
     msg(text) {
       sendToWindow({ text, type: "black", position: "center", margin: `0 0 5px 0` });
     },
@@ -33,8 +35,17 @@ const createLog = (sendToWindow) => {
 };
 
 const createIdLog = (log, id) => {
+  let logData;
+  if(process.env.NODE_ENV == `dev`) {
+    logData = createWriteStream(`${__dirname}/../debug/log.txt`);
+  }
+
   return Object.assign({}, log, {
     send(text, type) {
+        if(process.env.NODE_ENV == `dev`) {
+          const { hr, min, sec } = getCurrentTime();
+          logData.write(`[${hr}:${min}:${sec}] ${text}\n`);
+        }
         log.send(`[WIN${id}] ${text}`, type);
       }
   });
