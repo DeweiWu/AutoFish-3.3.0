@@ -5,6 +5,7 @@
   "useInt": false,
   "stopKey": "delete",
   "threshold": 60,
+  "checkLogic": "default", 
   "bobberSensitivity": {
     "Retail": 25,
     "LK Classic": 7,
