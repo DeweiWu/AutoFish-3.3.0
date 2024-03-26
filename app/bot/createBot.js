@@ -644,12 +644,20 @@ if(lootWindowPatch.exitButton) {
       }
     }
 
-    await sleep(config.castDelay);
+    if(settings.checkLogic == `pixelmatch`) {
+      await sleep(2500);
+    } else {
+      await sleep(config.castDelay)
+    }
+
   };
 
   const highlightBobber = async (pos, log) => {
 
-    if (settings.useInt || settings.afkmode || (config.likeHuman && random(0, 100) > config.highlightPercent)) {
+    if (settings.checkLogic == `pixelmatch` ||
+        settings.useInt ||
+        settings.afkmode ||
+        (config.likeHuman && random(0, 100) > config.highlightPercent)) {
         return pos;
     }
 
@@ -676,7 +684,7 @@ if(lootWindowPatch.exitButton) {
       return true;
     }
 
-    const pos = await fishingZone.findBobber(findBobber.memory, detectSens(), log);
+    const pos = await fishingZone.findBobber(findBobber.memory, log);
 
     if(pos && process.env.NODE_ENV == `dev`) {
       screen.config.highlightOpacity = 1;
@@ -692,10 +700,12 @@ if(lootWindowPatch.exitButton) {
 
   const checkBobber = async (pos, state) => {
     checkBobberTimer.start();
+    const startTime = Date.now();
     const missOnPurpose = random(0, 100) < missOnPurposeValue;
     if(missOnPurpose) {
       missOnPurposeTimer.update();
     }
+
     while (state.status == "working") {
       if (checkBobberTimer.isElapsed()) {
         switch(config.maxFishTimeAfter) {
@@ -724,6 +734,10 @@ if (settings.soundDetection) {
   });
 
   if (caught) return pos;
+} else if(settings.checkLogic == `pixelmatch`) {
+  if(await fishingZone.checkPixelMatch(pos, startTime)) {
+    return pos;
+  };
 } else if(settings.game == `Retail`) {
    if(!(await fishingZone.checkBobberPrint(pos))) {
      return pos;
@@ -733,7 +747,6 @@ if (settings.soundDetection) {
     return pos;
     }
   } else {
-
   if (!(await fishingZone.isBobber(pos))) {
     const newPos = settings.autoTh ? await fishingZone.checkBelow(pos) : await fishingZone.checkAroundBobber(pos);
     if (!newPos) {
@@ -743,13 +756,13 @@ if (settings.soundDetection) {
     }
   }
 
-  if(settings.autoTh) {
-    pos = await fishingZone.checkAbove(pos);
+    if(settings.autoTh) {
+      pos = await fishingZone.checkAbove(pos);
+    }
   }
+    await sleep(config.checkingDelay);
 }
 
-  await sleep(config.checkingDelay);
-    }
 };
 
   const pickLoot = async () => {
@@ -1143,18 +1156,6 @@ if (settings.soundDetection) {
                                               config.rngMoveTimer.to * 1000 * 60));
 
 
-const detectSens = () => {
-  if (!settings.autoSens || settings.game == `Vanilla (splash)`) {
-    return;
-  }
-
-  if (settings.game == `Retail`) {
-    return `sensitivity`; // L and H reses for AutoThreshold and Manual
-  }
-
-  return `density`;
-};
-
   const doAfterTimer = async (onError, wins, stats) => {
     if(config.afterTimer == `HS` || config.afterTimer == `HS + Quit`) {
       await action(async () => {
@@ -1228,7 +1229,6 @@ const detectSens = () => {
     checkConfirm,
     applyFatigue,
     doAfterTimer,
-    detectSens,
     runRngMove,
     dynamicThreshold,
     logOut,

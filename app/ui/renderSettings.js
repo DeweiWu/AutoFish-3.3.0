@@ -1,14 +1,19 @@
 const elt = require("./utils/elt.js");
 const wrapInLabel = require("./utils/wrapInLabel.js");
 
-const renderColorSwitch = ({bobberColor, autoColor, soundDetection}) => {
+const renderColorSwitch = ({bobberColor, checkLogic, autoColor, soundDetection}) => {
+
+  const checkLogicTypes = ['default', 'pixelmatch'];
+
+  const modeSelect = elt(`select`, {name: 'checkLogic', className: `checkLogicSelect`}, ...checkLogicTypes.map((logic) => elt('option', {selected: checkLogic == logic}, logic)));
+
   const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch`,
                                 name: `bobberColor`,
                                 title: `Switch between blue and red feathers.`,
                                 value: bobberColor,
                                 style: `background-image: linear-gradient(to right, ${bobberColor == `red` ? `rgba(100, 0, 0, .8), rgba(255, 0, 0, .8)` : `rgba(0, 90, 200, .8), rgba(0, 0, 100, .8)`}); ${soundDetection ? `display: none` : ``}`
                               }, elt(`div`, {className: `switch_thumb ${bobberColor == `red` ? `switch_thumb_left` : `switch_thumb_right`}`}));
- return bobberColorSwitch;
+ return elt(`div`, null, modeSelect, bobberColorSwitch);
 }
 
 
@@ -40,15 +45,7 @@ const renderThreshold = ({ threshold, bobberColor, autoTh, game, soundDetection,
     else if(threshold > 150) threshold = 150;
 
     if(game == `Vanilla (splash)`) autoTh = false;
-/*
-    const autoThSwitch = elt(`radio`, { className: `autoTh`,
-                                name: `autoTh`,
-                                title: `Switch between auto and manual modes.`,
-                                value: autoTh,
-                                disabled: game == `Vanilla (splash)`,
-                                style: `background-image: linear-gradient(to right, ${autoTh ? `#663c20, #fe954d` : `#a8a8a8, #4b4b4b`});`
-                              }, elt(`div`, {className: `switch_thumb ${autoTh ? `switch_thumb_left` : `switch_thumb_right`}`}), elt(`span`, {className: `bobberColorSwitchText`},  `${autoTh ? `Auto` : `Manual`}`));
-*/
+
     const range = elt(`input`, { type: `range`, min: 1, max: 150, value: threshold, name: `threshold`, disabled: autoTh, className: `${autoTh ? `threshold_disabled` : ``}` });
     const number = elt(`input`, { type: `number`, className: `threshold_number_input`, value: threshold, disabled: autoTh, name: `threshold` });
 
@@ -244,11 +241,11 @@ return elt(
     elt(
       "div",
       { className: "settings_section threshold_settings" },
-      elt('input', {type: `button`,  disabled: !config.autoTh || config.game == `Vanilla (splash)`, name: `autoColor`, checked: config.autoTh && config.autoColor, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoColor ${config.autoColor && config.game != `Vanilla (splash)` && config.autoTh ? `auto_button_on` : ``}`, value: `Auto`}),
-      elt('input', {type: `button`, disabled: config.game == `Vanilla (splash)`, name: `autoTh`, checked: config.autoTh, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoTh ${config.autoTh && config.game != `Vanilla (splash)` ? `auto_button_on` : ``}`, value: `Auto`}),
-      elt('input', {type: `button`, disabled: config.game == `Vanilla (splash)`, name: `autoSens`, checked: config.autoSens, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoSens ${config.autoSens && config.game != `Vanilla (splash)` ? `auto_button_on` : ``}`, value: `Auto`}),
+      elt('input', {type: `button`,  disabled: !config.autoTh || config.game == `Vanilla (splash)` || config.checkLogic == `pixelmatch`, name: `autoColor`, checked: config.autoTh && config.autoColor, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoColor ${config.autoColor && config.game != `Vanilla (splash)` && config.autoTh && config.checkLogic != `pixelmatch` ? `auto_button_on` : ``}`, value: `Auto`}),
+      elt('input', {type: `button`, disabled: config.game == `Vanilla (splash)`, name: `autoTh`, checked: config.autoTh && config.game != `Vanilla (splash)`, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoTh ${config.autoTh && config.game != `Vanilla (splash)` ? `auto_button_on` : ``}`, value: `Auto`}),
+      elt('input', {type: `button`, disabled: config.game == `Vanilla (splash)`, name: `autoSens`, checked: config.autoSens && config.game != `Vanilla (splash)`, style: `${config.soundDetection ? `display: none`: ``}`, className: `auto_button autoSens ${config.autoSens && config.game != `Vanilla (splash)` ? `auto_button_on` : ``}`, value: `Auto`}),
 
-      !config.soundDetection ? wrapInLabel("Color: ", renderColorSwitch(config), `The color the bot will search within Fishing Zone (${config.bobberColor}, in your case). If the water and environment is bluish, choose red color. If the water and environment is reddish, choose blue color.`) : ``,
+      !config.soundDetection ? wrapInLabel("Mode: ", renderColorSwitch(config), `The color the bot will search within Fishing Zone (${config.bobberColor}, in your case). If the water and environment is bluish, choose red color. If the water and environment is reddish, choose blue color.`) : ``,
 
       wrapInLabel(`${config.soundDetection ? `` : `Intensity: `}`,
         renderThreshold(config),

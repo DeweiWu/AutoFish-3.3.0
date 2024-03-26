@@ -2,6 +2,8 @@ const createRgb = require('../utils/rgb.js');
 const Vec = require('../utils/vec.js');
 const Jimp = require('jimp');
 
+const pixelmatch = require('pixelmatch');
+
 const isInLimits = ({ x, y }, { width, height }) => {
   return x >= 0 && y >= 0 && x < width && y < height;
 };
@@ -9,16 +11,28 @@ const isInLimits = ({ x, y }, { width, height }) => {
 const isOverThreshold = ([r, g, b], threshold) => (r - Math.max(g, b)) > threshold;
 const isCloseEnough = ([_, g, b], closeness) => Math.abs(g - b) <= closeness;
 
-const isRed = (threshold, closeness, size = 295, upperLimit = 295) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
+const isRed = (threshold, closeness = 255, size = 255, upperLimit = 295) => ([r, g, b]) => isOverThreshold([r, g, b], threshold) &&
                                                        isCloseEnough([r, g, b], closeness) &&
                                                        g < size && b < size && r <= upperLimit;
 
-const isBlue = (threshold, closeness, size = 295, upperLimit = 295) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) &&
+const isBlue = (threshold, closeness = 255, size = 255, upperLimit = 295) => ([r, g, b]) => isOverThreshold([b, g, r], threshold) &&
                                                         isCloseEnough([b, g, r], closeness) &&
                                                         r < size && g < size && b <= upperLimit;
 
-const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bobberColor, autoTh: autoThreshold, bobberSensitivity: sensitivity, autoColor: colorSwitchOn}, {findBobberDirection: direction, splashColor}) => {
+let imgAroundBobberPrev;
+let pixelMatchMax;
+
+const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, threshold, bobberColor, autoTh: autoThreshold, bobberSensitivity: sensitivity, autoColor: colorSwitchOn}, {findBobberDirection: direction, splashColor}) => {
   sensitivity = (game == `Retail` || game == `Vanilla (splash)` ? 30 - sensitivity[game] : 10 - sensitivity[game]) || 1;
+
+  if(checkLogic == 'pixelmatch') {
+    if(autoSens) {
+      sensitivity = 0.25;
+    } else {
+      sensitivity = game == `Retail` || game == `Vanilla (splash)` ? sensitivity / 30 : sensitivity / 10;
+    }
+  }
+
   let isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
   let saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
   const looksLikeBobber = (pos, color, rgb) => pos.getPointsAround().every((pos) => isBobber(rgb.colorAt(pos)));
@@ -26,9 +40,17 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
   let colorSwitchesCount = 0;
   return {
 
-    async findBobber(exception, detectSens, log) {
+    async findBobber(exception, log) {
+      imgAroundBobberPrev = null;
+      pixelMatchMax = 0;
+
       let rgb = createRgb(await getDataFrom(zone));
-      rgb.saturate(...saturation)
+
+      if(checkLogic != `pixelmatch`) {
+          rgb.saturate(...saturation)
+      }
+
+
       if(exception) {
         rgb.cutOut(exception);
       }
@@ -36,6 +58,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
       let bobber;
       if(autoThreshold) {
         bobber = this._findMost(rgb);
+
         if(bobber && process.env.NODE_ENV == `dev`) {
           log.err(`[DEBUG] Color Found: ${bobber.color}, at: ${bobber.pos.x},${bobber.pos.y}`);
         }
@@ -54,6 +77,10 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
         });
       }
 
+      if(checkLogic == `pixelmatch`) {
+        return bobber.pos.plus(zone);
+      }
+
       if(!bobber) return;
 
       let filledBobber;
@@ -70,7 +97,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
             bobberColor = bobberColor == `red` ? `blue` : `red`;
             isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
             saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
-            return await this.findBobber(exception, detectSens, log)
+            return await this.findBobber(exception, log)
           } else if(e.message == `color`) {
             log.err(`Too much ${bobberColor} color! Change the color!`);
             return;
@@ -79,7 +106,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
           }
         }
         colorSwitchesCount = 0; // reset recursive
-      } else if(direction == `center` || detectSens) {
+      } else if(direction == `center` || autoSens) {
         const doubleZoneSize = screenSize.height > 1080 ? 100 : 50;
 
         let rgbAroundBobber = createRgb(await getDataFrom({x: zone.x + bobber.x - doubleZoneSize,
@@ -110,8 +137,8 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
         bobber = doubleZoneBobber.plus({x: bobber.x - doubleZoneSize, y: bobber.y - doubleZoneSize});
       }
 
-      if(detectSens) {
-        await this.adjustSensitivity(filledBobber.length, detectSens);
+      if(autoSens) {
+        await this.adjustSensitivity(filledBobber.length);
       }
 
       if(autoThreshold) {
@@ -139,7 +166,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
     },
 
     _findMost(rgb) {
-      isBobber = bobberColor == `red` ? isRed(0, 50, 100) : isBlue(0, 50, 100);
+      isBobber = bobberColor == `red` ? isRed(1, 50, 100) : isBlue(1, 50, 100); // 0, 50, 100
       let initialThColors = rgb.findColors({
         isColor: isBobber,
         saveColor: true
@@ -150,8 +177,14 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
         let [rA, gA, bA] = a.color;
         let [rB, gB, bB] = b.color;
 
-        let colorA = bobberColor == `red` ? (rA - Math.max(gA, bA)) : (bA - Math.max(gA, rA));
-        let colorB = bobberColor == `red` ? (rB - Math.max(gB, bB)) : (bB - Math.max(gB, rB));
+        let closenessARed = Math.abs(gA - bA);
+        let closenessBRed = Math.abs(gB - bB);
+
+        let closenessABlue = Math.abs(rA - gA);
+        let closenessBBlue = Math.abs(rB - gB);
+
+        let colorA = bobberColor == `red` ? (rA - Math.max(gA, bA)) - closenessARed : (bA - Math.max(gA, rA)) - closenessABlue;
+        let colorB = bobberColor == `red` ? (rB - Math.max(gB, bB)) - closenessBRed : (bB - Math.max(gB, rB)) - closenessBBlue;
 
         if(colorA > colorB) {
           return a;
@@ -207,20 +240,18 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
       return {length: memory.length, bobber: {pos: mostTop, color: rgb.colorAt(mostTop)}, points: memory};
     },
 
-    async adjustSensitivity(bobberSize, detectSens) {
-      if(detectSens == `sensitivity`) {
+    async adjustSensitivity(bobberSize) {
+      if(game == `Retail`) {
          let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 4 : 3.5)));
          if(calculatedSens < 3) calculatedSens = 3;
          sensitivity = calculatedSens;
+       } else {
+         if(game == `Vanilla`) {
+           sensitivity = 2;
+         } else {
+           sensitivity = Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 2)), 2);
+         }
        }
-
-      if(detectSens == `density`) {
-        if(game == `Vanilla`){
-          sensitivity = 2;
-        } else {
-          sensitivity = Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 2)), 2);
-        }
-      }
     },
 
     async checkBobberPrint(pos) {
@@ -243,6 +274,29 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
       });
       if((whiteColors && whiteColors.length > 10) || !(await this.checkBobberPrint(pos))) {
         return true;
+      }
+    },
+
+    async checkPixelMatch(bobber, startTime) {
+      const doubleZoneSize = Math.round((screenSize.height / 1080) * 25);
+      let imgAroundBobber = await getDataFrom({x: bobber.x - doubleZoneSize,
+                                               y: bobber.y - doubleZoneSize,
+                                               width: doubleZoneSize * 2,
+                                               height: doubleZoneSize * 2});
+      if(imgAroundBobberPrev) {
+        let pixelMatchTh = pixelmatch(imgAroundBobberPrev.data, imgAroundBobber.data, null, imgAroundBobber.width, imgAroundBobber.height,  {threshold: 0.1}); // 0.2
+
+        if(Date.now() - startTime < 1250) {
+          if(pixelMatchTh > pixelMatchMax) {
+            pixelMatchMax = pixelMatchTh;
+          }
+        } else {
+          if(pixelMatchTh > pixelMatchMax + (pixelMatchMax * sensitivity)) {
+            return true;
+          }
+        }
+      } else {
+          imgAroundBobberPrev = imgAroundBobber;
       }
     },
 
@@ -308,7 +362,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, threshold, bob
       });
       return result;
     }
-
   }
 };
 
