@@ -166,6 +166,7 @@ section {
   border-radius: 10px;
   border-top-left-radius: 7px;
   overflow-y: scroll;
+  overflow-x: hidden;
   padding: 5px;
 }
 
@@ -1092,7 +1093,9 @@ input[type=number] {
 }
 
 .checkLogicSelect {
-  width: 90px !important;
-  margin-right: 54px !important;
+  width: 135px !important;
+  margin-right: 9px !important;
   outline: 2px solid #FFDBC5;
+  font-size: 0.9em;
+  cursor: help;
 }
