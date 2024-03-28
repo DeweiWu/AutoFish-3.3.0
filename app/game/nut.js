@@ -65,7 +65,7 @@ module.exports = {
   mouse: {
   async humanMoveTo({from, to, speed, deviation, fishingZone}) {
     const distance = Math.sqrt(Math.pow(from.x - to.x, 2) + Math.pow(from.y - to.y, 2));
-    const fZoneSize = Math.sqrt(Math.pow(fishingZone.width, 2) + Math.pow(fishingZone.height, 2)) * .5;
+    const fZoneSize = Math.sqrt(Math.pow(fishingZone.width, 2) + Math.pow(fishingZone.height, 2)) * .35;
     /* apply distance relation to zone size only if distance is more than 5% */
     mouse.config.mouseSpeed = (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 1);
     const bezierPath = generateBezierPath(from, to, distance, deviation / 150);
