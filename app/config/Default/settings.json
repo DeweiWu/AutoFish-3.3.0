@@ -5,7 +5,7 @@
   "useInt": false,
   "stopKey": "delete",
   "threshold": 60,
-  "checkLogic": "default", 
+  "checkLogic": "default",
   "bobberSensitivity": {
     "Retail": 25,
     "LK Classic": 7,
@@ -20,7 +20,7 @@
   },
   "autoSens": true,
   "autoTh": true,
-  "autoColor": false,
+  "autoColor": true,
   "bobberColor": "red",
   "afkmode": false,
   "multipleWindows": false,
