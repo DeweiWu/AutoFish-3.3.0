@@ -5,7 +5,7 @@ const renderColorSwitch = ({bobberColor, checkLogic, autoColor, soundDetection})
 
   const checkLogicTypes = ['default', 'pixelmatch'];
 
-  const modeSelect = elt(`select`, {name: 'checkLogic', className: `checkLogicSelect`}, ...checkLogicTypes.map((logic) => elt('option', {selected: checkLogic == logic}, logic)));
+  const modeSelect = elt(`select`, {name: 'checkLogic', title: `Alternative modes for detecting bobber animation.\nDefault: bot will rely on colors much more than with Pixelmatch method. It also might cause a lot of missclicks on some games.\nPixelmatch: the bot will rely less on the colors but more on the movements of the bobber.`, className: `checkLogicSelect`}, ...checkLogicTypes.map((logic) => elt('option', {selected: checkLogic == logic, value: logic}, logic[0].toUpperCase() + logic.slice(1))));
 
   const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch`,
                                 name: `bobberColor`,
@@ -57,12 +57,6 @@ const renderThreshold = ({ threshold, bobberColor, autoTh, game, soundDetection,
     } else {
       document.styleSheets[0].rules[77].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
     }
-
-    /*
-    let bobberImg = elt(`div`, {id: `bobber`, style: `background-color: ${bobberColor == `blue` ? `rgb(0, 0, ${150 + Number(threshold)})` : `rgb(${150 + Number(threshold)}, 0, 0)`}`}, elt(`div`, {id: `bobberHandle`, style: `background-color: ${bobberColor == `blue` ? `rgb(0, 0, ${150 + Number(threshold)})` : `rgb(${150 + Number(threshold)}, 0, 0)`}`}));
-    let waterImg = elt(`div`, {id: "water"}, bobberImg);
-    */
-
 
     return elt(`div`, { className: `thresholdRange` }, rangeContainer); // autoThSwitch
   } else {
