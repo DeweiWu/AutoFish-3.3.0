@@ -328,17 +328,25 @@ if(lootWindowPatch.exitButton) {
   logOut.timer = logOutTimer;
   logOut.on = config.logOut > 0;
 
-  const preliminaryChecks = async () => {
+  const preliminaryChecks = async (log) => {
     if(config.ignorePreliminary) return;
+
+    if(settings.autoColor) {
+      if(await fishingZone.changeColor()) {
+        log.warn(`Switched to ${settings.bobberColor == `red` ? `blue` : `red`} color.`);
+      }
+    }
+
     if (screenSize.x == -32000 && screenSize.y == -32000) {
       throw new Error("The window is either in fullscreen mode or minimized. Switch to windowed or windowed(maximized).");
     }
     if(!settings.autoTh) {
       let bobber = await fishingZone.findBobber();
+
       if (bobber) {
         screen.config.highlightOpacity = 1;
         screen.config.highlightDurationMs = 1000;
-        const highlightRegion = new Region(screenSize.x + (bobber.x - 30), screenSize.y + (bobber.y - 30), 30, 30);
+        const highlightRegion = new Region(screenSize.x + (bobber.x - 15), screenSize.y + (bobber.y - 15), 30, 30);
         await screen.highlight(highlightRegion);
 
         throw new Error(
@@ -524,7 +532,7 @@ if(lootWindowPatch.exitButton) {
 
   const findAllBobberColors = async () => {
     if(settings.game != `Retail` && settings.game != `LK Classic` && settings.game != `Classic`) {
-      let bobber = await fishingZone.getBobberPrint(7);
+      let bobber = await fishingZone.getBobberPrint(10);
 
       if(!bobber) {
         return;

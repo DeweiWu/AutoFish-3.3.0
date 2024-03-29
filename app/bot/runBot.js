@@ -42,7 +42,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     await dx12Case();
     if (state.status == "initial") {
       log.send(`Preliminary checks...`);
-      await preliminaryChecks();
+      await preliminaryChecks(log);
       log.ok(`Everything is fine!`);
 
       if(applyFatigue.on) {

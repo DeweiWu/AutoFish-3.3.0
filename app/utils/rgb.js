@@ -64,7 +64,11 @@ const createRgb = ({ data, width, height }) => {
 
                 if (!task || task(pos, color, this)) {
                   if (atFirstMet) {
-                    return pos;
+                    if(saveColor) {
+                      return {pos, color}
+                    } else {
+                      return pos;
+                    }
                   } else {
                     if(saveColor) {
                       colors.push({pos, color})
@@ -94,7 +98,11 @@ const createRgb = ({ data, width, height }) => {
 
                 if (!task || task(pos, color, this)) {
                   if (atFirstMet) {
-                    return pos;
+                    if(saveColor) {
+                      return {pos, color}
+                    } else {
+                      return pos;
+                    }
                   } else {
                     if(saveColor) {
                       colors.push({pos, color})
@@ -124,7 +132,11 @@ const createRgb = ({ data, width, height }) => {
 
                 if (!task || task(pos, color, this)) {
                   if (atFirstMet) {
-                    return pos;
+                    if(saveColor) {
+                      return {pos, color}
+                    } else {
+                      return pos;
+                    }
                   } else {
                     if(saveColor) {
                       colors.push({pos, color})
@@ -165,7 +177,11 @@ const createRgb = ({ data, width, height }) => {
 
                 if (!task || task(pos, color, this)) {
                   if (atFirstMet) {
-                    return pos;
+                    if(saveColor) {
+                      return {pos, color}
+                    } else {
+                      return pos;
+                    }
                   } else {
                     if(saveColor) {
                       colors.push({pos, color})
