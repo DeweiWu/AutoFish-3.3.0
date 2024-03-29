@@ -1094,7 +1094,7 @@ input[type=number] {
 
 .checkLogicSelect {
   width: 135px !important;
-  margin-right: 9px !important;
+  margin-right: 8px !important;
   outline: 2px solid #FFDBC5;
   font-size: 0.9em;
   cursor: help;
