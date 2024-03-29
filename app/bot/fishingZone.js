@@ -95,7 +95,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
         if(doubleZoneLength) {
           filledBobber = doubleZoneLength;
         } else {
-          log.warn(`Found the color, but doesn't look like a bobber.`);
+          log.warn(`Found the color, but it doesn't look like a bobber.`);
           return;
         }
 
@@ -108,7 +108,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
         });
 
         if(!doubleZoneBobber) {
-          log.warn(`Found the color, but doesn't look like a bobber.`);
+          log.warn(`Found the color, but it doesn't look like a bobber.`);
           return;
         }
 
@@ -197,7 +197,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
     },
 
     async checkPixelMatch(bobber, startTime) {
-      const doubleZoneSize = Math.round((screenSize.height / 1080) * 25);
+      const doubleZoneSize = Math.round((screenSize.height / 1080) * 50);
       let imgAroundBobber = await getDataFrom({x: bobber.x - doubleZoneSize,
                                                y: bobber.y - doubleZoneSize,
                                                width: doubleZoneSize * 2,

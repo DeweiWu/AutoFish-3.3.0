@@ -5,7 +5,7 @@ const renderColorSwitch = ({bobberColor, checkLogic, autoColor, soundDetection})
 
   const checkLogicTypes = ['default', 'pixelmatch'];
 
-  const modeSelect = elt(`select`, {name: 'checkLogic', title: `Alternative modes for detecting bobber animation.\nDefault: bot will rely on colors much more than with Pixelmatch method. It also might cause a lot of missclicks on some games.\nPixelmatch: the bot will rely less on the colors but more on the movements of the bobber.`, className: `checkLogicSelect`}, ...checkLogicTypes.map((logic) => elt('option', {selected: checkLogic == logic, value: logic}, logic[0].toUpperCase() + logic.slice(1))));
+  const modeSelect = elt(`select`, {name: 'checkLogic', title: `Alternative modes for detecting bobber animation.`, className: `checkLogicSelect`}, ...checkLogicTypes.map((logic) => elt('option', {selected: checkLogic == logic, value: logic}, logic[0].toUpperCase() + logic.slice(1))));
 
   const bobberColorSwitch = elt(`radio`, { className: `bobberColorSwitch`,
                                 name: `bobberColor`,
