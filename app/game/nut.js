@@ -64,10 +64,10 @@ function randomHumanLikeCursorEasing(x) {
 module.exports = {
   mouse: {
   async humanMoveTo({from, to, speed, deviation, fishingZone}) {
-    const distance = Math.sqrt(Math.pow(from.x - to.x, 2) + Math.pow(from.y - to.y, 2));
-    const fZoneSize = Math.sqrt(Math.pow(fishingZone.width, 2) + Math.pow(fishingZone.height, 2)) * .35;
+    const distance = Math.sqrt(Math.pow(Math.round(from.x - to.x), 2) + Math.pow(Math.round(from.y - to.y), 2));
+    const fZoneSize = Math.sqrt(Math.pow(fishingZone.width, 2) + Math.pow(fishingZone.height, 2)) * .25;
     /* apply distance relation to zone size only if distance is more than 5% */
-    mouse.config.mouseSpeed = (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 1);
+    mouse.config.mouseSpeed = (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 0.25);
     const bezierPath = generateBezierPath(from, to, distance, deviation / 150);
     await mouse.move(bezierPath, randomHumanLikeCursorEasing);
   },
