@@ -331,15 +331,16 @@ if(lootWindowPatch.exitButton) {
   const preliminaryChecks = async (log) => {
     if(config.ignorePreliminary) return;
 
+    if (screenSize.x == -32000 && screenSize.y == -32000) {
+      throw new Error("The window is either in fullscreen mode or minimized. Switch to windowed or windowed(maximized).");
+    }
+
     if(settings.autoColor) {
       if(await fishingZone.changeColor()) {
         log.warn(`Switched to ${settings.bobberColor == `red` ? `blue` : `red`} color.`);
       }
     }
 
-    if (screenSize.x == -32000 && screenSize.y == -32000) {
-      throw new Error("The window is either in fullscreen mode or minimized. Switch to windowed or windowed(maximized).");
-    }
     if(!settings.autoTh) {
       let bobber = await fishingZone.findBobber();
 
