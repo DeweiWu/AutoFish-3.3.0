@@ -20,6 +20,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -207,6 +208,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -385,6 +387,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -563,6 +566,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -721,6 +725,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -880,6 +885,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1035,6 +1041,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1209,6 +1216,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1380,6 +1388,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1542,6 +1551,7 @@
       "checkChangesSendImg": true,
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
