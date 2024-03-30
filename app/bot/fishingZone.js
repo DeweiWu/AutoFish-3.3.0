@@ -52,7 +52,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
       let bobber;
       if(autoThreshold) {
         bobber = this._findMost(rgb);
-
         if(bobber && process.env.NODE_ENV == `dev`) {
           log.err(`[DEBUG] Color Found: ${bobber.color}, at: ${bobber.pos.x},${bobber.pos.y}`);
         }
@@ -125,7 +124,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
     _findMost(rgb) {
       let initialThColors = rgb.findColors({
-        isColor: bobberColor == `red` ? isRed(41) : isBlue(41),
+        isColor: bobberColor == `red` ? isRed(0) : isBlue(0),
         saveColor: true,
         taks: looksLikeBobber(1)
       });
