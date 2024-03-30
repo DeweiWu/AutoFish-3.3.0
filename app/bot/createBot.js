@@ -220,7 +220,7 @@ if(lootWindowPatch.exitButton) {
       return {x: posFromCurrent.x + mouse.getPos().x, y: posFromCurrent.y + mouse.getPos().y};
     }
 
-    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange, steps: [1, 3]}, forcedNutMouse}) => {
+    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse}) => {
       if (randomRange) {
         pos.x = pos.x + random(-randomRange, randomRange);
         pos.y = pos.y + random(-randomRange, randomRange);
