@@ -206,6 +206,20 @@ if(lootWindowPatch.exitButton) {
     .split(",")
     .map((word) => word.trim());
 
+    const generateMovePastPos = (pos) => {
+      let posFromCurrent = {x: pos.x - mouse.getPos().x, y: pos.y - mouse.getPos().y};
+      let movePastDir =  {x: posFromCurrent.x > 0 ? 1 : -1, y: posFromCurrent.y > 0 ? 1 : -1};
+      let movePastMaxMain = Math.abs(posFromCurrent.x) > Math.abs(posFromCurrent.y) ? "x" : "y";
+      let movePastMaxSub = Math.abs(posFromCurrent.x) < Math.abs(posFromCurrent.y) ? "x" : "y";
+
+      const movePastDist = Math.sqrt(Math.pow(Math.abs(posFromCurrent.x), 2) + Math.pow(Math.abs(posFromCurrent.y), 2)) * .5;
+
+      posFromCurrent[movePastMaxMain] += (movePastDist * random(0.25, 0.35)) * movePastDir[movePastMaxMain];
+      posFromCurrent[movePastMaxSub] += (movePastDist * random(0.05, 0.10)) * movePastDir[movePastMaxSub];
+
+      return {x: posFromCurrent.x + mouse.getPos().x, y: posFromCurrent.y + mouse.getPos().y};
+    }
+
     const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange, steps: [1, 3]}, forcedNutMouse}) => {
       if (randomRange) {
         pos.x = pos.x + random(-randomRange, randomRange);
@@ -675,6 +689,11 @@ if(lootWindowPatch.exitButton) {
     }
 
     await action(async () => {
+      if(config.likeHumanFineTune) {
+        let pastPost = generateMovePastPos(pos);
+        await moveTo({pos: pastPost, fineTune: null})
+      }
+
       await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [1, 5]}});
     });
 
