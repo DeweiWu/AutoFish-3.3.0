@@ -535,7 +535,12 @@ const renderCheckChangesSens = ({checkChanges, checkChangesSens}) => {
 const renderCheckChangesInterval = ({checkChanges, checkChangesInterval}) => elt('input', {type: "number", name:"checkChangesInterval", value: checkChangesInterval, disabled: !checkChanges});
 const renderCheckChangesIntervalAfter = ({checkChanges, checkChangesIntervalAfter}) => elt('input', {type: "number", name: "checkChangesIntervalAfter", value: checkChangesIntervalAfter, disabled: !checkChanges});
 const renderCheckChangesSendImg = ({checkChanges, checkChangesSendImg}) => elt('input', {type: 'checkbox', name: `checkChangesSendImg`, checked: checkChangesSendImg, disabled: !checkChanges});
-const renderCheckChangesDoAfter = ({checkChanges, checkChangesDoAfter}) => elt('select', {name: `checkChangesDoAfter`, disabled: !checkChanges}, ...['nothing', 'stop', 'quit'].map(type => elt('option', {value: type, selected: checkChangesDoAfter == type}, `${type[0].toUpperCase()}${type.slice(1)}`)))
+const renderCheckChangesDoAfter = ({checkChanges, checkChangesDoAfter}) => {
+  return elt('select', {name: `checkChangesDoAfter`, disabled: !checkChanges}, ...['nothing', 'sleep', 'logout', 'stop', 'quit'].map(type => elt('option', {value: type, selected: checkChangesDoAfter == type}, `${type[0].toUpperCase()}${type.slice(1)}`)))
+};
+const renderCheckChangesDoAfterSleepTime = ({checkChanges, checkChangesDoAfter, checkChangesDoAfterSleepTime}) => {
+  return elt('input', {type: `number`, disabled: !checkChanges, name: `checkChangesDoAfterSleepTime`, value: checkChangesDoAfterSleepTime });
+};
 const renderCheckChangesIgnoreActions = ({checkChanges, checkChangesIgnoreActions}) => elt('input', {type: 'checkbox', name: `checkChangesIgnoreActions`, disabled: !checkChanges, checked: checkChangesIgnoreActions});
 const renderCatchFishButton = ({catchFishButton}) => elt("select", {name: "catchFishButton"}, ...["right", "left", "middle"].map(button => elt('option', {selected: catchFishButton == button}, button)))
 const renderLibraryType = ({libraryType}) => elt('select', { name: "libraryType" }, ...['nut.js', 'keysender'].map(lib => elt('option', {selected: lib == libraryType}, lib)));
@@ -703,6 +708,7 @@ const renderSettings = (config) => {
     wrapInLabel('Interval (sec): ', renderCheckChangesInterval(config), `The bot will check for motion every given interval value.`),
     wrapInLabel('Ignore Time After Event Occured (sec): ', renderCheckChangesIntervalAfter(config), `After some event happened how long to ignore all the events after. `),
     wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do after the event occured.`),
+    config.checkChangesDoAfter == `sleep` ? wrapInLabel('Sleep Time (min): ', renderCheckChangesDoAfterSleepTime(config), `Time the bot will sleep after the event occured.`) : ``,
     ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `🎮`), elt(`span`, {className: `advanced_settings_header_text`}, `Arduino Control`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#arduino-control-joystick")}}, `(Guide)`),
@@ -722,7 +728,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Use Macro: `, renderMammothMacro(config), `Use your own macro in the game instead of the bot typing /target trader_name command.`),
     wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
     ),
-    
+
   elt(`p`, {className: `settings_header settings_header_critical`}, `⚠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Critical`),
   elt('div', {className: "settings_section settings_critical"},
   wrapInLabel(`Visual Library: `, renderLibraryType(config), `If something doesn't work with default library you can choose another one. Mind that keysender works only with dx11 and will be force for Multiple Fishing or Alt-Tab Fishing modes.`),

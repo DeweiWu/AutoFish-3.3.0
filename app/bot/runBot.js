@@ -70,6 +70,34 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       }
     }
 
+    if(state.status == `sleep`) {
+      checkChanges.block(true);
+      log.send(`Sleeping...`);
+      await sleep(state.sleepTime);
+      checkChanges.unblock(true);
+      if(state.status == `stop`) {
+        return
+      } else {
+        delete state.sleepTime
+        state.status = `working`;
+      }
+    }
+
+    if(state.status == `logout`) {
+      log.send(`Logging out...`)
+
+      checkChanges.block(true);
+      await logOut(state);
+      checkChanges.unblock(true);
+
+      if(state.status == 'stop') {
+        return;
+      } else {
+        state.status = `working`;
+      }
+      log.send(`Logged back!`);
+    }
+
     if(doAfterTimer.on && state.status == "working" && doAfterTimer.timer.isElapsed()) {
       await doAfterTimer(onError, wins, stats);
     }
@@ -221,7 +249,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
         runRngMove.timer.update();
       }
     }
-  } while (state.status == "working");
+  } while (state.status != "stop");
 };
 
 module.exports = runBot;

@@ -612,6 +612,17 @@ if(lootWindowPatch.exitButton) {
               }
             }
 
+            if(config.checkChangesDoAfter == `sleep`) {
+              state.status = 'sleep';
+              state.sleepTime = config.checkChangesDoAfterSleepTime * 1000 * 60; 
+              return;
+            }
+
+            if(config.checkChangesDoAfter == `logout`) {
+              state.status = 'logout';
+              return;
+            }
+
             if(config.checkChangesDoAfter == `stop`) {
               onError();
             }
