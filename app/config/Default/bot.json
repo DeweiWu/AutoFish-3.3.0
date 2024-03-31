@@ -21,6 +21,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -209,6 +210,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -388,6 +390,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -567,6 +570,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -726,6 +730,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -886,6 +891,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1042,6 +1048,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1217,6 +1224,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1389,6 +1397,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1552,6 +1561,7 @@
       "checkChangesDoAfter": "nothing",
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
