@@ -35,7 +35,12 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
   let isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
   let saturation = bobberColor == `red` ? [40, 0, 0] : [0, 0, 40];
-  const looksLikeBobber = (size) => (pos, color, rgb) => pos.getPointsAround(Math.round(size * (screenSize.height / 1080))).every((pos) => isBobber(rgb.colorAt(pos)));
+  const looksLikeBobber = (size) => (pos, color, rgb) => {
+    let pointsFound = pos.getPointsAround(Math.round(size * (screenSize.height / 1080)) || 1).filter((pos) => isBobber(rgb.colorAt(pos)));
+    if(pointsFound.length >= Math.round(8 * (screenSize.height / 1080))) {
+      return true;
+    }
+  }
   let filledBobber;
 
   return {
