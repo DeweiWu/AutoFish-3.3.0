@@ -614,6 +614,8 @@ if(lootWindowPatch.exitButton) {
                 }
               }
             }
+            
+            checkChanges.block(true);
 
             let toDo = config.checkChangesDoAfter;
 
@@ -623,7 +625,9 @@ if(lootWindowPatch.exitButton) {
 
             if(toDo == `sleep`) {
               if(state.status == `checking`) {
-                await keyboard.sendKey('escape', delay);
+                await action(async () => {
+                  await keyboard.sendKey('escape', delay);
+                })
               }
               state.status = 'sleep';
               state.sleepTime = config.checkChangesDoAfterSleepTime * 1000 * 60;
@@ -638,15 +642,14 @@ if(lootWindowPatch.exitButton) {
             }
 
             if(toDo == `press key`) {
-              await keyboard.sendKey(config.checkChangesDoAfterKey, delay);
+              await action(async () => {
+                await keyboard.sendKey(config.checkChangesDoAfterKey, delay);
+              })
               state.status = 'sleep';
               state.sleepTime = config.checkChangesDoAfterSleepTime * 1000 * 60;
             }
 
             if(toDo == `stop`) {
-              if(state.status == `checking`) {
-                await keyboard.sendKey('escape', delay);
-              }
               onError();
             }
 
@@ -656,7 +659,6 @@ if(lootWindowPatch.exitButton) {
             }
 
             if(config.checkChangesDoAfter == `nothing`) {
-              checkChanges.block(true);
               setTimeout(() => {
                 checkChanges.unblock(true);
               }, config.checkChangesIntervalAfter * 1000);

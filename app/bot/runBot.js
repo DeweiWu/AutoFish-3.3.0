@@ -73,13 +73,13 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     if(state.status == `sleep`) {
       checkChanges.block(true);
       log.send(`Sleeping...`);
-      
+
       await sleep(state.sleepTime);
       checkChanges.unblock(true);
       if(state.status == `stop`) {
         return
       } else {
-        delete state.sleepTime
+        state.sleepTime = null; 
         state.status = `working`;
       }
     }
