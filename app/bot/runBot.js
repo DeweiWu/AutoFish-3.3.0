@@ -73,6 +73,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     if(state.status == `sleep`) {
       checkChanges.block(true);
       log.send(`Sleeping...`);
+      
       await sleep(state.sleepTime);
       checkChanges.unblock(true);
       if(state.status == `stop`) {
@@ -96,6 +97,17 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
         state.status = `working`;
       }
       log.send(`Logged back!`);
+    }
+
+    if(state.status == `move`) {
+      checkChanges.block(true);
+      await runRngMove();
+      checkChanges.unblock(true);
+      if(state.status == 'stop') {
+        return;
+      } else {
+        state.status = `working`;
+      }
     }
 
     if(doAfterTimer.on && state.status == "working" && doAfterTimer.timer.isElapsed()) {
@@ -212,6 +224,9 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
 
     log.send(`Checking the hook...`);
     if ((bobber = await checkBobber(bobber, state))) {
+
+      if(state.status != `stop`) state.status = `working`;
+
       checkChanges.block();
       let isHooked = await hookBobber(bobber);
       checkChanges.unblock();

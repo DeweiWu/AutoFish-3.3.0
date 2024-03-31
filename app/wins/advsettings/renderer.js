@@ -536,11 +536,17 @@ const renderCheckChangesInterval = ({checkChanges, checkChangesInterval}) => elt
 const renderCheckChangesIntervalAfter = ({checkChanges, checkChangesIntervalAfter}) => elt('input', {type: "number", name: "checkChangesIntervalAfter", value: checkChangesIntervalAfter, disabled: !checkChanges});
 const renderCheckChangesSendImg = ({checkChanges, checkChangesSendImg}) => elt('input', {type: 'checkbox', name: `checkChangesSendImg`, checked: checkChangesSendImg, disabled: !checkChanges});
 const renderCheckChangesDoAfter = ({checkChanges, checkChangesDoAfter}) => {
-  return elt('select', {name: `checkChangesDoAfter`, disabled: !checkChanges}, ...['nothing', 'sleep', 'logout', 'stop', 'quit'].map(type => elt('option', {value: type, selected: checkChangesDoAfter == type}, `${type[0].toUpperCase()}${type.slice(1)}`)))
+  return elt('select', {name: `checkChangesDoAfter`, disabled: !checkChanges}, ...['nothing', 'random', 'sleep', 'logout', 'press key', 'move', 'stop', 'quit'].map(type => elt('option', {value: type, selected: checkChangesDoAfter == type}, `${type[0].toUpperCase()}${type.slice(1)}`)))
 };
 const renderCheckChangesDoAfterSleepTime = ({checkChanges, checkChangesDoAfter, checkChangesDoAfterSleepTime}) => {
   return elt('input', {type: `number`, disabled: !checkChanges, name: `checkChangesDoAfterSleepTime`, value: checkChangesDoAfterSleepTime });
 };
+const renderCheckChangesDoAfterKey = ({checkChanges, checkChangesDoAfterKey}) => {
+  const key = elt('input', {type: `text`, disabled: !checkChanges, name: `checkChangesDoAfterKey`, value: checkChangesDoAfterKey});
+  key.setAttribute(`readonly`, `true`);
+  return key;
+}
+
 const renderCheckChangesIgnoreActions = ({checkChanges, checkChangesIgnoreActions}) => elt('input', {type: 'checkbox', name: `checkChangesIgnoreActions`, disabled: !checkChanges, checked: checkChangesIgnoreActions});
 const renderCatchFishButton = ({catchFishButton}) => elt("select", {name: "catchFishButton"}, ...["right", "left", "middle"].map(button => elt('option', {selected: catchFishButton == button}, button)))
 const renderLibraryType = ({libraryType}) => elt('select', { name: "libraryType" }, ...['nut.js', 'keysender'].map(lib => elt('option', {selected: lib == libraryType}, lib)));
@@ -701,14 +707,15 @@ const renderSettings = (config) => {
   ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🏃`), elt(`span`, {className: `advanced_settings_header_text`}, `Motion Detection`),
     elt(`div`, {className: `settings_section settings_premium`},
-    wrapInLabel('Use Motion Detection: ', renderCheckChanges(config), `The bot will detect changes within Detection Zone. The bot will notify you in Telegram if some movement happens within Detection Zone.`),
+    wrapInLabel('Use Motion Detection: ', renderCheckChanges(config), `The bot will detect changes within Detection Zone. The bot will notify you in Telegram if some movement happens within Detection Zone.\n\nYou can set the Detection Zone around your character and decrease sensitivity to make the bot detect any suspicious actions around your character and prevent possible griefing. `),
     wrapInLabel('Send Screenshot Of The Event To Telegram:', renderCheckChangesSendImg(config), `The bot will send a screenshot of what exactly triggered the event.`),
     wrapInLabel('Ignore My Actions:', renderCheckChangesIgnoreActions(config), `The bot will try to ignore time when you do something: cast, catch, move camera, log out and so on.`),
     wrapInLabel('Sensitivity: ', renderCheckChangesSens(config), `Old good sensitivity value for a typical motion detection. Doesn't need an explanation, right?`),
     wrapInLabel('Interval (sec): ', renderCheckChangesInterval(config), `The bot will check for motion every given interval value.`),
     wrapInLabel('Ignore Time After Event Occured (sec): ', renderCheckChangesIntervalAfter(config), `After some event happened how long to ignore all the events after. `),
-    wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do after the event occured.`),
-    config.checkChangesDoAfter == `sleep` ? wrapInLabel('Sleep Time (min): ', renderCheckChangesDoAfterSleepTime(config), `Time the bot will sleep after the event occured.`) : ``,
+    wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do after the event occured.\nChoices:\n- Sleep: the bot will sleep for the given duration.\n- Logout: The bot will log out for the given duration (will use settings from the Logging out section).\n- Move: The bot will make a random movement (will use the settings from the Random Movement section)\n- Press key: the bot will press the designated key.\n- Random: the bot will either sleep, move or do nothing randomly.`),
+    config.checkChangesDoAfter == `press key` ? wrapInLabel('Key: ', renderCheckChangesDoAfterKey(config), `Key the bot will press after the event occured. It will sleep after for the prvoided Sleep time. `) : ``,
+    config.checkChangesDoAfter == `sleep` || config.checkChangesDoAfter == `press key` || config.checkChangesDoAfter == `random` ? wrapInLabel('Sleep Time (min): ', renderCheckChangesDoAfterSleepTime(config), `Time the bot will sleep after the event occured.`) : ``,
     ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `🎮`), elt(`span`, {className: `advanced_settings_header_text`}, `Arduino Control`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#arduino-control-joystick")}}, `(Guide)`),
@@ -828,7 +835,8 @@ const runApp = async () => {
         event.target.name == `luresKey` ||
         event.target.name == `spareKey` ||
         event.target.name == 'logOutMacroKey' ||
-        event.target.name == 'mammothMacroKey') &&
+        event.target.name == 'mammothMacroKey' ||
+        event.target.name == 'checkChangesDoAfterKey') &&
       !event.target.disabled
     ) {
       event.target.style.backgroundColor = `rgb(255, 219, 197)`;

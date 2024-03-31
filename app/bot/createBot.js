@@ -585,6 +585,9 @@ if(lootWindowPatch.exitButton) {
 
     if(config.checkChanges) {
       setTimeout(async function checkChangesRepeat () {
+
+        if(state.status == `stop`) return;
+
         if(!prevImg && !checkChanges.blocked) {
           prevImg = await getDataFrom(detectZone);
           prevDiff = 0;
@@ -612,30 +615,52 @@ if(lootWindowPatch.exitButton) {
               }
             }
 
-            if(config.checkChangesDoAfter == `sleep`) {
+            let toDo = config.checkChangesDoAfter;
+
+            if(toDo == `random`) {
+              toDo = [`sleep`, `move`, `nothing`][Math.floor(Math.random() * 3)]
+            }
+
+            if(toDo == `sleep`) {
+              if(state.status == `checking`) {
+                await keyboard.sendKey('escape', delay);
+              }
               state.status = 'sleep';
-              state.sleepTime = config.checkChangesDoAfterSleepTime * 1000 * 60; 
-              return;
+              state.sleepTime = config.checkChangesDoAfterSleepTime * 1000 * 60;
             }
 
-            if(config.checkChangesDoAfter == `logout`) {
+            if(toDo == `logout`) {
               state.status = 'logout';
-              return;
             }
 
-            if(config.checkChangesDoAfter == `stop`) {
+            if(toDo == `move`) {
+              state.status = 'move';
+            }
+
+            if(toDo == `press key`) {
+              await keyboard.sendKey(config.checkChangesDoAfterKey, delay);
+              state.status = 'sleep';
+              state.sleepTime = config.checkChangesDoAfterSleepTime * 1000 * 60;
+            }
+
+            if(toDo == `stop`) {
+              if(state.status == `checking`) {
+                await keyboard.sendKey('escape', delay);
+              }
               onError();
             }
 
-            if(config.checkChangesDoAfter == `quit`) {
+            if(toDo == `quit`) {
               workwindow.close();
               app.quit();
             }
 
-            checkChanges.block(true);
-            setTimeout(() => {
-              checkChanges.unblock(true);
-            }, config.checkChangesIntervalAfter * 1000);
+            if(config.checkChangesDoAfter == `nothing`) {
+              checkChanges.block(true);
+              setTimeout(() => {
+                checkChanges.unblock(true);
+              }, config.checkChangesIntervalAfter * 1000);
+            }
           } else {
             prevImg = newImg;
           }
@@ -737,8 +762,11 @@ if(lootWindowPatch.exitButton) {
     if(missOnPurpose) {
       missOnPurposeTimer.update();
     }
+    if(state.status != `stop`) {
+      state.status = `checking`;
+    }
 
-    while (state.status == "working") {
+    while (state.status == "checking") {
       if (checkBobberTimer.isElapsed()) {
         switch(config.maxFishTimeAfter) {
           case `stop`: {
@@ -765,7 +793,9 @@ if (settings.soundDetection) {
     BrowserWindow.getAllWindows()[0].webContents.send("get-audio");
   });
 
-  if (caught) return pos;
+  if (caught) {
+    return pos;
+  }
 } else if(settings.checkLogic == `pixelmatch`) {
   if(await fishingZone.checkPixelMatch(pos, startTime)) {
     return pos;
