@@ -12,7 +12,7 @@
       "startByFishingKey": false,
       "libraryType": "nut.js",
       "libraryTypeInput": "nut.js",
-      "catchFishButton": "left",
+      "catchFishButton": "right",
       "checkChanges": false,
       "checkChangesSens": 800,
       "checkChangesInterval": 1,
