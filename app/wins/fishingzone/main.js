@@ -71,7 +71,7 @@ const createFishingZone = ({pos, screenSize, type, config, settings, scale}, fin
 		let saveCheckLogic = settings.checkLogic;
 
 		if(saveAutoTh) {
-			settings.threshold = 60;
+			settings.threshold = 45;
 		}
 
 		settings.autoTh = false;
@@ -90,7 +90,7 @@ const createFishingZone = ({pos, screenSize, type, config, settings, scale}, fin
 		win.setOpacity(0.3);
 
 		if(saveAutoTh) {
-			settings.threshold = 60;
+			settings.threshold = 45;
 		}
 
 		settings.autoTh = saveAutoTh;
