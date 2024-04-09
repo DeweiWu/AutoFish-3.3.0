@@ -732,7 +732,7 @@ if(lootWindowPatch.exitButton) {
         await moveTo({pos: pastPost, fineTune: null})
       }
 
-      await moveTo({ pos, randomRange: 5, fineTune: {offset: 10, steps: [1, 5]}});
+      await moveTo({ pos, randomRange: 5, fineTune: {offset: 5, steps: [1, 5]}});
     });
 
    return await findBobber(log);
@@ -777,6 +777,7 @@ if(lootWindowPatch.exitButton) {
             );
           }
           case `recast`: {
+            state.status = `working`;
             return false;
           }
         }
