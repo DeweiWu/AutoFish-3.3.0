@@ -172,6 +172,11 @@ class AutoFish {
       this.settings.render();
     });
 
+    ipcRenderer.on("set-game", (event, game) => {
+      this.settings.config.game = game;
+      this.settings.reRender();
+    });
+
     ipcRenderer.on('start-tm', () => {
         this.button.dom.click();
     });
