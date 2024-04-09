@@ -61,13 +61,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
           log.err(`[DEBUG] Color Found: ${bobber.color}, at: ${bobber.pos.x},${bobber.pos.y}`);
         }
         if(!bobber) return;
-
-        if(game != `Retail` && game != `Classic` && game != `LK Classic`) {
-          this._findThreshold(bobber, .80);
-        } else {
-          this._findThreshold(bobber, .50);
-        }
-
       } else {
         bobber = rgb.findColors({
           isColor: isBobber,
@@ -85,39 +78,65 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
       if(!bobber) return; // In case the bobber wasn't found in either _findMost or manually - recast.
 
       if(direction == `center` || autoSens) {
-        const doubleZoneSize = Math.round((screenSize.height / 1080) * 25); // 25
+        const doubleZoneSize = Math.round((screenSize.height / 1080) * 50); // 25
         const doubleZoneDims = {x: zone.x + bobber.pos.x - doubleZoneSize,
                                 y: zone.y + bobber.pos.y - doubleZoneSize,
                                 width: doubleZoneSize * 2,
                                 height: doubleZoneSize * 2}
-        const doubleZoneData = await getDataFrom(doubleZoneDims);
+        let doubleZoneData = await getDataFrom(doubleZoneDims);
 
+        if(process.env.NODE_ENV == `dev`) {
+          const img = await Jimp.read(doubleZoneData);
+          const date = new Date()
+          const name = `doubleZoneData-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.png`
+          img.write(`${__dirname}/../debug/${name}`);
+        }
+
+        let colorPrev = null;
         let rgbAroundBobber = createRgb(doubleZoneData);
         rgbAroundBobber.saturate(...saturation);
-        let doubleZoneLength = rgbAroundBobber.findColors({isColor: isBobber});
 
-        if(doubleZoneLength) {
-          filledBobber = doubleZoneLength;
-        } else {
-          log.warn(`Found the color, but it doesn't look like a bobber.`);
-          return;
+        const mostRedPoints = [];
+
+        for(;;) {
+          let mostRedPoint = this._findMost(rgbAroundBobber);
+          let [r, g, b] = mostRedPoint.color;
+          let colorNow = r - Math.max(g, b) - (g + b);
+
+          if(colorPrev) {
+            if(colorNow / colorPrev * 100 < 50) {
+              break;
+            }
+            colorPrev = colorNow;
+          } else {
+            colorPrev = colorNow;
+          }
+
+          rgbAroundBobber.cutOut([mostRedPoint.pos]);
+          mostRedPoints.push(mostRedPoint);
         }
 
-        let doubleZoneBobber = rgbAroundBobber.findColors({
-            isColor: isBobber,
-            atFirstMet: true,
-            saveColor: true,
-            direction: bobberColor == `red` ? `normal` : "normalright",
-            task: game == `Vanilla` ? null : looksLikeBobber(1)
+        filledBobber = mostRedPoints;
+
+        let mostLeft = mostRedPoints.reduce((a, b) => a.pos.x < b.pos.x ? a : b);
+        let mostRight = mostRedPoints.reduce((a, b) => a.pos.x > b.pos.x ? a : b);
+        let middleValue = (mostLeft.pos.x + mostRight.pos.x) / 2; // .33 from the left
+        let mostTop = mostRedPoints.reduce((a, b) => a.pos.y < b.pos.y ? a : b);
+        let mostTopMiddle = mostRedPoints.reduce((a, b) => {
+          if(
+            Math.abs(a.pos.x - middleValue) + (a.pos.y - mostTop.pos.y)
+          < Math.abs(b.pos.x - middleValue) + (b.pos.y - mostTop.pos.y)
+          ) {
+            return a;
+          } else {
+            return b;
+          }
         });
 
-        if(!doubleZoneBobber) {
-          log.warn(`Found the color, but it doesn't look like a bobber.`);
-          return;
-        }
+        bobber.color = mostTopMiddle.color;
+        bobber.pos = mostTopMiddle.pos.plus({x: bobber.pos.x - doubleZoneSize, y: bobber.pos.y - doubleZoneSize});
 
-        bobber.color = doubleZoneBobber.color;
-        bobber.pos = doubleZoneBobber.pos.plus({x: bobber.pos.x - doubleZoneSize, y: bobber.pos.y - doubleZoneSize});
+        this._findThreshold(bobber, .5);
       }
 
       if(autoSens) {
@@ -130,8 +149,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
     _findMost(rgb) {
       let initialThColors = rgb.findColors({
         isColor: bobberColor == `red` ? isRed(0) : isBlue(0),
-        saveColor: true,
-        taks: looksLikeBobber(1)
+        saveColor: true
       });
 
       if(!initialThColors) return;
@@ -165,7 +183,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
     async adjustSensitivity(bobberSize) {
       if(game == `Retail`) {
-         let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 3 : 2.5)));
+         let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 4 : 3.5)));
          if(calculatedSens < 3) calculatedSens = 3;
          sensitivity = calculatedSens;
        } else {
