@@ -79,7 +79,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       if(state.status == `stop`) {
         return
       } else {
-        state.sleepTime = null; 
+        state.sleepTime = null;
         state.status = `working`;
       }
     }
@@ -200,6 +200,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
       attempts = 0;
     } else {
       failedCast = true;
+      stats.confused++;
       log.err(`Can't find the bobber!`);
       if (++attempts == findBobber.maxAttempts) {
         if(dynamicThreshold.on && !dynamicThreshold.limit()) {
