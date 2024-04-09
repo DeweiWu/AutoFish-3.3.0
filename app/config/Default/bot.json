@@ -259,7 +259,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
@@ -439,7 +439,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
@@ -619,7 +619,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
@@ -779,7 +779,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
@@ -940,7 +940,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
@@ -1111,7 +1111,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
@@ -1287,7 +1287,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
@@ -1446,7 +1446,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "center",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
@@ -1610,7 +1610,7 @@
         "height": 0.01851851
       },
       "findBobberDirection": "reverse",
-      "checkingDelay": 0,
+      "checkingDelay": 50,
       "mouseMoveSpeed": 30,
       "mouseCurvatureStrength": 65,
       "applyFatigue": true,
