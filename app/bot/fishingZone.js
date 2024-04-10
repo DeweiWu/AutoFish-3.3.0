@@ -138,10 +138,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
           filledBobber = mostRedPoints;
 
-          if(autoSens) {
-            await this.adjustSensitivity(filledBobber.length);
-          }
-
           let mostLeft = mostRedPoints.reduce((a, b) => a.pos.x < b.pos.x ? a : b);
           let mostRight = mostRedPoints.reduce((a, b) => a.pos.x > b.pos.x ? a : b);
           let middleValue = (mostLeft.pos.x + mostRight.pos.x) / (bobberColor == `red` ? 2 : 1.5); // position on the feather
@@ -160,10 +156,9 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
           bobber.color = mostTopMiddle.color;
           bobber.pos = mostTopMiddle.pos.plus({x: doubleZoneDims.x, y: doubleZoneDims.y});
           this._findThreshold(bobber);
-          return bobber.pos;
         } else {
           /* if direction == center */
-          filledBobber = rgbAroundBobber.findColors({isColor: isBobber});
+          filledBobber = rgbAroundBobber.findColors({isColor: isBobber, saveColor: true});
           bobber = rgbAroundBobber.findColors({
               isColor: isBobber,
               atFirstMet: true,
@@ -171,11 +166,19 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
               direction: `normal`,
               task: game == `Vanilla` ? null : looksLikeBobber(1)
           })
+
+          if(!bobber) {
+            return;
+          }
+
+          bobber.pos = bobber.pos.plus({x: doubleZoneDims.x, y: doubleZoneDims.y});
         }
 
         if(autoSens) {
           await this.adjustSensitivity(filledBobber.length);
         }
+
+        return bobber.pos;
       }
 
       return bobber.pos.plus(zone);
@@ -340,7 +343,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
     async getBobberPrint(wobble) {
       let rest = [];
-      if(autoSens || direction == `center`) {
+      if(autoTh) {
         if(!filledBobber) {
           return;
         }
