@@ -350,8 +350,9 @@ if(lootWindowPatch.exitButton) {
     }
 
     if(settings.autoColor) {
-      if(await fishingZone.changeColor()) {
-        log.warn(`Switched to ${settings.bobberColor == `red` ? `blue` : `red`} color.`);
+      let colorPercent = await fishingZone.checkColor();
+      if(colorPercent > 25) {
+        fishingZone.changeColor();
       }
     }
 
@@ -824,6 +825,7 @@ if (settings.soundDetection) {
     if(settings.autoTh) {
       pos = await fishingZone.checkAbove(pos);
     }
+
   }
     await sleep(config.checkingDelay);
 }
