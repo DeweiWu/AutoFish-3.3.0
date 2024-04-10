@@ -4,7 +4,7 @@
   "intKey": "f",
   "useInt": false,
   "stopKey": "delete",
-  "threshold": 60,
+  "threshold": 100,
   "checkLogic": "default",
   "bobberSensitivity": {
     "Retail": 25,
@@ -20,7 +20,7 @@
   },
   "autoSens": true,
   "autoTh": true,
-  "autoColor": false,
+  "autoColor": true,
   "bobberColor": "red",
   "afkmode": false,
   "multipleWindows": false,
