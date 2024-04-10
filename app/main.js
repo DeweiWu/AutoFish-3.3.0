@@ -12,7 +12,7 @@ const {
 } = require("electron");
 const path = require("path");
 
-const { readFileSync, writeFileSync, mkdir, rmdir, readdir } = require("fs");
+const { readFileSync, writeFileSync, writeFile, mkdir, rmdir, readdir } = require("fs");
 const { unlink } = require("fs").promises;
 
 const createAdvSettings = require(`./wins/advsettings/main.js`);
@@ -272,7 +272,9 @@ By pressing "Accept" you agree to everything stated above.`,
         app.quit();
       } else {
         settings.initial = false;
-        writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
+        writeFile(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings), () => {
+          log.ok('Accepted License.')
+        })
       }
 
       let initialGameChoice = showChoiceWarning(win, `The shortcut to AutoFish was created on you desktop!\n\nChoose your game:`, `Initial configuration`,
