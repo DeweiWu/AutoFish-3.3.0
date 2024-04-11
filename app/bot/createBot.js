@@ -709,13 +709,11 @@ if(lootWindowPatch.exitButton) {
     if(settings.checkLogic == `pixelmatch`) {
       await sleep(2500);
     } else {
-      await sleep(config.castDelay)
+      await sleep(random(config.castDelay, config.castDelay + 500));
     }
-
   };
 
   const highlightBobber = async (pos, log) => {
-
     if (settings.checkLogic == `pixelmatch` ||
         settings.useInt ||
         settings.afkmode ||
@@ -736,15 +734,15 @@ if(lootWindowPatch.exitButton) {
       await moveTo({ pos, randomRange: 5, fineTune: {offset: 5, steps: [1, 5]}});
     });
 
-   return await findBobber(log);
+   return await findBobber(log, pos);
   };
 
-  const findBobber = async (log) => {
+  const findBobber = async (log, highlight) => {
     if(settings.useInt && settings.soundDetection) {
       return true;
     }
 
-    const pos = await fishingZone.findBobber(findBobber.memory, log);
+    const pos = await fishingZone.findBobber(findBobber.memory, log, highlight);
 
     if(pos && process.env.NODE_ENV == `dev`) {
       screen.config.highlightOpacity = 1;

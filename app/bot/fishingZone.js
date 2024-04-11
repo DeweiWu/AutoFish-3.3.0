@@ -24,7 +24,7 @@ let pixelMatchMax;
 
 const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, threshold, bobberColor, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, splashColor}) => {
   let checkAboveCompensateValue = 0;
-
+  const doubleZoneSize = Math.round((screenSize.height / 1080) * 50); // 25
   sensitivity = (game == `Retail` || game == `Vanilla (splash)` ? 30 - sensitivity[game] : 10 - sensitivity[game]) || 1;
 
   if(checkLogic == 'pixelmatch') {
@@ -46,12 +46,22 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
   let filledBobber;
 
   return {
-    async findBobber(exception, log) {
+    async findBobber(exception, log, highlight) {
+
       checkAboveCompensateValue = 0;
       imgAroundBobberPrev = null;
       pixelMatchMax = 0;
 
-      let rgb = createRgb(await getDataFrom(zone));
+      let rgbZone = zone;
+      if(highlight) {
+        rgbZone = {x: highlight.x - doubleZoneSize, y: highlight.y - doubleZoneSize, width: doubleZoneSize * 2, height: doubleZoneSize * 2};
+        if(rgbZone.x < zone.x) rgbZone.x = zone.x;
+        if(rgbZone.y < zone.y) rgbZone.y = zone.y;
+        if(rgbZone.x + rgbZone.width > zone.x + zone.width) rgbZone.x = zone.x + zone.width - rgbZone.width;
+        if(rgbZone.y + rgbZone.height > zone.y + zone.height) rgbZone.y = zone.y + zone.height - rgbZone.height;
+      }
+
+      let rgb = createRgb(await getDataFrom(rgbZone));
       rgb.saturate(...saturation)
 
       if(exception) {
@@ -76,22 +86,21 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
       }
 
       if(checkLogic == `pixelmatch`) {
-        return bobber.pos.plus(zone);
+        return bobber.pos.plus(rgbZone);
       }
 
       if(!bobber) return; // In case the bobber wasn't found in either _findMost or manually - recast.
 
       if(autoTh || direction == `center` || autoSens) {
-        const doubleZoneSize = Math.round((screenSize.height / 1080) * 50); // 25
-        const doubleZoneDims = {x: zone.x + bobber.pos.x - doubleZoneSize,
-                                y: zone.y + bobber.pos.y - doubleZoneSize,
+        const doubleZoneDims = {x: rgbZone.x + bobber.pos.x - doubleZoneSize,
+                                y: rgbZone.y + bobber.pos.y - doubleZoneSize,
                                 width: doubleZoneSize * 2,
                                 height: doubleZoneSize * 2};
 
-        if(doubleZoneDims.x < zone.x) doubleZoneDims.x = zone.x;
-        if(doubleZoneDims.y < zone.y) doubleZoneDims.y = zone.y;
-        if(doubleZoneDims.x + doubleZoneDims.width > zone.x + zone.width) doubleZoneDims.x = zone.x + zone.width - doubleZoneDims.width;
-        if(doubleZoneDims.y + doubleZoneDims.height > zone.y + zone.height) doubleZoneDims.y = zone.y + zone.height - doubleZoneDims.height;
+        if(doubleZoneDims.x < rgbZone.x) doubleZoneDims.x = rgbZone.x;
+        if(doubleZoneDims.y < rgbZone.y) doubleZoneDims.y = rgbZone.y;
+        if(doubleZoneDims.x + doubleZoneDims.width > rgbZone.x + rgbZone.width) doubleZoneDims.x = rgbZone.x + rgbZone.width - doubleZoneDims.width;
+        if(doubleZoneDims.y + doubleZoneDims.height > rgbZone.y + rgbZone.height) doubleZoneDims.y = rgbZone.y + rgbZone.height - doubleZoneDims.height;
 
         let doubleZoneData = await getDataFrom(doubleZoneDims);
 
@@ -181,7 +190,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
         return bobber.pos;
       }
 
-      return bobber.pos.plus(zone);
+      return bobber.pos.plus(rgbZone);
     },
 
     _findMost(rgb) {
@@ -215,7 +224,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
       return bobber;
     },
 
-    _findThreshold(bobber, thCoof = .5) {
+    _findThreshold(bobber, thCoof = .75) { // .5
       let newThreshold = (([r, g, b]) => bobberColor == `red` ? (r - (Math.max(g, b)))  * thCoof : (b - Math.max(g, r))  * thCoof)(bobber.color); // for doubleZoneSearching searching half of the color foundo on threshold
       isBobber = bobberColor == `red` ? isRed(newThreshold, 50) : isBlue(newThreshold, 50); // 50?
     },
@@ -258,7 +267,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
     },
 
     async checkPixelMatch(bobber, startTime) {
-      const doubleZoneSize = Math.round((screenSize.height / 1080) * 50);
       let imgAroundBobber = await getDataFrom({x: bobber.x - doubleZoneSize,
                                                y: bobber.y - doubleZoneSize,
                                                width: doubleZoneSize * 2,
