@@ -272,24 +272,16 @@ By pressing "Accept" you agree to everything stated above.`,
         app.quit();
       } else {
         settings.initial = false;
-        writeFile(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings), () => {
-          log.ok('Accepted License.')
-        })
       }
-
+      let games = [`Retail`, `LK Classic`, `Classic`, "Leg", "MoP", "Cata", "LK Private", "TBC", "Vanilla"];
       let initialGameChoice = showChoiceWarning(win, `The shortcut to AutoFish was created on you desktop!\n\nChoose your game:`, `Initial configuration`,
-        `Retail`,
-        `LK Classic`,
-        `Classic (Hardcore, SoD)`,
-        "Leg (private)",
-        "MoP (private)",
-        "Cata (private)",
-        "LK (private)",
-        "TBC (private)",
-        "Vanilla (private)",
+        ...games
       );
-      win.webContents.send('set-game', [`Retail`, `LK Classic`, `Classic`, "Leg", "MoP", "Cata", "LK Private", "TBC", "Vanilla"][initialGameChoice])
+      win.webContents.send('set-game', games[initialGameChoice])
+      settings.game = games[initialGameChoice];
     }
+
+    writeFile(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings), () => {})
 
     if(screen.getAllDisplays().length > 1) {
       log.warn("The bot detected more than 1 display: use both the game and the bot on the primary one.")
