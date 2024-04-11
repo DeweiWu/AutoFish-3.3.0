@@ -128,8 +128,9 @@ if (tmBot.bot) {
   tmBot.stats = bots.map(({ stats, state }) => ({stats, state}));
 
   tmBot.bot.hears("📢 Stats", (ctx) => {
+
     if(!tmBot.ctx) tmBot.ctx = ctx;
-    tmBot.stats.forEach(({stats, state}, i) => ctx.reply(`State: <b>${state.status == `working` ? `ON` : state.status == `initial` ? `INITIAL` : `OFF`}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
+    tmBot.stats.forEach(({stats, state}, i) => ctx.reply(`State: <b>${state.status.toUpperCase()}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
   });
 
   tmBot.bot.hears("❌ Quit", (ctx) => {
@@ -170,12 +171,12 @@ if (tmBot.bot) {
     },
     stopBots() {
       log.send('Stopping the bots...');
-      if(tmBot.ctx) {
-        tmBot.ctx.reply(`Stopped the bot!`);
-        tmBot.stats.forEach(({stats, state}, i) => tmBot.ctx.reply(`State: <b>${state.status == `working` ? `ON` : state.status == `initial` ? `INITIAL` : `OFF`}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
-      }
       log.setState(false);
       bots.forEach(({state}) => state.status = "stop");
+      if(tmBot.ctx) {
+        tmBot.ctx.reply(`Stopped the bot!`);
+        tmBot.stats.forEach(({stats, state}, i) => tmBot.ctx.reply(`State: <b>${state.status.toUpperCase()}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss} (${getPercent(stats.miss, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
+      }
     },
   };
 };
