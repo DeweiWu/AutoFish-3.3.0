@@ -8,6 +8,7 @@ const {
   shell,
   powerSaveBlocker,
   globalShortcut,
+  crashReporter,
   screen
 } = require("electron");
 const path = require("path");
@@ -625,6 +626,7 @@ const menu = Menu.buildFromTemplate([
 ]);
 
 Menu.setApplicationMenu(menu);
-
   createWindow();
 });
+
+crashReporter.start({uploadToServer: false});
