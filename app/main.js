@@ -320,11 +320,7 @@ By pressing "Accept" you agree to everything stated above.`,
       config.game = configDefault.game;
     }
 
-    let games = findGameWindows(config).map(game => ({game, settings, config}));
-
-    if(!settings.multipleWindows) {
-      games = [games[0]];
-    }
+    let games = findGameWindows(config);
 
     if (!games) {
       log.err(`Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
@@ -333,6 +329,12 @@ By pressing "Accept" you agree to everything stated above.`,
     } else {
       log.ok(`Found ${games.length} window${games.length > 1 ? `s` : ``} of the game!`);
     }
+
+    if(!settings.multipleWindows) {
+      games = [games[0]];
+    }
+
+    games = games.map(game => ({game, settings, config}));
 
     if(type != `relZone` && type != `chatZone` && type != `detectZone` && settings.initialZone){
       await new Promise(function(resolve, reject) {
@@ -605,7 +607,7 @@ const menu = Menu.buildFromTemplate([
   {
     label: `Help`,
     submenu: [
-      { label: "AutoFish ver. 2.10.2 Premium" },
+      { label: "AutoFish ver. 2.11.0 Premium" },
       { type: "separator" },
       {
         label: "📘 Read Me",
