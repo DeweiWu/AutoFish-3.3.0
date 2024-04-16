@@ -17,13 +17,14 @@ const getPercent = (value, total) => {
   return Math.ceil((value / (total || 1)) * 100 * 100) / 100;
 };
 
-const createBots = async (games, settings, config, log, tmBot, arduino) => {
+const createBots = async (games, log, tmBot, arduino) => {
   const winSwitch = createWinSwitch(new EventLine());
 
-  if(config.patch[settings.game].whitelist) {
+  if(games[0].config.patch[games[0].settings.game].whitelist) { // check language only by first win?
     log.send(`Downloading data for ${properLanguages[config.patch[settings.game].whitelistLanguage]} language, it might take a while...`);
     await setWorker(config.patch[settings.game].whitelistLanguage);
   }
+
 
 if (tmBot.bot) {
   tmBot.ss = [];
@@ -98,12 +99,7 @@ if (tmBot.bot) {
   });
 }
 
-
-  if(!settings.multipleWindows) {
-    games = [games[0]];
-  }
-
-  const bots = games.map((game, i) => {
+  const bots = games.map(({game, config, settings}, i) => {
 
     if(config.patch[settings.game].arduino) {
 

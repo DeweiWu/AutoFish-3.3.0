@@ -1,7 +1,8 @@
 {
   "game": {
     "names": ["World of"],
-    "classNames": ["GxWindowClass", "GxWindowClassD3d"]
+    "classNames": ["GxWindowClass", "GxWindowClassD3d"],
+    "handles": []
   },
   "patch": {
     "Retail": {

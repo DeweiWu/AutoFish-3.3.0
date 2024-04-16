@@ -1107,3 +1107,7 @@ input[type=number] {
 .thLabel {
   padding-left: 3px;
 }
+
+.customWindow {
+  width: 150px !important;
+}

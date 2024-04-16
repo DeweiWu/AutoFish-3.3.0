@@ -153,8 +153,12 @@ class Settings {
         this.reRender();
       }
 
-      if((event.target.name == `afkmode` || event.target.name == `multipleWindows`) && event.target.checked == true) {
-        this.onDx11();
+      if(event.target.name == `afkmode` && event.target.checked == true) {
+        this.onAfkFishing();
+      }
+
+      if(event.target.name == `multipleWindows` && event.target.checked == true) {
+        this.onMultipleFishing();
       }
 
       if((event.target.name == `lures` && event.target.checked) && (config.game == `Retail` || config.game == `Classic` || config.game == `Vanilla` || config.game == `Vanilla (splash)`)) {
@@ -188,8 +192,12 @@ class Settings {
     this.dom.append(renderSettings(this.config));
   }
 
-  regOnDx11(callback) {
-    this.onDx11 = callback;
+  regOnAfkFishing(callback) {
+    this.onAfkFishing = callback;
+  }
+
+  regOnMultipleFishing(callback) {
+    this.onMultipleFishing = callback;
   }
 
   regOnLures(callback) {

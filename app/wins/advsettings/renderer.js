@@ -298,18 +298,22 @@ const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensi
 };
 
 const renderCustomWindow = ({useCustomWindow, customWindow}) => {
-  const select = elt(`select`, {name: `customWindow`, disabled: !useCustomWindow, value: customWindow});
+  const select = elt(`select`, {name: `customWindow`, className: `customWindow`, disabled: !useCustomWindow});
   const renderUseCustomWindow = elt(`input`, {name: `useCustomWindow`, type: `checkbox`, checked: useCustomWindow});
+  const focusButton = elt(`input`, {type: `button`, value: `Focus`, disabled: !useCustomWindow, onclick() {
+    ipcRenderer.send('focus-win', customWindow);
+  }});
 
   if(useCustomWindow) {
     ipcRenderer.invoke('get-all-windows')
     .then((windows) => {
-      windows.forEach(({title}) => {
-        select.append(elt(`option`, { selected: title == customWindow }, title));
+      windows.forEach(({title, handle}) => {
+        select.append(elt(`option`, { selected: handle == customWindow, value: handle }, `${title} (${handle})`));
       })
+
     });
   }
-  return elt(`div`, null, renderUseCustomWindow, select);
+  return elt(`div`, null, renderUseCustomWindow, select, focusButton);
 
 };
 

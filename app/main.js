@@ -297,6 +297,7 @@ By pressing "Accept" you agree to everything stated above.`,
   ipcMain.on("start-bot", async (event, type) => {
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
+    const configDefault = getJson(`./config/${profile}/defaults.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
 
     log.send(`Looking for the windows of the game...`);
@@ -304,18 +305,27 @@ By pressing "Accept" you agree to everything stated above.`,
     const useCustomWindow = config.patch[settings.game].useCustomWindow;
     if(useCustomWindow) {
       const customWindow = config.patch[settings.game].customWindow;
-      const name = getAllWindows().find(({title}) => title == customWindow);
+      const name = getAllWindows().find(({handle}) => handle == customWindow);
       if(!name) {
         log.err(`Can't access this window`);
         win.webContents.send("stop-bot");
         return;
       }
-      const {title, className} = name;
-      config.game.names.push(title);
-      config.game.classNames.push(className);
+      const {title, className, handle} = name;
+
+      config.game.names = [title];
+      config.game.classNames = [className];
+      config.game.handles = [handle];
+    } else {
+      config.game = configDefault.game;
     }
 
-    const games = findGameWindows(config.game);
+    let games = findGameWindows(config).map(game => ({game, settings, config}));
+
+    if(!settings.multipleWindows) {
+      games = [games[0]];
+    }
+
     if (!games) {
       log.err(`Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
       win.webContents.send("stop-bot");
@@ -339,10 +349,9 @@ By pressing "Accept" you agree to everything stated above.`,
       writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
     }
 
-
     if(type == `relZone` || type == `chatZone` || type == `detectZone`) {
       log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : `Motion Detection`} Zone...`);
-      let data = await setFishingZone(games[0], config.patch[settings.game][type], type, config.patch[settings.game], settings);
+      let data = await setFishingZone(games[0].game, config.patch[settings.game][type], type, config.patch[settings.game], settings);
       if(data) {
         config.patch[settings.game][type] = data;
         writeFileSync(path.join(__dirname, `./config/${profile}/bot.json`), JSON.stringify(config));
@@ -358,7 +367,33 @@ By pressing "Accept" you agree to everything stated above.`,
       globalShortcut.unregister(settings.fishingKey);
     }
 
-    const {startBots, stopBots} = await createBots(games, settings, config, log, tmBot, arduino);
+    if(settings.multipleWindows) { // TEMP:
+      games = [];
+      for(let i = 1; i <= 10; i++) {
+        const config = getJson(`./config/WIN${i}/bot.json`);
+        const settings = getJson(`./config/WIN${i}/settings.json`);
+
+        const useCustomWindow = config.patch[settings.game].useCustomWindow;
+        if(useCustomWindow) {
+          const customWindow = config.patch[settings.game].customWindow;
+          const name = getAllWindows().find(({handle}) => handle == customWindow);
+          if(!name) {
+            log.err(`Can't access this window`);
+            win.webContents.send("stop-bot");
+            return;
+          }
+          const {title, className, handle} = name;
+
+          config.game.names = [title];
+          config.game.classNames = [className];
+          config.game.handles = [handle];
+
+          games.push({game: findGameWindows(config)[0], settings, config});
+        }
+      }
+    }
+
+    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino);
     const stopAppAndBots = () => {
 
       if(config.patch[settings.game].startByFishingKey) {
@@ -367,7 +402,8 @@ By pressing "Accept" you agree to everything stated above.`,
         });
       }
 
-      games.forEach(async ({mouse, keyboard, workwindow}) => {
+      games.forEach(async ({game}) => {
+        const {mouse, keyboard, workwindow} = game;
         while(!workwindow.isForeground()) await sleep(100);
           mouse.humanMoveTo.cancelCurrent();
           keyboard.sendKeys.cancelCurrent();
@@ -419,9 +455,13 @@ By pressing "Accept" you agree to everything stated above.`,
     shell.openExternal("https://www.youtube.com/jsbots")
   );
 
-  ipcMain.on("dx11-warn", () => {
+  ipcMain.on("afk-fishing-warn", () => {
     showWarning(win, `Don't forget to switch to DirectX 11 in the game.\n\nTurn off Human-like Accuracy feature (Advanced Settings) and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.`);
   });
+
+  ipcMain.on("multiple-fishing-warn", () => {
+    showWarning(win, `In this mode the bot will use settings from corresponding profiles (WIN1, WIN2, WIN3...). First check WIN1 profile then go to Advanced Settings and find the window of the game you want the bot to treat as WIN1. You can use "Focus" button to understand what window you focus exactly.\n\nDon't forget to switch to DirectX 11 in the game.\n\nTurn off Human-like Accuracy feature (Advanced Settings) and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.`);
+  })
 
   ipcMain.on("splash-warn", () => {
     showWarning(win, `The bot will try to detect splash animation instead of the bobber animation. If possible, increase the visual quality of the water either by installing modded textures or in the settings of the game.\n\nIf the splash isn't detected, you can increase Sensitivity and Splash Color values (You can find the Splash Color value in the Advanced Settings).`);
@@ -476,6 +516,12 @@ By pressing "Accept" you agree to everything stated above.`,
   })
   ipcMain.handle("get-bitmap", getBitmapAsync);
   ipcMain.handle("get-all-windows", getAllWindows);
+  ipcMain.on('focus-win', (event, winHandle) => {
+    const {handle, title, className} = getAllWindows().find(({handle}) => handle == winHandle);
+    let game = findGameWindows({game: {handles: [handle], names: [title], classNames: [className]}});
+    game[0].workwindow.setForeground();
+
+  })
   ipcMain.handle("get-profiles", () => getProfile());
   ipcMain.handle("get-settings", () => getJson(`./config/${getProfile().selected}/settings.json`));
 
@@ -484,7 +530,18 @@ ipcMain.handle("delete-user", (event, user) => {
     return false;
   }
 
-  if (user == `Default`) {
+  if (user == `Default` ||
+    user == `WIN1` ||
+    user == `WIN2` ||
+    user == `WIN3` ||
+    user == `WIN4` ||
+    user == `WIN5` ||
+    user == `WIN6` ||
+    user == `WIN7` ||
+    user == `WIN8` ||
+    user == `WIN9` ||
+    user == `WIN10`
+  ) {
     log.err(`You can't delete Default profile.`);
     return;
   }

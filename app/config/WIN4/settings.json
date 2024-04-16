@@ -1,0 +1,31 @@
+{
+  "game": "Retail",
+  "fishingKey": "1",
+  "intKey": "f",
+  "useInt": false,
+  "stopKey": "delete",
+  "threshold": 100,
+  "checkLogic": "default",
+  "bobberSensitivity": {
+    "Retail": 25,
+    "LK Classic": 7,
+    "Classic": 7,
+    "Leg": 7,
+    "MoP": 7,
+    "Cata": 7,
+    "LK Private": 7,
+    "TBC": 7,
+    "Vanilla": 7,
+    "Vanilla (splash)": 10
+  },
+  "autoSens": true,
+  "autoTh": true,
+  "autoColor": false,
+  "bobberColor": "red",
+  "afkmode": false,
+  "multipleWindows": true,
+  "initial": false,
+  "initialZone": false,
+  "soundDetection": false,
+  "soundDetectionRange": 500
+}

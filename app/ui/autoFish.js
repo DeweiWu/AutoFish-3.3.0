@@ -151,8 +151,12 @@ class AutoFish {
       ipcRenderer.send("start-bot", `chatZone`);
     });
 
-    this.settings.regOnDx11(() => {
-      ipcRenderer.send("dx11-warn");
+    this.settings.regOnAfkFishing(() => {
+      ipcRenderer.send("afk-fishing-warn");
+    });
+
+    this.settings.regOnMultipleFishing(() => {
+      ipcRenderer.send("multiple-fishing-warn");
     });
 
     this.settings.regOnWhitelistWarn(() => {

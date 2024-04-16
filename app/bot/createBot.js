@@ -258,7 +258,7 @@ if(lootWindowPatch.exitButton) {
           await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
         }
 
-        if(config.likeHumanFineTune && fineTune && state.status != "stop") {
+        if(config.likeHumanFineTune && fineTune && !settings.multipleWindows && state.status != "stop") {
           let times = random(fineTune.steps[0], fineTune.steps[1]);
           for(let i = 1; i <= times; i++) {
             await mouse.humanMoveTo(
@@ -717,6 +717,7 @@ if(lootWindowPatch.exitButton) {
     if (settings.checkLogic == `pixelmatch` ||
         settings.useInt ||
         settings.afkmode ||
+        settings.multipleWindows ||
         (config.likeHuman && random(0, 100) > config.highlightPercent)) {
         return pos;
     }
