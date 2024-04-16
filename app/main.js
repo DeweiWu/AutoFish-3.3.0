@@ -460,7 +460,7 @@ By pressing "Accept" you agree to everything stated above.`,
   });
 
   ipcMain.on("multiple-fishing-warn", () => {
-    showWarning(win, `In this mode the bot will use settings from corresponding profiles (WIN1, WIN2, WIN3...). First check WIN1 profile then go to Advanced Settings and find the window of the game you want the bot to treat as WIN1. You can use "Focus" button to understand what window you focus exactly.\n\nDon't forget to switch to DirectX 11 in the game.\n\nTurn off Human-like Accuracy feature (Advanced Settings) and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.`);
+    showWarning(win, `In this mode the bot will use config from respective to the window profiles: WIN1, WIN2, WIN3 and so on.\n\nEvery "WIN" profile should have "Custom window" set (Advanced Settings -> Window). You can use "Focus" button to understand which window you chose exactly. The bot will ignore profiles for which you didn't set custom window.\n\nDon't forget to switch to DirectX 11 in the game.`);
   })
 
   ipcMain.on("splash-warn", () => {
