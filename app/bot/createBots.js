@@ -21,8 +21,8 @@ const createBots = async (games, log, tmBot, arduino) => {
   const winSwitch = createWinSwitch(new EventLine());
 
   if(games[0].config.patch[games[0].settings.game].whitelist) { // check language only by first win?
-    log.send(`Downloading data for ${properLanguages[config.patch[settings.game].whitelistLanguage]} language, it might take a while...`);
-    await setWorker(config.patch[settings.game].whitelistLanguage);
+    log.send(`Downloading data for ${properLanguages[games[0].config.patch[games[0].settings.game].whitelistLanguage]} language, it might take a while...`);
+    await setWorker(games[0].config.patch[games[0].settings.game].whitelistLanguage);
   }
 
 
