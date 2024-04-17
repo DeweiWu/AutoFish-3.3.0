@@ -3,7 +3,7 @@ const elt = require("../../ui/utils/elt.js");
 const wrapInLabel = require("../../ui/utils/wrapInLabel.js");
 const { SerialPort } = require(`serialport`);
 const keySupport = require("./../../utils/keySupport.js");
-
+let spareNumber = 0;
 const convertValue = (node) => {
   let value = node.value;
   if (node.type == "checkbox") {
@@ -502,35 +502,64 @@ const renderLuresDelayMin = ({lures, luresDelayMin}) => {
 };
 
 const renderSpares = ({spares}) => {
+
+  const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click"];
   const addButton = elt('input', {type: 'button', className: "spares-addButton", onclick() {
     let key = elt('input', {type: 'text', value: `1`, className: "spares-key", "data-spares": "key"});
     key.setAttribute('readonly', true);
-    this.parentNode.insertBefore(elt('div', {className: "spareContainer"}, `Name: `,
-      elt('input', {type: `text`, value: `My Action`, className: "spares-name", "data-spares": "name"}), `Key: `,
-      key, `Time: `,
-      elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"}), `Delay: `,
-      elt(`input`, {type: `number`, value: 3000, title: "Milliseconds", "data-spares": "delay"}),
-      elt('input', {type: 'button', className: "spares-removeButton", onclick(){
-        ipcRenderer.invoke('remove-spare-confirm')
-        .then((confirm) => confirm ? this.parentNode.remove() : null)
-      }})
+
+    const x = elt('input', {type: `number`, style: `display: none`, "data-spares": "x", value: 0});
+    const y = elt('input', {type: `number`, style: `display: none`, "data-spares": "y", value: 0})
+
+    const coordsButton = elt('input', {type: `button`, style: `display: none`, value: `Set`, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        x.value = data.x;
+        y.value = data.y;
+      })
+    }});
+
+    this.parentNode.insertBefore(elt('form', {className: "spareContainer"},
+      elt(`div`, {className: `spare-inner`, style: ``},
+        elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"})),
+        elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: `Press Key`,"data-spares": "type"}, ...types.map((type) => elt('option', {value: type}, type)))),
+        elt(`div`, null, `Key: `, key, x, y, coordsButton),
+        elt(`div`, null, `Time: `, elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
+        elt(`div`, null, `Delay: `, elt(`input`, {type: `number`, value: 3000, title: "Milliseconds", "data-spares": "delay"})),
+        elt('input', {type: 'button', className: "spares-removeButton"})
+      ),
     ), this);
   }});
 
   const sparesNodes = spares.map(spare => {
-    const key = elt('input', {type: 'text', value: spare.key, className: "spares-key", "data-spares": "key"});
+    const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click"];
+    const key = elt('input', {type: 'text', style: `${spare.type == `Press Key` ? `` : `display: none;`}`, value: spare.key, className: "spares-key", "data-spares": "key"});
+
+    const x = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` ||  spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`,  "data-spares": "x", value: spare.x});
+    const y = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click`  || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, "data-spares": "y", value: spare.y})
+
+    const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        x.value = data.x;
+        y.value = data.y;
+      })
+    }});
+
     key.setAttribute('readonly', true);
-    return elt('div', {className: "spareContainer"}, `Name: `,
-      elt('input', {type: `text`, value: spare.name, className: "spares-name", "data-spares": "name"}), `Key: `,
-      key, `Time: `,
-      elt('input', {type: 'number', value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"}), `Delay: `,
-      elt(`input`, {type: `number`, value: spare.delay,  title: "Milliseconds",  "data-spares": "delay"}),
-      elt('input', {type: 'button', className: "spares-removeButton", onclick(){
-        ipcRenderer.invoke('remove-spare-confirm')
-        .then((confirm) => confirm ? this.parentNode.remove() : null)
-      }})
+    return elt('form', {className: "spareContainer"},
+      elt(`div`, {className: `spare-inner`, style: ``},
+        elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: spare.description, "data-spares": "description"})),
+        elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: spare.type, "data-spares": "type"}, ...types.map((type) => elt('option', {selected: type == spare.type}, type)))),
+        elt(`div`, {style: `${spare.type != `Press Key` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` ? `display: none` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Right Click` || spare.type == `Move Mouse + Left Click` ? `margin-bottom: 0px;` : ``}`}, spare.type == `Press Key` ? `Key: ` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `Coordinates: ` : ``, elt(`div`, null, x, y, coordsButton), key),
+        elt(`div`, null, `Time: `, elt('input', {type: 'number', value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
+        elt(`div`, null, `Delay: `, elt(`input`, {type: `number`, value: spare.delay, title: "Milliseconds", "data-spares": "delay"})),
+        elt('input', {type: 'button', className: "spares-removeButton"})
+      ),
     )
+
+
   });
+
+
   return elt('div', {className: `sparesContainer`}, ...sparesNodes, addButton);
 };
 
@@ -799,12 +828,26 @@ const renderSettings = (config) => {
 const runApp = async () => {
   let config = await ipcRenderer.invoke("get-game-config");
   const settings = elt(`form`, {className: `advSettings_settings`}, renderSettings(config));
+
+  spareNumber = config.spares.length + 1;
+
   const buttons = elt(`div`, {className: `buttons`},
      elt('input', {type: `button`, value: `Ok`}),
      elt('input', {type: `button`, value: `Cancel`}),
      elt('input', {type: `button`, value: `Defaults`}))
 
   settings.addEventListener(`click`, (event) => {
+
+    if(event.target.className == `spares-removeButton`) {
+      ipcRenderer.invoke('remove-spare-confirm')
+        .then((confirm) => {
+          if(confirm) {
+            event.target.parentNode.parentNode.remove();
+            spareNumber--;
+          }
+        })
+    }
+
     if(event.target.value == `Connect` && event.target.id == "tm") {
       ipcRenderer.invoke(`connect-telegram`, config.tmApiKey)
       .then(() => {
@@ -930,13 +973,16 @@ const runApp = async () => {
   const gatherConfig = () => {
 
     let spares = [...settings.querySelectorAll('.spareContainer')]
-    .map((spare) =>
-      [...spare.children].reduce((a, b) => {
-        if(b['data-spares']) {
-          a[b["data-spares"]] = convertValue(b);
-        }
-        return a;
-      }, {}));
+    .map((spare) => {
+      let inputs = [...spare.elements].filter(input => input.type != `button`);
+        return inputs.reduce((a, b) => {
+          if(b['data-spares']) {
+            a[b["data-spares"]] = convertValue(b);
+          }
+          return a;
+        }, {})
+      }
+    );
     config['spares'] = spares;
 
     [...settings.elements].forEach(option => {

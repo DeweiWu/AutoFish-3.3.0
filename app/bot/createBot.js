@@ -489,8 +489,56 @@ if(lootWindowPatch.exitButton) {
   let spares = config.spares.map((spare) => {
       const applySpare = async () => {
         await action(async () => {
-          await keyboard.sendKey(spare.key, delay);
+          switch(spare.type) {
+            case "Press Key": {
+              await keyboard.sendKey(spare.key, delay);
+              break;
+            }
+
+            case "Move Mouse": {
+              await moveTo({pos: {x: spare.x - screenSize.x, y: spare.y - screenSize.y}, randomRange: 3});
+              break;
+            }
+
+            case "Move Mouse + Right Click": {
+              await moveTo({pos: {x: spare.x - screenSize.x, y: spare.y - screenSize.y}, randomRange: 3});
+              if (config.reaction) {
+                await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+              }
+              await mouse.toggle('right', true, delay);
+              await mouse.toggle('right', false, delay)
+             break;
+            }
+
+            case "Move Mouse + Left Click": {
+              await moveTo({pos: {x: spare.x - screenSize.x, y: spare.y - screenSize.y}, randomRange: 3});
+              if (config.reaction) {
+                await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+              }
+              await mouse.toggle('left', true, delay);
+              await mouse.toggle('left', false, delay)
+              break;
+            }
+
+            case "Left Click": {
+              await mouse.toggle('left', true, delay);
+              await mouse.toggle('left', false, delay);
+              break;
+            }
+
+            case "Right Click": {
+              await mouse.toggle('right', true, delay);
+              await mouse.toggle('right', false, delay);
+              break;
+            }
+
+            case "Middle Click": {
+              await mouse.toggle('middle', true, delay);
+              await mouse.toggle('middle', false, delay);
+            }
+          }
         });
+
 
         if(config.confirmSpares) {
           if (config.reaction) {

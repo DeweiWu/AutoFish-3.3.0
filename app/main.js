@@ -344,7 +344,7 @@ By pressing "Accept" you agree to everything stated above.`,
         games[0].game.workwindow.setForeground();
       }
 
-      let data =  await createPointZone(win)
+      let data =  await createPointZone(BrowserWindow.getAllWindows()[0])
       log.ok(`Set point to x: ${data.x}, y: ${data.y} successfully!`);
       return data;
     }

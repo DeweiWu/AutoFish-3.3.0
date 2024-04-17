@@ -973,16 +973,24 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   z-index: 3;
 }
 
-.sparesContainer {
-  text-align: center;
+.spare-inner {
+  border: 1px solid grey;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.spare-inner div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
 }
 
 .advSettings .settings .settings_section .spareContainer {
   margin-bottom: 5px;
 }
 
-.advSettings .settings .settings_section .sparesContainer .spares-name {
-  width: 86px;
+.advSettings .settings .settings_section .sparesContainer .spares-type {
+  width: 114px;
 }
 
 .advSettings .settings .settings_section .sparesContainer .spares-addButton {
@@ -995,14 +1003,12 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 }
 
 .advSettings .settings .settings_section .sparesContainer .spares-removeButton {
-  display: inline-block;
-  margin-bottom: -5px;
+  display: block;
+  margin: 0 auto;
   background-image: url('img/remove.png');
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
-  height: 20px;
-  width: 25px;
 }
 
 .advanced_settings_header {
@@ -1110,4 +1116,8 @@ input[type=number] {
 
 .customWindow {
   width: 150px !important;
+}
+
+.spares-description {
+  width: 240px;
 }
