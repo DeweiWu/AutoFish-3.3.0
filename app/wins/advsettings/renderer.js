@@ -300,7 +300,7 @@ const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensi
 const renderCustomWindow = ({useCustomWindow, customWindow}) => {
   const select = elt(`select`, {name: `customWindow`, className: `customWindow`, disabled: !useCustomWindow});
   const renderUseCustomWindow = elt(`input`, {name: `useCustomWindow`, type: `checkbox`, checked: useCustomWindow});
-  const focusButton = elt(`input`, {type: `button`, value: `Focus`, disabled: !useCustomWindow, onclick() {
+  const focusButton = elt(`input`, {type: `button`, value: `Focus`,  className: `${useCustomWindow ? `` : `disabledButton`}`, disabled: !useCustomWindow, onclick() {
     ipcRenderer.send('focus-win', customWindow);
   }});
 
@@ -590,6 +590,7 @@ const renderSettings = (config) => {
   wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `ONLY FOR MANUAL MODE. After attempts limit the bot will dynamically change threshold by the provided value.`),
   wrapInLabel(`Catch With Mouse Button: `, renderCatchFishButton(config), `Choose the button you want the bot to click when it wants to catch the fish.`),
   ),
+
   elt(`p`, {className: `settings_header advanced_settings_header`}, `🖱️`), elt(`span`, {className: `advanced_settings_header_text`}, `Mouse & Keyboard`),
   elt(`div`, {className: `settings_section`},
     wrapInLabel(`Random Mouse Speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
@@ -598,6 +599,12 @@ const renderSettings = (config) => {
     wrapInLabel(`Input Library: `, renderLibraryTypeInput(config), `Different ways of simulating keyboard and mouse actions.`),
     wrapInLabel(`Mouse/keyboard Random Delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
   ),
+  
+  elt(`p`, {className: `settings_header`}, `🖥️`), elt(`span`, {className: `advanced_settings_header_text`}, `Window`),
+  elt(`div`, {className: `settings_section`},
+  wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
+  wrapInLabel(`Hide bot after start: `, renderHideWin(config), `The window of the bot will be hidden and you will be able to focus it only after using stop key.`),
+),
 
   elt("p", {className: 'settings_header advanced_settings_header'}, "🔎"),  elt(`span`, {className: `advanced_settings_header_text`}, `Filter`),
   elt(
@@ -613,12 +620,6 @@ const renderSettings = (config) => {
     wrapInLabel("Loot Window At Mouse: ", renderFilterAtMouse(config), `Loot window at mouse will tell the bot whether it should check the loot window at mouse or the default loot window at the left side of the screen.`),
     wrapInLabel("", renderWhitelistWords(config))
   ),
-
-  elt(`p`, {className: `settings_header`}, `🖥️`), elt(`span`, {className: `advanced_settings_header_text`}, `Window`),
-  elt(`div`, {className: `settings_section`},
-  wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
-  wrapInLabel(`Hide bot after start: `, renderHideWin(config), `The window of the bot will be hidden and you will be able to focus it only after using stop key.`),
-),
   elt(`p`, {className: `settings_header`}, `🎣`), elt(`span`, {className: `advanced_settings_header_text`}, `Lures`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),
   elt(`div`, {className: `settings_section`},
     wrapInLabel(
