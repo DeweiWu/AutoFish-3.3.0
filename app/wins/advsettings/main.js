@@ -86,7 +86,7 @@ const createAdvSettings = (appPath) => {
   });
 
   ipcMain.on("lures-warn", () => {
-    showWarning(win, `Don't forget to make a macro as described in the Guide and assign it to the same key you have assigned for Lures Key.`);
+    showWarning(win, `If you use "Key" type of lures application, don't forget to make a macro as described in the Guide and assign it to the same key you have assigned for Lures Key.`);
   });
 
   ipcMain.on("start-by-fishing-key-warn", () => {

@@ -140,15 +140,15 @@ class AutoFish {
     });
 
     this.settings.regOnFishingZoneClick(() => {
-      ipcRenderer.send("start-bot", `relZone`);
+      ipcRenderer.invoke("start-bot", `relZone`);
     });
 
     this.settings.regOnDetectZoneClick(() => {
-      ipcRenderer.send("start-bot", `detectZone`);
+      ipcRenderer.invoke("start-bot", `detectZone`);
     });
 
     this.settings.regOnChatZoneClick(() => {
-      ipcRenderer.send("start-bot", `chatZone`);
+      ipcRenderer.invoke("start-bot", `chatZone`);
     });
 
     this.settings.regOnAfkFishing(() => {
@@ -164,7 +164,7 @@ class AutoFish {
     });
 
     this.button.regOnStart(() => {
-      ipcRenderer.send("start-bot");
+      ipcRenderer.invoke("start-bot");
     });
 
     this.button.regOnStop(() => {

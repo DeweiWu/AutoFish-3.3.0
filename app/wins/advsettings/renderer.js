@@ -456,6 +456,41 @@ const renderLures = ({lures}) => {
   return checkbox;
 };
 
+const renderLuresType = ({lures, luresType}) => {
+  let types = ['key', 'mouse'];
+  return elt('select', {name: 'luresType', disabled: !lures},  ...types.map(type => elt('option', {selected: type == luresType, value: type}, type[0].toUpperCase() + type.slice(1) )))
+}
+
+const renderLuresCoords = ({luresCoords, lures}) => {
+  const x = elt('input', {type: `number`, disabled: !lures, name: `x`, value: luresCoords.x});
+  const y = elt('input', {type: `number`, disabled: !lures, name: `y`, value: luresCoords.y})
+  const button = elt('input', {type: `button`, className: `${!lures ? `disabledButton` : ``}`, disabled: !lures, value: `Set`, onclick() {
+    ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      x.value = data.x;
+      y.value = data.y;
+    })
+  }});
+
+  return elt(`div`, null, elt(`div`, {"data-collection": `luresCoords`},
+  elt(`span`, {className: `option_text`}, `x:`), x, elt(`span`, {className: `option_text`}, `y:`), y), button);
+}
+
+const renderLuresOpenCharacterWin = ({luresOpenCharacterWin, lures}) => elt(`input`, {type: `checkbox`, disabled: !lures, checked: luresOpenCharacterWin, 'name': `luresOpenCharacterWin`});
+
+const renderFishpolCoords = ({fishpoleCoords, lures}) => {
+  const x = elt('input', {type: `number`, disabled: !lures, name: `x`, value: fishpoleCoords.x});
+  const y = elt('input', {type: `number`, disabled: !lures, name: `y`, value: fishpoleCoords.y})
+  const button = elt('input', {type: `button`, className: `${!lures ? `disabledButton` : ``}`, disabled: !lures, value: `Set`, onclick() {
+    ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      x.value = data.x;
+      y.value = data.y;
+    })
+  }});
+
+  return elt(`div`, null, elt(`div`, {"data-collection": `fishpoleCoords`},
+  elt(`span`, {className: `option_text`}, `x:`), x, elt(`span`, {className: `option_text`}, `y:`), y), button);
+}
+
 const renderLuresKey = ({lures, luresKey}) => {
   let key = elt('input', {type: 'text', value: luresKey, disabled: !lures, name: "luresKey"});
   key.setAttribute(`readonly`, `true`);
@@ -599,7 +634,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Input Library: `, renderLibraryTypeInput(config), `Different ways of simulating keyboard and mouse actions.`),
     wrapInLabel(`Mouse/keyboard Random Delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
   ),
-  
+
   elt(`p`, {className: `settings_header`}, `🖥️`), elt(`span`, {className: `advanced_settings_header_text`}, `Window`),
   elt(`div`, {className: `settings_section`},
   wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
@@ -627,11 +662,15 @@ const renderSettings = (config) => {
       renderLures(config),
       `Check this option if you want to use fishing lures.`
     ),
-    wrapInLabel(
+    wrapInLabel('Lures Application Type: ', renderLuresType(config), `Whether the bot should use macro or mouse to apply lures.`),
+    config.luresType == `key` ? wrapInLabel(
       "Lures Key: ",
       renderLuresKey(config),
       `Check this option if you want to use fishing lures. Assign the same key you use for using fishing lures.  You can change cast delay of this key in the Advanced Settings.`
-    ),
+    ) : ``,
+    config.luresType == `mouse` ? wrapInLabel(`Open Character Window: `, renderLuresOpenCharacterWin(config), `The bot will open character window (by pressing "c" key) before applying lures to fishpole coordinates.`) : ``,
+    config.luresType == `mouse` ? wrapInLabel(`Lures Coordinates: `, renderLuresCoords(config), `Lures coordinates on the screen.`) : ``,
+    config.luresType == `mouse` ? wrapInLabel(`Fishpole Coordinates: `, renderFishpolCoords(config), `Fishpole coordinates on the screen.`) : ``,
     wrapInLabel(
   "Reuse Lures (min): ",
   renderLuresDelayMin(config),

@@ -18,6 +18,7 @@ const { unlink } = require("fs").promises;
 
 const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
+const createPointZone = require(`./wins/pointZone/main.js`);
 
 const getJson = (jsonPath) => {
   return JSON.parse(readFileSync(path.join(__dirname, jsonPath), "utf8"));
@@ -294,7 +295,7 @@ By pressing "Accept" you agree to everything stated above.`,
     win.show();
   });
 
-  ipcMain.on("start-bot", async (event, type) => {
+  ipcMain.handle("start-bot", async (event, type) => {
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
     const configDefault = getJson(`./config/${profile}/defaults.json`);
@@ -336,7 +337,19 @@ By pressing "Accept" you agree to everything stated above.`,
 
     games = games.map(game => ({game, settings, config}));
 
-    if(type != `relZone` && type != `chatZone` && type != `detectZone` && settings.initialZone){
+    if(type == `pointZone`) {
+      win.blur();
+
+      while(!games[0].game.workwindow.isForeground()) {
+        games[0].game.workwindow.setForeground();
+      }
+
+      let data =  await createPointZone(win)
+      log.ok(`Set point to x: ${data.x}, y: ${data.y} successfully!`);
+      return data;
+    }
+
+    if(type != `relZone` && type != `chatZone` && type != `detectZone` && type != `pointZone` && settings.initialZone){
       await new Promise(function(resolve, reject) {
         setTimeout(resolve, 50);
       });
@@ -444,7 +457,7 @@ By pressing "Accept" you agree to everything stated above.`,
     globalShortcut.register(settings.fishingKey, () => {
       win.webContents.send('start-by-fishing-key');
     });
-  })
+  });
 
   ipcMain.on('unreg-start-by-fishing-key', () => {
     let profile = getProfile();

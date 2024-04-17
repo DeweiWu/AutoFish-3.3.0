@@ -431,9 +431,27 @@ if(lootWindowPatch.exitButton) {
   applyMammoth.timer = createTimer(() => random(config.mammothApplyEvery.from * 1000 * 60, config.mammothApplyEvery.to * 1000 * 60));
 
   const applyLures = async () => {
-    await action(async () => {
-      await keyboard.sendKey(config.luresKey, delay);
-    });
+    if(config.luresType == `key`) {
+      await action(async () => {
+        await keyboard.sendKey(config.luresKey, delay);
+      });
+    } else {
+      await action(async () => {
+        await moveTo({pos: {x: config.luresCoords.x - screenSize.x, y: config.luresCoords.y - screenSize.y}, randomRange: 3, fineTune: false});
+        await mouse.toggle('right', true, delay);
+        await mouse.toggle('right', false, delay);
+        if(config.luresOpenCharacterWin) {
+          await keyboard.sendKey('c', delay);
+        }
+        await moveTo({pos: {x: config.fishpoleCoords.x - screenSize.x, y: config.fishpoleCoords.y - screenSize.y}, randomRange: 3, fineTune: false});
+        await mouse.toggle('left', true, delay);
+        await mouse.toggle('left', false, delay);
+
+        if(config.luresOpenCharacterWin) {
+          await keyboard.sendKey('c', delay);
+        }
+      });
+    }
 
     if(config.confirmLures) {
       if (config.reaction) {
