@@ -523,8 +523,8 @@ const renderSpares = ({spares}) => {
         elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"})),
         elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: `Press Key`,"data-spares": "type"}, ...types.map((type) => elt('option', {value: type}, type)))),
         elt(`div`, null, `Key: `, key, x, y, coordsButton),
-        elt(`div`, null, `Time: `, elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
-        elt(`div`, null, `Delay: `, elt(`input`, {type: `number`, value: 3000, title: "Milliseconds", "data-spares": "delay"})),
+        elt(`div`, null, `Interval (min): `, elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
+        elt(`div`, null, `Delay After Action (ms): `, elt(`input`, {type: `number`, value: 3000, title: "Milliseconds", "data-spares": "delay"})),
         elt('input', {type: 'button', className: "spares-removeButton"})
       ),
     ), this);
@@ -550,8 +550,8 @@ const renderSpares = ({spares}) => {
         elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: spare.description, "data-spares": "description"})),
         elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: spare.type, "data-spares": "type"}, ...types.map((type) => elt('option', {selected: type == spare.type}, type)))),
         elt(`div`, {style: `${spare.type != `Press Key` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` ? `display: none` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Right Click` || spare.type == `Move Mouse + Left Click` ? `margin-bottom: 0px;` : ``}`}, spare.type == `Press Key` ? `Key: ` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `Coordinates: ` : ``, elt(`div`, null, x, y, coordsButton), key),
-        elt(`div`, null, `Time: `, elt('input', {type: 'number', value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
-        elt(`div`, null, `Delay: `, elt(`input`, {type: `number`, value: spare.delay, title: "Milliseconds", "data-spares": "delay"})),
+        elt(`div`, null, `Interval (min): `, elt('input', {type: 'number', value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
+        elt(`div`, null, `Delay After Action (ms): `, elt(`input`, {type: `number`, value: spare.delay, title: "Milliseconds", "data-spares": "delay"})),
         elt('input', {type: 'button', className: "spares-removeButton"})
       ),
     )
@@ -750,7 +750,12 @@ const renderSettings = (config) => {
     wrapInLabel(`After Catch Chance (%): `, renderSleepAfterHookChance(config), `Likelihood that the bot will sleep after it caches fish.`),
     wrapInLabel(`After Catch Random Delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
     ),
-
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
+    elt(`div`, {className: `settings_section settings_premium`},
+        wrapInLabel(`Omit Initial Application:`, renderSparesOmitInitial(config), `Don't apply additional actions at the beggining, wait until timer elapses.`),
+        wrapInLabel(`Auto-Confirm Actions:`, renderConfirmSpares(config),`If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`),
+        renderSpares(config)
+    ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
@@ -772,12 +777,6 @@ const renderSettings = (config) => {
     wrapInLabel(`Apply Fatigue Every (min):`, renderApplyFatigueEvery(config), `The bot will randomly apply fatigueness between the provided interval`),
     wrapInLabel(`Fatigue Rate (%):`, renderApplyFatigueRate(config), `The rate value of fatigueness which will make all the delay values increase in geometric progression.`),
     ),
-  elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
-  elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel(`Omit Initial Application:`, renderSparesOmitInitial(config), `Don't apply additional actions at the beggining, wait until timer elapses.`),
-      wrapInLabel(`Auto-Confirm Actions:`, renderConfirmSpares(config),`If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`),
-      renderSpares(config)
-  ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🏃`), elt(`span`, {className: `advanced_settings_header_text`}, `Motion Detection`),
     elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel('Use Motion Detection: ', renderCheckChanges(config), `The bot will detect changes within Detection Zone. The bot will notify you in Telegram if some movement happens within Detection Zone.\n\nYou can set the Detection Zone around your character and decrease sensitivity to make the bot detect any suspicious actions around your character and prevent possible griefing. `),
