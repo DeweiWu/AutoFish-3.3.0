@@ -134,7 +134,12 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
     }),
   });
 
-  const chatZone = createChatZone({getDataFrom, zone: Zone.from(screenSize).toRel(config.chatZone), threshold: config.whisperThreshold});
+  const chatZone = createChatZone({
+    getDataFrom,
+    screenSize,
+    zone: Zone.from(screenSize).toRel(config.chatZone),
+    whispSpecColors: config.whispSpecColors,
+  });
   let lootWinResType;
   switch(true) {
     case screenSize.height <= 768: {

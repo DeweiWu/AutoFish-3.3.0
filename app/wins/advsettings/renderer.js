@@ -4,6 +4,26 @@ const wrapInLabel = require("../../ui/utils/wrapInLabel.js");
 const { SerialPort } = require(`serialport`);
 const keySupport = require("./../../utils/keySupport.js");
 let spareNumber = 0;
+
+function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+
+    return {r, g, b};
+}
+
+function rgbToHex(r, g, b) {
+    const rHex = r.toString(16).padStart(2, '0');
+    const gHex = g.toString(16).padStart(2, '0');
+    const bHex = b.toString(16).padStart(2, '0');
+
+    const hexColor = `#${rHex}${gHex}${bHex}`;
+
+    return hexColor.toUpperCase();
+}
+
 const convertValue = (node) => {
   let value = node.value;
   if (node.type == "checkbox") {
@@ -349,10 +369,48 @@ const renderDetectWhisper = ({detectWhisper}) => {
   return elt('input', {type: `checkbox`, checked: detectWhisper, name: `detectWhisper`});
 };
 
-const renderWhisperThreshold = ({whisperThreshold, detectWhisper}) => {
-  let colorWin = elt(`div`, {className: `whisperColorBox`, style: `background-color: rgb(${whisperThreshold},0,${whisperThreshold})`}, `${whisperThreshold}`);
-  let range = elt('input', {type: `range`, min: 0, max: 255, oninput: function () {colorWin.style = `background-color: rgb(${this.value},0,${this.value})`; colorWin.innerHTML = this.value}, value: whisperThreshold, name: `whisperThreshold`, className: `whisperRange ${!detectWhisper ? `threshold_disabled` : ``}`, disabled: !detectWhisper});
-  return elt(`div`, null, range, colorWin);
+const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
+  const addButton = elt(`input`, {type: `button`, className: `whispSpecColorsAdd`, onclick() {
+    const colorBox = elt('input', {type: `color`, className: `whisperColorBox`, value: `#ffffff`});
+    const colorPicker = elt('input', {type: `button`, className: `whisperColorPicker`, value: ``, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
+        const {r, g, b} = data.color;
+        colorBox.value = rgbToHex(r, g, b);
+      })
+    }});
+
+    const colorPercent = elt('input', {type: `number`, title: `Percent of how accurate the color should be.`, value: 100, min: 0, max: 100, className: `whisperColorRange`});
+    const removeButton = elt('input', {type: `button`, className: `whisperColorRemoveButton`, onclick() {
+      this.parentNode.remove();
+    }})
+
+    this.parentNode.insertBefore(elt('div', {className: `whispSpecColorsInnerContainer`}, colorPicker, colorBox, colorPercent, removeButton), this);
+  }})
+
+  const whispSpecColorsNodes = whispSpecColors.map(({r, g, b, percent}) => {
+    const colorBox = elt('input', {type: `color`, className: `whisperColorBox`, value: rgbToHex(r, g, b)});
+    const colorPicker = elt('input', {type: `button`, className: `whisperColorPicker`, value: ``, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
+        const {r, g, b} = data.color;
+        colorBox.value = rgbToHex(r, g, b);
+      })
+    }});
+
+    const colorPercent = elt('input', {type: `number`, title: `Percent of how accurate the color should be.`, value: percent, min: 0, max: 100, className: `whisperColorRange`});
+    const removeButton = elt('input', {type: `button`, className: `whisperColorRemoveButton`, onclick() {
+      this.parentNode.remove();
+    }})
+
+    return elt('div', {className: `whispSpecColorsInnerContainer`}, colorPicker, colorBox, colorPercent, removeButton);
+  })
+
+return elt(`div`, {className: `whispSpecColorsContainer`}, ...whispSpecColorsNodes, addButton)
 };
 
 const renderMammoth = ({mammoth}) => {
@@ -759,9 +817,10 @@ const renderSettings = (config) => {
     elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
-      wrapInLabel(`Detect Whisper:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
-      wrapInLabel(`Stop and Close the Game at Whisper:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
-      wrapInLabel(`Whisper Threshold:`, renderWhisperThreshold(config), `The intensity of purple color the bot will recognize as whispering.`),
+      wrapInLabel(`Detect Chat Messages:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
+      wrapInLabel(`Stop and Close the Game at Chat Message:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
+      elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
+      renderWhisperColors(config),
     ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement`),
     elt('div', {className: "settings_section settings_premium"},
@@ -970,7 +1029,7 @@ const runApp = async () => {
   document.body.append(advancedSettings);
 
   const gatherConfig = () => {
-
+    /* spares start */
     let spares = [...settings.querySelectorAll('.spareContainer')]
     .map((spare) => {
       let inputs = [...spare.elements].filter(input => input.type != `button`);
@@ -983,6 +1042,17 @@ const runApp = async () => {
       }
     );
     config['spares'] = spares;
+    /* spares end */
+
+    let whispSpecColors = [...settings.querySelectorAll('.whispSpecColorsInnerContainer')]
+    .map((whisperSpecColor) => {
+      let color = whisperSpecColor.querySelector('.whisperColorBox').value;
+      let percent = Number(whisperSpecColor.querySelector('.whisperColorRange').value);
+
+      return {...(hexToRgb(color)), percent};
+    })
+    console.log(whispSpecColors);
+    config.whispSpecColors = whispSpecColors;
 
     [...settings.elements].forEach(option => {
       if(!option.name) return;

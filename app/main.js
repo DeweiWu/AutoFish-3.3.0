@@ -326,6 +326,7 @@ By pressing "Accept" you agree to everything stated above.`,
     if (!games) {
       log.err(`Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
       win.webContents.send("stop-bot");
+      shell.beep(); 
       return;
     } else {
       log.ok(`Found ${games.length} window${games.length > 1 ? `s` : ``} of the game!`);
@@ -338,13 +339,14 @@ By pressing "Accept" you agree to everything stated above.`,
     games = games.map(game => ({game, settings, config}));
 
     if(type == `pointZone`) {
-      win.blur();
+      BrowserWindow.getAllWindows().forEach(win => win.blur());
 
       while(!games[0].game.workwindow.isForeground()) {
         games[0].game.workwindow.setForeground();
       }
 
-      let data =  await createPointZone(BrowserWindow.getAllWindows()[0])
+      let data = await createPointZone(BrowserWindow.getAllWindows()[0]);
+
       log.ok(`Set point to x: ${data.x}, y: ${data.y} successfully!`);
       return data;
     }

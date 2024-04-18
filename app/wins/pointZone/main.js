@@ -1,11 +1,17 @@
 const { BrowserWindow, ipcMain } = require("electron");
 
+const nutJS = require("@nut-tree/nut-js");
+
 const createMouseCoordsEvent = (resolve, win, botWin) => {
-  ipcMain.on('mouse-coords', (event, data) => {
+  ipcMain.on('mouse-coords', async (event, data) => {
+
+    let color = await(await nutJS.screen.grabRegion(new nutJS.Region(data.x, data.y, 1, 1))).toRGB();
+    data.color = {r: color.data[0], g: color.data[1], b: color.data[2]};
+
     resolve(data);
     ipcMain.removeAllListeners(`mouse-coords`);
     win.close();
-    botWin.focus(); 
+    botWin.focus();
   })
 }
 

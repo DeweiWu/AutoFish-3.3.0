@@ -976,7 +976,9 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 .spare-inner {
   border: 1px solid grey;
   padding: 5px;
+  margin: 5px;
   border-radius: 5px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .spare-inner div {
@@ -1120,4 +1122,59 @@ input[type=number] {
 
 .spares-description {
   width: 240px;
+}
+
+.whisperColorBox {
+  width: 40px;
+  height: 20px;
+  border-radius: 5px;
+  margin-left: 2px;
+  display: inline-block;
+}
+
+.whispSpecColorsContainer {
+  display: flex;
+  flex-flow: column;
+}
+
+.whispSpecColorsInnerContainer {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  border-radius: 5px;
+  width: 400px;
+  padding: 5px;
+  border: 1px solid grey;
+  margin: 5px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.whisperColorRange {
+  cursor: help;
+}
+
+.whisperColorPicker {
+  width: 30px !important;
+  background-image: url('img/color-picker.png');
+  background-size: 12px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.whisperColorRemoveButton {
+  width: 30px !important;
+  background-image: url('img/remove.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  margin-left: 0 !important;
+}
+
+.whispSpecColorsAdd {
+  display: block;
+  margin: 0 auto !important;
+  background-image: url('img/add.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
