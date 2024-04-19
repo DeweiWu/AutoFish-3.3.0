@@ -762,7 +762,7 @@ input[type=range]::-webkit-slider-runnable-track {
 
 .soundDetection-container {
     height: 70px;
-    width: 288px;
+    width: 278px;
     position: relative;
     display: flex;
     flex-flow: row nowrap;
