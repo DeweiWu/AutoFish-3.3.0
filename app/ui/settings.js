@@ -2,6 +2,7 @@ const elt = require("./utils/elt.js");
 const renderSettings = require("./renderSettings.js");
 const keySupport = require("./../utils/keySupport.js");
 const { ipcRenderer } = require('electron');
+const { hexToRgb, rgbToHex } = require("./../utils/colors.js");
 
 const convertValue = (node) => {
   let value = node.value;
@@ -32,11 +33,15 @@ class Settings {
         }
 
       }
-      this.dom.innerHTML = ``;
-      this.dom.append(renderSettings(this.config));
 
       [...this.dom.elements].forEach(option => {
         if(Object.keys(this.config).includes(option.name)) {
+          if(option.name == `bobberColor`) {
+            console.log(option.value);
+            for(let opt of option.options) {
+              console.log(opt.value, opt.selected);
+            }
+          }
           if(option.name == `bobberSensitivity`) {
             this.config[option.name][this.config.game] = convertValue(option);
           } else {
@@ -46,6 +51,7 @@ class Settings {
       });
 
       this.onChange(this.config);
+      this.reRender();
     }
 
     this.dom.addEventListener("change", saveSettings);
@@ -119,6 +125,21 @@ class Settings {
 
     this.dom.addEventListener('click', (event) => {
 
+      if(event.target.className == 'bobberColorPicker') {
+        ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+          if(!data) {
+            return;
+          }
+          const {r, g, b} = data.color;
+
+          this.config.bobberColorManual = rgbToHex(r, g, b);
+          this.config.bobberColor = `Manual`;
+
+          this.onChange(this.config);
+          this.reRender();
+        })
+      }
+
       if(event.target["data-soundDetectionHeader"] == true) {
         if(!this.config.soundDetection) {
           setTimeout(() => {
@@ -137,13 +158,17 @@ class Settings {
         this.reRender();
       }
 
+      /*
       if(event.target.name == `bobberColor` || event.target.parentNode.name == `bobberColor`) {
+
         let bobberColorNode = this.dom.querySelector(`.bobberColorSwitch`);
         bobberColorNode.value = bobberColorNode.value == `red` ? `blue` : `red`;
         let eventDummy = {target: bobberColorNode};
         saveSettings(eventDummy);
         this.reRender();
+
       }
+      */
 
       if(event.target.name == `autoTh` || event.target.parentNode.name == `autoTh`) {
         let node = this.dom.querySelector(`.autoTh`);

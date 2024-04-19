@@ -326,7 +326,7 @@ By pressing "Accept" you agree to everything stated above.`,
     if (!games) {
       log.err(`Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
       win.webContents.send("stop-bot");
-      shell.beep(); 
+      shell.beep();
       return;
     } else {
       log.ok(`Found ${games.length} window${games.length > 1 ? `s` : ``} of the game!`);

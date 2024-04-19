@@ -1074,12 +1074,12 @@ input[type=number] {
 }
 
 .auto_button.autoTh {
-  top: 33px;
+  top: 34px;
   right: 24px;
 }
 
 .auto_button.autoSens {
-  top: 58px;
+  top: 59px;
   right: 24px;
 }
 
@@ -1177,4 +1177,38 @@ input[type=number] {
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+.bobberColorSelect {
+  width: 139px !important;
+  margin-left: 1px !important;
+  margin-right: 6px !important;
+  margin-top: 2px !important;
+  height: 18px !important;
+  font-size: 0.9em;
+}
+
+.bobberColorBox {
+  height: 21px;
+  width: 42px;
+  margin-right: 7px;
+  cursor: pointer;
+}
+
+.bobberColorPicker {
+  margin-top: 3px;
+  height: 15px;
+  width: 30px;
+  margin-right: 1px;
+  background-image: url('img/color-picker.png');
+  background-size: 10px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border: 1px solid grey;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.bobberColorPicker:hover {
+  border: 1px solid black;
 }

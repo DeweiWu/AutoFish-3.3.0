@@ -874,7 +874,7 @@ if (settings.soundDetection) {
   if(await fishingZone.checkPixelMatch(pos, startTime)) {
     return pos;
   };
-} else if(settings.game == `Retail`) {
+} else if(settings.game == `Retail` || settings.bobberColor == `Manual`) {
    if(!(await fishingZone.checkBobberPrint(pos))) {
      return pos;
    }

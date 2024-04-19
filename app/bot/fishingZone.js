@@ -1,12 +1,14 @@
 const createRgb = require('../utils/rgb.js');
 const Vec = require('../utils/vec.js');
 const Jimp = require('jimp');
-
+const { hexToRgb } = require('../utils/colors.js');
 const pixelmatch = require('pixelmatch');
 
 const isInLimits = ({ x, y }, { width, height }) => {
   return x >= 0 && y >= 0 && x < width && y < height;
 };
+
+const closeEnough = value => (v1, v2) => Math.abs(v1 - v2) <= value;
 
 const isOverThreshold = ([r, g, b], threshold) => (r - Math.max(g, b)) > threshold;
 const isCloseEnough = ([_, g, b], closeness) => Math.abs(g - b) <= closeness;
@@ -19,24 +21,33 @@ const isBlue = (threshold, closeness = 255, size = 255, upperLimit = 335) => ([r
                                                         isCloseEnough([b, g, r], closeness) &&
                                                         r < size && g < size && b <= upperLimit && r != 0 && g != 0;
 
+const isManual = (specColor, percentPrecision) => ([r, g, b]) => {
+  let percR = specColor.r / 100 * (100 - percentPrecision);
+  let percG = specColor.g / 100 * (100 - percentPrecision);
+  let percB = specColor.b / 100 * (100 - percentPrecision);
+
+  return closeEnough(percR)(specColor.r, r) && closeEnough(percG)(specColor.g, g) && closeEnough(percB)(specColor.b, b)
+}
+
 let imgAroundBobberPrev;
 let pixelMatchMax;
 
-const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, threshold, bobberColor, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, splashColor}) => {
+const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, threshold, bobberColor, bobberColorManual, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, splashColor}) => {
   let checkAboveCompensateValue = 0;
   const doubleZoneSize = Math.round((screenSize.height / 1080) * 50); // 25
-  sensitivity = (game == `Retail` || game == `Vanilla (splash)` ? 30 - sensitivity[game] : 10 - sensitivity[game]) || 1;
+  sensitivity = (game == `Retail` || game == `Vanilla (splash)` || bobberColor == `Manual` ? 30 - sensitivity[game] : 10 - sensitivity[game]) || 1;
 
   if(checkLogic == 'pixelmatch') {
     if(autoSens) {
       sensitivity = 0.25;
     } else {
-      sensitivity = game == `Retail` || game == `Vanilla (splash)` ? sensitivity / 30 : sensitivity / 10;
+      sensitivity = game == `Retail` || game == `Vanilla (splash)` || bobberColor == `Manual` ? sensitivity / 30 : sensitivity / 10;
     }
   }
 
-  let isBobber = bobberColor == `red` ? isRed(threshold, 50) : isBlue(threshold, 50);
-  let saturation = bobberColor == `red` ? [80, 0, 0] : [0, 0, 80];
+  let isBobber = bobberColor == `red` ? isRed(threshold, 50) : bobberColor == `blue` ? isBlue(threshold, 50) : isManual(hexToRgb(bobberColorManual), threshold);
+
+  let saturation = bobberColor == `red` ? [80, 0, 0] : bobberColor == `blue` ? [0, 0, 80] : [0, 0, 0];
   const looksLikeBobber = (size) => (pos, color, rgb) => {
     let pointsFound = pos.getPointsAround(Math.round(size * (screenSize.height / 1080)) || 1).filter((pos) => isBobber(rgb.colorAt(pos)));
     if(pointsFound.length >= Math.round(8 * (screenSize.height / 1080))) {
@@ -64,6 +75,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
       let rgb = createRgb(await getDataFrom(rgbZone));
       rgb.saturate(...saturation)
 
+
       if(exception) {
         rgb.cutOut(exception);
       }
@@ -80,7 +92,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
           isColor: isBobber,
           atFirstMet: true,
           saveColor: true,
-          task: looksLikeBobber(1),
+          task: bobberColor == `Manual` ? null : looksLikeBobber(1),
           direction
         });
       }
@@ -172,12 +184,13 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
         } else {
           /* if direction == center */
           filledBobber = rgbAroundBobber.findColors({isColor: isBobber, saveColor: true});
+
           bobber = rgbAroundBobber.findColors({
               isColor: isBobber,
               atFirstMet: true,
               saveColor: true,
               direction: `normal`,
-              task: game == `Vanilla` ? null : looksLikeBobber(1)
+              task: game == `Vanilla` || bobberColor == `Manual` ? null : looksLikeBobber(1)
           })
 
           if(!bobber) {

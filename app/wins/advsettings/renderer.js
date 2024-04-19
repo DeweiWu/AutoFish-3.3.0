@@ -3,26 +3,10 @@ const elt = require("../../ui/utils/elt.js");
 const wrapInLabel = require("../../ui/utils/wrapInLabel.js");
 const { SerialPort } = require(`serialport`);
 const keySupport = require("./../../utils/keySupport.js");
+const { hexToRgb, rgbToHex } = require("./../../utils/colors.js");
+
 let spareNumber = 0;
 
-function hexToRgb(hex) {
-    hex = hex.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-
-    return {r, g, b};
-}
-
-function rgbToHex(r, g, b) {
-    const rHex = r.toString(16).padStart(2, '0');
-    const gHex = g.toString(16).padStart(2, '0');
-    const bHex = b.toString(16).padStart(2, '0');
-
-    const hexColor = `#${rHex}${gHex}${bHex}`;
-
-    return hexColor.toUpperCase();
-}
 
 const convertValue = (node) => {
   let value = node.value;
@@ -695,6 +679,12 @@ const renderLibraryTypeInput = ({libraryTypeInput}) => {
   return elt('select', {name: 'libraryTypeInput'}, ...libs.map(lib => elt('option', {value: lib, selected: lib == libraryTypeInput}, lib)))
 };
 
+const renderCheckLogic = ({checkLogic}) => {
+  const checkLogicTypes = ['default', 'pixelmatch'];
+  const modeSelect = elt(`select`, {name: 'checkLogic', title: `Alternative modes for detecting bobber animation.`}, ...checkLogicTypes.map((logic) => elt('option', {selected: checkLogic == logic, value: logic}, logic[0].toUpperCase() + logic.slice(1))));
+   return elt(`div`, null, modeSelect);
+}
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `⚙️`), elt(`span`, {className: `advanced_settings_header_text`}, `General`),
@@ -870,6 +860,7 @@ const renderSettings = (config) => {
   elt(`p`, {className: `settings_header settings_header_critical`}, `⚠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Critical`),
   elt('div', {className: "settings_section settings_critical"},
   wrapInLabel(`Visual Library: `, renderLibraryType(config), `If something doesn't work with default library you can choose another one. Mind that keysender works only with dx11 and will be force for Multiple Fishing or Alt-Tab Fishing modes.`),
+  wrapInLabel(`Check Mode: `, renderCheckLogic(config), `check mode`),
   wrapInLabel(`Ignore Preliminary Checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
   wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting. If you use some special addons which turn off loot window completely, you can set this value to 0 to make the bot work faster.`),
   wrapInLabel(`Max Check Time (sec):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
@@ -1051,7 +1042,7 @@ const runApp = async () => {
 
       return {...(hexToRgb(color)), percent};
     })
-    console.log(whispSpecColors);
+
     config.whispSpecColors = whispSpecColors;
 
     [...settings.elements].forEach(option => {
