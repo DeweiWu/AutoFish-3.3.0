@@ -22,6 +22,7 @@
   "autoTh": true,
   "autoColor": false,
   "bobberColor": "red",
+  "bobberColorManual": "#ffffff",
   "afkmode": false,
   "multipleWindows": true,
   "initial": false,
