@@ -54,8 +54,8 @@ if (tmBot.bot) {
     let message = ctx.update.message.text;
 
     if(tmBot.replies.length > 1) {
-      let winNum = message[3]
-
+      let winNum = message.slice(3, 5).match(/\d+/)[0];
+      console.log(winNum);
       if(!(/\d+/.test(winNum))) {
         ctx.reply(`Please ensure proper formatting: Use '/w win_number username message' `);
         return;
@@ -68,7 +68,7 @@ if (tmBot.bot) {
         return;
       }
 
-      reply.fn(message.slice(0, 3) + message.slice(4));
+      reply.fn(message.slice(0, 3) + message.slice(5));
     } else {
       tmBot.replies[0].fn(message);
     }
@@ -78,8 +78,8 @@ if (tmBot.bot) {
     let message = ctx.update.message.text;
 
     if(tmBot.replies.length > 1) {
-      let winNum = message[3]
-
+      let winNum = message.slice(5, 7).match(/\d+/)[0];
+      console.log(winNum);
       if(!(/\d+/.test(winNum))) {
         ctx.reply(`Please ensure proper formatting: Use '/say win_number username message' `);
         return;
@@ -92,7 +92,7 @@ if (tmBot.bot) {
         return;
       }
 
-      reply.fn(message.slice(0, 5) + message.slice(6));
+      reply.fn(message.slice(0, 5) + message.slice(7));
     } else {
       tmBot.replies[0].fn(message);
     }
@@ -102,7 +102,7 @@ if (tmBot.bot) {
     let message = ctx.update.message.text;
 
     if(tmBot.replies.length > 1) {
-      let winNum = message[3]
+      let winNum = message.slice(3, 5).match(/\d+/)[0];
 
       if(!(/\d+/.test(winNum))) {
         ctx.reply(`Please ensure proper formatting: Use '/r win_number message' `);
@@ -116,7 +116,7 @@ if (tmBot.bot) {
         return;
       }
 
-      reply.fn(message.slice(0, 3) + message.slice(4));
+      reply.fn(message.slice(0, 3) + message.slice(5));
     } else {
       tmBot.replies[0].fn(message);
     }
