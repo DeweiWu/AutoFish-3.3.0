@@ -546,6 +546,7 @@ const renderLuresDelayMin = ({lures, luresDelayMin}) => {
 const renderSpares = ({spares}) => {
 
   const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
+  const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE'];
   const addButton = elt('input', {type: 'button', className: "spares-addButton", onclick() {
     let key = elt('input', {type: 'text', value: `1`, className: "spares-key", "data-spares": "key"});
     key.setAttribute('readonly', true);
@@ -554,11 +555,14 @@ const renderSpares = ({spares}) => {
     const y = elt('input', {type: `number`, style: `display: none`, "data-spares": "y", value: 0})
 
     const text = elt('input', {type: `text`, className: `spares-text`, style: `display: none`, "data-spares": "text", value: ``})
+    const colorPicker = elt('input', {type: `color`, className: `spares-color-picker`, value: rgbToHex(255, 255, 255), "data-spares": "color", style:  `display: none`})
 
     const coordsButton = elt('input', {type: `button`, style: `display: none`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
         x.value = data.x;
         y.value = data.y;
+        const {r, g, b} = data.color;
+        colorPicker.value = rgbToHex(r, g, b);
       })
     }});
 
@@ -567,8 +571,11 @@ const renderSpares = ({spares}) => {
       elt(`div`, {className: `spare-inner`, style: ``},
         elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"})),
         elt(`div`, null, `Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: spareNumber == 2, checked: false, "data-spares": "execute"})),
-        elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: `Press Key`,"data-spares": "type"}, ...types.map((type) => elt('option', {value: type}, type)))),
-        elt(`div`, null, `Key: `, text, key, x, y, coordsButton),
+        elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: `Press Key`,"data-spares": "type"},
+        elt('optgroup', {label: `Actions`}, ...types.map((type) => elt('option', {value: type}, type))),
+        elt('optgroup', {label: `Conditions`}, ...conditions.map((type) => elt('option', {value: type}, type))),
+        )),
+        elt(`div`, null, `Key: `, colorPicker, text, key, x, y, coordsButton),
         elt(`div`, {style: `cursor: help`, title: `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`}, `Auto-confirm Action: `, elt(`input`, {type: `checkbox`, checked: false, "data-spares": "autoconfirm"})),
         elt(`div`, {style: `cursor: help`, title: `Don't apply additional actions at the beggining, wait until timer elapses.`}, `Omit Initial Application: `, elt(`input`, {type: `checkbox`, checked: false, "data-spares": "omitinitial"})),
         elt(`div`, {style: `cursor: help`, title: `Time after which the bot will apply action.`},`Interval (min): `, elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
@@ -581,17 +588,21 @@ const renderSpares = ({spares}) => {
 
   const sparesNodes = spares.map((spare, i) => {
     const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
+    const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE'];
     const key = elt('input', {type: 'text', style: `${spare.type == `Press Key` ? `` : `display: none;`}`, value: spare.key, className: "spares-key", "data-spares": "key"});
 
-    const x = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` ||  spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`,  "data-spares": "x", value: spare.x});
-    const y = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click`  || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, "data-spares": "y", value: spare.y})
+    const x = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` ||  spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`,  "data-spares": "x", value: spare.x});
+    const y = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click`  || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, "data-spares": "y", value: spare.y})
 
     const text = elt('input', {type: `text`, className: `spares-text`, style: `${spare.type == `Print Text` ? `` : `display: none`}`, "data-spares": "text", value: spare.text})
+    const colorPicker = elt('input', {type: `color`, className: `spares-color-picker`, value: spare.color, "data-spares": "color", style: `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `` : `display: none;`}`})
 
-    const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
+    const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
         x.value = data.x;
         y.value = data.y;
+        const {r, g, b} = data.color;
+        colorPicker.value = rgbToHex(r, g, b);
       })
     }});
 
@@ -600,13 +611,16 @@ const renderSpares = ({spares}) => {
       elt(`div`, {className: `spare-inner ${spare.execute ? `spare-execute` : ``}`, style: ``},
         elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: spare.description, "data-spares": "description"})),
         elt(`div`, null, `Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: i == 0, spares,checked: spare.execute, "data-spares": "execute"})),
-        elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: spare.type, "data-spares": "type"}, ...types.map((type) => elt('option', {selected: type == spare.type}, type)))),
-        elt(`div`, {style: `${spare.type != `Press Key` && spare.type != `Print Text` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` ? `display: none` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Right Click` || spare.type == `Move Mouse + Left Click` ? `margin-bottom: 0px;` : ``}`}, spare.type == `Press Key` ? `Key: ` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `Coordinates: ` : spare.type == `Print Text` ? `Text: `: ``, elt(`div`, null, x, y, coordsButton), key, text),
+        elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: spare.type, "data-spares": "type"},
+        elt('optgroup', {label: `Actions`}, ...types.map((type) => elt('option', {selected: type == spare.type}, type))),
+        spare.execute ? `` : elt('optgroup', {label: `Conditions`}, ...conditions.map((type) => elt('option', {selected: type == spare.type}, type))),
+      )),
+        elt(`div`, {style: `${spare.type != `Press Key` && spare.type != `Print Text` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` && spare.type != `Pixel Color TRUE` && spare.type != `Pixel Color FALSE` ? `display: none` : spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Right Click` || spare.type == `Move Mouse + Left Click` ? `margin-bottom: 0px;` : ``}`}, spare.type == `Press Key` ? `Key: ` : spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `Coordinates: ` : spare.type == `Print Text` ? `Text: `: ``, elt(`div`, null, x, y, coordsButton, colorPicker), key, text),
         elt(`div`, {style: `cursor: help`, title: `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`}, `Auto-confirm Action: `, elt(`input`, {type: `checkbox`, checked: spare.autoconfirm, "data-spares": "autoconfirm"})),
         elt(`div`, {style: `cursor: help`, title: `Don't apply additional actions at the beggining, wait until timer elapses.`}, `Omit Initial Application: `, elt(`input`, {type: `checkbox`, disabled: spare.execute, checked: spare.omitinitial, "data-spares": "omitinitial", style: `cursor: help`, title: `Don't apply additional actions at the beggining, wait until timer elapses.`})),
          elt(`div`,  {style: `cursor: help`, title: `Time after which the bot will apply action.`}, `Interval (min): `,  elt('input', {type: 'number', disabled: spare.execute, value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
-        elt(`div`, null, `${spare.type == `Sleep` ? `Sleep Time (sec)` : `Delay After Action (sec)`}:`, elt(`input`, {type: `number`, value: spare.delay, title: "Milliseconds", "data-spares": "delay"})),
-        elt(`div`, null, `Repeat (times): `, elt(`input`, {type: `number`, "data-spares": "repeat", value: spare.repeat, title: `How many times the bot should repeat this action consequentially (one after another).`})),
+        elt(`div`, {style: `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `display: none` : ``}`}, `${spare.type == `Sleep` ? `Sleep Time (sec)` : `Delay After Action (sec)`}:`, elt(`input`, {type: `number`, value: spare.delay, title: "Milliseconds", "data-spares": "delay"})),
+        elt(`div`, {style: `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `display: none` : ``}`}, `Repeat (times): `, elt(`input`, {type: `number`, "data-spares": "repeat", value: spare.repeat, title: `How many times the bot should repeat this action consequentially (one after another).`})),
         elt('input', {type: 'button', className: "spares-removeButton"})
       ),
     )
@@ -1050,7 +1064,7 @@ const runApp = async () => {
         spare.omitinitial = spares[i - 1].omitinitial;
       }
     })
-
+    console.log(spares);
     config['spares'] = spares;
     /* spares end */
 

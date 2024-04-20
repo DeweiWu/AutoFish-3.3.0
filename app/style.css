@@ -1237,3 +1237,8 @@ input[type=number] {
 .bobberColorPicker:hover {
   border: 1px solid black;
 }
+
+.spares-color-picker {
+  height: 20px;
+  margin-left: 3px;
+}

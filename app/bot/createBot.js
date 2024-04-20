@@ -7,6 +7,7 @@ const createLootExitZone = require("./lootExitZone.js");
 const createRedButtonZone = require("./redButtonZone.js");
 const pixelmatch = require('pixelmatch');
 const Vec = require('../utils/vec.js');
+const { hexToRgb, rgbToHex } = require("./../utils/colors.js");
 
 const { createWriteStream } = require('fs');
 
@@ -509,10 +510,29 @@ if(lootWindowPatch.exitButton) {
 
   spares = spares.map((spare) => {
       const applySpareDummy = (spare) => async () => {
+        switch(spare.type) {
+          case "Pixel Color TRUE": {
+            let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
+            let color = hexToRgb(spare.color);
+            if(r != color.r && g != color.g && b != color.b) {
+              return;
+            }
+            break;
+          }
+
+          case "Pixel Color FALSE": {
+            let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
+            let color = hexToRgb(spare.color);
+            if(r == color.r && g == color.g && b == color.b) {
+              return;
+            }
+            break;
+          }
+        }
+
         for(let times = 0; times < Number(spare.repeat); times++) {
           await action(async () => {
           switch(spare.type) {
-
             case "Print Text": {
               await keyboard.printText(spare.text, delay);
               break;
