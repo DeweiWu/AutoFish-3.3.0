@@ -552,7 +552,7 @@ if(lootWindowPatch.exitButton) {
         });
 
 
-        if(config.confirmSpares) {
+        if(spare.autoconfirm) {
           if (config.reaction) {
             await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
           } else {
@@ -581,7 +581,7 @@ if(lootWindowPatch.exitButton) {
         return spare.repeatTime * 60 * 1000;
       });
 
-      if(config.sparesOmitInitial) {
+      if(spare.omitinitial) {
         applySpare.timer.start();
       }
 

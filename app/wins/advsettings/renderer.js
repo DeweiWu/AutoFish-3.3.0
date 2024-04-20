@@ -568,8 +568,10 @@ const renderSpares = ({spares}) => {
         elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"})),
         elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: `Press Key`,"data-spares": "type"}, ...types.map((type) => elt('option', {value: type}, type)))),
         elt(`div`, null, `Key: `, text, key, x, y, coordsButton),
+        elt(`div`, null, elt('span', {style: `cursor: help`, title: `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`}, `Auto-confirm Action: `), elt(`input`, {type: `checkbox`, checked: false, "data-spares": "autoconfirm"})),
+        elt(`div`, null, elt('span', {style: `cursor: help`, title: `Don't apply additional actions at the beggining, wait until timer elapses.`}, `Omit Initial Application: `), elt(`input`, {type: `checkbox`, checked: false, "data-spares": "omitinitial", style: `cursor: help`, title: `Don't apply additional actions at the beggining, wait until timer elapses.`})),
         elt(`div`, null, `Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: spareNumber == 2, checked: false, "data-spares": "execute"})),
-        elt(`div`, null, `Interval (min): `, elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
+        elt(`div`, null, elt('span', {style: `cursor: help`, title: `Time after which the bot will apply action.`}, `Interval (min): `), elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
         elt(`div`, null, `Delay After Action (sec): `, elt(`input`, {type: `number`, value: 3, title: "Milliseconds", "data-spares": "delay"})),
         elt(`div`, null, `Repeat (times): `, elt(`input`, {type: `number`, value: 1, "data-spares": "repeat", title: `How many times the bot should repeat this action consequentially (one after another).`})),
         elt('input', {type: 'button', className: "spares-removeButton"})
@@ -599,8 +601,10 @@ const renderSpares = ({spares}) => {
         elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: spare.description, "data-spares": "description"})),
         elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: spare.type, "data-spares": "type"}, ...types.map((type) => elt('option', {selected: type == spare.type}, type)))),
         elt(`div`, {style: `${spare.type != `Press Key` && spare.type != `Print Text` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` ? `display: none` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Right Click` || spare.type == `Move Mouse + Left Click` ? `margin-bottom: 0px;` : ``}`}, spare.type == `Press Key` ? `Key: ` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `Coordinates: ` : spare.type == `Print Text` ? `Text: `: ``, elt(`div`, null, x, y, coordsButton), key, text),
-        elt(`div`, null, `Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: i == 0, spares,checked: spare.execute, "data-spares": "execute"})),
-        elt(`div`, null, `Interval (min): `, elt('input', {type: 'number', disabled: spare.execute, value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
+        elt(`div`, null, elt('span', {style: `cursor: help`, title: `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`}, `Auto-confirm Action: `), elt(`input`, {type: `checkbox`, checked: spare.autoconfirm, "data-spares": "autoconfirm"})),
+        elt(`div`, null, elt('span', {style: `cursor: help`, title: `Don't apply additional actions at the beggining, wait until timer elapses.`}, `Omit Initial Application: `), elt(`input`, {type: `checkbox`, checked: spare.omitinitial, "data-spares": "omitinitial", style: `cursor: help`, title: `Don't apply additional actions at the beggining, wait until timer elapses.`})),
+       elt(`div`, null, `Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: i == 0, spares,checked: spare.execute, "data-spares": "execute"})),
+        elt(`div`, null, elt('span', {style: `cursor: help`, title: `Time after which the bot will apply action.`}, `Interval (min): `),  elt('input', {type: 'number', disabled: spare.execute, value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
         elt(`div`, null, `${spare.type == `Sleep` ? `Sleep Time (sec)` : `Delay After Action (sec)`}:`, elt(`input`, {type: `number`, value: spare.delay, title: "Milliseconds", "data-spares": "delay"})),
         elt(`div`, null, `Repeat (times): `, elt(`input`, {type: `number`, "data-spares": "repeat", value: spare.repeat, title: `How many times the bot should repeat this action consequentially (one after another).`})),
         elt('input', {type: 'button', className: "spares-removeButton"})
@@ -809,9 +813,7 @@ const renderSettings = (config) => {
     ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
     elt(`div`, {className: `settings_section settings_premium`},
-        wrapInLabel(`Omit Initial Application:`, renderSparesOmitInitial(config), `Don't apply additional actions at the beggining, wait until timer elapses.`),
-        wrapInLabel(`Auto-Confirm Actions:`, renderConfirmSpares(config),`If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`),
-        renderSpares(config)
+      renderSpares(config)
     ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
