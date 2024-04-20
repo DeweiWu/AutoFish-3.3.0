@@ -74,6 +74,30 @@ if (tmBot.bot) {
     }
   });
 
+  tmBot.bot.command(`/say`, (ctx) => {
+    let message = ctx.update.message.text;
+
+    if(tmBot.replies.length > 1) {
+      let winNum = message[3]
+
+      if(!(/\d+/.test(winNum))) {
+        ctx.reply(`Please ensure proper formatting: Use '/say win_number username message' `);
+        return;
+      }
+
+      let reply = tmBot.replies.find((bot) => bot.win == winNum);
+
+      if(!reply) {
+        ctx.reply(`Can't find Window: ${winNum}`);
+        return;
+      }
+
+      reply.fn(message.slice(0, 5) + message.slice(6));
+    } else {
+      tmBot.replies[0].fn(message);
+    }
+  });
+
   tmBot.bot.command(`/r`, (ctx) => {
     let message = ctx.update.message.text;
 

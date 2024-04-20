@@ -164,9 +164,10 @@ const connectToTelegram = (key) => {
 ---
 You can also write in this chat directly to do:
 
-<b>/r</b> (<i>win_num</i>) <i>text</i> - replies to the last whispered user. If you use Multiple Fishing Mode provide the number of the window instead of <i>win_num</i>. If not, omit it.\n
 <b>/w</b> (<i>win_num</i>) <i>username</i> <i>text</i> - whispers to the <i>username</i>. If you use Multiple Fishing Mode, provide the number of the window instead of <i>win_num</i>. If not, omit it.\n
-<b>/th</b> <i>value</i> - changes threshold value.\n
+<b>/r</b> (<i>win_num</i>) <i>text</i> - replies to the last whispered user. If you use Multiple Fishing Mode provide the number of the window instead of <i>win_num</i>. If not, omit it.\n
+<b>/say</b> (<i>win_num</i>) <i>text</i> - says in the general chat. If you use Multiple Fishing Mode, provide the number of the window instead of <i>win_num</i>. If not, omit it.\n
+
 <b>/start</b> - starts the <i>telegram</i> bot.`;
   const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n${helpMessage}`;
 

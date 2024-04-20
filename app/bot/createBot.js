@@ -1137,7 +1137,7 @@ if (settings.soundDetection) {
   const checkWhisper = async () => {
     if(tmBot.ctx == null || !config.detectWhisper) return;
     if(await chatZone.checkNewMessages()) {
-      tmBot.ctx.reply(`Whisper in the window ${winNum}:`);
+      tmBot.ctx.reply(`Message in the window ${winNum}:`);
       tmBot.ctx.sendChatAction(`upload_photo`);
       tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
       if(config.closeAtWhisper) {
