@@ -1121,7 +1121,15 @@ input[type=number] {
 }
 
 .spares-description {
-  width: 240px;
+  width: 240px !important;
+  margin-right: 3px;
+  height: 20px !important;
+}
+
+.spares-text {
+  width: 240px !important;
+  margin-right: 3px;
+  height: 20px !important;
 }
 
 .whisperColorBox {

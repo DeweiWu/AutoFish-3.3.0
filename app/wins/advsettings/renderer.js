@@ -5,7 +5,7 @@ const { SerialPort } = require(`serialport`);
 const keySupport = require("./../../utils/keySupport.js");
 const { hexToRgb, rgbToHex } = require("./../../utils/colors.js");
 
-let spareNumber = 0;
+let spareNumber;
 
 
 const convertValue = (node) => {
@@ -545,13 +545,15 @@ const renderLuresDelayMin = ({lures, luresDelayMin}) => {
 
 const renderSpares = ({spares}) => {
 
-  const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click"];
+  const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
   const addButton = elt('input', {type: 'button', className: "spares-addButton", onclick() {
     let key = elt('input', {type: 'text', value: `1`, className: "spares-key", "data-spares": "key"});
     key.setAttribute('readonly', true);
 
     const x = elt('input', {type: `number`, style: `display: none`, "data-spares": "x", value: 0});
     const y = elt('input', {type: `number`, style: `display: none`, "data-spares": "y", value: 0})
+
+    const text = elt('input', {type: `text`, className: `spares-text`, style: `display: none`, "data-spares": "text", value: ``})
 
     const coordsButton = elt('input', {type: `button`, style: `display: none`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
@@ -560,24 +562,29 @@ const renderSpares = ({spares}) => {
       })
     }});
 
+
     this.parentNode.insertBefore(elt('form', {className: "spareContainer"},
       elt(`div`, {className: `spare-inner`, style: ``},
         elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"})),
         elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: `Press Key`,"data-spares": "type"}, ...types.map((type) => elt('option', {value: type}, type)))),
-        elt(`div`, null, `Key: `, key, x, y, coordsButton),
+        elt(`div`, null, `Key: `, text, key, x, y, coordsButton),
+        elt(`div`, null, `Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: spareNumber == 2, checked: false, "data-spares": "execute"})),
         elt(`div`, null, `Interval (min): `, elt('input', {type: 'number', value: 10, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
-        elt(`div`, null, `Delay After Action (ms): `, elt(`input`, {type: `number`, value: 3000, title: "Milliseconds", "data-spares": "delay"})),
+        elt(`div`, null, `Delay After Action (sec): `, elt(`input`, {type: `number`, value: 3, title: "Milliseconds", "data-spares": "delay"})),
+        elt(`div`, null, `Repeat (times): `, elt(`input`, {type: `number`, value: 1, "data-spares": "repeat", title: `How many times the bot should repeat this action consequentially (one after another).`})),
         elt('input', {type: 'button', className: "spares-removeButton"})
       ),
     ), this);
   }});
 
-  const sparesNodes = spares.map(spare => {
-    const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click"];
+  const sparesNodes = spares.map((spare, i) => {
+    const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
     const key = elt('input', {type: 'text', style: `${spare.type == `Press Key` ? `` : `display: none;`}`, value: spare.key, className: "spares-key", "data-spares": "key"});
 
     const x = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` ||  spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`,  "data-spares": "x", value: spare.x});
     const y = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click`  || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, "data-spares": "y", value: spare.y})
+
+    const text = elt('input', {type: `text`, className: `spares-text`, style: `${spare.type == `Print Text` ? `` : `display: none`}`, "data-spares": "text", value: spare.text})
 
     const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
@@ -591,9 +598,11 @@ const renderSpares = ({spares}) => {
       elt(`div`, {className: `spare-inner`, style: ``},
         elt(`div`, null, `Description: `, elt('input', { className: "spares-description", value: spare.description, "data-spares": "description"})),
         elt(`div`, null, `Type: `, elt('select', { className: "spares-type", value: spare.type, "data-spares": "type"}, ...types.map((type) => elt('option', {selected: type == spare.type}, type)))),
-        elt(`div`, {style: `${spare.type != `Press Key` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` ? `display: none` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Right Click` || spare.type == `Move Mouse + Left Click` ? `margin-bottom: 0px;` : ``}`}, spare.type == `Press Key` ? `Key: ` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `Coordinates: ` : ``, elt(`div`, null, x, y, coordsButton), key),
-        elt(`div`, null, `Interval (min): `, elt('input', {type: 'number', value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
-        elt(`div`, null, `Delay After Action (ms): `, elt(`input`, {type: `number`, value: spare.delay, title: "Milliseconds", "data-spares": "delay"})),
+        elt(`div`, {style: `${spare.type != `Press Key` && spare.type != `Print Text` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` ? `display: none` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Right Click` || spare.type == `Move Mouse + Left Click` ? `margin-bottom: 0px;` : ``}`}, spare.type == `Press Key` ? `Key: ` : spare.type == `Move Mouse` || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `Coordinates: ` : spare.type == `Print Text` ? `Text: `: ``, elt(`div`, null, x, y, coordsButton), key, text),
+        elt(`div`, null, `Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: i == 0, spares,checked: spare.execute, "data-spares": "execute"})),
+        elt(`div`, null, `Interval (min): `, elt('input', {type: 'number', disabled: spare.execute, value: spare.repeatTime, step: 0.1, title: "Minutes (you can use decimals for smaller values: 0.5)", "data-spares": "repeatTime"})),
+        elt(`div`, null, `${spare.type == `Sleep` ? `Sleep Time (sec)` : `Delay After Action (sec)`}:`, elt(`input`, {type: `number`, value: spare.delay, title: "Milliseconds", "data-spares": "delay"})),
+        elt(`div`, null, `Repeat (times): `, elt(`input`, {type: `number`, "data-spares": "repeat", value: spare.repeat, title: `How many times the bot should repeat this action consequentially (one after another).`})),
         elt('input', {type: 'button', className: "spares-removeButton"})
       ),
     )
@@ -1032,6 +1041,13 @@ const runApp = async () => {
         }, {})
       }
     );
+
+    spares.forEach((spare, i) => {
+      if(spare.execute) {
+        spare.repeatTime = spares[i - 1].repeatTime;
+      }
+    })
+
     config['spares'] = spares;
     /* spares end */
 

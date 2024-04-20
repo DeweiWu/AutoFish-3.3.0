@@ -493,8 +493,15 @@ if(lootWindowPatch.exitButton) {
 
   let spares = config.spares.map((spare) => {
       const applySpare = async () => {
+        for(let times = 0; times < Number(spare.repeat); times++) {
         await action(async () => {
           switch(spare.type) {
+
+            case "Print Text": {
+              await keyboard.printText(spare.text, delay);
+              break;
+            }
+
             case "Press Key": {
               await keyboard.sendKey(spare.key, delay);
               break;
@@ -564,10 +571,11 @@ if(lootWindowPatch.exitButton) {
           await altTab();
         }
 
-        await sleep(spare.delay);
+        await sleep(spare.delay * 1000);
         if (config.reaction) {
           await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
         }
+       }
       };
       applySpare.timer = createTimer(() => {
         return spare.repeatTime * 60 * 1000;
@@ -789,6 +797,7 @@ if(lootWindowPatch.exitButton) {
         settings.useInt ||
         settings.afkmode ||
         settings.multipleWindows ||
+        settings.colorBobber == `Manual` ||
         (config.likeHuman && random(0, 100) > config.highlightPercent)) {
         return pos;
     }
