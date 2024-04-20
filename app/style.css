@@ -981,6 +981,22 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+.spare-execute {
+ margin-left: 30px;
+}
+
+.spare-execute::before {
+  content: "";
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid grey;
+  display: block;
+  position: relative;
+  left: -25px;
+  width: 10px;
+  height: 10px;
+}
+
 .spare-inner div {
   display: flex;
   justify-content: space-between;
