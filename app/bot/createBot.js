@@ -491,10 +491,26 @@ if(lootWindowPatch.exitButton) {
     applyLures.timer.start();
   }
 
-  let spares = config.spares.map((spare) => {
-      const applySpare = async () => {
+  let spares = config.spares.reduce((a, b) => {
+    if(b.execute) {
+      let parentSpare = a[a.length - 1];
+
+      if(!parentSpare.inner) {
+        parentSpare.inner = [];
+      }
+
+      parentSpare.inner.push(b);
+      return a;
+    } else {
+      return [...a, b];
+    }
+  }, []);
+
+
+  spares = spares.map((spare) => {
+      const applySpareDummy = (spare) => async () => {
         for(let times = 0; times < Number(spare.repeat); times++) {
-        await action(async () => {
+          await action(async () => {
           switch(spare.type) {
 
             case "Print Text": {
@@ -551,8 +567,7 @@ if(lootWindowPatch.exitButton) {
           }
         });
 
-
-        if(spare.autoconfirm) {
+          if(spare.autoconfirm) {
           if (config.reaction) {
             await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
           } else {
@@ -567,18 +582,28 @@ if(lootWindowPatch.exitButton) {
           }
         }
 
-        if(settings.afkmode) {
+          if(settings.afkmode) {
           await altTab();
         }
 
-        await sleep(spare.delay * 1000);
-        if (config.reaction) {
+          await sleep(spare.delay * 1000);
+
+          if (config.reaction) {
           await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
         }
        }
+
+       if(spare.inner) {
+         for(let innerSpare of spare.inner) {
+           await applySpareDummy(innerSpare)();
+         }
+       }
       };
+
+      const applySpare = applySpareDummy(spare);
+
       applySpare.timer = createTimer(() => {
-        return spare.repeatTime * 60 * 1000;
+        return spare.repeatTime * 1000 * 60;
       });
 
       if(spare.omitinitial) {
