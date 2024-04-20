@@ -36,12 +36,6 @@ class Settings {
 
       [...this.dom.elements].forEach(option => {
         if(Object.keys(this.config).includes(option.name)) {
-          if(option.name == `bobberColor`) {
-            console.log(option.value);
-            for(let opt of option.options) {
-              console.log(opt.value, opt.selected);
-            }
-          }
           if(option.name == `bobberSensitivity`) {
             this.config[option.name][this.config.game] = convertValue(option);
           } else {
