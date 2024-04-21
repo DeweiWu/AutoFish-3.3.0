@@ -11,6 +11,8 @@ const { hexToRgb, rgbToHex } = require("./../utils/colors.js");
 
 const { createWriteStream } = require('fs');
 
+const closeEnough = value => (v1, v2) => Math.abs(v1 - v2) <= value;
+
 const Jimp = require(`jimp`);
 
 const { BrowserWindow, ipcMain, app } = require(`electron`);
@@ -514,17 +516,18 @@ if(lootWindowPatch.exitButton) {
           case "Pixel Color TRUE": {
             let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
             let color = hexToRgb(spare.color);
-            if(r != color.r && g != color.g && b != color.b) {
-              return;
+            if(!closeEnough(spare.precision)(r, color.r) && !closeEnough(spare.precision)(g, color.g) && !closeEnough(spare.precision)(b, color.b)) {
+              return "break";
             }
+
             break;
           }
 
           case "Pixel Color FALSE": {
             let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
             let color = hexToRgb(spare.color);
-            if(r == color.r && g == color.g && b == color.b) {
-              return;
+            if(closeEnough(spare.precision)(r, color.r) && closeEnough(spare.precision)(g, color.g) && closeEnough(spare.precision)(b, color.b)) {
+              return "break";
             }
             break;
           }
@@ -615,7 +618,10 @@ if(lootWindowPatch.exitButton) {
 
        if(spare.inner) {
          for(let innerSpare of spare.inner) {
-           await applySpareDummy(innerSpare)();
+           let toBreak = await applySpareDummy(innerSpare)();
+           if(toBreak == 'break') {
+             break;
+           }
          }
        }
       };
