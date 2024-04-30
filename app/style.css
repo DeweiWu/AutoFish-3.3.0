@@ -251,7 +251,9 @@ input[data-spares] {}
 .settings .spares-key,
 .settings input[name="logOutMacroKey"],
 .settings input[name="mammothMacroKey"],
-.settings input[name="checkChangesDoAfterKey"] {
+.settings input[name="checkChangesDoAfterKey"],
+.settings input[name="aggroCheckTargetKey"],
+.settings input[name="aggroCheckEquipKey"] {
   text-align: center;
   border-radius: 2px;
   border: 1px solid grey;
@@ -268,7 +270,9 @@ input[data-spares] {}
 .settings .spares-key:active,
 .settings input[name="logOutMacroKey"]:active,
 .settings input[name="mammothMacroKey"]:active,
-.settings input[name="checkChangesDoAfterKey"]:active {
+.settings input[name="checkChangesDoAfterKey"]:active,
+.settings input[name="aggroCheckTargetKey"]:active,
+.settings input[name="aggroCheckEquipKey"]:active {
   cursor: default;
 }
 
@@ -281,7 +285,9 @@ input[data-spares] {}
 .settings .spares-key:focus,
 .settings input[name="logOutMacroKey"]:focus,
 .settings input[name="mammothMacroKey"]:focus,
-.settings input[name="checkChangesDoAfterKey"]:focus {
+.settings input[name="checkChangesDoAfterKey"]:focus,
+.settings input[name="aggroCheckTargetKey"]:focus,
+.settings input[name="aggroCheckEquipKey"]:focus {
   outline: none;
 }
 
@@ -294,7 +300,9 @@ input[data-spares] {}
 .settings .spares-key:disabled,
 .settings input[name="logOutMacroKey"]:disabled,
 .settings input[name="mammothMacroKey"]:disabled,
-.settings input[name="checkChangesDoAfterKey"]:disabled {
+.settings input[name="checkChangesDoAfterKey"]:disabled,
+.settings input[name="aggroCheckTargetKey"]:disabled,
+.settings input[name="aggroCheckEquipKey"]:disabled  {
   cursor: default;
   border: 1px solid rgba(0, 0, 0, .2);
   background-color: rgba(245, 245, 245, .7);
@@ -973,7 +981,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   z-index: 3;
 }
 
-.spare-inner {
+.spare-inner, .skills-inner {
   border: 1px solid grey;
   padding: 5px;
   margin: 5px;
@@ -1003,7 +1011,17 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   margin-bottom: 5px;
 }
 
+ .skills-inner label {
+   display: flex;
+   justify-content: space-between;
+   margin-bottom: 5px;
+ }
+
 .advSettings .settings .settings_section .spareContainer {
+  margin-bottom: 5px;
+}
+
+.advSettings .settings .settings_section .skillsContainer {
   margin-bottom: 5px;
 }
 
@@ -1021,6 +1039,15 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 }
 
 .advSettings .settings .settings_section .sparesContainer .spares-removeButton {
+  display: block;
+  margin: 0 auto;
+  background-image: url('img/remove.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.advSettings .settings .settings_section .sparesContainer .skills-removeButton {
   display: block;
   margin: 0 auto;
   background-image: url('img/remove.png');
@@ -1226,7 +1253,7 @@ input[type=number] {
   width: 30px;
   margin-right: 1px;
   background-image: url('img/color-picker.png');
-  background-size: 10px;
+  background-size: 9px;
   background-repeat: no-repeat;
   background-position: center center;
   border: 1px solid grey;
@@ -1241,4 +1268,29 @@ input[type=number] {
 .spares-color-picker {
   height: 20px;
   margin-left: 3px;
+}
+
+.testSkillsButton {
+  margin-top: 5px !important;
+  width: 100px !important;
+  align-self: center;
+}
+
+.advSettings input[type=color] {
+  cursor: pointer;
+}
+
+.advSettings input[type=color]:hover {
+  border: 1px solid black;
+}
+
+
+.colorPicker_disabled {
+  background-color: rgb(230, 230, 230);
+  border: 1px solid rgb(200, 200, 200);
+}
+
+.colorPicker_disabled:hover {
+  cursor: default !important; 
+  border: 1px solid rgb(200, 200, 200) !important;
 }

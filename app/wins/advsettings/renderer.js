@@ -543,12 +543,94 @@ const renderLuresDelayMin = ({lures, luresDelayMin}) => {
   return elt('input', {type: 'number', value: luresDelayMin, step: 0.1, disabled: !lures, name: "luresDelayMin"});
 };
 
+
+const renderSkills = ({aggroCheck, skills}) => {
+
+  const addButton = elt('input', {type: 'button', className: `spares-addButton ${!aggroCheck ? `disabledButton` : ``}`, onclick() {
+    if(!aggroCheck) return;
+    let key = elt('input', {type: 'text', value: `1`, className: "spares-key", name: `spareKey`, "data-skills": "key"});
+    key.setAttribute('readonly', true);
+
+    const x = elt('input', {type: `number`, "data-skills": "x", value: 0});
+    const y = elt('input', {type: `number`, "data-skills": "y", value: 0})
+
+    const colorPicker = elt('input', {type: `color`, className: `whisperColorBox`, value: rgbToHex(255, 255, 255), "data-skills": "color"})
+    const precision = elt('input', {type: `number`, value: 95, title: `How accurate the color should be`, "data-skills": "precision"})
+
+    const coordsButton = elt('input', {type: `button`, className: `whisperColorPicker`, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        x.value = data.x;
+        y.value = data.y;
+        const {r, g, b} = data.color;
+        colorPicker.value = rgbToHex(r, g, b);
+      })
+    }});
+
+    this.parentNode.insertBefore(elt('form', {className: "skillsContainer"},
+      elt(`div`, {className: `skills-inner`},
+        wrapInLabel('Do only once: ', elt('input', {type: `checkbox`, checked: false, "data-skills": "once"}), `Cast skill only once during rotation.`),
+        wrapInLabel('Range Only: ', elt('input', {type: `checkbox`, checked: false, "data-skills": "rangeonly"}), `If your skill doesn't work in melee mode and requires your character to be far from the enemy, turn this value on. It will not use this skill to check if it's close enough to the enemy.`),
+        wrapInLabel(`Key: `, key, `a`),
+        wrapInLabel(`Skill Position: `, elt(`div`, {style: `margin: 0`},elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, coordsButton, colorPicker), `This should be pointed at skill icon, which in turn should have some range indication with either addons like bartender/tullarange or by pointing at number of the skill (which is range indicator by default).\n\nAcc: accuracy of the color. Lower it if your skill isn't solid and slightly transparent, making it always a little bit different. `),
+        wrapInLabel(`Execution/Cast/GCD Delay (sec):`, elt(`input`, {type: `number`, value: 1.5, "data-skills": "delay"}), `Delay of how long the skill is being cast, or global cooldown value.`),
+        wrapInLabel(`Cooldown Delay (sec): `, elt(`input`, {type: `number`, value: 1, "data-skills": "cooldown"}), `Cooldown of your skill, usually can be found in the description of the skill.`),
+
+        elt('input', {type: 'button', className: `skills-removeButton`, onclick() {
+          this.parentNode.parentNode.remove();
+        }}),
+      ),
+    ), this);
+  }});
+
+  const skillsNodes = skills.map((skill) => {
+    const key = elt('input', {type: 'text', value: skill.key, className: "spares-key", name: `spareKey`, "data-skills": "key"});
+
+    const x = elt('input', {type: `number`, "data-skills": "x", value: skill.x});
+    const y = elt('input', {type: `number`, "data-skills": "y", value: skill.y})
+
+    const colorPicker = elt('input', {type: `color`, className: `whisperColorBox`, value: skill.color, "data-skills": "color"})
+
+    if(skill.precision < 0) skill.precision = 0;
+    if(skill.precision > 100) skill.precision = 100;
+
+    const precision = elt('input', {type: `number`, value: skill.precision, "data-skills": "precision"})
+
+    const coordsButton = elt('input', {type: `button`, className: `whisperColorPicker`, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        x.value = data.x;
+        y.value = data.y;
+        const {r, g, b} = data.color;
+        colorPicker.value = rgbToHex(r, g, b);
+      })
+    }});
+
+    key.setAttribute('readonly', true);
+    return elt('form', {className: "skillsContainer"},
+      elt(`div`, {className: `skills-inner`},
+        wrapInLabel('Do only once: ', elt('input', {type: `checkbox`, checked: skill.once, "data-skills": "once"}), `a`),
+        wrapInLabel('Range Only: ', elt('input', {type: `checkbox`, checked: skill.rangeonly, "data-skills": "rangeonly"}), `a`),
+        wrapInLabel(`Key: `, key, `a`),
+        wrapInLabel(`Skill Position: `, elt(`div`, {style: `margin: 0`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, coordsButton, colorPicker), `a`),
+        wrapInLabel(`Execution/Cast/GCD Delay (sec): `, elt(`input`, {type: `number`, value: skill.delay, "data-skills": "delay"}), `a`),
+        wrapInLabel(`Cooldown Delay (sec): `, elt(`input`, {type: `number`, value: skill.cooldown, "data-skills": "cooldown"}), `a`),
+
+        elt('input', {type: 'button', className: `skills-removeButton`, onclick() {
+          this.parentNode.parentNode.remove();
+        }}),
+      ),
+    )
+  });
+
+  return elt('div', {className: `sparesContainer`}, ...skillsNodes, addButton);
+};
+
+/* REAL SPARES */
 const renderSpares = ({spares}) => {
 
   const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
   const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE'];
   const addButton = elt('input', {type: 'button', className: "spares-addButton", onclick() {
-    let key = elt('input', {type: 'text', value: `1`, className: "spares-key", "data-spares": "key"});
+    let key = elt('input', {type: 'text', value: `1`, className: "spares-key", name: `spareKey`,"data-spares": "key"});
     key.setAttribute('readonly', true);
 
     const x = elt('input', {type: `number`, style: `display: none`, "data-spares": "x", value: 0});
@@ -590,7 +672,7 @@ const renderSpares = ({spares}) => {
   const sparesNodes = spares.map((spare, i) => {
     const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
     const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE'];
-    const key = elt('input', {type: 'text', style: `${spare.type == `Press Key` ? `` : `display: none;`}`, value: spare.key, className: "spares-key", "data-spares": "key"});
+    const key = elt('input', {type: 'text', name: `spareKey`, style: `${spare.type == `Press Key` ? `` : `display: none;`}`, value: spare.key, className: "spares-key", "data-spares": "key"});
 
     const x = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` ||  spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`,  "data-spares": "x", value: spare.x});
     const y = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click`  || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, "data-spares": "y", value: spare.y})
@@ -716,7 +798,109 @@ const renderCheckLogic = ({checkLogic}) => {
   const checkLogicTypes = ['default', 'pixelmatch'];
   const modeSelect = elt(`select`, {name: 'checkLogic', title: `Alternative modes for detecting bobber animation.`}, ...checkLogicTypes.map((logic) => elt('option', {selected: checkLogic == logic, value: logic}, logic[0].toUpperCase() + logic.slice(1))));
    return elt(`div`, null, modeSelect);
+};
+
+const renderAggroCheck = ({aggroCheck}) => {
+  return elt('input', {type: `checkbox`, checked: aggroCheck, name: `aggroCheck`});
+};
+
+const renderAggroCheckUserHp = ({aggroCheck, aggroCheckUserHp}) => {
+
+  const x = elt('input', {type: `number`, name: 'x', disabled: !aggroCheck, value: aggroCheckUserHp.x});
+  const y = elt('input', {type: `number`, name: 'y', disabled: !aggroCheck, value: aggroCheckUserHp.y});
+  const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!aggroCheck ? `colorPicker_disabled` : ``}`, disabled: !aggroCheck, name: 'color', value: aggroCheckUserHp.color});
+  const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckUserHp.precision, "data-skills": "precision"})
+
+  const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButton` : ``}`, value: ``, onclick() {
+    ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      if(!data) {
+        return;
+      }
+
+      x.value = data.x;
+      y.value = data.y;
+
+      const {r, g, b} = data.color;
+      colorBox.value = rgbToHex(r, g, b);
+    })
+  }});
+
+  return elt('div', {"data-collection": `aggroCheckUserHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+
+};
+
+const renderAggroCheckEnemyHp = ({aggroCheck, aggroCheckEnemyHp}) => {
+
+  const x = elt('input', {type: `number`, name: 'x', disabled: !aggroCheck, value: aggroCheckEnemyHp.x});
+  const y = elt('input', {type: `number`, name: 'y', disabled: !aggroCheck, value: aggroCheckEnemyHp.y});
+  const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!aggroCheck ? `colorPicker_disabled` : ``}`, disabled: !aggroCheck, name: 'color', value: aggroCheckEnemyHp.color});
+  const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyHp.precision, "data-skills": "precision"})
+
+  const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButton` : ``}`, value: ``, onclick() {
+    ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      if(!data) {
+        return;
+      }
+
+      x.value = data.x;
+      y.value = data.y;
+
+      const {r, g, b} = data.color;
+      colorBox.value = rgbToHex(r, g, b);
+    })
+  }});
+
+  return elt('div', {"data-collection": `aggroCheckEnemyHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+
+};
+
+const renderAggroCheckInterval = ({aggroCheck, aggroCheckInterval}) => {
+  return elt('input', {type: `number`, value: aggroCheckInterval, name: `aggroCheckInterval`, disabled: !aggroCheck})
+};
+
+const renderAggroCheckDoAfterType = ({aggroCheck, aggroCheckDoAfterType}) => {
+  const types = ['Run Away', 'Attack', 'Stop Bot'];
+  return elt('select', {name: 'aggroCheckDoAfterType', disabled: !aggroCheck}, ...types.map((type) => elt('option', {selected: type == aggroCheckDoAfterType}, type)))
+};
+
+const renderAggroCheckRunTime = ({aggroCheck, aggroCheckRunTime}) => {
+  return elt('input', {type: `number`, value: aggroCheckRunTime, disabled: !aggroCheck, name: `aggroCheckRunTime`})
+};
+
+const renderAggroCheckResetCamera = ({aggroCheck, aggroCheckResetCamera}) => {
+  return elt('input', {type: `checkbox`, checked: aggroCheckResetCamera, disabled: !aggroCheck, name: `aggroCheckResetCamera`});
 }
+
+const renderAggroCheckFirstTurn = ({aggroCheck, aggroCheckFirstTurn}) => {
+  const types = ['left', 'right'];
+  return elt('select', {name: 'aggroCheckFirstTurn', disabled: !aggroCheck}, ...types.map((type) => elt('option', {selected: type == aggroCheckFirstTurn, value: type}, type[0].toUpperCase() + type.slice(1))));
+};
+
+const renderAggroCheckTargetKey = ({aggroCheck, aggroCheckTargetKey}) => {
+  let key = elt('input', {type: 'text', value: aggroCheckTargetKey, disabled: !aggroCheck, name: "aggroCheckTargetKey"});
+  key.setAttribute(`readonly`, `true`);
+  return key;
+};
+
+const renderAggroCheckEquip = ({aggroCheck, aggroCheckEquip, aggroCheckEquipKey}) => {
+  const checkbox = elt('input', {type: `checkbox`, checked: aggroCheckEquip, disabled: !aggroCheck, name: `aggroCheckEquip`});
+  let key = elt('input', {type: 'text', value: aggroCheckEquipKey, disabled: !aggroCheck || !aggroCheckEquip, name: "aggroCheckEquipKey"});
+  key.setAttribute(`readonly`, `true`);
+  return elt('div', null, checkbox, key);
+};
+
+const renderTestSkillsButton = ({aggroCheck, skills}) => {
+  return elt('input', {type: `button`, value: `Test Rotation`, disabled: !aggroCheck, className: `testSkillsButton ${!aggroCheck ? `disabledButton` : ``}`})
+};
+
+const renderAggroCheckEnemyName = ({aggroCheck, aggroCheckEnemyName}) => {
+  const winRange = elt(`input`, {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyName, style: `color: white;  text-align: center; border: 1px solid grey; background-color: rgb(${aggroCheckEnemyName}, 0, 0)`,  name: "aggroCheckEnemyName"})
+  const range = elt('input', {type: `range`, max: 255, disabled: !aggroCheck, className: `${!aggroCheck ? `threshold_disabled` : ``}`, value: aggroCheckEnemyName, oninput: function() {
+    winRange.value = this.value;
+    winRange.style = `color: white; text-align: center; border: 1px solid grey; background-color: rgb(${this.value}, 0, 0)`;
+  }});
+  return elt(`div`, null, range, winRange)
+};
 
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
@@ -851,6 +1035,29 @@ const renderSettings = (config) => {
     wrapInLabel(`Character Movement (steps):`, renderRngMoveDirLengthMax(config), `Aproximate value of steps made by the bot when it moves around, defines the perimeter of how far it might move.`),
     wrapInLabel(`Use Movements Randomly Every (min): `, renderRngMoveTimer(config), `How often the bot should move your camera/character. The value is chosen randomly within the provided values.`),
     ),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
+    elt(`div`, {className: `settings_section settings_premium`},
+      wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy, if successful it will move within the  range distance of the first skill and then start skill rotation, centering and keeping distance relative to the "Skill Position" value of every skill in the rotation. `),
+      wrapInLabel('Reset Camera: ', renderAggroCheckResetCamera(config), `Bot will reset camera to the farthest default view.`),
+      wrapInLabel('Enemy Name Color: ', renderAggroCheckEnemyName(config), `The color of the enemy names the bot should look for when attacked.`),
+      wrapInLabel('User HP', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.`),
+      wrapInLabel('Enemy HP', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is dead. Usually should be somewhere on the start of the green HP field.`),
+      wrapInLabel('Check Interval (sec)', renderAggroCheckInterval(config), `How often the bot should check changes of "User HP" pixel.`),
+      wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking at during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
+        config.aggroCheckDoAfterType == 'Run Away' ?
+      elt('div', null,
+      wrapInLabel('Run For (sec): ', renderAggroCheckRunTime(config), `For how long the bot should run away.`),
+      ) :
+      elt('div', null,
+      wrapInLabel('First Turn Direction: ', renderAggroCheckFirstTurn(config), `The directino the bot should turn to find an enemy (by checking the color of Enemy Name value)`),
+      wrapInLabel('Target Key: ', renderAggroCheckTargetKey(config), `What key the bot should use to target the enemy. By default it's "Tab" in the game, but if you want the bot to target only enemy players (and not mobs), you should bind a different key for that in the game and bind it here respectively.`),
+      wrapInLabel('Equip Weapon: ', renderAggroCheckEquip(config), `Equip weapon/armor before attacking. Use your own macro for that.`),
+    ),
+    elt('p', {style: `font-weight: bold; text-align: center;`}, `Rotation: `),
+    renderSkills(config),
+    renderTestSkillsButton(config)
+    ),
+
     elt(`p`, {className: `settings_header settings_header_premium`}, `🥱`), elt(`span`, {className: `advanced_settings_header_text`}, `Fatigue`),
     elt('div', {className: "settings_section settings_premium"},
     wrapInLabel(`Apply Fatigue:`, renderApplyFatigue(config), `The bot will simulate fatigueness by decreasing all the delay values by given rate.`),
@@ -917,6 +1124,17 @@ const runApp = async () => {
      elt('input', {type: `button`, value: `Defaults`}))
 
   settings.addEventListener(`click`, (event) => {
+
+    if(event.target.className == `testSkillsButton`) {
+      gatherConfig();
+
+      if(config.skills.length < 1) {
+        return;
+      }
+
+      ipcRenderer.send('advanced-click', config);
+      ipcRenderer.invoke('start-bot', 'skills-test');
+    }
 
     if(event.target.className == `spares-removeButton`) {
       ipcRenderer.invoke('remove-spare-confirm')
@@ -1016,7 +1234,9 @@ const runApp = async () => {
         event.target.name == `spareKey` ||
         event.target.name == 'logOutMacroKey' ||
         event.target.name == 'mammothMacroKey' ||
-        event.target.name == 'checkChangesDoAfterKey') &&
+        event.target.name == 'checkChangesDoAfterKey' ||
+        event.target.name == 'aggroCheckTargetKey' ||
+        event.target.name == `aggroCheckEquipKey`) &&
       !event.target.disabled
     ) {
       event.target.style.backgroundColor = `rgb(255, 219, 197)`;
@@ -1064,6 +1284,23 @@ const runApp = async () => {
   document.body.append(advancedSettings);
 
   const gatherConfig = () => {
+
+    /* skills start */
+    let skills = [...settings.querySelectorAll('.skillsContainer')]
+    .map((skill) => {
+      let inputs = [...skill.elements].filter(input => input.type != `button`);
+        return inputs.reduce((a, b) => {
+          if(b['data-skills']) {
+            a[b["data-skills"]] = convertValue(b);
+          }
+          return a;
+        }, {})
+      }
+    );
+
+    config['skills'] = skills;
+    /* skills end */
+
     /* spares start */
     let spares = [...settings.querySelectorAll('.spareContainer')]
     .map((spare) => {

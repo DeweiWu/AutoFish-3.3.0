@@ -23,6 +23,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -216,6 +239,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -400,6 +446,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -584,6 +653,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -748,6 +840,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -913,6 +1028,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1074,6 +1212,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1254,6 +1415,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1431,6 +1615,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1599,6 +1806,29 @@
       "checkChangesIgnoreActions": true,
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
+      "aggroCheck": false,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckFirstTurn": "left",
+      "aggroCheckResetCamera": true,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,

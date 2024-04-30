@@ -8,7 +8,7 @@ const random = (from, to) => {
   return from + Math.random() * (to - from);
 };
 
-const runBot = async ({ bot, log, state, stats }, onError, wins) => {
+const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) => {
   const {
     dynamicThreshold,
     logOut,
@@ -30,16 +30,19 @@ const runBot = async ({ bot, log, state, stats }, onError, wins) => {
     detectSens,
     doAfterTimer,
     checkChanges,
+    aggroCheck,
     applyFatigue,
     checkConfirm
   } = bot;
 
   checkChanges(onError, log);
+  aggroCheck(onError, state, aggroTestRun);
 
   let failedCast = false;
   let attempts = 0;
   do {
     await dx12Case();
+    await aggroCheck.status;
     if (state.status == "initial") {
       log.send(`Preliminary checks...`);
       await preliminaryChecks(log);

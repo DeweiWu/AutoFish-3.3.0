@@ -17,11 +17,11 @@ const createLog = (sendToWindow) => {
     },
 
     ok(text) {
-      this.send(text, "green");
+      this.send(text, "#127500");
     },
 
     warn(text) {
-      this.send(text, "orange");
+      this.send(text, "#fc7703");
     },
 
     err(text) {

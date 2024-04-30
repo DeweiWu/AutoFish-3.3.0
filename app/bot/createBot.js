@@ -8,6 +8,7 @@ const createRedButtonZone = require("./redButtonZone.js");
 const pixelmatch = require('pixelmatch');
 const Vec = require('../utils/vec.js');
 const { hexToRgb, rgbToHex } = require("./../utils/colors.js");
+const createRgb = require('../utils/rgb.js');
 
 const { createWriteStream } = require('fs');
 
@@ -18,7 +19,8 @@ const Jimp = require(`jimp`);
 const { BrowserWindow, ipcMain, app } = require(`electron`);
 
 const { screen, Region, Point, straightTo } = require("@nut-tree/nut-js");
-const nutMouse = require("../game/nut.js").mouse;
+
+const nutjs = require("../game/nut.js");
 
 let once = (fn, done) => (...args) => {
   if(!done) {
@@ -63,8 +65,8 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
   await keyboard.toggleKey(["alt", "tab"], false, delay);
  }
 
-  const action = async (callback) => {
-    if(state.status == `stop`) return;
+  const action = async (callback, forced) => {
+    if(state.status == `stop` && !forced) return;
     if(settings.afkmode && config.reaction) {
        await sleep(random(config.reaction.from, config.reaction.to))
     }
@@ -255,7 +257,7 @@ if(lootWindowPatch.exitButton) {
           }
           let curPos = mouse.getPos();
           curPos = new Vec(curPos.x, curPos.y);
-          await nutMouse.humanMoveTo({
+          await nutjs.mouse.humanMoveTo({
             from: curPos.plus(screenSize),
             to: pos.plus(screenSize),
             speed: random(randomSpeed.from, randomSpeed.to),
@@ -516,7 +518,12 @@ if(lootWindowPatch.exitButton) {
           case "Pixel Color TRUE": {
             let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
             let color = hexToRgb(spare.color);
-            if(!closeEnough(spare.precision)(r, color.r) && !closeEnough(spare.precision)(g, color.g) && !closeEnough(spare.precision)(b, color.b)) {
+
+            let percR = color.r / 100 * (100 - spare.precision);
+            let percG = color.g / 100 * (100 - spare.precision);
+            let percB = color.b / 100 * (100 - spare.precision);
+
+            if(!closeEnough(percR)(r, color.r) && !closeEnough(percG)(g, color.g) && !closeEnough(percB)(b, color.b)) {
               return "break";
             }
 
@@ -526,7 +533,12 @@ if(lootWindowPatch.exitButton) {
           case "Pixel Color FALSE": {
             let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
             let color = hexToRgb(spare.color);
-            if(closeEnough(spare.precision)(r, color.r) && closeEnough(spare.precision)(g, color.g) && closeEnough(spare.precision)(b, color.b)) {
+
+            let percR = color.r / 100 * (100 - spare.precision);
+            let percG = color.g / 100 * (100 - spare.precision);
+            let percB = color.b / 100 * (100 - spare.precision);
+
+            if(closeEnough(percR)(r, color.r) && closeEnough(percG)(g, color.g) && closeEnough(percB)(b, color.b)) {
               return "break";
             }
             break;
@@ -805,6 +817,271 @@ if(lootWindowPatch.exitButton) {
       }, config.checkChangesInterval * 1000);
     }
   };
+
+  let n = 0;
+
+  const aggroCheck = async (onStop, state, aggroTestRun) => {
+    if(!config.aggroCheck) return;
+    const runAway = async (time) => {
+      await keyboard.toggleKey('w', true, delay); // need action()
+        for(let start = Date.now(); Date.now() < start + time;) {
+
+          while(random(0, 100) < 75) {
+            await keyboard.sendKey('space', [250, 750]);
+          }
+
+          if(true) { // random(0, 100) > 75
+            await runRngMove();
+            await keyboard.toggleKey('w', true, delay); // need action()
+          }
+
+          await sleep(random(250, 3000));
+        }
+      await keyboard.toggleKey('w', false, delay);
+    };
+
+    let createEnemyZone = (enemyZoneSize) => ({
+      x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
+      y: screenSize.y,
+      width: screenSize.width * (enemyZoneSize * 2),
+      height: Math.round(screenSize.height / 2)
+    });
+
+    let createEnemyZoneClose = (enemyZoneSize) => ({
+      x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
+      y: Math.round(screenSize.height / 2.1),
+      width: screenSize.width * (enemyZoneSize * 2),
+      height: 100
+    });
+
+    const findEnemy = async (zone) => {
+      let enemyScreenData = await getDataFrom(zone);
+      const image = await Jimp.read(enemyScreenData);
+
+      let positions = [];
+      image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+
+      let r = this.bitmap.data[idx + 0];
+      let g = this.bitmap.data[idx + 1];
+      let b = this.bitmap.data[idx + 2];
+
+        if((r - Math.max(g, b)) > config.aggroCheckEnemyName) {
+          positions.push({x, y});
+        }
+      });
+
+      if(positions.length < 1) {
+        return;
+      }
+
+      return positions.map(pos => ({
+         x: zone.x + pos.x,
+         y: zone.y + pos.y + (screenSize.height / 1080 * 20)}
+       ));
+    };
+
+    const centerCamera = async (value, step) => {
+      if(value > 960) {
+        await keyboard.toggleKey("right", true);
+        await sleep(step);
+        await keyboard.toggleKey("right", false);
+      } else {
+        await keyboard.toggleKey("left", true);
+        await sleep(step);
+        await keyboard.toggleKey("left", false);
+      }
+    }
+
+    class HealthBar {
+      constructor({x, y, color, precision}) {
+        this.x = x;
+        this.y = y;
+        this.precision = precision;
+        this.color = hexToRgb(color);
+      }
+
+      async checkColor(getDataFrom) {
+        const pixelData = await getDataFrom({x: this.x, y: this.y, width: 1, height: 1});
+        const [r, g, b] = Array.from(pixelData.data);
+
+        let percR = this.color.r / 100 * (100 - this.precision);
+        let percG = this.color.g / 100 * (100 - this.precision);
+        let percB = this.color.b / 100 * (100 - this.precision);
+
+        return closeEnough(percR)(this.color.r, r) && closeEnough(percG)(this.color.g, g) && closeEnough(percB)(this.color.b, b)
+      }
+    }
+
+    const userHp = new HealthBar(config.aggroCheckUserHp);
+    const enemyHp = new HealthBar(config.aggroCheckEnemyHp);
+
+    let skills = config.skills.map((skill) => (
+      {
+      ...skill,
+      attackRange: new HealthBar({x: skill.x, y: skill.y, color: skill.color, precision: skill.precision}),
+      initial: true,
+      cooldownTimer: createTimer(() => skill.cooldown * 1000)
+    }));
+
+    const turnDirection = config.aggroCheckFirstTurn;
+    const turnTimer = createTimer(() => 2000);
+    const findAndCenter = async (zone) => {
+      enemyPosition = await findEnemy(zone);
+      if(enemyPosition) {
+        const x = enemyPosition.reduce((a, b) => a + b.x, 0) / enemyPosition.length;
+        let stepSize = Math.abs(screenSize.width / 2 - x);
+        if(!closeEnough(screenSize.width * 0.05)(x, screenSize.width / 2)) {
+          await centerCamera(x, stepSize / 3);
+          return true;
+        }
+      }
+    }
+
+    for(;state.status != `stop`;) {
+      await sleep(aggroTestRun ? 0 : config.aggroCheckInterval * 1000);
+      if(!(await userHp.checkColor(getDataFrom)) || aggroTestRun) {
+
+      await action(async () => {
+
+        if(state.status == `checking`) {
+          await keyboard.sendKey('escape', delay);
+        }
+
+        state.status = 'stop';
+
+        let finish;
+        aggroCheck.status = new Promise(function(resolve, reject) {
+          finish = resolve;
+        });
+
+        if(tmBot.ctx) {
+          tmBot.ctx.reply(`The bot is being attacked in Window: ${winNum}!`);
+        }
+
+        if(config.aggroCheckResetCamera) {
+          for (var i = 0; i < 4; i++) {
+            await keyboard.sendKey('home', delay);
+            await sleep(250);
+          }
+          for (var i = 0; i < 2; i++) {
+            await keyboard.sendKey('end', delay);
+            await sleep(250);
+          }
+        }
+
+        let attackFailed = false;
+
+
+
+        if(config.aggroCheckDoAfterType == "Attack") { // config.aggroCheck.type == attack
+
+          if(skills.length < 1) {
+            return;
+          }
+
+          if(config.aggroCheckEquip) {
+            await keyboard.sendKey(config.aggroCheckEquipKey, delay);
+          }
+
+          if(config.reaction) {
+            await sleep(random(config.reaction.from, config.reaction.to))
+          }
+          await keyboard.toggleKey(turnDirection, true);
+          turnTimer.start();
+          for(let foundEnemy = null; !turnTimer.isElapsed() && !foundEnemy;) { // full rotation
+            let possibleEnemies = await findEnemy(createEnemyZone(0.1));
+            if(possibleEnemies) {
+              let turnTimeRemains = turnTimer.timeRemains();
+              await keyboard.toggleKey(turnDirection, false);
+
+              await keyboard.sendKey(config.aggroCheckTargetKey, delay);
+
+              await sleep(250); // Time to open hp
+              if(await enemyHp.checkColor(getDataFrom)) {
+
+                foundEnemy = true;
+                let condition = async () => await skills[0].attackRange.checkColor(getDataFrom);
+
+                await keyboard.toggleKey("up", true, delay);
+                while(!(await condition())) { // come up to target until it's in range of the first skill
+                  await findAndCenter(createEnemyZone(0.2));
+                  await sleep(50);
+                }
+                await keyboard.toggleKey("up", false, delay);
+
+                let killingEnemyStartTime = Date.now();
+                let skillNumber = 0;
+                await sleep(500);
+                while(await enemyHp.checkColor(getDataFrom) && (Date.now() - killingEnemyStartTime < 120000)) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
+                    await findAndCenter(createEnemyZone(0.2));
+
+                    let skill = skills[skillNumber % skills.length];
+
+                    let afterSkillApliedStartTime = Date.now()
+                    if(!(await skill.attackRange.checkColor(getDataFrom)) && !skill.rangeonly && Date.now() - afterSkillApliedStartTime > 500) { // come up to target if not in range of the skill. Do it only after 0.5 second delay after skill was applied to avoid UI skill animation.
+                        await keyboard.toggleKey("up", true, delay);
+                        while(!(await skill.attackRange.checkColor(getDataFrom))) {
+                          await sleep(random(delay[0], delay[1]));
+                        }
+                        await keyboard.toggleKey("up", false, delay);
+                    }
+
+                    if(!(skill.cooldownTimer.isElapsed())) {
+                      await sleep(50);
+                      continue;
+                    } else {
+                      skill.cooldownTimer.update();
+                    }
+
+                    if(skill.once) {
+                      skills[skillNumber] = null;
+                      skills = skills.filter(Boolean);
+                    } else {
+                      skillNumber++;
+                    }
+
+                    await keyboard.sendKey(skill.key, delay);
+                    let startDelayTime = Date.now();
+                    let skillDelay = skill.delay * 1000;
+
+                    while((Date.now() - startDelayTime < skillDelay) && await enemyHp.checkColor(getDataFrom)) { // center camera during cast/execution time
+                      await findAndCenter(createEnemyZone(0.2));
+                    }
+
+                    await sleep(50);
+                  }
+
+                await sleep(3000) // wait for 3 seconds until target dies
+
+                if(await enemyHp.checkColor(getDataFrom)) {
+                  attackFailed = true;
+
+                  await keyboard.toggleKey(turnDirection, true);
+                  await sleep(1000);
+                  await keyboard.toggleKey(turnDirection, false);
+                }
+
+              } else {
+                turnTimer.update(() => turnTimeRemains);
+                await keyboard.toggleKey(turnDirection, true);
+              }
+            }
+          }
+
+          await keyboard.toggleKey(turnDirection, false);
+        }
+
+        if(config.aggroCheckDoAfterType == "Run Away" || attackFailed) { // config.aggroCheck.type == runAway
+          await runAway(config.aggroCheckRunTime * 1000);
+        }
+
+        finish();
+        onStop();
+        }) // action end
+      }
+    }
+  };
+  aggroCheck.status = Promise.resolve();
 
   const castFishing = async (state) => {
     await action(async () => {
@@ -1443,7 +1720,8 @@ if (settings.soundDetection) {
     checkWhisper,
     replyToChat,
     dx12Case,
-    checkChanges
+    checkChanges,
+    aggroCheck
   };
 };
 

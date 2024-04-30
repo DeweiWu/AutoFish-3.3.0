@@ -1,4 +1,4 @@
-let { mouse, Point } = require("@nut-tree/nut-js");
+let { mouse, Point, keyboard, Key } = require("@nut-tree/nut-js");
 
 function getRandomControlPoint(start, end, range) {
     const deltaX = end.x - start.x;
@@ -61,6 +61,8 @@ function randomHumanLikeCursorEasing(x) {
     return Math.max(0, Math.min(1, result));
 }
 
+keyboard.config.autoDelayMs = 0;
+
 module.exports = {
   mouse: {
   async humanMoveTo({from, to, speed, deviation, fishingZone}) {
@@ -85,5 +87,29 @@ module.exports = {
       await sleep(delay);
     }
     }
+  },
+
+  keyboard: {
+    async sendKey(key, delay = [0, 0]) {
+
+      if(!Array.isArray(delay)) {
+        delay = [delay, delay];
+      }
+
+      keyboard.config.autoDelayMs = random(delay[0], delay[1]);
+      await keyboard.pressKey(Key[key]);
+      await keyboard.releaseKey(Key[key]);
+      keyboard.config.autoDelayMs = 0;
+    },
+
+    async toggleKey(key, toggle, delay = 0) {
+      if(toggle) {
+        await keyboard.pressKey(Key[key]);
+      } else {
+        await keyboard.releaseKey(Key[key]);
+      }
+
+      await sleep(delay);
+    },
   }
 }

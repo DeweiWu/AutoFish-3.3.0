@@ -55,7 +55,6 @@ if (tmBot.bot) {
 
     if(tmBot.replies.length > 1) {
       let winNum = message.slice(3, 5).match(/\d+/)[0];
-      console.log(winNum);
       if(!(/\d+/.test(winNum))) {
         ctx.reply(`Please ensure proper formatting: Use '/w win_number username message' `);
         return;
@@ -79,7 +78,6 @@ if (tmBot.bot) {
 
     if(tmBot.replies.length > 1) {
       let winNum = message.slice(5, 7).match(/\d+/)[0];
-      console.log(winNum);
       if(!(/\d+/.test(winNum))) {
         ctx.reply(`Please ensure proper formatting: Use '/say win_number username message' `);
         return;
@@ -164,10 +162,10 @@ if (tmBot.bot) {
 }
 
   return {
-    startBots(onError) {
+    startBots(onError, aggroTestRun) {
       log.send("Starting the bots...");
       bots.forEach((bot) => {
-        runBot(bot, onError, bots)
+        runBot(bot, onError, bots, aggroTestRun)
         .then(() => {
             log.setState(true);
             bot.stats.show().forEach((stat) => bot.log.ok(stat));

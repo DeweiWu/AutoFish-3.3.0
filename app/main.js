@@ -241,6 +241,8 @@ You can also write in this chat directly to do:
       arduino.connectTo(config.patch[settings.game].arduinoPort, Number(config.patch[settings.game].arduinoRate))
       .then((msg) => log.ok(msg))
       .catch((err) => log.err(err))
+    } else {
+      log.warn(`You don't use Arduino board, the input commands of the bot might be detectable!`);
     }
 
     if(tmKey) {
@@ -449,7 +451,7 @@ By pressing "Accept" you agree to everything stated above.`,
         win.hide();
       }, 500 + Math.random() * 1500);
     }
-    startBots(stopAppAndBots);
+    startBots(stopAppAndBots, type == 'skills-test');
   });
 
   ipcMain.on('reg-start-by-fishing-key', () => {
