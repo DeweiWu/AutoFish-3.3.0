@@ -81,7 +81,7 @@ const renderThreshold = ({ threshold, bobberColor, bobberColorManual, autoTh, ga
 const renderGameNames = ({game}) => {
   const gamesOfficial = [
     `Retail`,
-    `LK Classic`,
+    `Cata Classic`,
     `Classic`
   ];
 
@@ -140,8 +140,8 @@ const renderPoleKey = ({lures, game, intKey, useInt}) => {
 
   const checkbox = elt(`input`, {
     type: `checkbox`,
-    disabled: !(game == `Retail` || game == `Classic` || game == `LK Classic`),
-    checked: !(game == `Retail` || game == `Classic` || game == `LK Classic`) ? false : useInt,
+    disabled: !(game == `Retail` || game == `Classic` || game == `Cata Classic`),
+    checked: !(game == `Retail` || game == `Classic` || game == `Cata Classic`) ? false : useInt,
     style: `margin-right: 7px`, name: "useInt"
     });
 

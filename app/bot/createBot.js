@@ -689,7 +689,7 @@ if(lootWindowPatch.exitButton) {
   }
 
   const findAllBobberColors = async () => {
-    if(settings.game != `Retail` && settings.game != `LK Classic` && settings.game != `Classic`) {
+    if(settings.game != `Retail` && settings.game != `Cata Classic` && settings.game != `Classic`) {
       let bobber = await fishingZone.getBobberPrint(10);
 
       if(!bobber) {
