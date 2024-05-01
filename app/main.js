@@ -451,6 +451,7 @@ By pressing "Accept" you agree to everything stated above.`,
         win.hide();
       }, 500 + Math.random() * 1500);
     }
+
     startBots(stopAppAndBots, type == 'skills-test');
   });
 

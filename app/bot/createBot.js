@@ -818,8 +818,6 @@ if(lootWindowPatch.exitButton) {
     }
   };
 
-  let n = 0;
-
   const aggroCheck = async (onStop, state, aggroTestRun) => {
     if(!config.aggroCheck) return;
     const runAway = async (time) => {
@@ -844,7 +842,7 @@ if(lootWindowPatch.exitButton) {
       x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
       y: screenSize.y,
       width: screenSize.width * (enemyZoneSize * 2),
-      height: Math.round(screenSize.height / 2)
+      height: Math.round(screenSize.height / 2.2)
     });
 
     let createEnemyZoneClose = (enemyZoneSize) => ({
@@ -913,7 +911,9 @@ if(lootWindowPatch.exitButton) {
     }
 
     const userHp = new HealthBar(config.aggroCheckUserHp);
+    //const userHpStart = new HealthBar(config.aggroCheckUserHpStart);
     const enemyHp = new HealthBar(config.aggroCheckEnemyHp);
+
 
     let skills = config.skills.map((skill) => (
       {
@@ -961,17 +961,15 @@ if(lootWindowPatch.exitButton) {
         if(config.aggroCheckResetCamera) {
           for (var i = 0; i < 4; i++) {
             await keyboard.sendKey('home', delay);
-            await sleep(250);
+            await sleep(350);
           }
-          for (var i = 0; i < 2; i++) {
+          for (var i = 0; i < 4; i++) {
             await keyboard.sendKey('end', delay);
-            await sleep(250);
+            await sleep(350);
           }
         }
 
         let attackFailed = false;
-
-
 
         if(config.aggroCheckDoAfterType == "Attack") { // config.aggroCheck.type == attack
 
@@ -1011,7 +1009,7 @@ if(lootWindowPatch.exitButton) {
 
                 let killingEnemyStartTime = Date.now();
                 let skillNumber = 0;
-                await sleep(500);
+
                 while(await enemyHp.checkColor(getDataFrom) && (Date.now() - killingEnemyStartTime < 120000)) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
                     await findAndCenter(createEnemyZone(0.2));
 
@@ -1053,12 +1051,16 @@ if(lootWindowPatch.exitButton) {
 
                 await sleep(3000) // wait for 3 seconds until target dies
 
-                if(await enemyHp.checkColor(getDataFrom)) {
-                  attackFailed = true;
+                if (await enemyHp.checkColor(getDataFrom)) {
+
+                  if(tmBot.ctx) {
+                    tmBot.ctx.reply(`The enemy is still alive after ${120000 / 1000} sec., will try to run away in Window: ${winNum}!`);
+                  }
 
                   await keyboard.toggleKey(turnDirection, true);
                   await sleep(1000);
                   await keyboard.toggleKey(turnDirection, false);
+                  await runAway(config.aggroCheckRunTime * 1000);
                 }
 
               } else {
@@ -1071,7 +1073,7 @@ if(lootWindowPatch.exitButton) {
           await keyboard.toggleKey(turnDirection, false);
         }
 
-        if(config.aggroCheckDoAfterType == "Run Away" || attackFailed) { // config.aggroCheck.type == runAway
+        if(config.aggroCheckDoAfterType == "Run Away") { // config.aggroCheck.type == runAway
           await runAway(config.aggroCheckRunTime * 1000);
         }
 

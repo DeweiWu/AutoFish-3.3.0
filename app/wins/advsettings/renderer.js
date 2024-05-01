@@ -828,6 +828,32 @@ const renderAggroCheckUserHp = ({aggroCheck, aggroCheckUserHp}) => {
   return elt('div', {"data-collection": `aggroCheckUserHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
 
 };
+/*
+const renderAggroCheckUserHpStart = ({aggroCheck, aggroCheckUserHpStart}) => {
+
+  const x = elt('input', {type: `number`, name: 'x', disabled: !aggroCheck, value: aggroCheckUserHpStart.x});
+  const y = elt('input', {type: `number`, name: 'y', disabled: !aggroCheck, value: aggroCheckUserHpStart.y});
+  const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!aggroCheck ? `colorPicker_disabled` : ``}`, disabled: !aggroCheck, name: 'color', value: aggroCheckUserHpStart.color});
+  const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckUserHpStart.precision, name: 'precision'})
+
+  const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButton` : ``}`, value: ``, onclick() {
+    ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      if(!data) {
+        return;
+      }
+
+      x.value = data.x;
+      y.value = data.y;
+
+      const {r, g, b} = data.color;
+      colorBox.value = rgbToHex(r, g, b);
+    })
+  }});
+
+  return elt('div', {"data-collection": `aggroCheckUserHpStart`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+
+};
+*/
 
 const renderAggroCheckEnemyHp = ({aggroCheck, aggroCheckEnemyHp}) => {
 
@@ -890,7 +916,7 @@ const renderAggroCheckEquip = ({aggroCheck, aggroCheckEquip, aggroCheckEquipKey}
 };
 
 const renderTestSkillsButton = ({aggroCheck, skills}) => {
-  return elt('input', {type: `button`, value: `Test Rotation`, disabled: !aggroCheck, className: `testSkillsButton ${!aggroCheck ? `disabledButton` : ``}`})
+  return elt('input', {type: `button`, value: `Test Rotation`, disabled: !aggroCheck, className: `testSkillsButton${!aggroCheck ? ` disabledButton` : ``}`})
 };
 
 const renderAggroCheckEnemyName = ({aggroCheck, aggroCheckEnemyName}) => {
@@ -1035,13 +1061,14 @@ const renderSettings = (config) => {
     wrapInLabel(`Character Movement (steps):`, renderRngMoveDirLengthMax(config), `Aproximate value of steps made by the bot when it moves around, defines the perimeter of how far it might move.`),
     wrapInLabel(`Use Movements Randomly Every (min): `, renderRngMoveTimer(config), `How often the bot should move your camera/character. The value is chosen randomly within the provided values.`),
     ),
-    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check (beta)`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy, if successful it will move within the  range distance of the first skill and then start skill rotation, centering and keeping distance relative to the "Skill Position" value of every skill in the rotation. `),
+      wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)`),
       wrapInLabel('Reset Camera: ', renderAggroCheckResetCamera(config), `Bot will reset camera to the farthest default view.`),
       wrapInLabel('Enemy Name Color: ', renderAggroCheckEnemyName(config), `The color of the enemy names the bot should look for when attacked.`),
-      wrapInLabel('User HP', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.`),
-      wrapInLabel('Enemy HP', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is dead. Usually should be somewhere on the start of the green HP field.`),
+      // wrapInLabel('User Hp Start: ', renderAggroCheckUserHpStart(config), `The pixel on the screen bot will check to determine whether it's dead. Usually should be somewhere on the start of the green HP field.\n\nBe careful of different notifications like "BLOCK" and so on that will cover your healthbar, it might confuse the bot. To avoid it you might point a little bit further from the HP beggining.`),
+      wrapInLabel('User HP End', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.`),
+      wrapInLabel('Enemy HP Start', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is dead. Usually should be somewhere on the start of the green HP field.`),
       wrapInLabel('Check Interval (sec)', renderAggroCheckInterval(config), `How often the bot should check changes of "User HP" pixel.`),
       wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking at during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
         config.aggroCheckDoAfterType == 'Run Away' ?

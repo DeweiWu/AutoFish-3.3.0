@@ -86,7 +86,21 @@ module.exports = {
     } else {
       await sleep(delay);
     }
+  },
+
+  async scroll(value, direction, delay) {
+    if(direction) {
+      await mouse.scrollUp(value);
+    } else {
+      await mouse.scrollDown(value);
     }
+
+    if(Array.isArray(delay)) {
+      await sleep(random(delay[0], delay[1]))
+    } else {
+      await sleep(delay);
+    }
+  }
   },
 
   keyboard: {
