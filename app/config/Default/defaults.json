@@ -62,6 +62,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -295,6 +298,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -519,6 +525,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -743,6 +752,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -947,6 +959,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -1152,6 +1167,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -1353,6 +1371,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -1573,6 +1594,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -1790,6 +1814,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,
@@ -1998,6 +2025,9 @@
       "aggroCheckEquipKey": "1",
       "aggroCheckEnemyName": 210,
       "aggroCheckQuit": true,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
       "skills": [],
       "detectZone": {
         "x": 0.34427083333333336,

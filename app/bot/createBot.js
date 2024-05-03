@@ -930,7 +930,7 @@ if(lootWindowPatch.exitButton) {
         }
 
         case "Random Movement": {
-          await runRngMove();
+          await _rngMoveAction();
           break;
         }
       }
@@ -947,16 +947,35 @@ if(lootWindowPatch.exitButton) {
   const aggroCheck = async (onStop, state, aggroTestRun) => {
     if(!config.aggroCheck) return;
     const runAway = async (time) => {
-      await keyboard.toggleKey('w', true, delay); // need action()
+
+      if(config.aggroCheckControlBy == "Mouse") {
+        let step = ((screenSize.height / 1080) * 1600) * (config.aggroCheckRunAwayFirstTurnDeg / 360);
+        if(config.aggroCheckRunAwayFirstTurnDir == 'Left') {
+          step = -step;
+        }
+        let cPos = mouse.getPos();
+        await mouse.toggle('right', true, delay);
+        await moveTo({pos: {x: cPos.x + step, y: cPos.y}, randomRange: 0, fineTune: false, speed: 20});
+        await mouse.toggle('right', false, delay);
+      } else {
+        let step = 2000 * (config.aggroCheckRunAwayFirstTurnDeg / 360);
+        let dir = config.aggroCheckRunAwayFirstTurnDir == 'Left' ? 'left': 'right';
+        await keyboard.toggleKey(dir, true);
+        await sleep(step);
+        await keyboard.toggleKey(dir, false);
+      }
+
+
+      await keyboard.toggleKey('w', true, delay);
         for(let start = Date.now(); Date.now() < start + time;) {
 
-          while(random(0, 100) < 75) {
+          while(random(0, 100) < 50) {
             await keyboard.sendKey('space', [250, 750]);
           }
 
-          if(true) { // random(0, 100) > 75
-            await runRngMove();
-            await keyboard.toggleKey('w', true, delay); // need action()
+          if(random(0, 100) > 50) {
+            await _rngMoveAction()
+            await keyboard.toggleKey('w', true, delay);
           }
 
           await sleep(random(250, 3000));
@@ -1005,14 +1024,28 @@ if(lootWindowPatch.exitButton) {
     };
 
     const centerCamera = async (value, step) => {
+      let cPos = mouse.getPos();
       if(value > 960) {
-        await keyboard.toggleKey("right", true);
-        await sleep(step);
-        await keyboard.toggleKey("right", false);
+        if(config.aggroCheckControlBy == "Mouse") {
+          await mouse.toggle('right', true, delay);
+          await moveTo({pos: {x: cPos.x + step, y: cPos.y}, randomRange: 0, fineTune: false, speed: 20});
+          await mouse.toggle('right', false, delay);
+        } else {
+          await keyboard.toggleKey("right", true);
+          await sleep(step);
+          await keyboard.toggleKey("right", false);
+        }
+
       } else {
-        await keyboard.toggleKey("left", true);
-        await sleep(step);
-        await keyboard.toggleKey("left", false);
+        if(config.aggroCheckControlBy == "Mouse") {
+          await mouse.toggle('right', true, delay);
+          await moveTo({pos: {x: cPos.x - step, y: cPos.y}, randomRange: 0, fineTune: false, speed: 20});
+          await mouse.toggle('right', false, delay);
+        } else {
+          await keyboard.toggleKey("left", true);
+          await sleep(step);
+          await keyboard.toggleKey("left", false);
+        }
       }
     }
 
@@ -1036,7 +1069,7 @@ if(lootWindowPatch.exitButton) {
       if(enemyPosition) {
         const x = enemyPosition.reduce((a, b) => a + b.x, 0) / enemyPosition.length;
         let stepSize = Math.abs(screenSize.width / 2 - x);
-        if(!closeEnough(screenSize.width * 0.05)(x, screenSize.width / 2)) {
+        if(!closeEnough(screenSize.width * 0.025)(x, screenSize.width / 2)) {
           await centerCamera(x, stepSize / 3);
           return true;
         }
@@ -1062,18 +1095,18 @@ if(lootWindowPatch.exitButton) {
 
         if(tmBot.ctx) {
           tmBot.ctx.reply(`The bot is being attacked in Window: ${winNum}!`);
-          // send screenshot
         }
 
         let cameraScrollTimer = createTimer(() => config.aggroCheckCameraDistance);
-        cameraScrollTimer.start();
-        while(!cameraScrollTimer.isElapsed()) {
-          await nutjs.mouse.scroll(1, false)
-        }
 
         let attackFailed = false;
 
         if(config.aggroCheckDoAfterType == "Attack") { // config.aggroCheck.type == attack
+
+          cameraScrollTimer.start();
+          while(!cameraScrollTimer.isElapsed()) {
+            await nutjs.mouse.scroll(1, false)
+          }
 
           if(skills.length < 1) {
             return;
@@ -1111,7 +1144,7 @@ if(lootWindowPatch.exitButton) {
 
                 let killingEnemyStartTime = Date.now();
                 let skillNumber = 0;
-
+                await sleep(500);
                 while(await enemyHp.checkColor(getDataFrom) && (Date.now() - killingEnemyStartTime < 120000)) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
                     await findAndCenter(createEnemyZone(0.2));
 

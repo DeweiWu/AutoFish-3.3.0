@@ -624,6 +624,11 @@ const renderSkills = ({aggroCheck, skills}) => {
   return elt('div', {className: `sparesContainer`}, ...skillsNodes, addButton);
 };
 
+const renderAggroCheckControlBy = ({aggroCheck, aggroCheckControlBy}) => {
+  let types = ['Mouse', 'Keyboard'];
+  return elt('select', {name: 'aggroCheckControlBy', disabled: !aggroCheck},  ...types.map(type => elt('option', {selected: type == aggroCheckControlBy}, type)))
+};
+
 /* REAL SPARES */
 const renderSpares = ({spares}) => {
 
@@ -897,10 +902,16 @@ const renderAggroCheckCameraDistance = ({aggroCheck, aggroCheckCameraDistance}) 
   return elt('input', {type: `number`, value: aggroCheckCameraDistance, disabled: !aggroCheck, name: `aggroCheckCameraDistance`});
 }
 
-const renderAggroCheckFirstTurn = ({aggroCheck, aggroCheckFirstTurn}) => {
-  const types = ['left', 'right'];
-  return elt('select', {name: 'aggroCheckFirstTurn', disabled: !aggroCheck}, ...types.map((type) => elt('option', {selected: type == aggroCheckFirstTurn, value: type}, type[0].toUpperCase() + type.slice(1))));
+const renderAggroCheckRunAwayFirstTurnDir = ({aggroCheck, aggroCheckRunAwayFirstTurnDir}) => {
+  const types = ['Left', 'Right'];
+  return elt('select', {name: 'aggroCheckRunAwayFirstTurnDir', disabled: !aggroCheck}, ...types.map((type) => elt('option', {selected: type == aggroCheckRunAwayFirstTurnDir}, type)));
 };
+
+const renderAggroCheckRunAwayFirstTurnDeg = ({aggroCheck, aggroCheckRunAwayFirstTurnDeg}) => {
+  if(aggroCheckRunAwayFirstTurnDeg < 0) aggroCheckRunAwayFirstTurnDeg = 0;
+  if(aggroCheckRunAwayFirstTurnDeg > 180) aggroCheckRunAwayFirstTurnDeg = 180;
+  return elt('input', {type: 'number', name: "aggroCheckRunAwayFirstTurnDeg", value: aggroCheckRunAwayFirstTurnDeg, disabled: !aggroCheck})
+}
 
 const renderAggroCheckTargetKey = ({aggroCheck, aggroCheckTargetKey}) => {
   let key = elt('input', {type: 'text', value: aggroCheckTargetKey, disabled: !aggroCheck, name: "aggroCheckTargetKey"});
@@ -1156,24 +1167,26 @@ const renderSettings = (config) => {
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)\n\nUse "Test Rotation" button to see what will happen if you are attacked during fishing and check whether your rotation and the bot works properly for you.`),
       wrapInLabel('Camera Distance (ms): ', renderAggroCheckCameraDistance(config), `The bot will scroll down to move camera farthest away before searching for enemies.`),
+      wrapInLabel('Check Interval (sec)', renderAggroCheckInterval(config), `How often the bot should check changes of "User HP" pixel.`),
       wrapInLabel('Quit The Game After: ', renderAggroCheckQuit(config), `The bot will quit the game and the bot after it either ran away, stopped, killed or being killed.`),
       wrapInLabel('Enemy Name Color: ', renderAggroCheckEnemyName(config), `The color of the enemy names the bot should look for when attacked.`),
       // wrapInLabel('User Hp Start: ', renderAggroCheckUserHpStart(config), `The pixel on the screen bot will check to determine whether it's dead. Usually should be somewhere on the start of the green HP field.\n\nBe careful of different notifications like "BLOCK" and so on that will cover your healthbar, it might confuse the bot. To avoid it you might point a little bit further from the HP beggining.`),
       wrapInLabel('User HP End', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
       wrapInLabel('Enemy HP Start', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted or if it is dead. Usually should be somewhere on the start of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
-      wrapInLabel('Check Interval (sec)', renderAggroCheckInterval(config), `How often the bot should check changes of "User HP" pixel.`),
-      wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
+      wrapInLabel('Center Camera By: ', renderAggroCheckControlBy(config), `What input command the bot should use to center camera.`),
+        wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
       config.aggroCheckDoAfterType == 'Run Away' ?
       elt('div', null,
+      wrapInLabel('First Turn Direction: ', renderAggroCheckRunAwayFirstTurnDir(config), `The directino the bot should turn to find an enemy (by checking the color of Enemy Name value)`),
       wrapInLabel('Run For (sec): ', renderAggroCheckRunTime(config), `For how long the bot should run away.`),
+      wrapInLabel('First Turn (deg): ', renderAggroCheckRunAwayFirstTurnDeg(config), `How much the bot should turn before running away.`)
       ) :
+      config.aggroCheckDoAfterType == `Attack` ?
       elt('div', null,
-      //wrapInLabel('First Turn Direction: ', renderAggroCheckFirstTurn(config), `The directino the bot should turn to find an enemy (by checking the color of Enemy Name value)`),
       wrapInLabel('Target Key: ', renderAggroCheckTargetKey(config), `What key the bot should use to target the enemy. By default it's "Tab" in the game, but if you want the bot to target only enemy players (and not mobs), you should bind a different key for that in the game and bind it here respectively.`),
-      wrapInLabel('Equip Weapon: ', renderAggroCheckEquip(config), `Equip weapon/armor before attacking. Use your own macro for that.`),
-    ),
-    elt('p', {style: `font-weight: bold; text-align: center;`}, `Rotation: `),
-    renderSkills(config),
+      wrapInLabel('Equip Weapon: ', renderAggroCheckEquip(config), `Equip weapon/armor before attacking. Use your own macro for that.`)) : ``,
+    config.aggroCheckDoAfterType == `Attack` ?  elt('p', {style: `font-weight: bold; text-align: center;`}, `Rotation: `) : ``,
+    config.aggroCheckDoAfterType == `Attack` ?  renderSkills(config) : ``,
     renderTestSkillsButton(config)
     ),
 
@@ -1245,11 +1258,11 @@ const runApp = async () => {
   settings.addEventListener(`click`, (event) => {
 
     if(event.target.className == `testSkillsButton`) {
-      gatherConfig();
-
-      if(config.skills.length < 1) {
+      if(config.skills.length < 1 && config.aggroCheckDoAfterType == `Attack`) {
         return;
       }
+
+      gatherConfig();
 
       ipcRenderer.send('advanced-click', config);
       ipcRenderer.invoke('start-bot', 'skills-test');
@@ -1408,19 +1421,21 @@ const runApp = async () => {
   const gatherConfig = () => {
 
     /* skills start */
-    let skills = [...settings.querySelectorAll('.skillsContainer')]
-    .map((skill) => {
-      let inputs = [...skill.elements].filter(input => input.type != `button`);
-        return inputs.reduce((a, b) => {
-          if(b['data-skills']) {
-            a[b["data-skills"]] = convertValue(b);
-          }
-          return a;
-        }, {})
-      }
-    );
+    if(config.aggroCheckDoAfterType == `Attack`) {
+      let skills = [...settings.querySelectorAll('.skillsContainer')]
+      .map((skill) => {
+        let inputs = [...skill.elements].filter(input => input.type != `button`);
+          return inputs.reduce((a, b) => {
+            if(b['data-skills']) {
+              a[b["data-skills"]] = convertValue(b);
+            }
+            return a;
+          }, {})
+        }
+      );
+      config['skills'] = skills;
+    }
 
-    config['skills'] = skills;
     /* skills end */
 
     /* spares start */
