@@ -8,6 +8,7 @@
     "Retail": {
       "game": "Retail",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": false,
       "startByFishingKey": false,
@@ -240,6 +241,7 @@
     "Cata Classic": {
       "game": "Cata Classic",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
       "startByFishingKey": false,
@@ -463,6 +465,7 @@
     "Classic": {
       "game": "Classic",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
       "startByFishingKey": false,
@@ -686,6 +689,7 @@
     "Leg": {
       "game": "Leg",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": false,
       "startByFishingKey": false,
@@ -889,6 +893,7 @@
     "MoP": {
       "game": "MoP",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": false,
       "startByFishingKey": false,
@@ -1093,6 +1098,7 @@
     "Cata": {
       "game": "Cata",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": false,
       "startByFishingKey": false,
@@ -1293,6 +1299,7 @@
     "LK Private": {
       "game": "LK Private",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
       "startByFishingKey": false,
@@ -1512,6 +1519,7 @@
     "TBC": {
       "game": "TBC",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
       "startByFishingKey": false,
@@ -1728,6 +1736,7 @@
     "Vanilla": {
       "game": "Vanilla",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
       "startByFishingKey": false,
@@ -1935,6 +1944,7 @@
     "Vanilla (splash)": {
       "game": "Vanilla (splash)",
       "timer": false,
+      "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
       "startByFishingKey": false,
