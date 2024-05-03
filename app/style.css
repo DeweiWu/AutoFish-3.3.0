@@ -312,7 +312,7 @@ input[data-spares] {}
 .settings input[name="checkChangesDoAfterKey"]:disabled,
 .settings input[name="aggroCheckTargetKey"]:disabled,
 .settings input[name="aggroCheckEquipKey"]:disabled,
-.settings input[name="findPlayerTargetKey"]:disabled
+.settings input[name="findPlayerTargetKey"]:disabled,
 .settings input[name="findPlayerDoAfterKey"]:disabled,
 .settings input[name="findPlayerTargetKeyAdd"]:disabled  {
   cursor: default;

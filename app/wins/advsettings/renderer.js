@@ -981,14 +981,14 @@ const renderFindPlayerDoAfter = ({findPlayer, findPlayerDoAfter}) => {
    return elt(`div`, null, typeSelect);
 };
 
-const renderFindPlayerDoAfterKey = ({findPlayerDoAfterKey}) => {
-  let key = elt('input', {type: 'text', value: findPlayerDoAfterKey, name: "findPlayerDoAfterKey"});
+const renderFindPlayerDoAfterKey = ({findPlayer, findPlayerDoAfterKey}) => {
+  let key = elt('input', {type: 'text', value: findPlayerDoAfterKey, disabled: !findPlayer, name: "findPlayerDoAfterKey"});
   key.setAttribute(`readonly`, `true`);
   return key;
 }
 
 const renderFindPlayerTargetKeyAdd = ({findPlayer, findPlayerTargetKeyAdd, findPlayerTargetKeyAddUse}) => {
-  const checkbox = elt('input', {type: `checkbox`, checked: findPlayerTargetKeyAddUse, name: `findPlayerTargetKeyAddUse`})
+  const checkbox = elt('input', {type: `checkbox`, disabled: !findPlayer, checked: findPlayerTargetKeyAddUse, name: `findPlayerTargetKeyAddUse`})
   let key = elt('input', {type: 'text', disabled: !findPlayer || !findPlayerTargetKeyAddUse, value: findPlayerTargetKeyAdd, name: "findPlayerTargetKeyAdd"});
   key.setAttribute(`readonly`, `true`);
   return elt(`div`, null, checkbox, key);
@@ -998,8 +998,8 @@ const renderFindPlayerInterval = ({findPlayer, findPlayerInterval}) => {
   return elt('input', {type: `number`, value: findPlayerInterval, disabled: !findPlayer, name: "findPlayerInterval"});
 }
 
-const renderFindPlayerDoAfterSleepTime = ({findPlayerDoAfterSleepTime}) => {
-    return elt('input', {type: `number`, value: findPlayerDoAfterSleepTime, name: "findPlayerDoAfterSleepTime"});
+const renderFindPlayerDoAfterSleepTime = ({findPlayer, findPlayerDoAfterSleepTime}) => {
+    return elt('input', {type: `number`, value: findPlayerDoAfterSleepTime, disabled: !findPlayer, name: "findPlayerDoAfterSleepTime"});
 }
 
 
@@ -1144,7 +1144,7 @@ const renderSettings = (config) => {
       wrapInLabel('Target HP', renderFindPlayerHp(config), `Point it anywhere on the healthbar of your target.`),
       wrapInLabel('Target Key', renderFindPlayerTargetKey(config), `The same key you use to target other friendly players in the game (Options -> Keybindings -> Targeting -> Target Nearest Friendly Player)`),
       wrapInLabel('Target Key (additional)', renderFindPlayerTargetKeyAdd(config), `Additional key in case you want to target something else. Enemies for example.`),
-      wrapInLabel('Do After: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Log out/Log in" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\n`),
+      wrapInLabel('Do After: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Logging Out" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\n`),
       wrapInLabel('Rotate Camera By: ', renderFindPlayerRotateBy(config), `Keyboard: the bot will rotate by using arrow keys, it will be visible to others because your character will move as well.\nMouse: the bot will look around by using mouse, it won't be visible to others.`),
       wrapInLabel('Camera Distance (ms)', renderFindPlayerCameraDistance(config), `The bot will scroll down your camera to see more, the value is time for how long it should scroll down, which is how far it should place your camera before checking.`),
       wrapInLabel('Search For Players Every: (min)', renderFindPlayerInterval(config), `How often the bot should search for players nearby. You can use decimals for seconds (0.5 is every 30 seconds), but remember that the bot will check only after it finishes current fishing cast.`),
