@@ -893,8 +893,8 @@ const renderAggroCheckRunTime = ({aggroCheck, aggroCheckRunTime}) => {
   return elt('input', {type: `number`, value: aggroCheckRunTime, disabled: !aggroCheck, name: `aggroCheckRunTime`})
 };
 
-const renderAggroCheckResetCamera = ({aggroCheck, aggroCheckResetCamera}) => {
-  return elt('input', {type: `checkbox`, checked: aggroCheckResetCamera, disabled: !aggroCheck, name: `aggroCheckResetCamera`});
+const renderAggroCheckCameraDistance = ({aggroCheck, aggroCheckCameraDistance}) => {
+  return elt('input', {type: `number`, value: aggroCheckCameraDistance, disabled: !aggroCheck, name: `aggroCheckCameraDistance`});
 }
 
 const renderAggroCheckFirstTurn = ({aggroCheck, aggroCheckFirstTurn}) => {
@@ -927,6 +927,82 @@ const renderAggroCheckEnemyName = ({aggroCheck, aggroCheckEnemyName}) => {
   }});
   return elt(`div`, null, range, winRange)
 };
+
+const renderAggroCheckQuit = ({aggroCheck, aggroCheckQuit}) => {
+  return elt('input', {type: `checkbox`, checked: aggroCheckQuit, name: "aggroCheckQuit", disabled: !aggroCheck})
+};
+
+const renderFindPlayer = ({findPlayer}) => {
+  return elt('input', {type: "checkbox", checked: findPlayer, name: "findPlayer"});
+};
+
+const renderFindPlayerHp = ({findPlayer, findPlayerHp}) => {
+    const x = elt('input', {type: `number`, name: 'x', disabled: !findPlayer, value: findPlayerHp.x});
+    const y = elt('input', {type: `number`, name: 'y', disabled: !findPlayer, value: findPlayerHp.y});
+    const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!findPlayer ? `colorPicker_disabled` : ``}`, disabled: !findPlayer, name: 'color', value: findPlayerHp.color});
+    const precision = elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerHp.precision, "data-skills": "precision"})
+
+    const colorPicker = elt('input', {type: `button`, disabled: !findPlayer, className: `whisperColorPicker ${!findPlayer ? `disabledButton` : ``}`, value: ``, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
+
+        x.value = data.x;
+        y.value = data.y;
+
+        const {r, g, b} = data.color;
+        colorBox.value = rgbToHex(r, g, b);
+      })
+    }});
+
+    return elt('div', {"data-collection": `findPlayerHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+};
+
+const renderFindPlayerCameraDistance = ({findPlayer, findPlayerCameraDistance}) => {
+  return elt('input', {type: 'number', value: findPlayerCameraDistance, name: "findPlayerCameraDistance", disabled: !findPlayer});
+};
+
+const renderFindPlayerTargetKey = ({findPlayer, findPlayerTargetKey}) => {
+  let key = elt('input', {type: 'text', value: findPlayerTargetKey, disabled: !findPlayer, name: "findPlayerTargetKey"});
+  key.setAttribute(`readonly`, `true`);
+  return key;
+};
+
+const renderFindPlayerRotateBy = ({findPlayer, findPlayerRotateBy}) => {
+  const types = ['Mouse', 'Keyboard'];
+  const typeSelect = elt(`select`, {name: 'findPlayerRotateBy', disabled: !findPlayer}, ...types.map((type) => elt('option', {selected: type == findPlayerRotateBy, value: type}, type)));
+   return elt(`div`, null, typeSelect);
+};
+
+const renderFindPlayerDoAfter = ({findPlayer, findPlayerDoAfter}) => {
+  const types = ['Sleep', 'Press Key', 'Log out', 'Random Movement'];
+  const typeSelect = elt(`select`, {name: 'findPlayerDoAfter', disabled: !findPlayer}, ...types.map((type) => elt('option', {selected: type == findPlayerDoAfter, value: type}, type)));
+   return elt(`div`, null, typeSelect);
+};
+
+const renderFindPlayerDoAfterKey = ({findPlayerDoAfterKey}) => {
+  let key = elt('input', {type: 'text', value: findPlayerDoAfterKey, name: "findPlayerDoAfterKey"});
+  key.setAttribute(`readonly`, `true`);
+  return key;
+}
+
+const renderFindPlayerTargetKeyAdd = ({findPlayer, findPlayerTargetKeyAdd, findPlayerTargetKeyAddUse}) => {
+  const checkbox = elt('input', {type: `checkbox`, checked: findPlayerTargetKeyAddUse, name: `findPlayerTargetKeyAddUse`})
+  let key = elt('input', {type: 'text', disabled: !findPlayer || !findPlayerTargetKeyAddUse, value: findPlayerTargetKeyAdd, name: "findPlayerTargetKeyAdd"});
+  key.setAttribute(`readonly`, `true`);
+  return elt(`div`, null, checkbox, key);
+}
+
+const renderFindPlayerInterval = ({findPlayer, findPlayerInterval}) => {
+  return elt('input', {type: `number`, value: findPlayerInterval, disabled: !findPlayer, name: "findPlayerInterval"});
+}
+
+const renderFindPlayerDoAfterSleepTime = ({findPlayerDoAfterSleepTime}) => {
+    return elt('input', {type: `number`, value: findPlayerDoAfterSleepTime, name: "findPlayerDoAfterSleepTime"});
+}
+
+
 
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
@@ -1061,22 +1137,38 @@ const renderSettings = (config) => {
     wrapInLabel(`Character Movement (steps):`, renderRngMoveDirLengthMax(config), `Aproximate value of steps made by the bot when it moves around, defines the perimeter of how far it might move.`),
     wrapInLabel(`Use Movements Randomly Every (min): `, renderRngMoveTimer(config), `How often the bot should move your camera/character. The value is chosen randomly within the provided values.`),
     ),
+
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🔭`),elt(`span`, {className: `advanced_settings_header_text`}, `Players Check (beta)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),
+    elt(`div`, {className: `settings_section settings_premium`},
+      wrapInLabel('Use Find Player', renderFindPlayer(config), `The bot will look around to see any other (friendly) players nearby (within target range).`),
+      wrapInLabel('Target HP', renderFindPlayerHp(config), `Point it anywhere on the healthbar of your target.`),
+      wrapInLabel('Target Key', renderFindPlayerTargetKey(config), `The same key you use to target other friendly players in the game (Options -> Keybindings -> Targeting -> Target Nearest Friendly Player)`),
+      wrapInLabel('Target Key (additional)', renderFindPlayerTargetKeyAdd(config), `Additional key in case you want to target something else. Enemies for example.`),
+      wrapInLabel('Do After: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Log out/Log in" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\n`),
+      wrapInLabel('Rotate Camera By: ', renderFindPlayerRotateBy(config), `Keyboard: the bot will rotate by using arrow keys, it will be visible to others because your character will move as well.\nMouse: the bot will look around by using mouse, it won't be visible to others.`),
+      wrapInLabel('Camera Distance (ms)', renderFindPlayerCameraDistance(config), `The bot will scroll down your camera to see more, the value is time for how long it should scroll down, which is how far it should place your camera before checking.`),
+      wrapInLabel('Search For Players Every: (min)', renderFindPlayerInterval(config), `How often the bot should search for players nearby. You can use decimals for seconds (0.5 is every 30 seconds), but remember that the bot will check only after it finishes current fishing cast.`),
+      config.findPlayerDoAfter == 'Press Key' ? wrapInLabel('Press Key: ', renderFindPlayerDoAfterKey(config), `The key to press in case the bot finds someone.`) : ``,
+      config.findPlayerDoAfter == 'Sleep' ? wrapInLabel('Sleep For (sec): ', renderFindPlayerDoAfterSleepTime(config), `For how long the bot should sleep in case it finds someone.`) : ``
+    ),
+
     elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check (beta)`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)`),
-      wrapInLabel('Reset Camera: ', renderAggroCheckResetCamera(config), `Bot will reset camera to the farthest default view.`),
+      wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)\n\nUse "Test Rotation" button to see what will happen if you are attacked during fishing and check whether your rotation and the bot works properly for you.`),
+      wrapInLabel('Camera Distance (ms): ', renderAggroCheckCameraDistance(config), `The bot will scroll down to move camera farthest away before searching for enemies.`),
+      wrapInLabel('Quit The Game After: ', renderAggroCheckQuit(config), `The bot will quit the game and the bot after it either ran away, stopped, killed or being killed.`),
       wrapInLabel('Enemy Name Color: ', renderAggroCheckEnemyName(config), `The color of the enemy names the bot should look for when attacked.`),
       // wrapInLabel('User Hp Start: ', renderAggroCheckUserHpStart(config), `The pixel on the screen bot will check to determine whether it's dead. Usually should be somewhere on the start of the green HP field.\n\nBe careful of different notifications like "BLOCK" and so on that will cover your healthbar, it might confuse the bot. To avoid it you might point a little bit further from the HP beggining.`),
-      wrapInLabel('User HP End', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.`),
-      wrapInLabel('Enemy HP Start', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is dead. Usually should be somewhere on the start of the green HP field.`),
+      wrapInLabel('User HP End', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
+      wrapInLabel('Enemy HP Start', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted or if it is dead. Usually should be somewhere on the start of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
       wrapInLabel('Check Interval (sec)', renderAggroCheckInterval(config), `How often the bot should check changes of "User HP" pixel.`),
-      wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking at during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
-        config.aggroCheckDoAfterType == 'Run Away' ?
+      wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
+      config.aggroCheckDoAfterType == 'Run Away' ?
       elt('div', null,
       wrapInLabel('Run For (sec): ', renderAggroCheckRunTime(config), `For how long the bot should run away.`),
       ) :
       elt('div', null,
-      wrapInLabel('First Turn Direction: ', renderAggroCheckFirstTurn(config), `The directino the bot should turn to find an enemy (by checking the color of Enemy Name value)`),
+      //wrapInLabel('First Turn Direction: ', renderAggroCheckFirstTurn(config), `The directino the bot should turn to find an enemy (by checking the color of Enemy Name value)`),
       wrapInLabel('Target Key: ', renderAggroCheckTargetKey(config), `What key the bot should use to target the enemy. By default it's "Tab" in the game, but if you want the bot to target only enemy players (and not mobs), you should bind a different key for that in the game and bind it here respectively.`),
       wrapInLabel('Equip Weapon: ', renderAggroCheckEquip(config), `Equip weapon/armor before attacking. Use your own macro for that.`),
     ),
@@ -1263,7 +1355,10 @@ const runApp = async () => {
         event.target.name == 'mammothMacroKey' ||
         event.target.name == 'checkChangesDoAfterKey' ||
         event.target.name == 'aggroCheckTargetKey' ||
-        event.target.name == `aggroCheckEquipKey`) &&
+        event.target.name == `aggroCheckEquipKey` ||
+        event.target.name == `findPlayerTargetKey` ||
+        event.target.name == `findPlayerDoAfterKey` ||
+        event.target.name == `findPlayerTargetKeyAdd`) &&
       !event.target.disabled
     ) {
       event.target.style.backgroundColor = `rgb(255, 219, 197)`;

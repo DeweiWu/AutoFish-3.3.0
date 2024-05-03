@@ -10,6 +10,7 @@ const random = (from, to) => {
 
 const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) => {
   const {
+    findPlayer,
     dynamicThreshold,
     logOut,
     preliminaryChecks,
@@ -71,7 +72,19 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       if(doAfterTimer.on) {
         doAfterTimer.timer.start();
       }
+
+      if(findPlayer.on) {
+        findPlayer.timer.start();
+      }
     }
+
+    if(findPlayer.on && findPlayer.timer.isElapsed()) {
+      let found = await findPlayer(state, log);
+      if(!found) {
+        findPlayer.timer.update();
+      }
+    }
+
 
     if(state.status == `sleep`) {
       checkChanges.block(true);

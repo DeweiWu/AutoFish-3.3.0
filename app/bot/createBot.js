@@ -29,6 +29,26 @@ let once = (fn, done) => (...args) => {
   }
 }
 
+class HealthBar {
+  constructor({x, y, color, precision}) {
+    this.x = x;
+    this.y = y;
+    this.precision = precision;
+    this.color = hexToRgb(color);
+  }
+
+  async checkColor(getDataFrom) {
+    const pixelData = await getDataFrom({x: this.x, y: this.y, width: 1, height: 1});
+    const [r, g, b] = Array.from(pixelData.data);
+
+    let percR = this.color.r / 100 * (100 - this.precision);
+    let percG = this.color.g / 100 * (100 - this.precision);
+    let percB = this.color.b / 100 * (100 - this.precision);
+
+    return closeEnough(percR)(this.color.r, r) && closeEnough(percG)(this.color.g, g) && closeEnough(percB)(this.color.b, b)
+  }
+}
+
 const {
   percentComparison,
   readTextFrom,
@@ -230,23 +250,27 @@ if(lootWindowPatch.exitButton) {
       return {x: posFromCurrent.x + mouse.getPos().x, y: posFromCurrent.y + mouse.getPos().y};
     }
 
-    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse}) => {
+    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation}) => {
       if (randomRange) {
         pos.x = pos.x + random(-randomRange, randomRange);
         pos.y = pos.y + random(-randomRange, randomRange);
       }
 
       if (config.likeHuman) {
-        let convertedSpeed = config.mouseMoveSpeed / 100;
-        let speedByRes =  convertedSpeed * (screenSize.width / 1920);
-        let speedCoofByRes = 0.15 * (screenSize.width / 1920);
+        let speedValue = speed ? speed : config.mouseMoveSpeed;
+
+        let convertedSpeed = speedValue / 100;
+        let speedByRes = convertedSpeed * (screenSize.width / 1920);
+        let speedCoofByRes = 0.05 * (screenSize.width / 1920);
         let randomSpeed = {from: speedByRes - speedCoofByRes, to: speedByRes + speedCoofByRes}
         if(randomSpeed.from < 0) {
           randomSpeed.from = 0;
         }
 
+        let deviationValue = deviation ? deviation : config.mouseCurvatureStrength;
+
         let deviationCoof = config.libraryTypeInput === 'nut.js' ? 30 : 15;
-        let randomDeviation = {from: config.mouseCurvatureStrength - deviationCoof, to: config.mouseCurvatureStrength + deviationCoof};
+        let randomDeviation = {from: deviationValue - deviationCoof, to: deviationValue + deviationCoof};
         if(randomDeviation.from < 0) {
           randomDeviation.from = 0;
         }
@@ -262,7 +286,8 @@ if(lootWindowPatch.exitButton) {
             to: pos.plus(screenSize),
             speed: random(randomSpeed.from, randomSpeed.to),
             deviation: random(randomDeviation.from, randomDeviation.to),
-            fishingZone: Zone.from(screenSize).toRel(config.relZone)
+            fishingZone: Zone.from(screenSize).toRel(config.relZone),
+            static: speed
           });
         } else {
           await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
@@ -818,6 +843,107 @@ if(lootWindowPatch.exitButton) {
     }
   };
 
+  const findPlayer = async (state, log) => {
+
+    if(!config.findPlayer) {
+      return;
+    }
+
+    log.send('Searching for other players...');
+
+    const enemyHp = new HealthBar(config.findPlayerHp);
+
+    const turnDirection = ['left', 'right'][Math.round(Math.random())];
+
+    const rotationTimer = createTimer(() => 2000)
+    const cameraDistanceTimer = createTimer(() => config.findPlayerCameraDistance);
+
+    cameraDistanceTimer.start();
+    while(!cameraDistanceTimer.isElapsed()) {
+      await nutjs.mouse.scroll(1, false)
+    }
+
+    if(config.findPlayerRotateBy == 'Mouse') { // keys rotation or mouse rotation
+      let stepMax = 1600 * (1080 / screenSize.height);
+      let stepChunkSize = 6;
+      for(let step = 0; step < stepMax; step += stepMax / stepChunkSize) {
+        let cPos = mouse.getPos();
+        let x = cPos.x - (stepMax / stepChunkSize);
+        await mouse.toggle('left', true, delay);
+        await moveTo({pos: {x, y: cPos.y}, fineTune: false, randomRange: 0, speed: 20, deviation: 0});
+        await mouse.toggle('left', false, delay);
+        await keyboard.sendKey(config.findPlayerTargetKey, delay);
+        if(config.findPlayerTargetKeyAddUse) {
+          await keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
+        }
+      }
+    } else {
+      rotationTimer.start();
+      while(!rotationTimer.isElapsed()) {
+        if(random(0, 100) > 95) {
+          await keyboard.toggleKey(turnDirection, false);
+          let waitingTime = rotationTimer.timeRemains();
+          await sleep(random(500, 1500));
+
+          await keyboard.toggleKey(turnDirection, true);
+          rotationTimer.update(() => waitingTime);
+        }
+
+        await keyboard.sendKey(config.findPlayerTargetKey, delay);
+        if(config.findPlayerTargetKeyAddUse) {
+          await keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
+        }
+        await sleep(random(delay[0], delay[1]));
+      }
+      await keyboard.toggleKey(turnDirection, false);
+    }
+
+    cameraDistanceTimer.update(() => config.findPlayerCameraDistance + 50);
+    while(!cameraDistanceTimer.isElapsed()) {
+      await nutjs.mouse.scroll(1, true)
+    }
+
+    lastMovementFrom = 'findPlayer';
+    await sleep(1000);
+
+    if(await enemyHp.checkColor(getDataFrom)) {
+      await keyboard.sendKey('escape', delay);
+      log.warn("Found a player in the vicinity!");
+      if(tmBot.ctx) {
+        tmBot.ctx.reply(`Found a player in the vicinity in Window: ${winNum}!`);
+      }
+
+      switch(config.findPlayerDoAfter) {
+        case "Sleep": {
+          await sleep(config.findPlayerDoAfterSleepTime * 1000);
+          break;
+        }
+
+        case "Log out": {
+          await logOut(state);
+          break;
+        }
+
+        case "Press Key": {
+          await keyboard.sendKey(config.findPlayerDoAfterKey, delay);
+          break;
+        }
+
+        case "Random Movement": {
+          await runRngMove();
+          break;
+        }
+      }
+
+      return true;
+    } else {
+      log.ok('None.');
+    }
+
+  };
+  findPlayer.timer = createTimer(() => config.findPlayerInterval * 60 * 1000);
+  findPlayer.on = config.findPlayer;
+
   const aggroCheck = async (onStop, state, aggroTestRun) => {
     if(!config.aggroCheck) return;
     const runAway = async (time) => {
@@ -842,7 +968,7 @@ if(lootWindowPatch.exitButton) {
       x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
       y: screenSize.y,
       width: screenSize.width * (enemyZoneSize * 2),
-      height: Math.round(screenSize.height / 2.2)
+      height: Math.round(screenSize.height / 2)
     });
 
     let createEnemyZoneClose = (enemyZoneSize) => ({
@@ -890,26 +1016,6 @@ if(lootWindowPatch.exitButton) {
       }
     }
 
-    class HealthBar {
-      constructor({x, y, color, precision}) {
-        this.x = x;
-        this.y = y;
-        this.precision = precision;
-        this.color = hexToRgb(color);
-      }
-
-      async checkColor(getDataFrom) {
-        const pixelData = await getDataFrom({x: this.x, y: this.y, width: 1, height: 1});
-        const [r, g, b] = Array.from(pixelData.data);
-
-        let percR = this.color.r / 100 * (100 - this.precision);
-        let percG = this.color.g / 100 * (100 - this.precision);
-        let percB = this.color.b / 100 * (100 - this.precision);
-
-        return closeEnough(percR)(this.color.r, r) && closeEnough(percG)(this.color.g, g) && closeEnough(percB)(this.color.b, b)
-      }
-    }
-
     const userHp = new HealthBar(config.aggroCheckUserHp);
     //const userHpStart = new HealthBar(config.aggroCheckUserHpStart);
     const enemyHp = new HealthBar(config.aggroCheckEnemyHp);
@@ -923,7 +1029,7 @@ if(lootWindowPatch.exitButton) {
       cooldownTimer: createTimer(() => skill.cooldown * 1000)
     }));
 
-    const turnDirection = config.aggroCheckFirstTurn;
+    const turnDirection = ['left', 'right'][Math.round(Math.random())];
     const turnTimer = createTimer(() => 2000);
     const findAndCenter = async (zone) => {
       enemyPosition = await findEnemy(zone);
@@ -956,17 +1062,13 @@ if(lootWindowPatch.exitButton) {
 
         if(tmBot.ctx) {
           tmBot.ctx.reply(`The bot is being attacked in Window: ${winNum}!`);
+          // send screenshot
         }
 
-        if(config.aggroCheckResetCamera) {
-          for (var i = 0; i < 4; i++) {
-            await keyboard.sendKey('home', delay);
-            await sleep(350);
-          }
-          for (var i = 0; i < 4; i++) {
-            await keyboard.sendKey('end', delay);
-            await sleep(350);
-          }
+        let cameraScrollTimer = createTimer(() => config.aggroCheckCameraDistance);
+        cameraScrollTimer.start();
+        while(!cameraScrollTimer.isElapsed()) {
+          await nutjs.mouse.scroll(1, false)
         }
 
         let attackFailed = false;
@@ -1079,11 +1181,18 @@ if(lootWindowPatch.exitButton) {
 
         finish();
         onStop();
+
+        if(config.aggroCheckQuit) {
+          workwindow.close();
+        }
+
         }) // action end
       }
     }
   };
   aggroCheck.status = Promise.resolve();
+
+  let lastMovementFrom;
 
   const castFishing = async (state) => {
     await action(async () => {
@@ -1092,7 +1201,8 @@ if(lootWindowPatch.exitButton) {
 
     if(settings.afkmode) await altTab();
 
-    if(config.rngMove) {
+    if(config.rngMove || config.findPlayer) {
+      let lastDir = lastMovementFrom == 'rngMove' ? moveMemory.lastDir : config.findPlayerTurnDir == 'left' ? 'right' : 'left';
         await sleep(350);
         for(let i = 0; i < 2 && await notificationZone.check("error"); i++) {
           if(moveMemory.lastDir == `left`) {
@@ -1102,7 +1212,9 @@ if(lootWindowPatch.exitButton) {
           }
 
           await sleep(3000);
-          await keyboard.sendKey(settings.fishingKey, delay);
+          await action(async () => {
+            await keyboard.sendKey(settings.fishingKey, delay);
+          });
         }
     }
 
@@ -1625,6 +1737,8 @@ if (settings.soundDetection) {
         if(Math.random() > .95) await _rngMoveAction();
       }
     })
+
+    lastMovementFrom = 'rngMove';
   };
 
   runRngMove.on = config.rngMove;
@@ -1702,6 +1816,7 @@ if (settings.soundDetection) {
   }
 
   return {
+    findPlayer,
     checkConfirm,
     applyFatigue,
     doAfterTimer,

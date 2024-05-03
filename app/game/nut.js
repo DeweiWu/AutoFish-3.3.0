@@ -61,17 +61,33 @@ function randomHumanLikeCursorEasing(x) {
     return Math.max(0, Math.min(1, result));
 }
 
+const generateStraightPath = (from, to) => {
+  let path = [];
+  let stepSign = 0;
+  if(to.x < from.x) {
+    stepSign = -1;
+  } else {
+    stepSign = 1;
+  }
+
+  for(let x = from.x; x != to.x; x += stepSign) {
+    path.push({x, y: from.y});
+  }
+
+  return path;
+}
+
 keyboard.config.autoDelayMs = 0;
 
 module.exports = {
   mouse: {
-  async humanMoveTo({from, to, speed, deviation, fishingZone}) {
+  async humanMoveTo({from, to, speed, deviation, fishingZone, static}) {
     const distance = Math.sqrt(Math.pow(Math.round(from.x - to.x), 2) + Math.pow(Math.round(from.y - to.y), 2));
     const fZoneSize = Math.sqrt(Math.pow(fishingZone.width, 2) + Math.pow(fishingZone.height, 2)) * .25;
     /* apply distance relation to zone size only if distance is more than 5% */
-    mouse.config.mouseSpeed = (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 0.25);
-    const bezierPath = generateBezierPath(from, to, distance, deviation / 150);
-    await mouse.move(bezierPath, randomHumanLikeCursorEasing);
+    mouse.config.mouseSpeed = static ? (speed * 100 * 20) :  (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 0.25);
+    const path = generateBezierPath(from, to, distance, deviation / 150);
+    await mouse.move(path, randomHumanLikeCursorEasing);
   },
   async toggle(button, type, delay) {
     let buttonNumber = button == `left` ? 1 : button == `right` ? 2 : 3;

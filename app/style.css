@@ -253,7 +253,10 @@ input[data-spares] {}
 .settings input[name="mammothMacroKey"],
 .settings input[name="checkChangesDoAfterKey"],
 .settings input[name="aggroCheckTargetKey"],
-.settings input[name="aggroCheckEquipKey"] {
+.settings input[name="aggroCheckEquipKey"],
+.settings input[name="findPlayerTargetKey"],
+.settings input[name="findPlayerDoAfterKey"],
+.settings input[name="findPlayerTargetKeyAdd"] {
   text-align: center;
   border-radius: 2px;
   border: 1px solid grey;
@@ -272,7 +275,10 @@ input[data-spares] {}
 .settings input[name="mammothMacroKey"]:active,
 .settings input[name="checkChangesDoAfterKey"]:active,
 .settings input[name="aggroCheckTargetKey"]:active,
-.settings input[name="aggroCheckEquipKey"]:active {
+.settings input[name="aggroCheckEquipKey"]:active,
+.settings input[name="findPlayerTargetKey"]:active,
+.settings input[name="findPlayerDoAfterKey"]:active,
+.settings input[name="findPlayerTargetKeyAdd"]:active {
   cursor: default;
 }
 
@@ -287,7 +293,10 @@ input[data-spares] {}
 .settings input[name="mammothMacroKey"]:focus,
 .settings input[name="checkChangesDoAfterKey"]:focus,
 .settings input[name="aggroCheckTargetKey"]:focus,
-.settings input[name="aggroCheckEquipKey"]:focus {
+.settings input[name="aggroCheckEquipKey"]:focus,
+.settings input[name="findPlayerTargetKey"]:focus,
+.settings input[name="findPlayerDoAfterKey"]:focus,
+.settings input[name="findPlayerTargetKeyAdd"]:focus {
   outline: none;
 }
 
@@ -302,7 +311,10 @@ input[data-spares] {}
 .settings input[name="mammothMacroKey"]:disabled,
 .settings input[name="checkChangesDoAfterKey"]:disabled,
 .settings input[name="aggroCheckTargetKey"]:disabled,
-.settings input[name="aggroCheckEquipKey"]:disabled  {
+.settings input[name="aggroCheckEquipKey"]:disabled,
+.settings input[name="findPlayerTargetKey"]:disabled
+.settings input[name="findPlayerDoAfterKey"]:disabled,
+.settings input[name="findPlayerTargetKeyAdd"]:disabled  {
   cursor: default;
   border: 1px solid rgba(0, 0, 0, .2);
   background-color: rgba(245, 245, 245, .7);
@@ -1291,6 +1303,6 @@ input[type=number] {
 }
 
 .colorPicker_disabled:hover {
-  cursor: default !important; 
+  cursor: default !important;
   border: 1px solid rgb(200, 200, 200) !important;
 }
