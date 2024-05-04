@@ -371,7 +371,13 @@ By pressing "Accept" you agree to everything stated above.`,
 
     if(type == `relZone` || type == `chatZone` || type == `detectZone`) {
       log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : `Motion Detection`} Zone...`);
-      let data = await setFishingZone(games[0].game, config.patch[settings.game][type], type, config.patch[settings.game], settings);
+
+      let zoneData = config.patch[settings.game][type];
+      if(Object.keys(zoneData).some((key) => zoneData[key] === null)) {
+        zoneData = configDefault.patch[settings.game][type];
+      }
+
+      let data = await setFishingZone(games[0].game, zoneData, type, config.patch[settings.game], settings);
       if(data) {
         config.patch[settings.game][type] = data;
         writeFileSync(path.join(__dirname, `./config/${profile}/bot.json`), JSON.stringify(config));
