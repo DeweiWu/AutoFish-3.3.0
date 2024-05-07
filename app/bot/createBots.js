@@ -152,7 +152,7 @@ if (tmBot.bot) {
   });
 
   tmBot.bot.hears("❌ Quit", (ctx) => {
-    games.forEach(({ workwindow }) => workwindow.close());
+    games.forEach(({ game }) => game.workwindow.close());
     log.send("Stopping the bots...");
     log.setState(false);
     bots.forEach(({ state }) => (state.status = "stop"));
