@@ -14,12 +14,7 @@ function getRandomControlPoint(start, end, range) {
         y: start.y + (1 - range) * deltaY + Math.random() * range * deltaY,
     };
 
-    const controlPoint3 = {
-        x: start.x + Math.random() * deltaX,
-        y: start.y + Math.random() * deltaY,
-    };
-
-    return [controlPoint1, controlPoint2, controlPoint3];
+    return [controlPoint1, controlPoint2];
 }
 
 function generateBezierPath(startPoint, endPoint, steps, range) {
@@ -37,7 +32,7 @@ function generateBezierPath(startPoint, endPoint, steps, range) {
                   3 * (1 - t) * Math.pow(t, 2) * controlPoints[1].y +
                   Math.pow(t, 3) * endPoint.y;
 
-        path.push({ x, y });
+        path.push(new Point(x, y));
     }
 
     return path;
@@ -70,7 +65,7 @@ const generateStraightPath = (from, to) => {
     stepSign = 1;
   }
 
-  for(let x = from.x; x != to.x; x += stepSign) {
+  for(let x = from.x; Math.round(x) != Math.round(to.x); x += stepSign) {
     path.push({x, y: from.y});
   }
 
@@ -85,9 +80,10 @@ module.exports = {
     const distance = Math.sqrt(Math.pow(Math.round(from.x - to.x), 2) + Math.pow(Math.round(from.y - to.y), 2));
     const fZoneSize = Math.sqrt(Math.pow(fishingZone.width, 2) + Math.pow(fishingZone.height, 2)) * .25;
     /* apply distance relation to zone size only if distance is more than 5% */
-    mouse.config.mouseSpeed = static ? (speed * 100 * 20) :  (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 0.25);
+    mouse.config.mouseSpeed = static ? (speed * 100 * 15) : (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 0.25);
     const path = generateBezierPath(from, to, distance, deviation / 150);
-    await mouse.move(path, randomHumanLikeCursorEasing);
+    path[path.length - 1] = new Point(to.x, to.y);
+    await mouse.move(path, randomHumanLikeCursorEasing); //
   },
   async toggle(button, type, delay) {
     let buttonNumber = button == `left` ? 1 : button == `right` ? 2 : 3;
@@ -116,6 +112,10 @@ module.exports = {
     } else {
       await sleep(delay);
     }
+  },
+
+  async getPos() {
+    return await mouse.getPosition();
   }
   },
 

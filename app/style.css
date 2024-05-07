@@ -1284,6 +1284,7 @@ input[type=number] {
 
 .testSkillsButton {
   margin-top: 5px !important;
+  cursor: help !important; 
   width: 100px !important;
   align-self: center;
 }

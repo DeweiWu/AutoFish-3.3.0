@@ -250,7 +250,7 @@ if(lootWindowPatch.exitButton) {
       return {x: posFromCurrent.x + mouse.getPos().x, y: posFromCurrent.y + mouse.getPos().y};
     }
 
-    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation}) => {
+    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation, cPos}) => {
       if (randomRange) {
         pos.x = pos.x + random(-randomRange, randomRange);
         pos.y = pos.y + random(-randomRange, randomRange);
@@ -262,7 +262,9 @@ if(lootWindowPatch.exitButton) {
         let convertedSpeed = speedValue / 100;
         let speedByRes = convertedSpeed * (screenSize.width / 1920);
         let speedCoofByRes = 0.05 * (screenSize.width / 1920);
+
         let randomSpeed = {from: speedByRes - speedCoofByRes, to: speedByRes + speedCoofByRes}
+
         if(randomSpeed.from < 0) {
           randomSpeed.from = 0;
         }
@@ -279,8 +281,10 @@ if(lootWindowPatch.exitButton) {
           if(!(pos instanceof Vec)) {
             pos = new Vec(pos.x, pos.y);
           }
-          let curPos = mouse.getPos();
+
+          let curPos = cPos ? cPos : await nutjs.mouse.getPos();
           curPos = new Vec(curPos.x, curPos.y);
+
           await nutjs.mouse.humanMoveTo({
             from: curPos.plus(screenSize),
             to: pos.plus(screenSize),
@@ -843,49 +847,118 @@ if(lootWindowPatch.exitButton) {
     }
   };
 
-  const findPlayer = async (state, log) => {
+  let oCompensation = {x: 0, y: 0};
+  let wavedAlready = false;
+
+  const findPlayer = async (state, log, onError) => {
 
     if(!config.findPlayer) {
       return;
     }
 
+    if(state.status == 'checking') {
+      await action(async () => {
+        await keyboard.sendKey('escape', delay);
+      })
+    }
+
+    findPlayer.state = true;
     log.send('Searching for other players...');
 
     const enemyHp = new HealthBar(config.findPlayerHp);
 
-    const turnDirection = ['left', 'right'][Math.round(Math.random())];
+    config.findPlayerTurnDir = ['left', 'right'][Math.round(Math.random())];
 
-    const rotationTimer = createTimer(() => 2000)
-    const cameraDistanceTimer = createTimer(() => config.findPlayerCameraDistance);
+    const rotationTimer = createTimer(() => 2000);
+    const scrollCamera = async (direction) => {
+      for(let step = 0; step < config.findPlayerCameraDistance; step++) {
+        await nutjs.mouse.scroll(1, direction);
+      }
+    };
+    const doAfter = async () => {
 
-    cameraDistanceTimer.start();
-    while(!cameraDistanceTimer.isElapsed()) {
-      await nutjs.mouse.scroll(1, false)
     }
 
-    if(config.findPlayerRotateBy == 'Mouse') { // keys rotation or mouse rotation
-      let stepMax = 1600 * (1080 / screenSize.height);
-      let stepChunkSize = 6;
-      for(let step = 0; step < stepMax; step += stepMax / stepChunkSize) {
+
+    await scrollCamera(false);
+    await sleep(random(250, 750));
+    let alreadyNotified = false;
+    if(config.findPlayerRotateBy == 'Mouse') {
+      let wavedAlreadyInner = false;
+      let startPos = mouse.getPos();
+      for(let i = 0; i < 8; i++) {
+        let stepMax = 200 * (1080 / screenSize.height)
+
         let cPos = mouse.getPos();
-        let x = cPos.x - (stepMax / stepChunkSize);
+        cPos = {x: cPos.x + 1, y: cPos.y + 1}; // +1 compensation because of incorrect getPos position after.
+
+        let x = cPos.x - stepMax;
         await mouse.toggle('left', true, delay);
-        await moveTo({pos: {x, y: cPos.y}, fineTune: false, randomRange: 0, speed: 20, deviation: 0});
+        await moveTo({pos: {x: x, y: cPos.y}, fineTune: false, randomRange: 0, speed: config.findPlayerMouseSpeed, deviation: 0});
         await mouse.toggle('left', false, delay);
+        await moveTo({pos: cPos, fineTune: false, randomRange: 0});
+        await sleep(random(delay[0], delay[1]));
         await keyboard.sendKey(config.findPlayerTargetKey, delay);
         if(config.findPlayerTargetKeyAddUse) {
           await keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
         }
+        await sleep(delay[0], delay[1]);
+
+        if(await enemyHp.checkColor(getDataFrom) && !alreadyNotified) {
+          log.warn("Found a player in the vicinity!");
+          alreadyNotified = true;
+          if(tmBot.ctx) {
+            tmBot.ctx.reply(`Found a player in the vicinity in Window: ${winNum}!`);
+            getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
+            .then(Jimp.read)
+            .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
+            .then(async (screenshot) => {
+              await tmBot.ctx.replyWithPhoto({source: screenshot})
+            })
+          }
+        }
+
+        if(await enemyHp.checkColor(getDataFrom) && config.findPlayerDoAfter == `Face and Wave` && !wavedAlreadyInner && !wavedAlready) {
+
+          /* facing */
+          await mouse.toggle('right', true, delay);
+          await mouse.toggle('left', true, delay);
+          await mouse.toggle('right', false, delay);
+          await mouse.toggle('left', false, delay);
+
+          await keyboard.sendKey('enter', delay);
+          await keyboard.printText('/wave', delay);
+          await keyboard.sendKey('enter', delay);
+
+          wavedAlreadyInner = true;
+
+          await sleep(config.findPlayerDoAfterSleepTime * 1000);
+        }
       }
+
+      if(config.findPlayerDoAfter == `Face and Wave` && wavedAlreadyInner) {
+        wavedAlready = true;
+
+        await mouse.toggle('right', true, delay);
+        await mouse.toggle('left', true, delay);
+        await mouse.toggle('right', false, delay);
+        await mouse.toggle('left', false, delay);
+
+        setTimeout(() => {
+          wavedAlready = false;
+        }, 15 * 60 * 1000); // don't wave within 15 min
+      }
+
     } else {
       rotationTimer.start();
+      await keyboard.toggleKey(config.findPlayerTurnDir, true);
       while(!rotationTimer.isElapsed()) {
         if(random(0, 100) > 95) {
-          await keyboard.toggleKey(turnDirection, false);
+          await keyboard.toggleKey(config.findPlayerTurnDir, false);
           let waitingTime = rotationTimer.timeRemains();
           await sleep(random(500, 1500));
 
-          await keyboard.toggleKey(turnDirection, true);
+          await keyboard.toggleKey(config.findPlayerTurnDir, true);
           rotationTimer.update(() => waitingTime);
         }
 
@@ -894,25 +967,47 @@ if(lootWindowPatch.exitButton) {
           await keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
         }
         await sleep(random(delay[0], delay[1]));
+
+        if(await enemyHp.checkColor(getDataFrom)  && !alreadyNotified) {
+          alreadyNotified = true;
+          log.warn("Found a player in the vicinity!");
+          if(tmBot.ctx) {
+            tmBot.ctx.reply(`Found a player in the vicinity in Window: ${winNum}!`);
+            getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
+            .then(Jimp.read)
+            .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
+            .then(async (screenshot) => {
+              await tmBot.ctx.replyWithPhoto({source: screenshot})
+            })
+          }
+        }
+
+        if(await enemyHp.checkColor(getDataFrom) && config.findPlayerDoAfter == `Face and Wave` && !wavedAlready) {
+          let timeRemained = rotationTimer.timeRemains();
+          await keyboard.toggleKey(config.findPlayerTurnDir, false);
+
+          await keyboard.sendKey('enter', delay);
+          await keyboard.printText('/wave', delay);
+          await keyboard.sendKey('enter', delay);
+          await sleep(config.findPlayerDoAfterSleepTime * 1000);
+          wavedAlready = true;
+
+          setTimeout(() => {
+            wavedAlready = false;
+          }, 5 * 60 * 1000); // don't wave within 5 min
+
+          rotationTimer.update(() => timeRemained);
+          await keyboard.toggleKey(config.findPlayerTurnDir, true);
+        }
       }
-      await keyboard.toggleKey(turnDirection, false);
+      await keyboard.toggleKey(config.findPlayerTurnDir, false);
     }
 
-    cameraDistanceTimer.update(() => config.findPlayerCameraDistance + 50);
-    while(!cameraDistanceTimer.isElapsed()) {
-      await nutjs.mouse.scroll(1, true)
-    }
+    await scrollCamera(true);
 
     lastMovementFrom = 'findPlayer';
-    await sleep(1000);
 
     if(await enemyHp.checkColor(getDataFrom)) {
-      await keyboard.sendKey('escape', delay);
-      log.warn("Found a player in the vicinity!");
-      if(tmBot.ctx) {
-        tmBot.ctx.reply(`Found a player in the vicinity in Window: ${winNum}!`);
-      }
-
       switch(config.findPlayerDoAfter) {
         case "Sleep": {
           await sleep(config.findPlayerDoAfterSleepTime * 1000);
@@ -926,23 +1021,139 @@ if(lootWindowPatch.exitButton) {
 
         case "Press Key": {
           await keyboard.sendKey(config.findPlayerDoAfterKey, delay);
+          await sleep(config.findPlayerDoAfterSleepTime * 1000);
           break;
         }
 
         case "Random Movement": {
           await _rngMoveAction();
+          await sleep(config.findPlayerDoAfterSleepTime * 1000);
+          break;
+        }
+
+        case "Stop": {
+          state.status = "stop";
+          onError();
+          break;
+        }
+
+        case "Exit": {
+          state.status = "stop";
+          onError();
+          workwindow.close();
           break;
         }
       }
 
-      return true;
+      if(await enemyHp.checkColor(getDataFrom)) { // if target is still opened and within vicinity
+        await action(async () => {
+          await keyboard.sendKey('escape', delay); // close target
+        });
+      }
     } else {
       log.ok('None.');
     }
 
+
+    findPlayer.state = false;
   };
   findPlayer.timer = createTimer(() => config.findPlayerInterval * 60 * 1000);
   findPlayer.on = config.findPlayer;
+  findPlayer.state;
+  findPlayer.frontCheck = async (state, log, onError) => {
+
+    while(state.status != 'stop') {
+      await sleep(config.findPlayerFrontInterval * 1000);
+
+      if(findPlayer.state || state.status == 'move' || state.status == 'logout' || state.status == 'sleep') {
+        continue;
+      }
+
+
+      await keyboard.sendKey(config.findPlayerTargetKey, delay);
+      if(config.findPlayerTargetKeyAddUse) {
+        await keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
+      }
+
+      const enemyHp = new HealthBar(config.findPlayerHp);
+      if(await enemyHp.checkColor(getDataFrom)) {
+        if(state.status == 'checking') {
+          await action(async () => {
+            await keyboard.sendKey('escape', delay);
+          })
+        }
+
+        log.warn("Found a player in the vicinity!");
+        if(tmBot.ctx) {
+          tmBot.ctx.reply(`Found a player in the vicinity in Window: ${winNum}!`);
+        }
+
+        switch(config.findPlayerDoAfter) {
+          case "Sleep": {
+            state.status = `sleep`;
+            state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+            break;
+          }
+
+          case "Log out": {
+            state.status = `logout`;
+            break;
+          }
+
+          case "Random Movement": {
+            state.status = `move`;
+            break;
+          }
+
+          case "Face and Wave": {
+            if(wavedAlready) break;
+            state.status = 'sleep';
+            state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+
+            await action(async () => {
+              await keyboard.sendKey('enter', delay);
+              await keyboard.printText('/wave', delay);
+              await keyboard.sendKey('enter', delay);
+            })
+
+            wavedAlready = true;
+            setTimeout(() => {
+              wavedAlready = false;
+            }, 15 * 60 * 1000); // don't wave within 15 min
+            break;
+          }
+
+          case "Press Key": {
+            await action(async () => {
+              await keyboard.sendKey(config.findPlayerDoAfterKey, delay);
+            })
+            state.status = 'sleep';
+            state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+            break;
+          }
+
+          case "Stop": {
+            state.status = "stop";
+            onError();
+            break;
+          }
+
+          case "Exit": {
+            state.status = "stop";
+            onError();
+            workwindow.close();
+            break;
+          }
+        }
+
+        if(await enemyHp.checkColor(getDataFrom)) { // if target is still opened and within vicinity
+          await action(async () => {
+            await keyboard.sendKey('escape', delay); // close target
+          });
+        }
+      }
+    }
+  }
 
   const aggroCheck = async (onStop, state, aggroTestRun) => {
     if(!config.aggroCheck) return;
@@ -955,7 +1166,7 @@ if(lootWindowPatch.exitButton) {
         }
         let cPos = mouse.getPos();
         await mouse.toggle('right', true, delay);
-        await moveTo({pos: {x: cPos.x + step, y: cPos.y}, randomRange: 0, fineTune: false, speed: 20});
+        await moveTo({pos: {x: cPos.x + step, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
         await mouse.toggle('right', false, delay);
       } else {
         let step = 2000 * (config.aggroCheckRunAwayFirstTurnDeg / 360);
@@ -1028,7 +1239,7 @@ if(lootWindowPatch.exitButton) {
       if(value > 960) {
         if(config.aggroCheckControlBy == "Mouse") {
           await mouse.toggle('right', true, delay);
-          await moveTo({pos: {x: cPos.x + step, y: cPos.y}, randomRange: 0, fineTune: false, speed: 20});
+          await moveTo({pos: {x: cPos.x + step, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
           await mouse.toggle('right', false, delay);
         } else {
           await keyboard.toggleKey("right", true);
@@ -1039,7 +1250,7 @@ if(lootWindowPatch.exitButton) {
       } else {
         if(config.aggroCheckControlBy == "Mouse") {
           await mouse.toggle('right', true, delay);
-          await moveTo({pos: {x: cPos.x - step, y: cPos.y}, randomRange: 0, fineTune: false, speed: 20});
+          await moveTo({pos: {x: cPos.x - step, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
           await mouse.toggle('right', false, delay);
         } else {
           await keyboard.toggleKey("left", true);
@@ -1102,7 +1313,6 @@ if(lootWindowPatch.exitButton) {
         let attackFailed = false;
 
         if(config.aggroCheckDoAfterType == "Attack") { // config.aggroCheck.type == attack
-
           cameraScrollTimer.start();
           while(!cameraScrollTimer.isElapsed()) {
             await nutjs.mouse.scroll(1, false)

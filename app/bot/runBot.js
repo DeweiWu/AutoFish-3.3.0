@@ -38,6 +38,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
 
   checkChanges(onError, log);
   aggroCheck(onError, state, aggroTestRun);
+  findPlayer.frontCheck(state, log, onError);
 
   let failedCast = false;
   let attempts = 0;
@@ -75,13 +76,6 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
 
       if(findPlayer.on) {
         findPlayer.timer.start();
-      }
-    }
-
-    if(findPlayer.on && findPlayer.timer.isElapsed()) {
-      let found = await findPlayer(state, log);
-      if(!found) {
-        findPlayer.timer.update();
       }
     }
 
@@ -124,6 +118,12 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       } else {
         state.status = `working`;
       }
+    }
+
+    if(findPlayer.on && findPlayer.timer.isElapsed()) {
+      if(state.status == `stop`) return;
+      let found = await findPlayer(state, log, onError);
+      findPlayer.timer.update();
     }
 
     if(doAfterTimer.on && state.status == "working" && doAfterTimer.timer.isElapsed()) {

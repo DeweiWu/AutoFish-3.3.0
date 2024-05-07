@@ -927,14 +927,14 @@ const renderAggroCheckEquip = ({aggroCheck, aggroCheckEquip, aggroCheckEquipKey}
 };
 
 const renderTestSkillsButton = ({aggroCheck, skills}) => {
-  return elt('input', {type: `button`, value: `Test Rotation`, disabled: !aggroCheck, className: `testSkillsButton${!aggroCheck ? ` disabledButton` : ``}`})
+  return elt('input', {type: `button`, value: `Test Rotation`, disabled: !aggroCheck, title: `Bot will open the game and do what it would do in normal circumstances when it detects changes in your hp bar (User HP value).\n\nIf you chose "Attack" it will search for enemies and start your rotation. If you chose "Run Away" it will run away.\n\nUse this button to test beforehand how bot would act in real situation with your configuration (you can use mobs with red names for testing).`,className: `testSkillsButton${!aggroCheck ? ` disabledButton` : ``}`})
 };
 
 const renderAggroCheckEnemyName = ({aggroCheck, aggroCheckEnemyName}) => {
-  const winRange = elt(`input`, {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyName, style: `color: white;  text-align: center; border: 1px solid grey; background-color: rgb(${aggroCheckEnemyName}, 0, 0)`,  name: "aggroCheckEnemyName"})
+  const winRange = elt(`input`, {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyName, style: `color: white; border: 1px solid grey;  background-image: linear-gradient(to right, rgb(${aggroCheckEnemyName - 50}, 0, 0), rgb(${aggroCheckEnemyName}, 0, 0));`,  name: "aggroCheckEnemyName"})
   const range = elt('input', {type: `range`, max: 255, disabled: !aggroCheck, className: `${!aggroCheck ? `threshold_disabled` : ``}`, value: aggroCheckEnemyName, oninput: function() {
     winRange.value = this.value;
-    winRange.style = `color: white; text-align: center; border: 1px solid grey; background-color: rgb(${this.value}, 0, 0)`;
+    winRange.style = `color: white; border: 1px solid grey;  background-image: linear-gradient(to right, rgb(${this.value - 50}, 0, 0), rgb(${this.value}, 0, 0));`;
   }});
   return elt(`div`, null, range, winRange)
 };
@@ -987,7 +987,7 @@ const renderFindPlayerRotateBy = ({findPlayer, findPlayerRotateBy}) => {
 };
 
 const renderFindPlayerDoAfter = ({findPlayer, findPlayerDoAfter}) => {
-  const types = ['Sleep', 'Press Key', 'Log out', 'Random Movement'];
+  const types = ['Sleep', 'Press Key', 'Log out', 'Random Movement', "Face and Wave", "Stop", "Exit"];
   const typeSelect = elt(`select`, {name: 'findPlayerDoAfter', disabled: !findPlayer}, ...types.map((type) => elt('option', {selected: type == findPlayerDoAfter, value: type}, type)));
    return elt(`div`, null, typeSelect);
 };
@@ -1009,11 +1009,28 @@ const renderFindPlayerInterval = ({findPlayer, findPlayerInterval}) => {
   return elt('input', {type: `number`, value: findPlayerInterval, disabled: !findPlayer, name: "findPlayerInterval"});
 }
 
+
+const renderFindPlayerFrontInterval = ({findPlayer, findPlayerFrontInterval}) => {
+  return elt('input', {type: `number`, value: findPlayerFrontInterval, disabled: !findPlayer, name: "findPlayerFrontInterval"});
+}
+
+
+
 const renderFindPlayerDoAfterSleepTime = ({findPlayer, findPlayerDoAfterSleepTime}) => {
     return elt('input', {type: `number`, value: findPlayerDoAfterSleepTime, disabled: !findPlayer, name: "findPlayerDoAfterSleepTime"});
 }
 
+const renderAggroCheckMouseSpeed = ({aggroCheck, aggroCheckMouseSpeed}) => {
+  const winRange = elt(`input`, {type: `number`, value: aggroCheckMouseSpeed, disabled: !aggroCheck, name: "aggroCheckMouseSpeed"})
+  const range = elt('input', {type: `range`, max: 100, min: 0, disabled: !aggroCheck, className: `${!aggroCheck ? `threshold_disabled` : ``}`, value: aggroCheckMouseSpeed, oninput: function() {winRange.value = this.value}, name: "aggroCheckMouseSpeed"});
+  return elt(`div`, null, range, winRange);
+}
 
+const renderFindPlayerMouseSpeed = ({findPlayer, findPlayerMouseSpeed}) => {
+  const winRange = elt(`input`, {type: `number`, value: findPlayerMouseSpeed, disabled: !findPlayer, name: "findPlayerMouseSpeed"})
+  const range = elt('input', {type: `range`, max: 100, min: 0, disabled: !findPlayer, className: `${!findPlayer ? `threshold_disabled` : ``}`, value: findPlayerMouseSpeed, oninput: function() {winRange.value = this.value}, name: "findPlayerMouseSpeed"});
+  return elt(`div`, null, range, winRange);
+}
 
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
@@ -1155,26 +1172,31 @@ const renderSettings = (config) => {
       wrapInLabel('Target HP', renderFindPlayerHp(config), `Point it anywhere on the healthbar of your target.`),
       wrapInLabel('Target Key', renderFindPlayerTargetKey(config), `The same key you use to target other friendly players in the game (Options -> Keybindings -> Targeting -> Target Nearest Friendly Player)`),
       wrapInLabel('Target Key (additional)', renderFindPlayerTargetKeyAdd(config), `Additional key in case you want to target something else. Enemies for example.`),
-      wrapInLabel('Do After: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Logging Out" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\n`),
       wrapInLabel('Rotate Camera By: ', renderFindPlayerRotateBy(config), `Keyboard: the bot will rotate by using arrow keys, it will be visible to others because your character will move as well.\nMouse: the bot will look around by using mouse, it won't be visible to others.`),
-      wrapInLabel('Camera Distance (ms)', renderFindPlayerCameraDistance(config), `The bot will scroll down your camera to see more, the value is time for how long it should scroll down, which is how far it should place your camera before checking.`),
-      wrapInLabel('Search For Players Every: (min)', renderFindPlayerInterval(config), `How often the bot should search for players nearby. You can use decimals for seconds (0.5 is every 30 seconds), but remember that the bot will check only after it finishes current fishing cast.`),
+      config.findPlayerRotateBy == 'Mouse' ? wrapInLabel('Mouse Speed: ', renderFindPlayerMouseSpeed(config), `Adjust the speed at which the bot should move your camera.`) : ``,
+      wrapInLabel('Scroll Camera Distance (steps)', renderFindPlayerCameraDistance(config), `The bot will scroll down your camera to see more, the value is number of "scroll steps", which is how far it should place your camera before checking.`),
+      wrapInLabel('Search For Players Around Every: (min)', renderFindPlayerInterval(config), `How often the bot should search for players nearby. You can use decimals for seconds (0.5 is every 30 seconds), but remember that the bot will check only after it finishes current fishing cast.`),
+      wrapInLabel('Search For Players In Front Every: (sec)', renderFindPlayerFrontInterval(config), `How often the bot should search for players in front of the character.`),
+      wrapInLabel('Do After Player Found: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Logging Out" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\n`),
       config.findPlayerDoAfter == 'Press Key' ? wrapInLabel('Press Key: ', renderFindPlayerDoAfterKey(config), `The key to press in case the bot finds someone.`) : ``,
-      config.findPlayerDoAfter == 'Sleep' ? wrapInLabel('Sleep For (sec): ', renderFindPlayerDoAfterSleepTime(config), `For how long the bot should sleep in case it finds someone.`) : ``
+      wrapInLabel('Sleep After Player Found (sec): ', renderFindPlayerDoAfterSleepTime(config), `For how long the bot should sleep in case it finds someone or after chosen action.`)
     ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check (beta)`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)\n\nUse "Test Rotation" button to see what will happen if you are attacked during fishing and check whether your rotation and the bot works properly for you.`),
-      wrapInLabel('Camera Distance (ms): ', renderAggroCheckCameraDistance(config), `The bot will scroll down to move camera farthest away before searching for enemies.`),
+            wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
+      wrapInLabel('Scroll Camera Distance (ms): ', renderAggroCheckCameraDistance(config), `The bot will scroll down to move camera farthest away before searching for enemies.`),
       wrapInLabel('Check Interval (sec)', renderAggroCheckInterval(config), `How often the bot should check changes of "User HP" pixel.`),
-      wrapInLabel('Quit The Game After: ', renderAggroCheckQuit(config), `The bot will quit the game and the bot after it either ran away, stopped, killed or being killed.`),
+      wrapInLabel('Center Camera By: ', renderAggroCheckControlBy(config), `What input command the bot should use to center camera.`),
+      config.aggroCheckControlBy == 'Mouse' ? wrapInLabel('Mouse Speed: ', renderAggroCheckMouseSpeed(config), `Adjust the speed at which the bot should move your camera.`) : ``,
+
       wrapInLabel('Enemy Name Color: ', renderAggroCheckEnemyName(config), `The color of the enemy names the bot should look for when attacked.`),
       // wrapInLabel('User Hp Start: ', renderAggroCheckUserHpStart(config), `The pixel on the screen bot will check to determine whether it's dead. Usually should be somewhere on the start of the green HP field.\n\nBe careful of different notifications like "BLOCK" and so on that will cover your healthbar, it might confuse the bot. To avoid it you might point a little bit further from the HP beggining.`),
-      wrapInLabel('User HP End', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
-      wrapInLabel('Enemy HP Start', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted or if it is dead. Usually should be somewhere on the start of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
-      wrapInLabel('Center Camera By: ', renderAggroCheckControlBy(config), `What input command the bot should use to center camera.`),
-        wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
+      wrapInLabel('User HP', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
+      wrapInLabel('Enemy HP', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted or if it is dead. Usually should be somewhere on the start of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
+      wrapInLabel('Quit The Game After: ', renderAggroCheckQuit(config), `The bot will quit the game and the bot after it either ran away, stopped, killed or being killed.`),
+
       config.aggroCheckDoAfterType == 'Run Away' ?
       elt('div', null,
       wrapInLabel('First Turn Direction: ', renderAggroCheckRunAwayFirstTurnDir(config), `The directino the bot should turn to find an enemy (by checking the color of Enemy Name value)`),
