@@ -875,17 +875,33 @@ if(lootWindowPatch.exitButton) {
         await nutjs.mouse.scroll(1, direction);
       }
     };
-    const doAfter = async () => {
 
+    const lowerCamera = async (direction) => {
+      if(config.findPlayerCameraVerticalDistance < 1) {
+        return;
+      }
+      let signDir = direction ? -1 : 1;
+
+      let cPos = mouse.getPos();
+
+      cPos = {x: cPos.x + 1, y: cPos.y + 1};
+
+      let y = cPos.y - (10 * config.findPlayerCameraVertical) * signDir;
+      await mouse.toggle('left', true, delay);
+      await moveTo({pos: {x: cPos.x, y: y}, fineTune: false, randomRange: 0, speed: config.findPlayerMouseSpeed, deviation: 0});
+      await mouse.toggle('left', false, delay);
+
+      await moveTo({pos: cPos, fineTune: false, randomRange: 0});
+      await sleep(random(delay[0], delay[1]));
     }
 
-
+    await lowerCamera(false);
     await scrollCamera(false);
-    await sleep(random(250, 750));
+
+    await sleep(random(delay[0], delay[1]));
     let alreadyNotified = false;
     if(config.findPlayerRotateBy == 'Mouse') {
       let wavedAlreadyInner = false;
-      let startPos = mouse.getPos();
       for(let i = 0; i < 8; i++) {
         let stepMax = 200 * (1080 / screenSize.height)
 
@@ -1004,6 +1020,7 @@ if(lootWindowPatch.exitButton) {
     }
 
     await scrollCamera(true);
+    await lowerCamera(true);
 
     lastMovementFrom = 'findPlayer';
 
@@ -1193,21 +1210,18 @@ if(lootWindowPatch.exitButton) {
         }
       await keyboard.toggleKey('w', false, delay);
     };
-
-    let createEnemyZone = (enemyZoneSize) => ({
+    const createEnemyZone = (enemyZoneSize) => ({
       x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
       y: screenSize.y,
       width: screenSize.width * (enemyZoneSize * 2),
       height: Math.round(screenSize.height / 2)
     });
-
-    let createEnemyZoneClose = (enemyZoneSize) => ({
+    const createEnemyZoneClose = (enemyZoneSize) => ({
       x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
       y: Math.round(screenSize.height / 2.1),
       width: screenSize.width * (enemyZoneSize * 2),
       height: 100
     });
-
     const findEnemy = async (zone) => {
       let enemyScreenData = await getDataFrom(zone);
       const image = await Jimp.read(enemyScreenData);
@@ -1233,7 +1247,6 @@ if(lootWindowPatch.exitButton) {
          y: zone.y + pos.y + (screenSize.height / 1080 * 20)}
        ));
     };
-
     const centerCamera = async (value, step) => {
       let cPos = mouse.getPos();
       if(value > 960) {
@@ -1259,11 +1272,8 @@ if(lootWindowPatch.exitButton) {
         }
       }
     }
-
     const userHp = new HealthBar(config.aggroCheckUserHp);
-    //const userHpStart = new HealthBar(config.aggroCheckUserHpStart);
     const enemyHp = new HealthBar(config.aggroCheckEnemyHp);
-
 
     let skills = config.skills.map((skill) => (
       {
@@ -1286,6 +1296,30 @@ if(lootWindowPatch.exitButton) {
         }
       }
     }
+    const lowerCamera = async (direction) => {
+      if(config.aggroCheckCameraVertical < 1) {
+        return;
+      }
+      let signDir = direction ? -1 : 1;
+
+      let cPos = mouse.getPos();
+
+      cPos = {x: cPos.x + 1, y: cPos.y + 1};
+
+      let y = cPos.y - (10 * config.aggroCheckCameraVertical) * signDir;
+      await mouse.toggle('left', true, delay);
+      await moveTo({pos: {x: cPos.x, y: y}, fineTune: false, randomRange: 0, speed: config.aggroCheckMouseSpeed, deviation: 0});
+      await mouse.toggle('left', false, delay);
+
+      await moveTo({pos: cPos, fineTune: false, randomRange: 0});
+      await sleep(random(delay[0], delay[1]));
+    }
+
+    const scrollCamera = async (direction) => {
+      for(let step = 0; step < config.aggroCheckCameraDistance; step++) {
+        await nutjs.mouse.scroll(1, direction);
+      }
+    };
 
     for(;state.status != `stop`;) {
       await sleep(aggroTestRun ? 0 : config.aggroCheckInterval * 1000);
@@ -1308,19 +1342,14 @@ if(lootWindowPatch.exitButton) {
           tmBot.ctx.reply(`The bot is being attacked in Window: ${winNum}!`);
         }
 
-        let cameraScrollTimer = createTimer(() => config.aggroCheckCameraDistance);
-
         let attackFailed = false;
-
         if(config.aggroCheckDoAfterType == "Attack") { // config.aggroCheck.type == attack
-          cameraScrollTimer.start();
-          while(!cameraScrollTimer.isElapsed()) {
-            await nutjs.mouse.scroll(1, false)
-          }
-
           if(skills.length < 1) {
             return;
           }
+
+          await lowerCamera(false);
+          await scrollCamera(false);
 
           if(config.aggroCheckEquip) {
             await keyboard.sendKey(config.aggroCheckEquipKey, delay);

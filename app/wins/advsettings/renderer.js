@@ -974,6 +974,14 @@ const renderFindPlayerCameraDistance = ({findPlayer, findPlayerCameraDistance}) 
   return elt('input', {type: 'number', value: findPlayerCameraDistance, name: "findPlayerCameraDistance", disabled: !findPlayer});
 };
 
+const renderFindPlayerCameraVertical = ({findPlayer, findPlayerCameraVertical}) => {
+  return elt('input', {type: 'number', value: findPlayerCameraVertical, name: "findPlayerCameraVertical", disabled: !findPlayer});
+};
+
+const renderAggroCheckCameraVertical = ({aggroCheck, aggroCheckCameraVertical}) => {
+  return elt('input', {type: 'number', value: aggroCheckCameraVertical, name: "aggroCheckCameraVertical", disabled: !aggroCheck});
+};
+
 const renderFindPlayerTargetKey = ({findPlayer, findPlayerTargetKey}) => {
   let key = elt('input', {type: 'text', value: findPlayerTargetKey, disabled: !findPlayer, name: "findPlayerTargetKey"});
   key.setAttribute(`readonly`, `true`);
@@ -1175,6 +1183,7 @@ const renderSettings = (config) => {
       wrapInLabel('Rotate Camera By: ', renderFindPlayerRotateBy(config), `Keyboard: the bot will rotate by using arrow keys, it will be visible to others because your character will move as well.\nMouse: the bot will look around by using mouse, it won't be visible to others.`),
       config.findPlayerRotateBy == 'Mouse' ? wrapInLabel('Mouse Speed: ', renderFindPlayerMouseSpeed(config), `Adjust the speed at which the bot should move your camera.`) : ``,
       wrapInLabel('Scroll Camera Distance (steps)', renderFindPlayerCameraDistance(config), `The bot will scroll down your camera to see more, the value is number of "scroll steps", which is how far it should place your camera before checking.`),
+      wrapInLabel('Vertical Camera Position (steps)', renderFindPlayerCameraVertical(config), `Vertical position of the camera view. In simple words: how low the bot should position your camera to better see the horizon. Leave it at 0 if you don't need it.`),
       wrapInLabel('Search For Players Around Every: (min)', renderFindPlayerInterval(config), `How often the bot should search for players nearby. You can use decimals for seconds (0.5 is every 30 seconds), but remember that the bot will check only after it finishes current fishing cast.`),
       wrapInLabel('Search For Players In Front Every: (sec)', renderFindPlayerFrontInterval(config), `How often the bot should search for players in front of the character.`),
       wrapInLabel('Do After Player Found: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Logging Out" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\n`),
@@ -1186,13 +1195,13 @@ const renderSettings = (config) => {
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)\n\nUse "Test Rotation" button to see what will happen if you are attacked during fishing and check whether your rotation and the bot works properly for you.`),
             wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
-      wrapInLabel('Scroll Camera Distance (ms): ', renderAggroCheckCameraDistance(config), `The bot will scroll down to move camera farthest away before searching for enemies.`),
+      wrapInLabel('Scroll Camera Distance (steps): ', renderAggroCheckCameraDistance(config), `The bot will scroll down your camera to see more, the value is number of "scroll steps", which is how far it should place your camera before checking.`),
+      wrapInLabel('Vertical Camera Position (steps)', renderAggroCheckCameraVertical(config), `Vertical position of the camera view. In simple words: how low the bot should position your camera to better see the horizon. Leave it at 0 if you don't need it.`),
       wrapInLabel('Check Interval (sec)', renderAggroCheckInterval(config), `How often the bot should check changes of "User HP" pixel.`),
       wrapInLabel('Center Camera By: ', renderAggroCheckControlBy(config), `What input command the bot should use to center camera.`),
       config.aggroCheckControlBy == 'Mouse' ? wrapInLabel('Mouse Speed: ', renderAggroCheckMouseSpeed(config), `Adjust the speed at which the bot should move your camera.`) : ``,
 
       wrapInLabel('Enemy Name Color: ', renderAggroCheckEnemyName(config), `The color of the enemy names the bot should look for when attacked.`),
-      // wrapInLabel('User Hp Start: ', renderAggroCheckUserHpStart(config), `The pixel on the screen bot will check to determine whether it's dead. Usually should be somewhere on the start of the green HP field.\n\nBe careful of different notifications like "BLOCK" and so on that will cover your healthbar, it might confuse the bot. To avoid it you might point a little bit further from the HP beggining.`),
       wrapInLabel('User HP', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
       wrapInLabel('Enemy HP', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted or if it is dead. Usually should be somewhere on the start of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
       wrapInLabel('Quit The Game After: ', renderAggroCheckQuit(config), `The bot will quit the game and the bot after it either ran away, stopped, killed or being killed.`),
@@ -1207,9 +1216,9 @@ const renderSettings = (config) => {
       elt('div', null,
       wrapInLabel('Target Key: ', renderAggroCheckTargetKey(config), `What key the bot should use to target the enemy. By default it's "Tab" in the game, but if you want the bot to target only enemy players (and not mobs), you should bind a different key for that in the game and bind it here respectively.`),
       wrapInLabel('Equip Weapon: ', renderAggroCheckEquip(config), `Equip weapon/armor before attacking. Use your own macro for that.`)) : ``,
-    config.aggroCheckDoAfterType == `Attack` ?  elt('p', {style: `font-weight: bold; text-align: center;`}, `Rotation: `) : ``,
-    config.aggroCheckDoAfterType == `Attack` ?  renderSkills(config) : ``,
-    renderTestSkillsButton(config)
+      config.aggroCheckDoAfterType == `Attack` ?  elt('p', {style: `font-weight: bold; text-align: center;`}, `Rotation: `) : ``,
+      config.aggroCheckDoAfterType == `Attack` ?  renderSkills(config) : ``,
+      renderTestSkillsButton(config)
     ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `🥱`), elt(`span`, {className: `advanced_settings_header_text`}, `Fatigue`),
