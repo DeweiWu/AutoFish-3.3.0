@@ -75,7 +75,7 @@ const renderArduinoPort = ({arduino, arduinoPort}) => {
     let select = elt(`select`, {disabled: !arduino, className: `arduino_select`, name: `arduinoPort`});
     SerialPort.list()
     .then((list) => list.forEach((port) => select.append(elt(`option`, {selected: arduinoPort == port.path, value: port.path}, port.friendlyName))));
-    return elt(`div`, null, select, elt(`input`, {type: `button`, disabled: !arduino, className: `${!arduino ? `disabledButton` : ``}`, value: `Connect`, id:`arduino`}));
+    return elt(`div`, null, select, elt(`input`, {type: `button`, disabled: !arduino, className: `${!arduino ? `disabledButtonPremium` : ``}`, value: `Connect`, id:`arduino`}));
 };
 
 const renderArduinoRate = ({arduino, arduinoRate}) => {
@@ -546,7 +546,7 @@ const renderLuresDelayMin = ({lures, luresDelayMin}) => {
 
 const renderSkills = ({aggroCheck, skills}) => {
 
-  const addButton = elt('input', {type: 'button', className: `spares-addButton ${!aggroCheck ? `disabledButton` : ``}`, onclick() {
+  const addButton = elt('input', {type: 'button', className: `spares-addButton ${!aggroCheck ? `disabledButtonPremium` : ``}`, onclick() {
     if(!aggroCheck) return;
     let key = elt('input', {type: 'text', value: `1`, className: "spares-key", name: `spareKey`, "data-skills": "key"});
     key.setAttribute('readonly', true);
@@ -816,7 +816,7 @@ const renderAggroCheckUserHp = ({aggroCheck, aggroCheckUserHp}) => {
   const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!aggroCheck ? `colorPicker_disabled` : ``}`, disabled: !aggroCheck, name: 'color', value: aggroCheckUserHp.color});
   const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckUserHp.precision, "data-skills": "precision"})
 
-  const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButton` : ``}`, value: ``, onclick() {
+  const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
     ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
       if(!data) {
         return;
@@ -867,7 +867,7 @@ const renderAggroCheckEnemyHp = ({aggroCheck, aggroCheckEnemyHp}) => {
   const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!aggroCheck ? `colorPicker_disabled` : ``}`, disabled: !aggroCheck, name: 'color', value: aggroCheckEnemyHp.color});
   const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyHp.precision, "data-skills": "precision"})
 
-  const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButton` : ``}`, value: ``, onclick() {
+  const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
     ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
       if(!data) {
         return;
@@ -927,7 +927,7 @@ const renderAggroCheckEquip = ({aggroCheck, aggroCheckEquip, aggroCheckEquipKey}
 };
 
 const renderTestSkillsButton = ({aggroCheck, skills}) => {
-  return elt('input', {type: `button`, value: `Test Rotation`, disabled: !aggroCheck, title: `Bot will open the game and do what it would do in normal circumstances when it detects changes in your hp bar (User HP value).\n\nIf you chose "Attack" it will search for enemies and start your rotation. If you chose "Run Away" it will run away.\n\nUse this button to test beforehand how bot would act in real situation with your configuration (you can use mobs with red names for testing).`,className: `testSkillsButton${!aggroCheck ? ` disabledButton` : ``}`})
+  return elt('input', {type: `button`, value: `Test Rotation`, disabled: !aggroCheck, title: `Bot will open the game and do what it would do in normal circumstances when it detects changes in your hp bar (User HP value).\n\nIf you chose "Attack" it will search for enemies and start your rotation. If you chose "Run Away" it will run away.\n\nUse this button to test beforehand how bot would act in real situation with your configuration (you can use mobs with red names for testing).`,className: `testSkillsButton${!aggroCheck ? ` disabledButtonPremium` : ``}`})
 };
 
 const renderAggroCheckEnemyName = ({aggroCheck, aggroCheckEnemyName}) => {
@@ -953,7 +953,7 @@ const renderFindPlayerHp = ({findPlayer, findPlayerHp}) => {
     const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!findPlayer ? `colorPicker_disabled` : ``}`, disabled: !findPlayer, name: 'color', value: findPlayerHp.color});
     const precision = elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerHp.precision, "data-skills": "precision"})
 
-    const colorPicker = elt('input', {type: `button`, disabled: !findPlayer, className: `whisperColorPicker ${!findPlayer ? `disabledButton` : ``}`, value: ``, onclick() {
+    const colorPicker = elt('input', {type: `button`, disabled: !findPlayer, className: `whisperColorPicker ${!findPlayer ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
         if(!data) {
           return;

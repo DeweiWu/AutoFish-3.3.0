@@ -414,12 +414,17 @@ input[data-spares] {}
   background-color: rgb(230, 230, 230);
 }
 
-.advSettings input[type=button].disabledButton {
+.advSettings input[type=button].disabledButtonPremium {
   cursor: default;
-  background-color: rgb(240, 240, 240);
-  border: 1px solid rgb(220, 220, 220);
+  background-color: rgb(248, 237, 231);
+  border: 1px solid rgb(199, 190, 185);
 }
 
+.advSettings input[type=button].disabledButton {
+  cursor: default;
+  background-color: rgb(248, 248, 248);
+  border: 1px solid rgb(208, 208, 208);
+}
 
 .advSettings input[type=button]:active {
   background-color: rgb(240, 240, 240);
@@ -1284,7 +1289,7 @@ input[type=number] {
 
 .testSkillsButton {
   margin-top: 5px !important;
-  cursor: help !important; 
+  cursor: help !important;
   width: 100px !important;
   align-self: center;
 }
@@ -1297,13 +1302,12 @@ input[type=number] {
   border: 1px solid black;
 }
 
-
 .colorPicker_disabled {
-  background-color: rgb(230, 230, 230);
-  border: 1px solid rgb(200, 200, 200);
+  background-color: rgba(248, 237, 231);
+  border: 1px solid rgb(199, 190, 185)
 }
 
 .colorPicker_disabled:hover {
   cursor: default !important;
-  border: 1px solid rgb(200, 200, 200) !important;
+  border: 1px solid rgb(199, 190, 185) !important;
 }
