@@ -337,6 +337,7 @@ if(lootWindowPatch.exitButton) {
   const logOutTimer = createTimer(() => random(config.logOutEvery.from * 1000 * 60, config.logOutEvery.to * 1000 * 60));
 
   const logOut = async (state) => {
+    findPlayer.state = true;
     await action(async () => {
       if(config.logOutUseMacro) {
         await keyboard.toggleKey(config.logOutMacroKey, true, delay);
@@ -377,6 +378,8 @@ if(lootWindowPatch.exitButton) {
         spare.timer.update(() => addTimeSpares[i]);
       })
     }
+
+  findPlayer.state = false;
   };
   logOut.timer = logOutTimer;
   logOut.on = config.logOut > 0;
@@ -1078,14 +1081,20 @@ if(lootWindowPatch.exitButton) {
   findPlayer.on = config.findPlayer;
   findPlayer.state;
   findPlayer.frontCheck = async (state, log, onError) => {
+    if(!config.findPlayer) {
+      return;
+    }
 
     while(state.status != 'stop') {
       await sleep(config.findPlayerFrontInterval * 1000);
 
+      if(state.status == 'stop') {
+        break;
+      }
+
       if(findPlayer.state || state.status == 'move' || state.status == 'logout' || state.status == 'sleep') {
         continue;
       }
-
 
       await keyboard.sendKey(config.findPlayerTargetKey, delay);
       if(config.findPlayerTargetKeyAddUse) {
@@ -1178,7 +1187,7 @@ if(lootWindowPatch.exitButton) {
 
       if(config.aggroCheckControlBy == "Mouse") {
         let step = ((screenSize.height / 1080) * 1600) * (config.aggroCheckRunAwayFirstTurnDeg / 360);
-        if(config.aggroCheckRunAwayFirstTurnDir == 'Left') {
+        if(config.aggroCheckRunAwayFirstTurnDir == 'left') {
           step = -step;
         }
         let cPos = mouse.getPos();
@@ -1187,7 +1196,7 @@ if(lootWindowPatch.exitButton) {
         await mouse.toggle('right', false, delay);
       } else {
         let step = 2000 * (config.aggroCheckRunAwayFirstTurnDeg / 360);
-        let dir = config.aggroCheckRunAwayFirstTurnDir == 'Left' ? 'left': 'right';
+        let dir = config.aggroCheckRunAwayFirstTurnDir;
         await keyboard.toggleKey(dir, true);
         await sleep(step);
         await keyboard.toggleKey(dir, false);
@@ -1280,10 +1289,16 @@ if(lootWindowPatch.exitButton) {
       ...skill,
       attackRange: new HealthBar({x: skill.x, y: skill.y, color: skill.color, precision: skill.precision}),
       initial: true,
-      cooldownTimer: createTimer(() => skill.cooldown * 1000)
+      async apply() {
+        await keyboard.sendKey(this.key, delay);
+        this.delayTimer.update();
+        this.cooldownTimer.update();
+      },
+      cooldownTimer: createTimer(() => skill.cooldown * 1000),
+      delayTimer: createTimer(() => skill.delay * 1000)
     }));
 
-    const turnDirection = ['left', 'right'][Math.round(Math.random())];
+    const turnDirection = config.aggroCheckRunAwayFirstTurnDir;
     const turnTimer = createTimer(() => 2000);
     const findAndCenter = async (zone) => {
       enemyPosition = await findEnemy(zone);
@@ -1324,7 +1339,6 @@ if(lootWindowPatch.exitButton) {
     for(;state.status != `stop`;) {
       await sleep(aggroTestRun ? 0 : config.aggroCheckInterval * 1000);
       if(!(await userHp.checkColor(getDataFrom)) || aggroTestRun) {
-
       await action(async () => {
 
         if(state.status == `checking`) {
@@ -1379,18 +1393,19 @@ if(lootWindowPatch.exitButton) {
                   await findAndCenter(createEnemyZone(0.2));
                   await sleep(50);
                 }
+                await sleep(250); // delay to avoid blinking of the range indication when close to the enemy
                 await keyboard.toggleKey("up", false, delay);
 
                 let killingEnemyStartTime = Date.now();
                 let skillNumber = 0;
-                await sleep(500);
+
                 while(await enemyHp.checkColor(getDataFrom) && (Date.now() - killingEnemyStartTime < 120000)) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
                     await findAndCenter(createEnemyZone(0.2));
 
                     let skill = skills[skillNumber % skills.length];
-
-                    let afterSkillApliedStartTime = Date.now()
-                    if(!(await skill.attackRange.checkColor(getDataFrom)) && !skill.rangeonly && Date.now() - afterSkillApliedStartTime > 500) { // come up to target if not in range of the skill. Do it only after 0.5 second delay after skill was applied to avoid UI skill animation.
+                    if(!(await skill.attackRange.checkColor(getDataFrom)) &&
+                       !skill.rangeonly &&
+                        skill.cooldownTimer.timeRemains() > (skill.cooldown * 1000 * 0.05)) { //  come up to target if not in range of the skill. Do it only after 5% of skill cooldownto avoid UI animation of cooldown.
                         await keyboard.toggleKey("up", true, delay);
                         while(!(await skill.attackRange.checkColor(getDataFrom))) {
                           await sleep(random(delay[0], delay[1]));
@@ -1412,11 +1427,9 @@ if(lootWindowPatch.exitButton) {
                       skillNumber++;
                     }
 
-                    await keyboard.sendKey(skill.key, delay);
-                    let startDelayTime = Date.now();
-                    let skillDelay = skill.delay * 1000;
+                    await skill.apply();
 
-                    while((Date.now() - startDelayTime < skillDelay) && await enemyHp.checkColor(getDataFrom)) { // center camera during cast/execution time
+                    while(!skill.delayTimer.isElapsed() && await enemyHp.checkColor(getDataFrom)) { // center camera during cast/execution time
                       await findAndCenter(createEnemyZone(0.2));
                     }
 
@@ -1459,6 +1472,7 @@ if(lootWindowPatch.exitButton) {
         }
 
         }) // action end
+
       }
     }
   };
