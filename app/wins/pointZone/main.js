@@ -2,8 +2,10 @@ const { BrowserWindow, ipcMain } = require("electron");
 
 const nutJS = require("@nut-tree/nut-js");
 
-const createMouseCoordsEvent = (resolve, win, botWin) => {
+const createMouseCoordsEvent = (resolve, win, botWin, scaleFactor) => {
   ipcMain.on('mouse-coords', async (event, data) => {
+    data.x = data.x * scaleFactor;
+    data.y = data.y * scaleFactor;
 
     let color = await(await nutJS.screen.grabRegion(new nutJS.Region(data.x, data.y, 1, 1))).toRGB();
     data.color = {r: color.data[0], g: color.data[1], b: color.data[2]};
@@ -15,7 +17,7 @@ const createMouseCoordsEvent = (resolve, win, botWin) => {
   })
 }
 
-const createPointZone = async (botWin) => {
+const createPointZone = async (botWin, scaleFactor) => {
   let win = new BrowserWindow({
     fullscreen: true,
     frame: false,
@@ -33,7 +35,7 @@ const createPointZone = async (botWin) => {
   });
 
   return new Promise(function(resolve, reject) {
-    createMouseCoordsEvent(resolve, win, botWin);
+    createMouseCoordsEvent(resolve, win, botWin, scaleFactor);
   });
 }
 

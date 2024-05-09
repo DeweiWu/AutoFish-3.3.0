@@ -348,7 +348,8 @@ By pressing "Accept" you agree to everything stated above.`,
         games[0].game.workwindow.setForeground();
       }
 
-      let data = await createPointZone(BrowserWindow.getAllWindows()[0]);
+      const scale = screen.getPrimaryDisplay().scaleFactor || 1;
+      let data = await createPointZone(BrowserWindow.getAllWindows()[0], scale);
 
       log.ok(`Set point to x: ${data.x}, y: ${data.y} successfully!`);
       return data;

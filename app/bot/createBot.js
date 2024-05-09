@@ -29,26 +29,6 @@ let once = (fn, done) => (...args) => {
   }
 }
 
-class HealthBar {
-  constructor({x, y, color, precision}) {
-    this.x = x;
-    this.y = y;
-    this.precision = precision;
-    this.color = hexToRgb(color);
-  }
-
-  async checkColor(getDataFrom) {
-    const pixelData = await getDataFrom({x: this.x, y: this.y, width: 1, height: 1});
-    const [r, g, b] = Array.from(pixelData.data);
-
-    let percR = this.color.r / 100 * (100 - this.precision);
-    let percG = this.color.g / 100 * (100 - this.precision);
-    let percB = this.color.b / 100 * (100 - this.precision);
-
-    return closeEnough(percR)(this.color.r, r) && closeEnough(percG)(this.color.g, g) && closeEnough(percB)(this.color.b, b)
-  }
-}
-
 const {
   percentComparison,
   readTextFrom,
@@ -83,6 +63,26 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
 
   await keyboard.toggleKey(["alt", "tab"], true, delay);
   await keyboard.toggleKey(["alt", "tab"], false, delay);
+ }
+
+ class HealthBar {
+   constructor({x, y, color, precision}) {
+     this.x = x;
+     this.y = y;
+     this.precision = precision;
+     this.color = hexToRgb(color);
+   }
+
+   async checkColor(getDataFrom) {
+     const pixelData = await getDataFrom({x: this.x - screenSize.x, y: this.y - screenSize.y, width: 1, height: 1});
+     const [r, g, b] = Array.from(pixelData.data);
+
+     let percR = this.color.r / 100 * (100 - this.precision);
+     let percG = this.color.g / 100 * (100 - this.precision);
+     let percB = this.color.b / 100 * (100 - this.precision);
+
+     return closeEnough(percR)(this.color.r, r) && closeEnough(percG)(this.color.g, g) && closeEnough(percB)(this.color.b, b)
+   }
  }
 
   const action = async (callback, forced) => {
@@ -282,7 +282,7 @@ if(lootWindowPatch.exitButton) {
             pos = new Vec(pos.x, pos.y);
           }
 
-          let curPos = cPos ? cPos : await nutjs.mouse.getPos();
+          let curPos = cPos ? cPos : mouse.getPos();
           curPos = new Vec(curPos.x, curPos.y);
 
           await nutjs.mouse.humanMoveTo({
@@ -906,7 +906,7 @@ if(lootWindowPatch.exitButton) {
     if(config.findPlayerRotateBy == 'Mouse') {
       let wavedAlreadyInner = false;
       for(let i = 0; i < 8; i++) {
-        let stepMax = 200 * (1080 / screenSize.height)
+        let stepMax = 200;
 
         let cPos = mouse.getPos();
         cPos = {x: cPos.x + 1, y: cPos.y + 1}; // +1 compensation because of incorrect getPos position after.
@@ -1186,7 +1186,7 @@ if(lootWindowPatch.exitButton) {
     const runAway = async (time) => {
 
       if(config.aggroCheckControlBy == "Mouse") {
-        let step = ((screenSize.height / 1080) * 1600) * (config.aggroCheckRunAwayFirstTurnDeg / 360);
+        let step = 1600 * (config.aggroCheckRunAwayFirstTurnDeg / 360);
         if(config.aggroCheckRunAwayFirstTurnDir == 'left') {
           step = -step;
         }
@@ -1231,10 +1231,10 @@ if(lootWindowPatch.exitButton) {
       width: screenSize.width * (enemyZoneSize * 2),
       height: 100
     });
+    
     const findEnemy = async (zone) => {
       let enemyScreenData = await getDataFrom(zone);
       const image = await Jimp.read(enemyScreenData);
-
       let positions = [];
       image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
 
@@ -1258,7 +1258,7 @@ if(lootWindowPatch.exitButton) {
     };
     const centerCamera = async (value, step) => {
       let cPos = mouse.getPos();
-      if(value > 960) {
+      if(value > (screenSize.width / 2)) {
         if(config.aggroCheckControlBy == "Mouse") {
           await mouse.toggle('right', true, delay);
           await moveTo({pos: {x: cPos.x + step, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
@@ -1303,10 +1303,14 @@ if(lootWindowPatch.exitButton) {
     const findAndCenter = async (zone) => {
       enemyPosition = await findEnemy(zone);
       if(enemyPosition) {
-        const x = enemyPosition.reduce((a, b) => a + b.x, 0) / enemyPosition.length;
-        let stepSize = Math.abs(screenSize.width / 2 - x);
-        if(!closeEnough(screenSize.width * 0.025)(x, screenSize.width / 2)) {
-          await centerCamera(x, stepSize / 3);
+        /*
+        let lowest = enemyPosition.reduce((a, b) => a.y > b.y ? a : b);
+        let allPointsWithinY = enemyPosition.filter((point) => closeEnough(100 * (screenSize.height / 1080))(point.y, lowest.y))
+        */
+        const avarageX = enemyPosition.reduce((a, b) => a + b.x, 0) / enemyPosition.length; // middle position
+        let stepSize = Math.abs(screenSize.width / 2 - avarageX) / (screenSize.height / 1080); // how much we should move the camera to center the name of the enemy
+        if(!closeEnough(screenSize.width * 0.025)(avarageX, screenSize.width / 2)) {
+          await centerCamera(avarageX, stepSize / 3);
           return true;
         }
       }
