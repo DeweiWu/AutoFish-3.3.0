@@ -535,6 +535,11 @@ By pressing "Accept" you agree to everything stated above.`,
       return Promise.reject(e);
     })
   });
+
+  ipcMain.handle('get-profile-name', () => {
+    return getProfile().selected;
+  });
+
   ipcMain.handle("connect-arduino", (event, {port, speed}) => {
    return arduino.connectTo(port, Number(speed))
    .then((response) => log.ok(response), (e) => {
@@ -621,6 +626,14 @@ ipcMain.handle("delete-user", (event, user) => {
     });
   });
   ipcMain.handle("change-selected-profile", (event, profile) => {
+
+    const config = getJson(`./config/${profile}/bot.json`);
+    const settings = getJson(`./config/${profile}/settings.json`);
+    const customWin = config.patch[settings.game].customWindow;
+
+    if(!customWin && (profile == 'WIN1' || profile == 'WIN2' || profile == 'WIN3' || profile == 'WIN4' || profile == 'WIN5' || profile == 'WIN6' || profile == 'WIN7' || profile == 'WIN8' || profile == 'WIN9' || profile == 'WIN10')) {
+      showWarning(win, 'Specify your window in Advanced Settings -> Custom Window, otherwise the bot will ignore this window.')
+    }
     let profiles = getProfile();
     profiles.selected = profile;
     writeFileSync(path.join(__dirname, `./config/config.json`), JSON.stringify(profiles));

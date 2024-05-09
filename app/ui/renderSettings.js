@@ -1,6 +1,7 @@
 const elt = require("./utils/elt.js");
 const wrapInLabel = require("./utils/wrapInLabel.js");
 const { hexToRgb, rgbToHex } = require("./../utils/colors.js");
+const { ipcRenderer } = require('electron');
 
 const renderColorSwitch = ({bobberColor, bobberColorManual, checkLogic, autoColor, soundDetection}) => {
   const colorTypes = [`red`, `blue`, `Manual`];
@@ -131,6 +132,15 @@ const renderMultipleWindows = ({multipleWindows, afkmode}) => {
   if(afkmode) {
     checkbox.setAttribute("disabled", true);
   }
+
+  ipcRenderer.invoke('get-profile-name')
+  .then((name) => {
+    if(name == 'WIN1' || name == 'WIN2' || name == 'WIN3' || name == 'WIN4' || name == 'WIN5' || name == 'WIN6' || name == 'WIN7' || name == 'WIN8' || name == 'WIN9' || name == 'WIN10') {
+      checkbox.setAttribute("disabled", true);
+      checkbox.checked = true;
+    }
+  });
+
   return checkbox;
 };
 
