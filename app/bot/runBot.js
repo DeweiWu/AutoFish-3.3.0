@@ -79,6 +79,11 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       }
     }
 
+    if(findPlayer.on && findPlayer.timer.isElapsed()) {
+      if(state.status == `stop`) return;
+      await findPlayer(state, log, onError);
+      findPlayer.timer.update();
+    }
 
     if(state.status == `sleep`) {
       checkChanges.block(true);
@@ -118,12 +123,6 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       } else {
         state.status = `working`;
       }
-    }
-
-    if(findPlayer.on && findPlayer.timer.isElapsed()) {
-      if(state.status == `stop`) return;
-      let found = await findPlayer(state, log, onError);
-      findPlayer.timer.update();
     }
 
     if(doAfterTimer.on && state.status == "working" && doAfterTimer.timer.isElapsed()) {

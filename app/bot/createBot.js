@@ -854,15 +854,15 @@ if(lootWindowPatch.exitButton) {
   let wavedAlready = false;
 
   const findPlayer = async (state, log, onError) => {
+   await action(async () => {
+
 
     if(!config.findPlayer) {
       return;
     }
 
     if(state.status == 'checking') {
-      await action(async () => {
-        await keyboard.sendKey('escape', delay);
-      })
+      await keyboard.sendKey('escape', delay);
     }
 
     findPlayer.state = true;
@@ -1030,30 +1030,46 @@ if(lootWindowPatch.exitButton) {
     if(await enemyHp.checkColor(getDataFrom)) {
       switch(config.findPlayerDoAfter) {
         case "Sleep": {
-          await sleep(config.findPlayerDoAfterSleepTime * 1000);
+          state.status = `sleep`;
+          state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
           break;
         }
 
         case "Log out": {
-          await logOut(state);
+          state.status = `logout`;
+          break;
+        }
+
+        case "Random Movement": {
+          state.status = `move`;
+          break;
+        }
+
+        case "Face and Wave": {
+          if(wavedAlready) break;
+          state.status = 'sleep';
+          state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+
+          await keyboard.sendKey('enter', delay);
+          await keyboard.printText('/wave', delay);
+          await keyboard.sendKey('enter', delay);
+
+          wavedAlready = true;
+          setTimeout(() => {
+            wavedAlready = false;
+          }, 15 * 60 * 1000); // don't wave within 15 min
           break;
         }
 
         case "Press Key": {
           await keyboard.sendKey(config.findPlayerDoAfterKey, delay);
-          await sleep(config.findPlayerDoAfterSleepTime * 1000);
-          break;
-        }
-
-        case "Random Movement": {
-          await _rngMoveAction();
-          await sleep(config.findPlayerDoAfterSleepTime * 1000);
+          state.status = 'sleep';
+          state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
           break;
         }
 
         case "Stop": {
           state.status = "stop";
-          onError();
           break;
         }
 
@@ -1066,22 +1082,20 @@ if(lootWindowPatch.exitButton) {
       }
 
       if(await enemyHp.checkColor(getDataFrom)) { // if target is still opened and within vicinity
-        await action(async () => {
-          await keyboard.sendKey('escape', delay); // close target
-        });
+        await keyboard.sendKey('escape', delay); // close target
       }
     } else {
       log.ok('None.');
     }
 
-
     findPlayer.state = false;
+   });
   };
   findPlayer.timer = createTimer(() => config.findPlayerInterval * 60 * 1000);
   findPlayer.on = config.findPlayer;
   findPlayer.state;
   findPlayer.frontCheck = async (state, log, onError) => {
-    if(!config.findPlayer) {
+    if(!config.findPlayer || settings.multipleWindows) {
       return;
     }
 
@@ -1136,11 +1150,9 @@ if(lootWindowPatch.exitButton) {
             state.status = 'sleep';
             state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
 
-            await action(async () => {
-              await keyboard.sendKey('enter', delay);
-              await keyboard.printText('/wave', delay);
-              await keyboard.sendKey('enter', delay);
-            })
+            await keyboard.sendKey('enter', delay);
+            await keyboard.printText('/wave', delay);
+            await keyboard.sendKey('enter', delay);
 
             wavedAlready = true;
             setTimeout(() => {
@@ -1150,9 +1162,7 @@ if(lootWindowPatch.exitButton) {
           }
 
           case "Press Key": {
-            await action(async () => {
-              await keyboard.sendKey(config.findPlayerDoAfterKey, delay);
-            })
+            await keyboard.sendKey(config.findPlayerDoAfterKey, delay);
             state.status = 'sleep';
             state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
             break;
@@ -1160,7 +1170,6 @@ if(lootWindowPatch.exitButton) {
 
           case "Stop": {
             state.status = "stop";
-            onError();
             break;
           }
 
@@ -1180,6 +1189,13 @@ if(lootWindowPatch.exitButton) {
       }
     }
   }
+
+
+
+
+
+
+
 
   const aggroCheck = async (onStop, state, aggroTestRun) => {
     if(!config.aggroCheck) return;
@@ -1231,7 +1247,7 @@ if(lootWindowPatch.exitButton) {
       width: screenSize.width * (enemyZoneSize * 2),
       height: 100
     });
-    
+
     const findEnemy = async (zone) => {
       let enemyScreenData = await getDataFrom(zone);
       const image = await Jimp.read(enemyScreenData);
@@ -1294,7 +1310,12 @@ if(lootWindowPatch.exitButton) {
         this.delayTimer.update();
         this.cooldownTimer.update();
       },
-      cooldownTimer: createTimer(() => skill.cooldown * 1000),
+      cooldownTimer: createTimer(() => {
+        if(skill.cooldown < skill.delay) {
+          skill.cooldown = skill.delay;
+        }
+        return skill.cooldown * 1000
+      }),
       delayTimer: createTimer(() => skill.delay * 1000)
     }));
 
@@ -1334,8 +1355,8 @@ if(lootWindowPatch.exitButton) {
       await sleep(random(delay[0], delay[1]));
     }
 
-    const scrollCamera = async (direction) => {
-      for(let step = 0; step < config.aggroCheckCameraDistance; step++) {
+    const scrollCamera = async (direction, value) => { // config.aggroCheckCameraDistance
+      for(let step = 0; step < value; step++) {
         await nutjs.mouse.scroll(1, direction);
       }
     };
@@ -1367,7 +1388,7 @@ if(lootWindowPatch.exitButton) {
           }
 
           await lowerCamera(false);
-          await scrollCamera(false);
+          await scrollCamera(false, config.aggroCheckCameraDistance);
 
           if(config.aggroCheckEquip) {
             await keyboard.sendKey(config.aggroCheckEquipKey, delay);
@@ -1405,11 +1426,11 @@ if(lootWindowPatch.exitButton) {
 
                 while(await enemyHp.checkColor(getDataFrom) && (Date.now() - killingEnemyStartTime < 120000)) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
                     await findAndCenter(createEnemyZone(0.2));
-
                     let skill = skills[skillNumber % skills.length];
+
                     if(!(await skill.attackRange.checkColor(getDataFrom)) &&
                        !skill.rangeonly &&
-                        skill.cooldownTimer.timeRemains() > (skill.cooldown * 1000 * 0.05)) { //  come up to target if not in range of the skill. Do it only after 5% of skill cooldownto avoid UI animation of cooldown.
+                        skill.cooldownTimer.timeRemains() < ((skill.cooldown * 1000) * .8)) { //  come up to target if not in range of the skill. Do it only if there's less than 80% of skill cooldown time remain, to avoid UI animation of cooldown.
                         await keyboard.toggleKey("up", true, delay);
                         while(!(await skill.attackRange.checkColor(getDataFrom))) {
                           await sleep(random(delay[0], delay[1]));
