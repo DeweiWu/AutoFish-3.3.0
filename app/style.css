@@ -1022,7 +1022,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   height: 10px;
 }
 
-.spare-inner div {
+.spare-inner label {
   display: flex;
   justify-content: space-between;
   margin-bottom: 5px;
@@ -1285,7 +1285,15 @@ input[type=number] {
 .spares-color-picker {
   height: 20px;
   margin-left: 3px;
+  border-radius: 5px;
+  border: 1px solid grey;
 }
+
+.spares-color-picker:hover {
+  height: 20px;
+  border: 1px solid black;
+}
+
 
 .testSkillsButton {
   margin-top: 5px !important;

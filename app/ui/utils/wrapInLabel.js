@@ -1,9 +1,10 @@
 const elt = require("./elt.js");
 
-const wrapInLabel = (name, inner, hint, classname) => {
+const wrapInLabel = (name, inner, hint, classname, style) => {
+  console.log(style);
   return elt(
     "label",
-    {className: classname},
+    {className: classname, style: style},
     name,
     elt(
       "div",

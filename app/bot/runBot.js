@@ -165,10 +165,10 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     if(checkSpares.length > 0) {
       log.send(`Applying spares...`);
       for(const elapsedSpare of checkSpares) {
+        elapsedSpare.timer.update()
         checkChanges.block();
         await elapsedSpare();
         checkChanges.unblock();
-        elapsedSpare.timer.update()
       }
     }
 
