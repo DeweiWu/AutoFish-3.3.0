@@ -879,6 +879,21 @@ if(lootWindowPatch.exitButton) {
       }
     };
 
+    const generateRandomSteps = (th, from, to) => {
+      const steps = [];
+      for(let maxValue = 0;;) {
+        let value = Math.round(random(from, to));
+        if(maxValue + value < th) {
+          maxValue += value;
+          steps.push(value);
+        } else {
+          steps.push(1600 - maxValue);
+          break;
+        }
+      }
+      return steps;
+    }
+
     const lowerCamera = async (direction) => {
       if(config.findPlayerCameraVerticalDistance < 1) {
         return;
@@ -890,8 +905,16 @@ if(lootWindowPatch.exitButton) {
       cPos = {x: cPos.x + 1, y: cPos.y + 1};
 
       let y = cPos.y - (10 * config.findPlayerCameraVertical) * signDir;
+      
       await mouse.toggle('left', true, delay);
-      await moveTo({pos: {x: cPos.x, y: y}, fineTune: false, randomRange: 0, speed: config.findPlayerMouseSpeed, deviation: 0});
+
+      await moveTo({
+        pos: {x: cPos.x, y: y},
+        fineTune: false,
+        randomRange: 0,
+        speed: config.findPlayerMouseSpeed,
+        deviation: 50
+      });
       await mouse.toggle('left', false, delay);
 
       await moveTo({pos: cPos, fineTune: false, randomRange: 0});
@@ -903,17 +926,31 @@ if(lootWindowPatch.exitButton) {
 
     await sleep(random(delay[0], delay[1]));
     let alreadyNotified = false;
+
+    let steps = generateRandomSteps(1590, 150, 250);
+
+    let yCompensation = 0;
     if(config.findPlayerRotateBy == 'Mouse') {
       let wavedAlreadyInner = false;
-      for(let i = 0; i < 8; i++) {
-        let stepMax = 200;
+      for(let i = 0; i < steps.length; i++) {
+        let step = steps[i];
 
         let cPos = mouse.getPos();
         cPos = {x: cPos.x + 1, y: cPos.y + 1}; // +1 compensation because of incorrect getPos position after.
 
-        let x = cPos.x - stepMax;
+        let randomYvalue = Math.round(random(-10, 10));
+        if(i < steps.length - 1) {
+          if(yCompensation + randomYvalue < -10 || yCompensation + randomYvalue > 10) {
+            randomYvalue = -randomYvalue;
+          }
+          yCompensation += randomYvalue;
+        } else {
+          randomYvalue = -yCompensation;
+        }
+
+        let x = cPos.x - step;
         await mouse.toggle('left', true, delay);
-        await moveTo({pos: {x: x, y: cPos.y}, fineTune: false, randomRange: 0, speed: config.findPlayerMouseSpeed, deviation: 0});
+        await moveTo({pos: {x: x, y: cPos.y + randomYvalue}, fineTune: false, randomRange: 0, speed: config.findPlayerMouseSpeed, deviation: 50});
         await mouse.toggle('left', false, delay);
         await moveTo({pos: cPos, fineTune: false, randomRange: 0});
         await sleep(random(delay[0], delay[1]));
@@ -1348,7 +1385,13 @@ if(lootWindowPatch.exitButton) {
 
       let y = cPos.y - (10 * config.aggroCheckCameraVertical) * signDir;
       await mouse.toggle('left', true, delay);
-      await moveTo({pos: {x: cPos.x, y: y}, fineTune: false, randomRange: 0, speed: config.aggroCheckMouseSpeed, deviation: 0});
+      await moveTo({
+        pos: {x: cPos.x, y: y},
+        fineTune: false,
+        randomRange: 0,
+        speed: config.aggroCheckMouseSpeed,
+        deviation: 0
+      });
       await mouse.toggle('left', false, delay);
 
       await moveTo({pos: cPos, fineTune: false, randomRange: 0});
