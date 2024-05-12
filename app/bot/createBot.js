@@ -905,7 +905,7 @@ if(lootWindowPatch.exitButton) {
       cPos = {x: cPos.x + 1, y: cPos.y + 1};
 
       let y = cPos.y - (10 * config.findPlayerCameraVertical) * signDir;
-      
+
       await mouse.toggle('left', true, delay);
 
       await moveTo({
@@ -1356,8 +1356,6 @@ if(lootWindowPatch.exitButton) {
       delayTimer: createTimer(() => skill.delay * 1000)
     }));
 
-    const turnDirection = config.aggroCheckRunAwayFirstTurnDir;
-    const turnTimer = createTimer(() => 2000);
     const findAndCenter = async (zone) => {
       enemyPosition = await findEnemy(zone);
       if(enemyPosition) {
@@ -1368,11 +1366,11 @@ if(lootWindowPatch.exitButton) {
         const avarageX = enemyPosition.reduce((a, b) => a + b.x, 0) / enemyPosition.length; // middle position
         let stepSize = Math.abs(screenSize.width / 2 - avarageX) / (screenSize.height / 1080); // how much we should move the camera to center the name of the enemy
         if(!closeEnough(screenSize.width * 0.025)(avarageX, screenSize.width / 2)) {
-          await centerCamera(avarageX, stepSize / 3);
+          await centerCamera(avarageX, stepSize / 1.5); //
           return true;
         }
       }
-    }
+
     const lowerCamera = async (direction) => {
       if(config.aggroCheckCameraVertical < 1) {
         return;
@@ -1397,22 +1395,23 @@ if(lootWindowPatch.exitButton) {
       await moveTo({pos: cPos, fineTune: false, randomRange: 0});
       await sleep(random(delay[0], delay[1]));
     }
-
     const scrollCamera = async (direction, value) => { // config.aggroCheckCameraDistance
       for(let step = 0; step < value; step++) {
         await nutjs.mouse.scroll(1, direction);
       }
     };
+    const turnAround = async () => {
+      let cPos = mouse.getPos();
+      await mouse.toggle('right', true, delay);
+      await moveTo({pos: {x: cPos.x + 840, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
+      await mouse.toggle('right', false, delay);
+    }
 
     for(;state.status != `stop`;) {
       await sleep(aggroTestRun ? 0 : config.aggroCheckInterval * 1000);
+
       if(!(await userHp.checkColor(getDataFrom)) || aggroTestRun) {
       await action(async () => {
-
-        if(state.status == `checking`) {
-          await keyboard.sendKey('escape', delay);
-        }
-
         state.status = 'stop';
 
         let finish;
@@ -1430,102 +1429,123 @@ if(lootWindowPatch.exitButton) {
             return;
           }
 
-          await lowerCamera(false);
-          await scrollCamera(false, config.aggroCheckCameraDistance);
-
           if(config.aggroCheckEquip) {
             await keyboard.sendKey(config.aggroCheckEquipKey, delay);
           }
 
+          await lowerCamera(false);
+          await scrollCamera(false, config.aggroCheckCameraDistance);
+          await turnAround();
+
+
           if(config.reaction) {
             await sleep(random(config.reaction.from, config.reaction.to))
           }
-          await keyboard.toggleKey(turnDirection, true);
-          turnTimer.start();
-          for(let foundEnemy = null; !turnTimer.isElapsed() && !foundEnemy;) { // full rotation
-            let possibleEnemies = await findEnemy(createEnemyZone(0.1));
-            if(possibleEnemies) {
-              let turnTimeRemains = turnTimer.timeRemains();
-              await keyboard.toggleKey(turnDirection, false);
 
-              await keyboard.sendKey(config.aggroCheckTargetKey, delay);
 
-              await sleep(250); // Time to open hp
-              if(await enemyHp.checkColor(getDataFrom)) {
+          for(let i = 0, foundEnemy = null; i < 2 && !foundEnemy; i++) {
 
-                foundEnemy = true;
-                let condition = async () => await skills[0].attackRange.checkColor(getDataFrom);
+            let turnDirection; // config.aggroCheckRunAwayFirstTurnDir
+            let turnTimer;
 
-                await keyboard.toggleKey("up", true, delay);
-                while(!(await condition())) { // come up to target until it's in range of the first skill
-                  await findAndCenter(createEnemyZone(0.2));
-                  await sleep(50);
-                }
-                await sleep(250); // delay to avoid blinking of the range indication when close to the enemy
-                await keyboard.toggleKey("up", false, delay);
+            if(i == 0) {
+              turnDirection = 'left';
+              turnTimer = createTimer(() => 500);
+            }
 
-                let killingEnemyStartTime = Date.now();
-                let skillNumber = 0;
+            if(i == 1) {
+              turnDirection = 'right';
+              turnTimer = createTimer(() => 2000);
+            }
 
-                while(await enemyHp.checkColor(getDataFrom) && (Date.now() - killingEnemyStartTime < 120000)) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
+            turnTimer.start();
+            await keyboard.toggleKey(turnDirection, true);
+            while(!turnTimer.isElapsed() && !foundEnemy) {
+              let possibleEnemies = await findEnemy(createEnemyZone(0.025));
+              if(possibleEnemies) {
+                let turnTimeRemains = turnTimer.timeRemains();
+                // await sleep(250);
+                await keyboard.toggleKey(turnDirection, false);
+
+                await keyboard.sendKey(config.aggroCheckTargetKey, delay);
+
+                await sleep(250); // Time to open hp
+                if(await enemyHp.checkColor(getDataFrom)) {
+
+                  foundEnemy = true;
+                  let condition = async () => await skills[0].attackRange.checkColor(getDataFrom);
+
+                  await keyboard.toggleKey("up", true, delay);
+                  while(!(await condition())) { // come up to target until it's in range of the first skill
                     await findAndCenter(createEnemyZone(0.2));
-                    let skill = skills[skillNumber % skills.length];
-
-                    if(!(await skill.attackRange.checkColor(getDataFrom)) &&
-                       !skill.rangeonly &&
-                        skill.cooldownTimer.timeRemains() < ((skill.cooldown * 1000) * .8)) { //  come up to target if not in range of the skill. Do it only if there's less than 80% of skill cooldown time remain, to avoid UI animation of cooldown.
-                        await keyboard.toggleKey("up", true, delay);
-                        while(!(await skill.attackRange.checkColor(getDataFrom))) {
-                          await sleep(random(delay[0], delay[1]));
-                        }
-                        await keyboard.toggleKey("up", false, delay);
-                    }
-
-                    if(!(skill.cooldownTimer.isElapsed())) {
-                      await sleep(50);
-                      continue;
-                    } else {
-                      skill.cooldownTimer.update();
-                    }
-
-                    if(skill.once) {
-                      skills[skillNumber] = null;
-                      skills = skills.filter(Boolean);
-                    } else {
-                      skillNumber++;
-                    }
-
-                    await skill.apply();
-
-                    while(!skill.delayTimer.isElapsed() && await enemyHp.checkColor(getDataFrom)) { // center camera during cast/execution time
-                      await findAndCenter(createEnemyZone(0.2));
-                    }
-
                     await sleep(50);
                   }
+                  await sleep(250); // delay to avoid blinking of the range indication when close to the enemy
+                  await keyboard.toggleKey("up", false, delay);
 
-                await sleep(3000) // wait for 3 seconds until target dies
+                  let killingEnemyStartTime = Date.now();
+                  let skillNumber = 0;
 
-                if (await enemyHp.checkColor(getDataFrom)) {
+                  while(await enemyHp.checkColor(getDataFrom) && (Date.now() - killingEnemyStartTime < 120000)) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
+                      await findAndCenter(createEnemyZone(0.2));
+                      let skill = skills[skillNumber % skills.length];
 
-                  if(tmBot.ctx) {
-                    tmBot.ctx.reply(`The enemy is still alive after ${120000 / 1000} sec., will try to run away in Window: ${winNum}!`);
+                      if(!(await skill.attackRange.checkColor(getDataFrom)) &&
+                         !skill.rangeonly &&
+                          skill.cooldownTimer.timeRemains() < ((skill.cooldown * 1000) * .8)) { //  come up to target if not in range of the skill. Do it only if there's less than 80% of skill cooldown time remain, to avoid UI animation of cooldown.
+                          await keyboard.toggleKey("up", true, delay);
+                          while(!(await skill.attackRange.checkColor(getDataFrom))) {
+                            await sleep(random(delay[0], delay[1]));
+                          }
+                          await keyboard.toggleKey("up", false, delay);
+                      }
+
+                      if(!(skill.cooldownTimer.isElapsed())) {
+                        await sleep(50);
+                        continue;
+                      } else {
+                        skill.cooldownTimer.update();
+                      }
+
+                      if(skill.once) {
+                        skills[skillNumber] = null;
+                        skills = skills.filter(Boolean);
+                      } else {
+                        skillNumber++;
+                      }
+
+                      await skill.apply();
+
+                      while(!skill.delayTimer.isElapsed() && await enemyHp.checkColor(getDataFrom)) { // center camera during cast/execution time
+                        await findAndCenter(createEnemyZone(0.2));
+                      }
+                    }
+
+                  await sleep(3000) // wait for 3 seconds until target dies
+
+                  if (await enemyHp.checkColor(getDataFrom)) {
+
+                    if(tmBot.ctx) {
+                      tmBot.ctx.reply(`The enemy is still alive after ${120000 / 1000} sec., will try to run away in Window: ${winNum}!`);
+                    }
+
+                    await keyboard.toggleKey(turnDirection, true);
+                    await sleep(1000);
+                    await keyboard.toggleKey(turnDirection, false);
+                    await runAway(config.aggroCheckRunTime * 1000);
                   }
 
+                } else {
+                  turnTimer.update(() => turnTimeRemains);
                   await keyboard.toggleKey(turnDirection, true);
-                  await sleep(1000);
-                  await keyboard.toggleKey(turnDirection, false);
-                  await runAway(config.aggroCheckRunTime * 1000);
                 }
-
-              } else {
-                turnTimer.update(() => turnTimeRemains);
-                await keyboard.toggleKey(turnDirection, true);
               }
-            }
-          }
 
-          await keyboard.toggleKey(turnDirection, false);
+              // await sleep(50);
+            }
+
+            await keyboard.toggleKey(turnDirection, false);
+          }
         }
 
         if(config.aggroCheckDoAfterType == "Run Away") { // config.aggroCheck.type == runAway
