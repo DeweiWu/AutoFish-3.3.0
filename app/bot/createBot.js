@@ -1270,12 +1270,14 @@ if(lootWindowPatch.exitButton) {
         }
       await keyboard.toggleKey('w', false, delay);
     };
+
     const createEnemyZone = (enemyZoneSize) => ({
       x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
       y: screenSize.y,
       width: screenSize.width * (enemyZoneSize * 2),
       height: Math.round(screenSize.height / 2)
     });
+
     const createEnemyZoneClose = (enemyZoneSize) => ({
       x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
       y: Math.round(screenSize.height / 2.1),
