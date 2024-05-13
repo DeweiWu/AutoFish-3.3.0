@@ -104,6 +104,9 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
 
       checkChanges.block(true);
       await logOut(state);
+
+      log.send(`Sleeping... for ${state.sleepTime}`)
+      await sleep(state.sleepTime ? state.sleepTime : 0);
       checkChanges.unblock(true);
 
       if(state.status == 'stop') {
@@ -115,8 +118,12 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     }
 
     if(state.status == `move`) {
+      log.send("Random movement...")
       checkChanges.block(true);
       await runRngMove();
+
+      log.send(`Sleeping... for ${state.sleepTime}`)
+      await sleep(state.sleepTime ? state.sleepTime : 0);
       checkChanges.unblock(true);
       if(state.status == 'stop') {
         return;

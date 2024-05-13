@@ -954,7 +954,7 @@ const renderFindPlayerHp = ({findPlayer, findPlayerHp}) => {
     const x = elt('input', {type: `number`, name: 'x', disabled: !findPlayer, value: findPlayerHp.x});
     const y = elt('input', {type: `number`, name: 'y', disabled: !findPlayer, value: findPlayerHp.y});
     const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!findPlayer ? `colorPicker_disabled` : ``}`, disabled: !findPlayer, name: 'color', value: findPlayerHp.color});
-    const precision = elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerHp.precision, "data-skills": "precision"})
+    const precision = elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerHp.precision, name: "precision"})
 
     const colorPicker = elt('input', {type: `button`, disabled: !findPlayer, className: `whisperColorPicker ${!findPlayer ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
@@ -1198,15 +1198,15 @@ const renderSettings = (config) => {
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)\n\nUse "Test Rotation" button to see what will happen if you are attacked during fishing and check whether your rotation and the bot works properly for you.`),
       wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
-      wrapInLabel('First Turn Direction: ', renderAggroCheckRunAwayFirstTurnDir(config), `The direction the bot should turn to find an enemy (by checking the Enemy Name Color value)`),
-        wrapInLabel('Scroll Camera Distance (steps): ', renderAggroCheckCameraDistance(config), `The bot will scroll down your camera to see more, the value is number of "scroll steps", which is how far it should place your camera before checking.`),
+      //wrapInLabel('First Turn Direction: ', renderAggroCheckRunAwayFirstTurnDir(config), `The direction the bot should turn to find an enemy (by checking the Enemy Name Color value)`),
+      wrapInLabel('Scroll Camera Distance (steps): ', renderAggroCheckCameraDistance(config), `The bot will scroll down your camera to see more, the value is number of "scroll steps", which is how far it should place your camera before checking.`),
       wrapInLabel('Vertical Camera Position (steps)', renderAggroCheckCameraVertical(config), `Vertical position of the camera view. In simple words: how low the bot should position your camera to better see the horizon. Leave it at 0 if you don't need it.`),
       wrapInLabel('Check User HP Changes Every (sec)', renderAggroCheckInterval(config), `How often the bot should check changes of "User HP" pixel.`),
       wrapInLabel('Center Camera By: ', renderAggroCheckControlBy(config), `What input command the bot should use to center camera.`),
       config.aggroCheckControlBy == 'Mouse' ? wrapInLabel('Mouse Speed: ', renderAggroCheckMouseSpeed(config), `Adjust the speed at which the bot should move your camera.`) : ``,
       wrapInLabel('Enemy Name Color: ', renderAggroCheckEnemyName(config), `The color of the enemy names the bot should look for when attacked.`),
-      wrapInLabel('User HP', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be somewhere on the end of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
-      wrapInLabel('Enemy HP', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted or if it is dead. Usually should be somewhere on the start of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
+      wrapInLabel('Combat Indication Pixel', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's attacked. Usually should be a place which changes when the character switches to combat mode (combat icon, red rim around the avatar) or on the end of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
+      wrapInLabel('Enemy HP Pixel', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted or if it is dead. Usually should be somewhere on the start of the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
       wrapInLabel('Quit The Game After: ', renderAggroCheckQuit(config), `The bot will quit the game and the bot after it either ran away, stopped, killed or being killed.`),
 
       config.aggroCheckDoAfterType == 'Run Away' ?
@@ -1289,13 +1289,11 @@ const runApp = async () => {
      elt('input', {type: `button`, value: `Defaults`}))
 
   settings.addEventListener(`click`, (event) => {
-
+    gatherConfig();
     if(event.target.className == `testSkillsButton`) {
       if(config.skills.length < 1 && config.aggroCheckDoAfterType == `Attack`) {
         return;
       }
-
-      gatherConfig();
 
       ipcRenderer.send('advanced-click', config);
       ipcRenderer.invoke('start-bot', 'skills-test');
