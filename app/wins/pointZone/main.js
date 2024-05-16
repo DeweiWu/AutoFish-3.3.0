@@ -3,7 +3,17 @@ const { BrowserWindow, ipcMain } = require("electron");
 const nutJS = require("@nut-tree/nut-js");
 
 const createMouseCoordsEvent = (resolve, win, botWin, scaleFactor) => {
+
+  ipcMain.handle('get-pixel-color', async (event, data) => {
+    data.x = data.x * scaleFactor;
+    data.y = data.y * scaleFactor;
+
+    let color = await(await nutJS.screen.grabRegion(new nutJS.Region(data.x, data.y, 1, 1))).toRGB();
+    return {r: color.data[0], g: color.data[1], b: color.data[2], scale: scaleFactor};
+  })
+
   ipcMain.on('mouse-coords', async (event, data) => {
+    if(data) {
     data.x = data.x * scaleFactor;
     data.y = data.y * scaleFactor;
 
@@ -11,11 +21,17 @@ const createMouseCoordsEvent = (resolve, win, botWin, scaleFactor) => {
     data.color = {r: color.data[0], g: color.data[1], b: color.data[2]};
 
     resolve(data);
+    } else {
+    resolve();
+    }
     ipcMain.removeAllListeners(`mouse-coords`);
+    ipcMain.removeHandler(`get-pixel-color`);
     win.close();
     botWin.focus();
   })
 }
+
+
 
 const createPointZone = async (botWin, scaleFactor) => {
   let win = new BrowserWindow({
@@ -31,6 +47,7 @@ const createPointZone = async (botWin, scaleFactor) => {
   win.loadFile("./app/wins/pointZone/index.html");
 
   win.once("ready-to-show", () => {
+    //win.openDevTools({mode: `detach`})
     win.show();
   });
 

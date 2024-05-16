@@ -508,6 +508,9 @@ const renderLuresCoords = ({luresCoords, lures}) => {
   const y = elt('input', {type: `number`, disabled: !lures, name: `y`, value: luresCoords.y})
   const button = elt('input', {type: `button`, className: `${!lures ? `disabledButton` : ``}`, disabled: !lures, value: `Set`, onclick() {
     ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      if(!data) {
+        return;
+      }
       x.value = data.x;
       y.value = data.y;
     })
@@ -524,6 +527,9 @@ const renderFishpolCoords = ({fishpoleCoords, lures}) => {
   const y = elt('input', {type: `number`, disabled: !lures, name: `y`, value: fishpoleCoords.y})
   const button = elt('input', {type: `button`, className: `${!lures ? `disabledButton` : ``}`, disabled: !lures, value: `Set`, onclick() {
     ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      if(!data) {
+        return;
+      }
       x.value = data.x;
       y.value = data.y;
     })
@@ -559,6 +565,9 @@ const renderSkills = ({aggroCheck, skills}) => {
 
     const coordsButton = elt('input', {type: `button`, className: `whisperColorPicker`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
         x.value = data.x;
         y.value = data.y;
         const {r, g, b} = data.color;
@@ -597,6 +606,9 @@ const renderSkills = ({aggroCheck, skills}) => {
 
     const coordsButton = elt('input', {type: `button`, className: `whisperColorPicker`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
         x.value = data.x;
         y.value = data.y;
         const {r, g, b} = data.color;
@@ -647,6 +659,9 @@ const renderSpares = ({spares}) => {
 
     const coordsButton = elt('input', {type: `button`, style: `display: none`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
         x.value = data.x;
         y.value = data.y;
         const {r, g, b} = data.color;
@@ -692,6 +707,9 @@ const renderSpares = ({spares}) => {
 
     const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
         x.value = data.x;
         y.value = data.y;
         const {r, g, b} = data.color;
