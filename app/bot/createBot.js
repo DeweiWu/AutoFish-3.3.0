@@ -357,7 +357,7 @@ if(lootWindowPatch.exitButton) {
 
     const addTimeLures = applyLures.timer.timeRemains();
     const addTimeSpares = spares.map(spare => spare.timer.timeRemains());
-    await sleep(random(config.logOutFor.from * 1000, config.logOutFor.to * 1000));
+    await sleep(random(config.logOutFor.from * 1000 * 60, config.logOutFor.to * 1000 * 60));
     if(state.status == 'stop') {
       return;
     }
@@ -367,7 +367,7 @@ if(lootWindowPatch.exitButton) {
 
     if(settings.afkmode) await altTab();
 
-    await sleep(random(config.logOutAfter.from * 1000, config.logOutAfter.from * 1000));
+    await sleep(random(config.logOutAfter.from * 1000 * 60, config.logOutAfter.from * 1000 * 60));
 
     if(config.lures) {
       applyLures.timer.update(() => addTimeLures);
