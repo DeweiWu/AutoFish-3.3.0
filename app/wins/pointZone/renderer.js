@@ -22,10 +22,10 @@ document.addEventListener('mousemove', (event) => {
     `
     position: absolute;
     border-radius: 25px;
-    left: ${x + (10 * scale)}px;
-    top: ${y - (40 * scale)}px;
-    width: ${25 * scale}px;
-    height: ${25 * scale}px;
+    left: ${x + 10}px;
+    top: ${y - 40}px;
+    width: ${25}px;
+    height: ${25}px;
     border: 2px solid black;
     background-color: rgb(${r}, ${g}, ${b});
     `
