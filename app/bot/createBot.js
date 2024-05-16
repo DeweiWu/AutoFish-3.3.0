@@ -361,11 +361,31 @@ if(lootWindowPatch.exitButton) {
     if(state.status == 'stop') {
       return;
     }
+
+    if(config.logOutFor.from > 30) { // if the bot more than 30 min 
+      await action(async () => {
+        await keyboard.sendKey(`enter`);
+      });
+
+      await sleep(1000); // 1 sec
+
+      await action(async () => {
+        await keyboard.sendKey(`enter`);
+      });
+
+      if(settings.afkmode) await altTab();
+
+      await sleep(10000); // 10 sec
+    }
+
+
     await action(async () => {
       await keyboard.sendKey(`enter`);
     });
 
     if(settings.afkmode) await altTab();
+
+
 
     await sleep(random(config.logOutAfter.from * 1000 * 60, config.logOutAfter.from * 1000 * 60));
 
