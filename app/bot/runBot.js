@@ -37,7 +37,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
   } = bot;
 
   checkChanges(onError, log);
-  aggroCheck(onError, state, aggroTestRun);
+  aggroCheck(onError, state, aggroTestRun, wins);
   findPlayer.frontCheck(state, log, onError);
 
   let failedCast = false;

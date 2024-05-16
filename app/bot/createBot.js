@@ -877,7 +877,7 @@ if(lootWindowPatch.exitButton) {
       return steps;
     }
     const lowerCamera = async (direction) => {
-      if(config.findPlayerCameraVerticalDistance < 1) {
+      if(config.findPlayerCameraVerticalDistance < 1 || config.findPlayerRotateBy != "Mouse") {
         return;
       }
       let signDir = direction ? -1 : 1;
@@ -1226,12 +1226,6 @@ if(lootWindowPatch.exitButton) {
   }
 
 
-
-
-
-
-
-
   const aggroCheck = async (onStop, state, aggroTestRun) => {
     if(!config.aggroCheck) return;
     const runAway = async (time) => {
@@ -1253,7 +1247,6 @@ if(lootWindowPatch.exitButton) {
         await keyboard.toggleKey(dir, false);
       }
 
-
       await keyboard.toggleKey('w', true, delay);
         for(let start = Date.now(); Date.now() < start + time;) {
 
@@ -1271,25 +1264,33 @@ if(lootWindowPatch.exitButton) {
       await keyboard.toggleKey('w', false, delay);
     };
 
-    const createEnemyZone = (enemyZoneSize) => ({
-      x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
-      y: screenSize.y,
-      width: screenSize.width * (enemyZoneSize * 2),
-      height: Math.round(screenSize.height / 2)
-    });
+    const createEnemyZone = (scale) => {
+      const combatZone = Zone.from(screenSize).toRel(config.combatZone);
+      if(scale) {
+        let middle = combatZone.x + combatZone.width / 2;
+        combatZone.width = screenSize.width * scale;
+        combatZone.x = middle - (combatZone.width / 2)
+      }
+      return combatZone;
+    }
 
-    const createEnemyZoneClose = (enemyZoneSize) => ({
-      x: Math.round(screenSize.width / 2 - (screenSize.width * enemyZoneSize)),
-      y: Math.round(screenSize.height / 2.1),
-      width: screenSize.width * (enemyZoneSize * 2),
-      height: 100
-    });
-
-    const findEnemy = async (zone) => {
+    const findEnemy = async (zone, ignoreErrorZone) => {
       let enemyScreenData = await getDataFrom(zone);
+
+      let errorZone = Zone.from({
+        x: Math.round((screenSize.width / 2) - (screenSize.width * config.notificationPos.width)) - zone.x,
+        y: Math.round(screenSize.height * config.notificationPos.y) - zone.y,
+        width: Math.round((screenSize.width * config.notificationPos.width) * 2),
+        height: Math.round(screenSize.height * config.notificationPos.height)
+      });
+
       const image = await Jimp.read(enemyScreenData);
       let positions = [];
       image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
+
+      if(ignoreErrorZone && y > errorZone.y && y < errorZone.y + errorZone.height) { // ignore error messages
+        return;
+      }
 
       let r = this.bitmap.data[idx + 0];
       let g = this.bitmap.data[idx + 1];
@@ -1309,27 +1310,21 @@ if(lootWindowPatch.exitButton) {
          y: zone.y + pos.y + (screenSize.height / 1080 * 20)}
        ));
     };
-    const centerCamera = async (value, step) => {
+    const centerCamera = async (centerX, centerY, stepX, stepY) => {
       let cPos = mouse.getPos();
-      if(value > (screenSize.width / 2)) {
-        if(config.aggroCheckControlBy == "Mouse") {
-          await mouse.toggle('right', true, delay);
-          await moveTo({pos: {x: cPos.x + step, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
-          await mouse.toggle('right', false, delay);
-        } else {
-          await keyboard.toggleKey("right", true);
-          await sleep(step);
-          await keyboard.toggleKey("right", false);
-        }
-
+      cPos = {x: cPos.x + 1, y: cPos.y + 1};
+      if(config.aggroCheckControlBy == "Mouse") {
+        await mouse.toggle('right', true);
+        await moveTo({pos: {x: cPos.x + stepX, y: cPos.y + stepY}, randomRange: 0, fineTune: false});
+        await mouse.toggle('right', false);
       } else {
-        if(config.aggroCheckControlBy == "Mouse") {
-          await mouse.toggle('right', true, delay);
-          await moveTo({pos: {x: cPos.x - step, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
-          await mouse.toggle('right', false, delay);
+        if(stepX > 0) {
+          await keyboard.toggleKey("right", true);
+          await sleep(Math.abs(stepX));
+          await keyboard.toggleKey("right", false);
         } else {
           await keyboard.toggleKey("left", true);
-          await sleep(step);
+          await sleep(Math.abs(stepX));
           await keyboard.toggleKey("left", false);
         }
       }
@@ -1357,25 +1352,23 @@ if(lootWindowPatch.exitButton) {
     }));
 
     const findAndCenter = async (zone) => {
-      enemyPosition = await findEnemy(zone);
+      enemyPosition = await findEnemy(zone, true); // ignoreEnemyZone = true;
       if(enemyPosition) {
-        /*
-        let lowest = enemyPosition.reduce((a, b) => a.y > b.y ? a : b);
-        let allPointsWithinY = enemyPosition.filter((point) => closeEnough(100 * (screenSize.height / 1080))(point.y, lowest.y))
-        */
+        const combatZone = createEnemyZone();
         const avarageX = enemyPosition.reduce((a, b) => a + b.x, 0) / enemyPosition.length; // middle position
-        let stepSize = Math.abs(screenSize.width / 2 - avarageX) / (screenSize.height / 1080); // how much we should move the camera to center the name of the enemy
-        if(!closeEnough(screenSize.width * 0.025)(avarageX, screenSize.width / 2)) {
-          await centerCamera(avarageX, stepSize / 1.5); //
-          return true;
-        }
+        const avarageY = enemyPosition.reduce((a, b) => a + b.y, 0) / enemyPosition.length; // middle position
+        let stepSizeX = (avarageX - (combatZone.x + (combatZone.width / 2))) / (screenSize.height / 1080); // how much we should move the camera to center the name of the enemy
+        let stepSizeY = (avarageY - (combatZone.y + (combatZone.height / 2))) / (screenSize.height / 1080); // how much we should move the camera to center the name of the enemy
+        await centerCamera(avarageX, avarageY, Math.round(stepSizeX / 4), Math.round(stepSizeY / 4));
       }
     }
 
     const lowerCamera = async (direction) => {
-      if(config.aggroCheckCameraVertical < 1) {
+
+      if(config.aggroCheckCameraVertical < 1 || config.aggroCheckControlBy != "Mouse") {
         return;
       }
+
       let signDir = direction ? -1 : 1;
 
       let cPos = mouse.getPos();
@@ -1402,10 +1395,18 @@ if(lootWindowPatch.exitButton) {
       }
     };
     const turnAround = async () => {
-      let cPos = mouse.getPos();
-      await mouse.toggle('right', true, delay);
-      await moveTo({pos: {x: cPos.x + 840, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
-      await mouse.toggle('right', false, delay);
+      if(config.aggroCheckControlBy == "Mouse") {
+        let cPos = mouse.getPos();
+        await mouse.toggle('right', true, delay);
+        await moveTo({pos: {x: cPos.x + 840, y: cPos.y}, randomRange: 0, fineTune: false, speed: config.aggroCheckMouseSpeed});
+        await mouse.toggle('right', false, delay);
+      } else {
+        let step = 2000 / 2;
+        let dir = 'right';
+        await keyboard.toggleKey(dir, true);
+        await sleep(step);
+        await keyboard.toggleKey(dir, false);
+      }
     }
 
     for(;state.status != `stop`;) {
@@ -1413,13 +1414,6 @@ if(lootWindowPatch.exitButton) {
 
       if(!(await userHp.checkColor(getDataFrom)) || aggroTestRun) {
       await action(async () => {
-
-        /*
-        if(state.status == `checking`) {
-          await keyboard.sendKey('escape', delay);
-        }
-        */
-
         state.status = 'stop';
 
         let finish;
@@ -1444,7 +1438,6 @@ if(lootWindowPatch.exitButton) {
           await lowerCamera(false);
           await scrollCamera(false, config.aggroCheckCameraDistance);
           await turnAround();
-
 
           if(config.reaction) {
             await sleep(random(config.reaction.from, config.reaction.to))
@@ -1472,30 +1465,35 @@ if(lootWindowPatch.exitButton) {
               let possibleEnemies = await findEnemy(createEnemyZone(0.025));
               if(possibleEnemies) {
                 let turnTimeRemains = turnTimer.timeRemains();
-                // await sleep(250);
-                await keyboard.toggleKey(turnDirection, false);
-
-                await keyboard.sendKey(config.aggroCheckTargetKey, delay);
-
+                await keyboard.toggleKey(turnDirection, false); // stop rotation
+                await keyboard.sendKey(config.aggroCheckTargetKey, delay); // target enemy
                 await sleep(250); // Time to open hp
-                if(await enemyHp.checkColor(getDataFrom)) {
-
+                if(await enemyHp.checkColor(getDataFrom)) { // if targtable
                   foundEnemy = true;
-                  let condition = async () => await skills[0].attackRange.checkColor(getDataFrom);
+                  let rangeCondition = async () => await skills[0].attackRange.checkColor(getDataFrom); // range condition
 
                   await keyboard.toggleKey("up", true, delay);
-                  while(!(await condition())) { // come up to target until it's in range of the first skill
-                    await findAndCenter(createEnemyZone(0.2));
-                    await sleep(50);
-                  }
+                  while(!(await rangeCondition())) { // come up to target until it's in range of the first skill
+                    let found = await findAndCenter(createEnemyZone());
+                   }
                   await sleep(250); // delay to avoid blinking of the range indication when close to the enemy
                   await keyboard.toggleKey("up", false, delay);
 
                   let killingEnemyStartTime = Date.now();
                   let skillNumber = 0;
 
-                  while(await enemyHp.checkColor(getDataFrom) && (Date.now() - killingEnemyStartTime < 120000)) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
-                      await findAndCenter(createEnemyZone(0.2));
+                  const deathCondition = async () => {
+                    let enemyIsNotNearDeath = await enemyHp.checkColor(getDataFrom);
+                    if(!enemyIsNotNearDeath) {
+                      enemyIsNotNearDeath = !(await userHp.checkColor(getDataFrom)) // if enemy is near death, fight until in combat mode
+                    }
+                    return enemyIsNotNearDeath && (Date.now() - killingEnemyStartTime < 120000)
+                  }
+
+
+                  while(await deathCondition()) { // if the bot can't kill the target, or die within 2 minutes, something is wrong.
+                      await findAndCenter(createEnemyZone());
+
                       let skill = skills[skillNumber % skills.length];
 
                       if(!(await skill.attackRange.checkColor(getDataFrom)) &&
@@ -1509,7 +1507,6 @@ if(lootWindowPatch.exitButton) {
                       }
 
                       if(!(skill.cooldownTimer.isElapsed())) {
-                        await sleep(50);
                         continue;
                       } else {
                         skill.cooldownTimer.update();
@@ -1524,17 +1521,14 @@ if(lootWindowPatch.exitButton) {
 
                       await skill.apply();
 
-                      while(!skill.delayTimer.isElapsed() && await enemyHp.checkColor(getDataFrom)) { // center camera during cast/execution time
-                        await findAndCenter(createEnemyZone(0.2));
+                      while(!skill.delayTimer.isElapsed() && await deathCondition()) { // center camera during cast/execution time
+                        await findAndCenter(createEnemyZone()); // 0.2
                       }
                     }
 
-                  await sleep(3000) // wait for 3 seconds until target dies
-
-                  if (await enemyHp.checkColor(getDataFrom)) {
-
+                  if(!(await userHp.checkColor(getDataFrom))) {
                     if(tmBot.ctx) {
-                      tmBot.ctx.reply(`The enemy is still alive after ${120000 / 1000} sec., will try to run away in Window: ${winNum}!`);
+                      tmBot.ctx.reply(`The character is still in combat mode after ${120000 / 1000} sec., will try to run away in Window: ${winNum}!`);
                     }
 
                     await keyboard.toggleKey(turnDirection, true);
@@ -1543,15 +1537,18 @@ if(lootWindowPatch.exitButton) {
                     await runAway(config.aggroCheckRunTime * 1000);
                   }
 
+                  if(await userHp.checkColor(getDataFrom)) {
+                    if(tmBot.ctx) {
+                      tmBot.ctx.reply(`The character is out of combat mode or dead in Window: ${winNum}!`);
+                    }
+                  }
+
                 } else {
                   turnTimer.update(() => turnTimeRemains);
                   await keyboard.toggleKey(turnDirection, true);
                 }
               }
-
-              // await sleep(50);
             }
-
             await keyboard.toggleKey(turnDirection, false);
           }
         }

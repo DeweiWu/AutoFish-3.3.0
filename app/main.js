@@ -273,7 +273,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 By pressing "Accept" you agree to everything stated above.`,
-`MIT License | Copyright (c) 2023 jsbots`, `Accept`, `Decline`)) {
+`MIT License | Copyright (c) 2024 jsbots`, `Accept`, `Decline`)) {
         app.quit();
       } else {
         settings.initial = false;
@@ -355,7 +355,7 @@ By pressing "Accept" you agree to everything stated above.`,
       return data;
     }
 
-    if(type != `relZone` && type != `chatZone` && type != `detectZone` && type != `pointZone` && settings.initialZone){
+    if(type != `relZone` && type != `chatZone` && type != `detectZone` && type != `pointZone` && type != `combatZone` && settings.initialZone){
       await new Promise(function(resolve, reject) {
         setTimeout(resolve, 50);
       });
@@ -370,8 +370,8 @@ By pressing "Accept" you agree to everything stated above.`,
       writeFileSync(path.join(__dirname, `./config/${profile}/settings.json`), JSON.stringify(settings));
     }
 
-    if(type == `relZone` || type == `chatZone` || type == `detectZone`) {
-      log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : `Motion Detection`} Zone...`);
+    if(type == `relZone` || type == `chatZone` || type == `detectZone` || type == `combatZone`) {
+      log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : type == `combatZone` ? `Combat` : `Motion Detection`} Zone...`);
 
       let zoneData = config.patch[settings.game][type];
       if(Object.keys(zoneData).some((key) => zoneData[key] === null)) {
@@ -382,12 +382,12 @@ By pressing "Accept" you agree to everything stated above.`,
       if(data) {
         config.patch[settings.game][type] = data;
         writeFileSync(path.join(__dirname, `./config/${profile}/bot.json`), JSON.stringify(config));
-        log.ok(`Set ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : `Motion Detection`} Zone successfully!`);
+        log.ok(`Set ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : type == `combatZone` ? `Combat` : `Motion Detection`} Zone successfully!`);
       } else {
         log.send(`Canceled.`)
       }
       win.focus();
-      return;
+      return data;
     }
 
     if(config.patch[settings.game].startByFishingKey) {

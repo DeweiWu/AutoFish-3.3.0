@@ -88,6 +88,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -119,9 +125,9 @@
         "height": 0.34074074074074073
       },
       "notificationPos": {
-        "y": 0.11574074,
+        "y": 0.11388888,
         "width": 0.01822916,
-        "height": 0.01388888
+        "height": 0.01481481
       },
       "findBobberDirection": "center",
       "checkingDelay": 50,
@@ -330,6 +336,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -563,6 +575,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -796,6 +814,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1009,6 +1033,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1223,6 +1253,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1447,6 +1483,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1676,6 +1718,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1888,6 +1936,12 @@
       "filterType": "whitelist",
       "atMouse": false,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -2105,6 +2159,12 @@
       "filterType": "whitelist",
       "atMouse": false,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
