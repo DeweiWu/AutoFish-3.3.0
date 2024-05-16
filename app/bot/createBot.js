@@ -379,6 +379,14 @@ if(lootWindowPatch.exitButton) {
       })
     }
 
+    if(config.logOutDoAfter) {
+      await action(async () => {
+        await keyboard.sendKey(config.logOutDoAfterKey);
+      });
+
+      if(settings.afkmode) await altTab();
+    }
+
   findPlayer.state = false;
   };
   logOut.timer = logOutTimer;

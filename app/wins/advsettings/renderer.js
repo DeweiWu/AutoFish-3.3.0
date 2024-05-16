@@ -141,6 +141,13 @@ const renderLogOut = ({logOut}) => {
   return elt('input', {type: `checkbox`, name: `logOut`, checked: logOut})
 };
 
+const renderLogOutDoAfter = ({logOut, logOutDoAfter, logOutDoAfterKey}) => {
+  const checkbox = elt('input', {type: 'checkbox', checked: logOutDoAfter, name: `logOutDoAfter`, disabled: !logOut });
+  const key = elt('input', {type: `text`, disabled: !logOut || !logOutDoAfter, name: `logOutDoAfterKey`, value: logOutDoAfterKey});
+  key.setAttribute(`readonly`, `true`);
+  return elt('div', null, checkbox, key);
+};
+
 const renderLogOutEvery = ({logOutEvery, logOut}) => {
   return elt(`div`, {"data-collection": `logOutEvery`}, elt(`span`, {className: `option_text`}, `from:`),
      elt('input', {type: `number`, name: `from`, value: logOutEvery.from, disabled: !logOut}), elt(`span`, {className: `option_text`}, `to:`),
@@ -1173,6 +1180,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Random Log Out For: (sec)`, renderLogOutFor(config), `How long the bot should be stayed logged out. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
     wrapInLabel(`Random Log Out After: (sec)`, renderLogOutAfter(config), `How long the bot should wait before starting fishing again. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
     wrapInLabel(`Use Macro: `, renderLogOutMacro(config), `Use your own macro in the game instead of the bot typing /logout command.`),
+    wrapInLabel(`Do After: `, renderLogOutDoAfter(config), `Press the key after logging in.`)
     ),
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Random Sleep`),
     elt('div', {className: "settings_section"},
@@ -1440,7 +1448,8 @@ const runApp = async () => {
         event.target.name == `aggroCheckEquipKey` ||
         event.target.name == `findPlayerTargetKey` ||
         event.target.name == `findPlayerDoAfterKey` ||
-        event.target.name == `findPlayerTargetKeyAdd`) &&
+        event.target.name == `findPlayerTargetKeyAdd` ||
+        event.target.name == `logOutDoAfterKey`) &&
       !event.target.disabled
     ) {
       event.target.style.backgroundColor = `rgb(255, 219, 197)`;
