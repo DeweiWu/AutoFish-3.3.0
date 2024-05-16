@@ -338,18 +338,18 @@ const renderAfterTimer = ({afterTimer, timer}) => {
   return elt('select', {value: afterTimer, disabled: !timer, name: "afterTimer"}, ...options.map(option => elt(`option`, {value: option, selected: option == afterTimer}, option)));
 };
 
-const renderHsKey = ({hsKey, afterTimer}) => {
-  const key = elt('input', {type: `text`, name: `hsKey`, disabled: afterTimer != `HS` && afterTimer != `HS + Quit`, value: hsKey});
+const renderHsKey = ({timer, hsKey, afterTimer}) => {
+  const key = elt('input', {type: `text`, name: `hsKey`, disabled: !timer || (afterTimer != `HS` && afterTimer != `HS + Quit`), value: hsKey});
   key.setAttribute(`readonly`, `true`);
   return key;
 };
 
-const renderHsKeyDelay = ({hsKeyDelay, afterTimer}) => {
-  return elt(`input`, {type: `number`, value: hsKeyDelay, disabled: afterTimer != `HS` && afterTimer != `HS + Quit`, name: `hsKeyDelay`})
+const renderHsKeyDelay = ({timer, hsKeyDelay, afterTimer}) => {
+  return elt(`input`, {type: `number`, value: hsKeyDelay, disabled: !timer || (afterTimer != `HS` && afterTimer != `HS + Quit`), name: `hsKeyDelay`})
 }
 
-const renderShutDown = ({timerShutDown, afterTimer}) => {
-  return elt(`input`, {type: `checkbox`, checked: timerShutDown, disabled: afterTimer != `Quit` && afterTimer != `HS + Quit`, name: `timerShutDown`});
+const renderShutDown = ({timer, timerShutDown, afterTimer}) => {
+  return elt(`input`, {type: `checkbox`, checked: timerShutDown, disabled: !timer || (afterTimer != `Quit` && afterTimer != `HS + Quit`), name: `timerShutDown`});
 };
 
 const renderTmApiKey = ({tmApiKey}) => {
