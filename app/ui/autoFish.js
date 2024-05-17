@@ -121,8 +121,8 @@ class AutoFish {
     );
     const footer = elt(`p`, { className: "version" }, versionNode, premiumIcon);
 
-    ipcRenderer.on("set-version", (event, version) => {
-      versionNode.textContent = `ver. 2.11.0 Premium `;
+    ipcRenderer.on("set-version", (event, version, trial) => {
+      versionNode.textContent = `ver. 2.11.0 ${trial ? `Trial Premium` : `Premium`} `;
     });
 
     ipcRenderer.on('start-by-fishing-key', () => {

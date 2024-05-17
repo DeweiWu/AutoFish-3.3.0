@@ -16,9 +16,14 @@ const path = require("path");
 const { readFileSync, writeFileSync, writeFile, mkdir, rmdir, readdir } = require("fs");
 const { unlink } = require("fs").promises;
 
+const trialIsOn = false;
+
 const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
 const createPointZone = require(`./wins/pointZone/main.js`);
+const fsPromise = require('fs/promises');
+const trialEncryption = require('./../trialEnc.js')
+
 
 const getJson = (jsonPath) => {
   return JSON.parse(readFileSync(path.join(__dirname, jsonPath), "utf8"));
@@ -33,6 +38,50 @@ const sleep = (time) => {
 const getProfile = () => {
   return getJson(`./config/config.json`);
 };
+
+const createTrialTime = async () => {
+  let data;
+  try {
+    data = await fsPromise.readFile("badd7ae8f43", "utf8");
+  } catch(e) {
+    throw e;
+  }
+
+  const key = "26612137141ed19dcefd816de67f04e9593ac46461c8953d0a437b3762778644";
+  const iv = "ef8945445e29a2cfe32bae03bd71477f"
+
+  let trialTime = trialEncryption.decrypt(data, key, iv);
+
+  let intervalId;
+
+  return {
+    start(doIfElapsed) {
+      intervalId = setInterval(() => {
+        trialTime.timeLeft = trialTime.timeLeft - 10000;
+        if(trialTime.timeLeft < 0) {
+          doIfElapsed();
+        }
+        let encData = trialEncryption.encrypt(trialTime, key, iv);
+        fsPromise.writeFile("badd7ae8f43", encData);
+      }, 5000);
+    },
+
+    isElapsed() {
+      return trialTime.timeLeft < 0;
+    },
+
+    timeLeft() {
+      return trialTime.timeLeft;
+    },
+
+    stop() {
+      fsPromise.readFile("badd7ae8f43", "utf8").then((data) => {
+      })
+      clearInterval(intervalId);
+    }
+  }
+
+}
 
 /* Electron modules end */
 
@@ -232,7 +281,11 @@ You can also write in this chat directly to do:
     }
 
     if(settings.initial) {
-      log.msg(`Thank you for your support!❤️`);
+      if(trialIsOn) {
+        log.msg(`This is a trial version! ⌛`);
+      } else {
+        log.msg(`Thank you for your support!❤️`);
+      }
     }
 
     let tmKey = config.patch[settings.game].tmApiKey;
@@ -254,7 +307,7 @@ You can also write in this chat directly to do:
     }
 
     let { version } = getJson('../package.json');
-    win.webContents.send('set-version', version);
+    win.webContents.send('set-version', version, trialIsOn);
 
     await new Promise(function(resolve, reject) {
       setTimeout(resolve, 350);
@@ -426,7 +479,15 @@ By pressing "Accept" you agree to everything stated above.`,
     }
 
     const {startBots, stopBots} = await createBots(games, log, tmBot, arduino);
+    let trial = await createTrialTime();
+
     const stopAppAndBots = () => {
+      if(trialIsOn) {
+        trial.stop();
+        log.setState(true);
+        log.warn(`${Math.round((trial.timeLeft() / 1000 / 60) * 10) / 10} min. of your free trial has left. `);
+        log.setState(false);
+      }
 
       if(config.patch[settings.game].startByFishingKey) {
         globalShortcut.register(settings.fishingKey, () => {
@@ -462,6 +523,25 @@ By pressing "Accept" you agree to everything stated above.`,
       setTimeout(() => {
         win.hide();
       }, 500 + Math.random() * 1500);
+    }
+
+    if(trialIsOn) {
+      if(trial.isElapsed()) {
+        win.webContents.send("stop-bot");
+        shell.beep();
+        win.focus();
+        setTimeout(() => {
+          log.err('Your free trial has ended.');
+        }, 500);
+        return;
+      }
+
+      trial.start(() => {
+        setTimeout(() => {
+          log.err('Your free trial has ended.');
+        }, 500);
+        stopAppAndBots();
+      });
     }
 
     startBots(stopAppAndBots, type == 'skills-test');
