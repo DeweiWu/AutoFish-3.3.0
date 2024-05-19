@@ -362,7 +362,7 @@ if(lootWindowPatch.exitButton) {
       return;
     }
 
-    if(config.logOutFor.from > 30) { // if the bot more than 30 min 
+    if(config.logOutFor.from > 30) { // if the bot more than 30 min
       await action(async () => {
         await keyboard.sendKey(`enter`);
       });
@@ -987,6 +987,7 @@ if(lootWindowPatch.exitButton) {
 
         await sleep(delay[0], delay[1]);
 
+
         if(await enemyHp.checkColor(getDataFrom) && !foundPlayer) {
           log.warn("Found a player in the vicinity!");
           foundPlayer = true;
@@ -1033,27 +1034,28 @@ if(lootWindowPatch.exitButton) {
       }
 
     } else {
+      config.findPlayerTurnDir = 'left';
+      let wavedAlreadyInner = false;
+
       rotationTimer.start();
+
       await keyboard.toggleKey(config.findPlayerTurnDir, true);
+
+      const pressTargetKeyTimer = createTimer(() => 200);
+      pressTargetKeyTimer.start();
+
       while(!rotationTimer.isElapsed()) {
-        if(random(0, 100) > 95) {
-          await keyboard.toggleKey(config.findPlayerTurnDir, false);
-          let waitingTime = rotationTimer.timeRemains();
-          await sleep(random(500, 1500));
-
-          await keyboard.toggleKey(config.findPlayerTurnDir, true);
-          rotationTimer.update(() => waitingTime);
+        if(!foundPlayer && pressTargetKeyTimer.isElapsed()) {
+          keyboard.sendKey(config.findPlayerTargetKey, delay);
+          if(config.findPlayerTargetKeyAddUse) {
+            keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
+          }
+          pressTargetKeyTimer.update();
         }
 
-        await keyboard.sendKey(config.findPlayerTargetKey, delay);
-        if(config.findPlayerTargetKeyAddUse) {
-          await keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
-        }
-        await sleep(random(delay[0], delay[1]));
-
-        if(await enemyHp.checkColor(getDataFrom)  && !alreadyNotified) {
-          alreadyNotified = true;
+        if(await enemyHp.checkColor(getDataFrom) && !foundPlayer) {
           log.warn("Found a player in the vicinity!");
+          foundPlayer = true;
           if(tmBot.ctx) {
             tmBot.ctx.reply(`Found a player in the vicinity in Window: ${winNum}!`);
             getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
@@ -1065,19 +1067,21 @@ if(lootWindowPatch.exitButton) {
           }
         }
 
-        if(await enemyHp.checkColor(getDataFrom) && config.findPlayerDoAfter == `Face and Wave` && !wavedAlready) {
+        if(foundPlayer && config.findPlayerDoAfter == `Face and Wave` && !wavedAlreadyInner && !wavedAlready) {
           let timeRemained = rotationTimer.timeRemains();
           await keyboard.toggleKey(config.findPlayerTurnDir, false);
 
           await keyboard.sendKey('enter', delay);
           await keyboard.printText('/wave', delay);
           await keyboard.sendKey('enter', delay);
+
           await sleep(config.findPlayerDoAfterSleepTime * 1000);
           wavedAlready = true;
+          wavedAlreadyInner = true;
 
           setTimeout(() => {
             wavedAlready = false;
-          }, 5 * 60 * 1000); // don't wave within 5 min
+          }, 15 * 60 * 1000); // don't wave within 5 min
 
           rotationTimer.update(() => timeRemained);
           await keyboard.toggleKey(config.findPlayerTurnDir, true);
