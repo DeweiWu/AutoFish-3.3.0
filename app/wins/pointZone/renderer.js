@@ -18,12 +18,11 @@ ipcRenderer.on('show-info-box', (event, {x, y, r, g, b, scale}) => {
   top: ${Math.floor(y  / scale) - 40}px;
   width: ${25}px;
   height: ${25}px;
-  border: 2px solid black;
+  border: 1px solid white;
   background-color: rgb(${r}, ${g}, ${b});
   `
   document.body.append(node);
 })
-
 document.addEventListener('mousedown', (event) => {
   if(event.button !== 0) {
     return ipcRenderer.send('mouse-coords');

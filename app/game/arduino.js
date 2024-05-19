@@ -177,26 +177,34 @@ const createMouse = (write) => {
       });
     },
 
-    humanMoveTo(x, y) {
+    humanMoveTo(x, y, speed, deviation) {
       let cPos = this.getPos();
+      cPos = {x: cPos.x + 1, y: cPos.y + 1};
       x = (x - cPos.x) / (screen.getPrimaryDisplay().scaleFactor) || 1;
       y = (y - cPos.y) / (screen.getPrimaryDisplay().scaleFactor) || 1;
+
       let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
-      let speedByDistance = Math.round(distance * (distance < 50 ? 0.75 : distance < 150 ? 0.50 : distance < 300 ? 0.35 : 0.25)); // distance / 4 (0.25 + (1 - (distance / 400)))
+      let speedByDistance = 100 - Math.round(speed * 100); // Math.round(distance * (distance < 50 ? 0.75 : distance < 150 ? 0.50 : distance < 300 ? 0.35 : 0.25)); // distance / 4 (0.25 + (1 - (distance / 400)))
 
       let minDelay = 0;
       let maxDelay = 15;
 
-      let minControlDistance = Math.round(distance * 0.050); // 10 at 400 px
-      let maxControlDistance = Math.round(distance * 0.250); // 50 at 400 px
+      let minControlDistance = deviation ? Math.round(distance * 0.050) : 0; // 10 at 400 px
+      let maxControlDistance = deviation ? Math.round(distance * 0.250) : 0; // 50 at 400 px
 
-      let offset = Math.round(distance * 0.25); // 100 at 400px
+      let offset = deviation ? Math.round(distance * 0.1) : 0; // 100 at 400px
 
       return new Promise(function(resolve, reject) {
         write(`7,${Math.floor(x)},${Math.floor(y)},${Math.round(speedByDistance)},${minDelay},${maxDelay},${minControlDistance},${maxControlDistance},${offset}\n`, resolve, reject);
       });
     },
+
+    scroll(direction, value) {
+      return new Promise(function(resolve, reject) {
+        write(`8,${direction ? 1 : 0},${Math.floor(value)}\n`, resolve, reject);
+      });
+    }
   }
 }
 

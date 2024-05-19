@@ -878,17 +878,19 @@ if(lootWindowPatch.exitButton) {
     }
   };
 
-  let oCompensation = {x: 0, y: 0};
   let wavedAlready = false;
+  let rotationTime = config.arduino ? 1995 : 2000;
 
   const findPlayer = async (state, log, onError) => {
-
     const enemyHp = new HealthBar(config.findPlayerHp);
-
-    const scrollCamera = async (direction) => {
-      for(let step = 0; step < config.findPlayerCameraDistance; step++) {
-        await nutjs.mouse.scroll(1, direction);
-      }
+    const scrollCamera = async (direction, value) => {
+        if(config.arduino) {
+          await mouse.scroll(direction, value);
+        } else {
+          for(let step = 0; step < value; step++) {
+            await nutjs.mouse.scroll(1, direction);
+          }
+        }
     };
     const generateRandomSteps = (th, from, to) => {
       const steps = [];
@@ -932,7 +934,7 @@ if(lootWindowPatch.exitButton) {
     }
     const steps = generateRandomSteps(1590, 150, 250);
 
-    const rotationTimer = createTimer(() => 2000);
+    const rotationTimer = createTimer(() => rotationTime);
     let yCompensation = 0;
     let foundPlayer = false;
 
@@ -950,7 +952,8 @@ if(lootWindowPatch.exitButton) {
     log.send('Searching for other players...');
 
     await lowerCamera(false);
-    await scrollCamera(false);
+    await scrollCamera(false, config.findPlayerCameraDistance);
+    if(config.arduino) await sleep(1000);
     await sleep(random(delay[0], delay[1]));
 
     if(config.findPlayerRotateBy == 'Mouse') {
@@ -1038,17 +1041,18 @@ if(lootWindowPatch.exitButton) {
       let wavedAlreadyInner = false;
 
       rotationTimer.start();
-
       await keyboard.toggleKey(config.findPlayerTurnDir, true);
 
       const pressTargetKeyTimer = createTimer(() => 200);
       pressTargetKeyTimer.start();
 
+      let startRotation = Date.now();
       while(!rotationTimer.isElapsed()) {
+
         if(!foundPlayer && pressTargetKeyTimer.isElapsed()) {
-          keyboard.sendKey(config.findPlayerTargetKey, delay);
+          await keyboard.sendKey(config.findPlayerTargetKey);
           if(config.findPlayerTargetKeyAddUse) {
-            keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
+            await keyboard.sendKey(config.findPlayerTargetKeyAdd);
           }
           pressTargetKeyTimer.update();
         }
@@ -1090,7 +1094,9 @@ if(lootWindowPatch.exitButton) {
       await keyboard.toggleKey(config.findPlayerTurnDir, false);
     }
 
-    await scrollCamera(true);
+    await scrollCamera(true, config.findPlayerCameraDistance);
+    if(config.arduino) await sleep(1000);
+
     await lowerCamera(true);
 
     lastMovementFrom = 'findPlayer';
@@ -1422,9 +1428,13 @@ if(lootWindowPatch.exitButton) {
       await sleep(random(delay[0], delay[1]));
     }
     const scrollCamera = async (direction, value) => { // config.aggroCheckCameraDistance
-      for(let step = 0; step < value; step++) {
-        await nutjs.mouse.scroll(1, direction);
-      }
+        if(config.arduino) {
+          await mouse.scroll(direction, value);
+        } else {
+          for(let step = 0; step < value; step++) {
+            await nutjs.mouse.scroll(1, direction);
+          }
+        }
     };
     const turnAround = async () => {
       if(config.aggroCheckControlBy == "Mouse") {
