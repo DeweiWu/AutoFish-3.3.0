@@ -1010,6 +1010,10 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+.spare-inner .description-inner .option {
+  width: 100%; 
+}
+
 .spare-execute {
  margin-left: 30px;
 }
@@ -1024,6 +1028,12 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   left: -25px;
   width: 10px;
   height: 10px;
+}
+
+.spare-inner label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
 }
 
 .spare-inner label {
@@ -1185,8 +1195,7 @@ input[type=number] {
 }
 
 .spares-description {
-  width: 240px !important;
-  margin-right: 3px;
+  width: 100% !important;
   height: 20px !important;
 }
 

@@ -679,7 +679,7 @@ const renderSpares = ({spares}) => {
 
     this.parentNode.insertBefore(elt('form', {className: "spareContainer"},
       elt(`div`, {className: `spare-inner`, style: ``},
-        wrapInLabel(`Description: `, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"}), `Description.`),
+        wrapInLabel(``, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"}), ``, 'description-inner'),
         wrapInLabel(`Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: spareNumber == 2, checked: false, "data-spares": "execute"}), `The action will be executed just after the action or condition above.`),
         wrapInLabel(`Type:`, elt('select', { className: "spares-type", value: `Press Key`,"data-spares": "type"},
         elt('optgroup', {label: `Actions`}, ...types.map((type) => elt('option', {value: type}, type))),
@@ -727,7 +727,7 @@ const renderSpares = ({spares}) => {
     key.setAttribute('readonly', true);
     return elt('form', {className: "spareContainer"},
       elt(`div`, {className: `spare-inner ${spare.execute ? `spare-execute` : ``}`, style: ``},
-        wrapInLabel(`Description: `, elt('input', { className: "spares-description", value: spare.description, "data-spares": "description"}), `Description.`),
+        wrapInLabel(``, elt('input', { className: "spares-description", value: spare.description, "data-spares": "description"}), ``, 'description-inner'),
         wrapInLabel(`Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: i == 0, checked: spare.execute && i != 0, "data-spares": "execute"}), `The action will be executed just after the action or condition above.`),
         wrapInLabel(`Type: `, elt('select', { className: "spares-type", value: spare.type, "data-spares": "type"},
         elt('optgroup', {label: `Actions`}, ...types.map((type) => elt('option', {selected: type == spare.type}, type))),
@@ -1002,8 +1002,8 @@ const renderFindPlayerCameraDistance = ({findPlayer, findPlayerCameraDistance}) 
   return elt('input', {type: 'number', value: findPlayerCameraDistance, name: "findPlayerCameraDistance", disabled: !findPlayer});
 };
 
-const renderFindPlayerCameraVertical = ({findPlayer, findPlayerCameraVertical}) => {
-  return elt('input', {type: 'number', value: findPlayerCameraVertical, name: "findPlayerCameraVertical", disabled: !findPlayer});
+const renderFindPlayerCameraVertical = ({findPlayer, findPlayerRotateBy, findPlayerCameraVertical}) => {
+  return elt('input', {type: 'number', value: findPlayerCameraVertical, name: "findPlayerCameraVertical", disabled: !findPlayer || findPlayerRotateBy == 'Keyboard'});
 };
 
 const renderAggroCheckCameraVertical = ({aggroCheck, aggroCheckCameraVertical}) => {
@@ -1232,7 +1232,7 @@ const renderSettings = (config) => {
       wrapInLabel('Vertical Camera Position (steps):', renderFindPlayerCameraVertical(config), `Vertical position of the camera view. In simple words: how low the bot should position your camera to better see the horizon. Leave it at 0 if you don't need it.`),
       wrapInLabel('Search For Players Around Every (min): ', renderFindPlayerInterval(config), `How often the bot should search for players nearby. You can use decimals for seconds (0.5 is every 30 seconds), but remember that the bot will check only after it finishes current fishing cast.`),
       wrapInLabel('Search For Players In Front Every (sec): ', renderFindPlayerFrontInterval(config), `How often the bot should search for players in front of the character.`),
-      wrapInLabel('Do After Player Found: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Logging Out" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\n`),
+      wrapInLabel('Do After Player Found: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Logging Out" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\nFace and Wave: The bot will face the player, print /wave in the chat and sleep for the provided time. It won't face and wave any other player within the next 15 minutes to prevent pretty obvious automated behaviour.\nStop: the bot will stop working.\nExit: the bot will exit the game and stop working.`),
       config.findPlayerDoAfter == 'Press Key' ? wrapInLabel('Press Key: ', renderFindPlayerDoAfterKey(config), `The key to press in case the bot finds someone.`) : ``,
       wrapInLabel('Sleep After Player Found (sec): ', renderFindPlayerDoAfterSleepTime(config), `For how long the bot should sleep in case it finds someone or after chosen action.`)
     ),
