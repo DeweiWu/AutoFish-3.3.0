@@ -61,6 +61,10 @@ const convertKey = (key) => {
     return {
       sendKey(key, delay = 0) {
 
+        if(key == 'space') {
+          key = ` `;
+        }
+
         if(!Array.isArray(delay)) {
           delay = [delay, delay];
         }
@@ -70,6 +74,10 @@ const convertKey = (key) => {
         });
       },
       toggleKey(key, type, delay = 0) {
+
+        if(key == 'space') {
+          key = ` `;
+        }
 
         if(!Array.isArray(delay)) {
           delay = [delay, delay];
