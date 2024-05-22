@@ -988,9 +988,9 @@ if(lootWindowPatch.exitButton) {
 
         let x = cPos.x - (config.findPlayerTurnDir == 'left' ? step : -step);
 
-        await mouse.toggle('right', true, delay);
+        await mouse.toggle('left', true, delay);
         await moveTo({pos: {x: x, y: cPos.y + randomYvalue}, fineTune: false, randomRange: 0, speed: config.findPlayerMouseSpeed, deviation: 50}); // randomYvalue
-        await mouse.toggle('right', false, delay);
+        await mouse.toggle('left', false, delay);
 
         await moveTo({pos: cPos, fineTune: false, randomRange: 0});
         await sleep(random(delay[0], delay[1]));
@@ -1118,6 +1118,7 @@ if(lootWindowPatch.exitButton) {
         case "Sleep": {
           state.status = `sleep`;
           state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+          if(settings.afkmode) await altTab();
           break;
         }
 
@@ -1130,6 +1131,7 @@ if(lootWindowPatch.exitButton) {
         case "Random Movement": {
           state.status = `move`;
           state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+          if(settings.afkmode) await altTab();
           break;
         }
 
@@ -1146,6 +1148,7 @@ if(lootWindowPatch.exitButton) {
           setTimeout(() => {
             wavedAlready = false;
           }, 15 * 60 * 1000); // don't wave within 15 min
+          if(settings.afkmode) await altTab();
           break;
         }
 
@@ -1153,6 +1156,7 @@ if(lootWindowPatch.exitButton) {
           await keyboard.sendKey(config.findPlayerDoAfterKey, delay);
           state.status = 'sleep';
           state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+          if(settings.afkmode) await altTab();
           break;
         }
 
@@ -1183,7 +1187,7 @@ if(lootWindowPatch.exitButton) {
   findPlayer.on = config.findPlayer;
   findPlayer.state;
   findPlayer.frontCheck = async (state, log, onError) => {
-    if(!config.findPlayer || settings.multipleWindows) {
+    if(!config.findPlayer || settings.multipleWindows || settings.afkmode) {
       return;
     }
 
@@ -1215,6 +1219,7 @@ if(lootWindowPatch.exitButton) {
           case "Sleep": {
             state.status = `sleep`;
             state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+            if(settings.afkmode) await altTab();
             break;
           }
 
@@ -1227,6 +1232,7 @@ if(lootWindowPatch.exitButton) {
           case "Random Movement": {
             state.status = `move`;
             state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+            if(settings.afkmode) await altTab();
             break;
           }
 
@@ -1243,6 +1249,7 @@ if(lootWindowPatch.exitButton) {
             setTimeout(() => {
               wavedAlready = false;
             }, 15 * 60 * 1000); // don't wave within 15 min
+            if(settings.afkmode) await altTab();
             break;
           }
 
@@ -1250,6 +1257,7 @@ if(lootWindowPatch.exitButton) {
             await keyboard.sendKey(config.findPlayerDoAfterKey, delay);
             state.status = 'sleep';
             state.sleepTime = config.findPlayerDoAfterSleepTime * 1000;
+            if(settings.afkmode) await altTab();
             break;
           }
 

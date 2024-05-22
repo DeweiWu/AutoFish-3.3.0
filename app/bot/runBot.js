@@ -104,9 +104,10 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
 
       checkChanges.block(true);
       await logOut(state);
-
+      /*
       log.send(`Sleeping... for ${state.sleepTime}`)
       await sleep(state.sleepTime ? state.sleepTime : 0);
+      */
       checkChanges.unblock(true);
 
       if(state.status == 'stop') {
