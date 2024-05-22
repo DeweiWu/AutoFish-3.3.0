@@ -45,6 +45,8 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
+
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -296,6 +298,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -538,6 +541,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -780,6 +784,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1002,6 +1007,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1225,6 +1231,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1444,6 +1451,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1682,6 +1690,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1917,6 +1926,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -2143,6 +2153,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,

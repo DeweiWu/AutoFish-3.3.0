@@ -971,6 +971,10 @@ const renderAggroCheckQuit = ({aggroCheck, aggroCheckQuit}) => {
   return elt('input', {type: `checkbox`, checked: aggroCheckQuit, name: "aggroCheckQuit", disabled: !aggroCheck})
 };
 
+const renderAggroCheckTurnAround= ({aggroCheck, aggroCheckTurnAround}) => {
+  return elt('input', {type: `checkbox`, checked: aggroCheckTurnAround, name: "aggroCheckTurnAround", disabled: !aggroCheck})
+};
+
 const renderFindPlayer = ({findPlayer}) => {
   return elt('input', {type: "checkbox", checked: findPlayer, name: "findPlayer"});
 };
@@ -1260,6 +1264,7 @@ const renderSettings = (config) => {
       ) :
       config.aggroCheckDoAfterType == `Attack` ?
       elt('div', null,
+      wrapInLabel('Turn Around First: ', renderAggroCheckTurnAround(config), `The bot will turn around first to find enemies. Check if it you expect enemy from behind in the first place.`),
       wrapInLabel('Target Key: ', renderAggroCheckTargetKey(config), `What key the bot should use to target the enemy. By default it's "Tab" in the game, but if you want the bot to target only enemy players (and not mobs), you should bind a different key for that in the game and bind it here respectively.`),
       wrapInLabel('Equip Weapon: ', renderAggroCheckEquip(config), `Equip weapon/armor before attacking. Use your own macro for that.`),
       wrapInLabel('Combat Zone: ', renderCombatZone(config), `The zone in which the bot will look for Enemy Name colors and center your camera relative to the position of the name.`)

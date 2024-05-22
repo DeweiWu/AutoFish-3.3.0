@@ -1499,7 +1499,11 @@ if(lootWindowPatch.exitButton) {
 
           await lowerCamera(false);
           await scrollCamera(false, config.aggroCheckCameraDistance);
-          await turnAround();
+
+          if(config.aggroCheckTurnAround) {
+            await turnAround();
+          }
+
 
           if(config.reaction) {
             await sleep(random(config.reaction.from, config.reaction.to))
