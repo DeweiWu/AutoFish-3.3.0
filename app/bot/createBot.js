@@ -293,6 +293,12 @@ if(lootWindowPatch.exitButton) {
             fishingZone: Zone.from(screenSize).toRel(config.relZone),
             static: speed
           });
+        } else if(config.arduino) {
+          if(speed) {
+            await mouse.humanMoveTo(pos.x, pos.y, 0, 0); // if speed is static then 0 deviation;
+          } else {
+            await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+          }
         } else {
           await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
         }
@@ -882,6 +888,10 @@ if(lootWindowPatch.exitButton) {
   let rotationTime = config.arduino ? 1995 : 2000;
 
   const findPlayer = async (state, log, onError) => {
+    if(config.arduino) {
+      config.findPlayerMouseSpeed = 50;
+    }
+
     const enemyHp = new HealthBar(config.findPlayerHp);
     const scrollCamera = async (direction, value) => {
         if(config.arduino) {
@@ -900,7 +910,7 @@ if(lootWindowPatch.exitButton) {
           maxValue += value;
           steps.push(value);
         } else {
-          steps.push(1600 - maxValue);
+          steps.push(th - maxValue);
           break;
         }
       }
@@ -932,7 +942,7 @@ if(lootWindowPatch.exitButton) {
       await moveTo({pos: cPos, fineTune: false, randomRange: 0});
       await sleep(random(delay[0], delay[1]));
     }
-    const steps = generateRandomSteps(1590, 150, 250);
+    const steps = config.arduino ? generateRandomSteps(2570, 250, 350) : generateRandomSteps(1590, 150, 250);
 
     const rotationTimer = createTimer(() => rotationTime);
     let yCompensation = 0;
@@ -974,10 +984,14 @@ if(lootWindowPatch.exitButton) {
           randomYvalue = -yCompensation;
         }
 
-        let x = cPos.x - step;
-        await mouse.toggle('left', true, delay);
-        await moveTo({pos: {x: x, y: cPos.y + randomYvalue}, fineTune: false, randomRange: 0, speed: config.findPlayerMouseSpeed, deviation: 50});
-        await mouse.toggle('left', false, delay);
+        if(config.arduino) randomYvalue = 0;
+
+        let x = cPos.x - (config.findPlayerTurnDir == 'left' ? step : -step);
+
+        await mouse.toggle('right', true, delay);
+        await moveTo({pos: {x: x, y: cPos.y + randomYvalue}, fineTune: false, randomRange: 0, speed: config.findPlayerMouseSpeed, deviation: 50}); // randomYvalue
+        await mouse.toggle('right', false, delay);
+
         await moveTo({pos: cPos, fineTune: false, randomRange: 0});
         await sleep(random(delay[0], delay[1]));
 
@@ -1037,7 +1051,6 @@ if(lootWindowPatch.exitButton) {
       }
 
     } else {
-      config.findPlayerTurnDir = 'left';
       let wavedAlreadyInner = false;
 
       rotationTimer.start();
@@ -1096,7 +1109,6 @@ if(lootWindowPatch.exitButton) {
 
     await scrollCamera(true, config.findPlayerCameraDistance);
     if(config.arduino) await sleep(1000);
-
     await lowerCamera(true);
 
     lastMovementFrom = 'findPlayer';
@@ -1622,13 +1634,17 @@ if(lootWindowPatch.exitButton) {
     if(settings.afkmode) await altTab();
 
     if(config.rngMove || config.findPlayer) {
-      let lastDir = lastMovementFrom == 'rngMove' ? moveMemory.lastDir : config.findPlayerTurnDir == 'left' ? 'right' : 'left';
+      let lastDir = lastMovementFrom == 'rngMove' ? moveMemory.lastDir : config.findPlayerTurnDir;
         await sleep(350);
         for(let i = 0; i < 2 && await notificationZone.check("error"); i++) {
-          if(moveMemory.lastDir == `left`) {
-            await _rngMoveAction({delay: ((config.rngMoveRadiusMax * 2) / 360) * 500, value: 0, direction: 'right'})
+          if(lastDir == `left`) {
+            await _rngMoveAction({delay: ((config.rngMoveRadiusMax * 2) / 360) * 500, value: 0, direction: 'right'}, true) // true -> nomovement
           } else {
-            await _rngMoveAction({delay: ((config.rngMoveRadiusMax * 2) / 360) * 500, value: 0, direction: 'left'})
+            await _rngMoveAction({delay: ((config.rngMoveRadiusMax * 2) / 360) * 500, value: 0, direction: 'left'}, true) // true -> nomovement
+          }
+
+          if(lastMovementFrom != 'rngMove') {
+            config.findPlayerTurnDir = config.findPlayerTurnDir == 'left' ? 'right' : 'left'; // switch to different direction for find player if run into shallow waters.
           }
 
           await sleep(3000);
@@ -2128,12 +2144,12 @@ if (settings.soundDetection) {
     return {key, value};
   }
 
-  const _rngMoveAction = async (rngPos = getRandomPos()) => {
+  const _rngMoveAction = async (rngPos = getRandomPos(), nomove) => {
     if(config.reaction) {
       await sleep(random(config.reaction.from, config.reaction.to))
     }
 
-    if(config.rngMoveKeys && (Math.abs(moveMemory.value) < ((config.rngMoveRadiusMax * .25) / 360 * 500))) { // Use keys only if we face within 10(20 combined) degrees from the center
+    if(!nomove && config.rngMoveKeys && (Math.abs(moveMemory.value) < ((config.rngMoveRadiusMax * .25) / 360 * 500))) { // Use keys only if we face within 10(20 combined) degrees from the center
       let rngKey = getRandomKey();
       await mouse.toggle(`right`, true, delay);
       await keyboard.toggleKey(rngKey.key, true, rngKey.value);

@@ -180,15 +180,15 @@ const createMouse = (write) => {
     humanMoveTo(x, y, speed, deviation) {
       let cPos = this.getPos();
       cPos = {x: cPos.x + 1, y: cPos.y + 1};
-      x = (x - cPos.x) / (screen.getPrimaryDisplay().scaleFactor) || 1;
-      y = (y - cPos.y) / (screen.getPrimaryDisplay().scaleFactor) || 1;
+      x = (x - cPos.x) / (screen.getPrimaryDisplay().scaleFactor);
+      y = (y - cPos.y) / (screen.getPrimaryDisplay().scaleFactor);
 
       let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
-      let speedByDistance = 100 - Math.round(speed * 100); // Math.round(distance * (distance < 50 ? 0.75 : distance < 150 ? 0.50 : distance < 300 ? 0.35 : 0.25)); // distance / 4 (0.25 + (1 - (distance / 400)))
+      let speedByDistance = distance * (1 - speed); // Math.round(distance * (distance < 50 ? 0.75 : distance < 150 ? 0.50 : distance < 300 ? 0.35 : 0.25)); // distance / 4 (0.25 + (1 - (distance / 400)))
 
       let minDelay = 0;
-      let maxDelay = 15;
+      let maxDelay = 0;
 
       let minControlDistance = deviation ? Math.round(distance * 0.050) : 0; // 10 at 400 px
       let maxControlDistance = deviation ? Math.round(distance * 0.250) : 0; // 50 at 400 px
