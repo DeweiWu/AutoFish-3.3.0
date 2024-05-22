@@ -767,6 +767,12 @@ const renderFilterAtMouse = ({game, whitelist, atMouse}) => {
   return elt(`input`, {name: `atMouse`, type:`checkbox`, checked: atMouse, className: `atMouse`, disabled: !whitelist || game != `Retail`});
 }
 
+const renderFilterConfidence = ({whitelist, filterConfidence}) => {
+  const winRange = elt(`input`, {type: `number`, value: filterConfidence, disabled: !whitelist, name: "filterConfidence"})
+  const range = elt('input', {type: `range`, max: 100, min: 1, step: 1, value: filterConfidence, className: `${!whitelist ? `threshold_disabled` : ``}`, disabled: !whitelist,  oninput: function() {winRange.value = this.value}, name: "filterConfidence"});
+  return elt(`div`, null, range, winRange);
+}
+
 const renderWhitelistLanguage = ({whitelist, whitelistLanguage}) => {
   let languages = [`eng`, `spa`, `spa_old`, `por`, `fra`, `deu`, `ita`, `chi_sim`, `chi_tra`, `kor`, `rus`];
   let properLanguages = {eng: `English`, spa: "Spanish", spa_old: "Spanish Old", deu: "Deutsch", por: "Português", fra: "Français", ita: "Italiano", chi_sim: "Simplified Chinese", chi_tra: "Traditional Chinese", kor: "Korean", rus: "Russian"};
@@ -1134,6 +1140,7 @@ const renderSettings = (config) => {
     wrapInLabel("Language: ", renderWhitelistLanguage(config), `If it's the first time you using a language from the list, wait until the bot downloads the tesseract data for your language. `),
     wrapInLabel(`Close Loot Window With: `, renderCloseLoot(config), `The bot will use mouse/esc or randomly one of them to close the loot window while filtering the loot.`),
     wrapInLabel("Loot Window At Mouse: ", renderFilterAtMouse(config), `Loot window at mouse will tell the bot whether it should check the loot window at mouse or the default loot window at the left side of the screen.`),
+    wrapInLabel("Filter Confidence (%): ", renderFilterConfidence(config), `Confidence determines how close and similar recognized words should be to the provided ones.`),
     wrapInLabel("", renderWhitelistWords(config))
   ),
   elt(`p`, {className: `settings_header`}, `🎣`), elt(`span`, {className: `advanced_settings_header_text`}, `Lures`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),

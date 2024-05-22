@@ -1828,6 +1828,7 @@ if (settings.soundDetection) {
       await sleep(150); // hint dissappearing
     }
 
+    /*
     if(lootWindow.exitButton) {
       for (let times = 0; times <= 30; times++) {
         // Wait for 2 seconds max until loot appears
@@ -1841,6 +1842,7 @@ if (settings.soundDetection) {
         }
       }
     }
+    */
 
     const lootWindowDim = {
       x: cursorPos.x + lootWindow.toItemX,
@@ -1856,7 +1858,7 @@ if (settings.soundDetection) {
 
     let itemsPicked = [];
     for (let item of items) {
-      let isInList = whitelist.find((word) => percentComparison(word, item) > 90);
+      let isInList = whitelist.find((word) => percentComparison(word, item) > config.filterConfidence); // 90
 
       if(config.filterType == `blacklist`) {
         if(isInList) {

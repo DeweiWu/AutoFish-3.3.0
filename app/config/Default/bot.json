@@ -82,6 +82,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -334,6 +335,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -577,6 +579,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -820,6 +823,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1043,6 +1047,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1267,6 +1272,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1501,6 +1507,7 @@
         }
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1740,6 +1747,7 @@
         }
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1962,6 +1970,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -2189,6 +2198,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
