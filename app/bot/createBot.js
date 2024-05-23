@@ -1406,7 +1406,7 @@ if(lootWindowPatch.exitButton) {
         }
         return skill.cooldown * 1000
       }),
-      delayTimer: createTimer(() => skill.delay * 1000)
+      delayTimer: createTimer(() => (skill.delay + 1) * 1000) // + 1 second to avoid all "skill available" animations.
     }));
 
     const findAndCenter = async (zone) => {
@@ -1565,11 +1565,9 @@ if(lootWindowPatch.exitButton) {
                       if(!(await skill.attackRange.checkColor(getDataFrom)) &&
                          !skill.rangeonly &&
                           skill.cooldownTimer.timeRemains() < ((skill.cooldown * 1000) * .8)) { //  come up to target if not in range of the skill. Do it only if there's less than 80% of skill cooldown time remain, to avoid UI animation of cooldown.
-                          await keyboard.toggleKey("up", true, delay);
-                          while(!(await skill.attackRange.checkColor(getDataFrom))) {
-                            await sleep(random(delay[0], delay[1]));
-                          }
-                          await keyboard.toggleKey("up", false, delay);
+                          await keyboard.toggleKey("up", true);
+                          while(!(await skill.attackRange.checkColor(getDataFrom))) {};
+                          await keyboard.toggleKey("up", false);
                       }
 
                       if(!(skill.cooldownTimer.isElapsed())) {
