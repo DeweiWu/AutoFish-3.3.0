@@ -25,6 +25,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -285,6 +287,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -535,6 +539,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -785,6 +791,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -1015,6 +1023,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -1246,6 +1256,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -1473,6 +1485,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -1719,6 +1733,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -1962,6 +1978,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,
@@ -2196,6 +2214,8 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
       "findPlayerHpException": {
         "x": 0,
         "y": 0,

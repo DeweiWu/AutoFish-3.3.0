@@ -885,7 +885,7 @@ if(lootWindowPatch.exitButton) {
   };
 
   let wavedAlready = false;
-  let rotationTime = config.arduino ? 1995 : 2000;
+  let rotationTime = config.findPlayerRotationTimeKeyboard; // arduino: 1995  soft: 2000
 
   const findPlayer = async (state, log, onError) => {
     if(config.arduino) {
@@ -952,7 +952,7 @@ if(lootWindowPatch.exitButton) {
       await moveTo({pos: cPos, fineTune: false, randomRange: 0});
       await sleep(random(delay[0], delay[1]));
     }
-    const steps = config.arduino ? generateRandomSteps(2570, 250, 350) : generateRandomSteps(1590, 150, 250);
+    const steps = generateRandomSteps(config.findPlayerRotationTimeMouse, config.findPlayerRotationTimeMouse * 0.1, config.findPlayerRotationTimeMouse * 0.2) // arduino: 2570, soft: 1590
 
     const rotationTimer = createTimer(() => rotationTime);
     let yCompensation = 0;

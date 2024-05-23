@@ -1124,6 +1124,10 @@ const renderFindPlayerMouseSpeed = ({findPlayer, findPlayerMouseSpeed}) => {
   return elt(`div`, null, range, winRange);
 }
 
+const renderFindPlayerRotationTime = ({findPlayer, findPlayerRotateBy, findPlayerRotationTimeMouse, findPlayerRotationTimeKeyboard}) => {
+  return elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerRotateBy == `Keyboard` ? findPlayerRotationTimeKeyboard : findPlayerRotationTimeMouse, name: `${findPlayerRotateBy == `Keyboard` ? `findPlayerRotationTimeKeyboard` : `findPlayerRotationTimeMouse`}`})
+};
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `⚙️`), elt(`span`, {className: `advanced_settings_header_text`}, `General`),
@@ -1275,7 +1279,8 @@ const renderSettings = (config) => {
       wrapInLabel('Search For Players In Front Every (sec): ', renderFindPlayerFrontInterval(config), `How often the bot should search for players in front of the character.`),
       wrapInLabel('Do After Player Found: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Logging Out" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\nFace and Wave: The bot will face the player, print /wave in the chat and sleep for the provided time. It won't face and wave any other player within the next 15 minutes to prevent pretty obvious automated behaviour.\nStop: the bot will stop working.\nExit: the bot will exit the game and stop working.`),
       config.findPlayerDoAfter == 'Press Key' ? wrapInLabel('Press Key: ', renderFindPlayerDoAfterKey(config), `The key to press in case the bot finds someone.`) : ``,
-      wrapInLabel('Sleep After Player Found (sec): ', renderFindPlayerDoAfterSleepTime(config), `For how long the bot should sleep in case it finds someone or after chosen action.`)
+      wrapInLabel('Sleep After Player Found (sec): ', renderFindPlayerDoAfterSleepTime(config), `For how long the bot should sleep in case it finds someone or after chosen action.`),
+      wrapInLabel('Rotation Time (ms): ', renderFindPlayerRotationTime(config), `How long the bot should rotate. Tweak this if the rotation the bot makes isn't complete or overcomplete.`)
     ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#aggro-checking-crossed_swords")}}, `(Guide)`),
