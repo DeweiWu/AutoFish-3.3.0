@@ -1239,7 +1239,7 @@ const renderSettings = (config) => {
     wrapInLabel(`After Catch Chance (%): `, renderSleepAfterHookChance(config), `Likelihood that the bot will sleep after it caches fish.`),
     wrapInLabel(`After Catch Random Delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
     ),
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
     elt(`div`, {className: `settings_section settings_premium`},
       renderSpares(config)
     ),
@@ -1260,7 +1260,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Use Movements Randomly Every (min): `, renderRngMoveTimer(config), `How often the bot should move your camera/character. The value is chosen randomly within the provided values.`),
     ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🔭`),elt(`span`, {className: `advanced_settings_header_text`}, `Players Check`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🔭`),elt(`span`, {className: `advanced_settings_header_text`}, `Players Check`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#check-for-players-around-telescope")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Find Player: ', renderFindPlayer(config), `The bot will look around to see any other (friendly) players nearby (within target range).`),
       wrapInLabel('Target HP: ', renderFindPlayerHp(config), `Point it anywhere on the healthbar of your target.`),
@@ -1278,7 +1278,7 @@ const renderSettings = (config) => {
       wrapInLabel('Sleep After Player Found (sec): ', renderFindPlayerDoAfterSleepTime(config), `For how long the bot should sleep in case it finds someone or after chosen action.`)
     ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#aggro-checking-crossed_swords")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)\n\nUse "Test Rotation" button to see what will happen if you are attacked during fishing and check whether your rotation and the bot works properly for you.`),
       wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
@@ -1449,7 +1449,7 @@ const runApp = async () => {
     }
 
     if(event.target.name == 'aggroCheck' && event.target.checked) {
-      ipcRenderer.send("aggroCheck-warn"); 
+      ipcRenderer.send("aggroCheck-warn");
     }
 
     if(event.target.name == `rngMove` && event.target.checked) {
