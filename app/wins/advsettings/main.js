@@ -97,6 +97,10 @@ const createAdvSettings = (appPath) => {
     showWarning(win, `The key you pressed is not supported by AutoFish.`);
   });
 
+  ipcMain.on("aggroCheck-warn", () => {
+    showWarning(win, `Attack mode is unstable yet, so either carefully test before using or choose "Run Away" for more stable results.`);
+  });
+
   ipcMain.on("whitelist-warn", () => {
     showWarning(win, `Turn off AutoLoot option in the game.\n\nTurn off UI addons and UI scaling in the game.\n\nTurn on Open Loot Window at Mouse option in the game.\n\nFor filtering to work properly, your resolution (in game) and scaling (in Windows) should be one of these:\n- 1366x768 (100% scaling)\n- 1920x1080 (100% scaling)\n- 2560x1440 (125% scaling)\n- 3840x2160 (175% scaling)\n\nYou can change scaling in Windows in Settings -> Display.`);
   });

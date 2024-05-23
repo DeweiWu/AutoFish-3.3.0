@@ -893,6 +893,16 @@ if(lootWindowPatch.exitButton) {
     }
 
     const enemyHp = new HealthBar(config.findPlayerHp);
+    let enemyHpException = new HealthBar(config.findPlayerHpException);
+
+    const checkTarget = async () => {
+      if(config.game != 'Vanilla' && config.game != 'Vanilla (splash)') {
+        enemyHpException.checkColor = false;
+      }
+      let targetIsOn = await enemyHp.checkColor(getDataFrom) && !(await enemyHpException.checkColor(getDataFrom));
+      return targetIsOn;
+    }
+
     const scrollCamera = async (direction, value) => {
         if(config.arduino) {
           await mouse.scroll(direction, value);
@@ -1005,7 +1015,7 @@ if(lootWindowPatch.exitButton) {
         await sleep(delay[0], delay[1]);
 
 
-        if(await enemyHp.checkColor(getDataFrom) && !foundPlayer) {
+        if(await checkTarget() && !foundPlayer) {
           log.warn("Found a player in the vicinity!");
           foundPlayer = true;
           if(tmBot.ctx) {
@@ -1070,7 +1080,7 @@ if(lootWindowPatch.exitButton) {
           pressTargetKeyTimer.update();
         }
 
-        if(await enemyHp.checkColor(getDataFrom) && !foundPlayer) {
+        if(await checkTarget() && !foundPlayer) {
           log.warn("Found a player in the vicinity!");
           foundPlayer = true;
           if(tmBot.ctx) {
@@ -1180,6 +1190,10 @@ if(lootWindowPatch.exitButton) {
       log.ok('None.');
     }
 
+    if((config.game == 'Vanilla' || config.game == 'Vanilla (splash)') && await enemyHp.checkColor(getDataFrom)) {
+      await keyboard.sendKey('escape', delay); // close target
+    }
+
     findPlayer.state = false;
    });
   };
@@ -1187,7 +1201,7 @@ if(lootWindowPatch.exitButton) {
   findPlayer.on = config.findPlayer;
   findPlayer.state;
   findPlayer.frontCheck = async (state, log, onError) => {
-    if(!config.findPlayer || settings.multipleWindows || settings.afkmode) {
+    if(!config.findPlayer || settings.multipleWindows || settings.afkmode || config.game == 'Vanilla' || config.game == 'Vanilla (splash)') {
       return;
     }
 

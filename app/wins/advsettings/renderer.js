@@ -1008,6 +1008,29 @@ const renderFindPlayerHp = ({findPlayer, findPlayerHp}) => {
     return elt('div', {"data-collection": `findPlayerHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
 };
 
+const renderFindPlayerHpException = ({findPlayer, findPlayerHpException}) => {
+    const x = elt('input', {type: `number`, name: 'x', disabled: !findPlayer, value: findPlayerHpException.x});
+    const y = elt('input', {type: `number`, name: 'y', disabled: !findPlayer, value: findPlayerHpException.y});
+    const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!findPlayer ? `colorPicker_disabled` : ``}`, disabled: !findPlayer, name: 'color', value: findPlayerHpException.color});
+    const precision = elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerHpException.precision, name: "precision"})
+
+    const colorPicker = elt('input', {type: `button`, disabled: !findPlayer, className: `whisperColorPicker ${!findPlayer ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
+
+        x.value = data.x;
+        y.value = data.y;
+
+        const {r, g, b} = data.color;
+        colorBox.value = rgbToHex(r, g, b);
+      })
+    }});
+
+    return elt('div', {"data-collection": `findPlayerHpException`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+};
+
 const renderFindPlayerCameraDistance = ({findPlayer, findPlayerCameraDistance}) => {
   return elt('input', {type: 'number', value: findPlayerCameraDistance, name: "findPlayerCameraDistance", disabled: !findPlayer});
 };
@@ -1043,10 +1066,16 @@ const renderFindPlayerTargetKey = ({findPlayer, findPlayerTargetKey}) => {
   return key;
 };
 
-const renderFindPlayerRotateBy = ({findPlayer, findPlayerRotateBy}) => {
+const renderFindPlayerRotateBy = ({game, findPlayer, findPlayerRotateBy}) => {
   const types = ['Mouse', 'Keyboard'];
   const typeSelect = elt(`select`, {name: 'findPlayerRotateBy', disabled: !findPlayer}, ...types.map((type) => elt('option', {selected: type == findPlayerRotateBy, value: type}, type)));
-   return elt(`div`, null, typeSelect);
+
+  if(game != `Retail` && game != `Classic` && game != `Cata Classic`) {
+    typeSelect.value = 'Keyboard';
+    typeSelect.disabled = true;
+  }
+
+  return elt(`div`, null, typeSelect);
 };
 
 const renderFindPlayerDoAfter = ({findPlayer, findPlayerDoAfter}) => {
@@ -1235,6 +1264,7 @@ const renderSettings = (config) => {
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Find Player: ', renderFindPlayer(config), `The bot will look around to see any other (friendly) players nearby (within target range).`),
       wrapInLabel('Target HP: ', renderFindPlayerHp(config), `Point it anywhere on the healthbar of your target.`),
+      config.game == 'Vanilla' || config.game == 'Vanilla (splash)' ? wrapInLabel('Target HP Exception: ', renderFindPlayerHpException(config), `Some servers when "Target Friendly Player" used make your character target itself. Point at some unique pixel of your HP bar to make the bot differentiate between your own character and others.`) : ``,
       wrapInLabel('Target Key: ', renderFindPlayerTargetKey(config), `The same key you use to target other friendly players in the game (Options -> Keybindings -> Targeting -> Target Nearest Friendly Player)`),
       wrapInLabel('Target Key (additional): ', renderFindPlayerTargetKeyAdd(config), `Additional key in case you want to target something else. Enemies for example.`),
       wrapInLabel('Rotate Camera By: ', renderFindPlayerRotateBy(config), `Keyboard: the bot will rotate by using arrow keys, it will be visible to others because your character will move as well.\nMouse: the bot will look around by using mouse, it won't be visible to others.`),
@@ -1416,6 +1446,10 @@ const runApp = async () => {
 
     if(event.target.name == `mammoth` && event.target.checked) {
       ipcRenderer.send("mammoth-warn");
+    }
+
+    if(event.target.name == 'aggroCheck' && event.target.checked) {
+      ipcRenderer.send("aggroCheck-warn"); 
     }
 
     if(event.target.name == `rngMove` && event.target.checked) {
