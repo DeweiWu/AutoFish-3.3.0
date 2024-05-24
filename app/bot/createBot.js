@@ -897,7 +897,7 @@ if(lootWindowPatch.exitButton) {
 
     const checkTarget = async () => {
       if(config.game != 'Vanilla' && config.game != 'Vanilla (splash)') {
-        enemyHpException.checkColor = false;
+        enemyHpException.checkColor = () => false;
       }
       let targetIsOn = await enemyHp.checkColor(getDataFrom) && !(await enemyHpException.checkColor(getDataFrom));
       return targetIsOn;
@@ -1487,6 +1487,14 @@ if(lootWindowPatch.exitButton) {
 
     for(;state.status != `stop`;) {
       await sleep(aggroTestRun ? 0 : config.aggroCheckInterval * 1000);
+
+      if(state.status == 'stop') {
+        break;
+      }
+
+      if(findPlayer.state || state.status == 'move' || state.status == 'logout' || state.status == 'sleep') {
+        continue;
+      }
 
       if(!(await userHp.checkColor(getDataFrom)) || aggroTestRun) {
       await action(async () => {
