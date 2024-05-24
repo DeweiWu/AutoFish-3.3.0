@@ -25,6 +25,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -32,7 +40,8 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
@@ -44,6 +53,8 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
+
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -79,6 +90,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -88,6 +100,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -119,9 +137,9 @@
         "height": 0.34074074074074073
       },
       "notificationPos": {
-        "y": 0.11574074,
+        "y": 0.11388888,
         "width": 0.01822916,
-        "height": 0.01388888
+        "height": 0.01481481
       },
       "findBobberDirection": "center",
       "checkingDelay": 50,
@@ -150,10 +168,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -267,6 +287,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -274,7 +302,8 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
@@ -286,6 +315,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -321,6 +351,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -330,6 +361,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -392,10 +429,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -500,6 +539,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -507,7 +554,8 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
@@ -519,6 +567,7 @@
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -554,6 +603,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -563,6 +613,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -624,10 +680,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -733,6 +791,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -740,18 +806,20 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
       "findPlayerDoAfter": "Log out",
-      "findPlayerRotateBy": "Mouse",
+      "findPlayerRotateBy": "Keyboard",
       "findPlayerInterval": 1,
       "findPlayerDoAfterKey": "1",
       "findPlayerDoAfterSleepTime": 90,
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -787,6 +855,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -796,6 +865,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -858,10 +933,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -946,6 +1023,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -953,18 +1038,20 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
       "findPlayerDoAfter": "Log out",
-      "findPlayerRotateBy": "Mouse",
+      "findPlayerRotateBy": "Keyboard",
       "findPlayerInterval": 1,
       "findPlayerDoAfterKey": "1",
       "findPlayerDoAfterSleepTime": 90,
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1000,6 +1087,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1009,6 +1097,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1070,10 +1164,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -1160,6 +1256,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -1167,18 +1271,20 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
       "findPlayerDoAfter": "Log out",
-      "findPlayerRotateBy": "Mouse",
+      "findPlayerRotateBy": "Keyboard",
       "findPlayerInterval": 1,
       "findPlayerDoAfterKey": "1",
       "findPlayerDoAfterSleepTime": 90,
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1214,6 +1320,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1223,6 +1330,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1285,10 +1398,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -1370,6 +1485,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -1377,18 +1500,20 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
       "findPlayerDoAfter": "Log out",
-      "findPlayerRotateBy": "Mouse",
+      "findPlayerRotateBy": "Keyboard",
       "findPlayerInterval": 1,
       "findPlayerDoAfterKey": "1",
       "findPlayerDoAfterSleepTime": 90,
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1438,6 +1563,7 @@
         }
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1447,6 +1573,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1509,10 +1641,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -1599,6 +1733,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -1606,18 +1748,20 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
       "findPlayerDoAfter": "Log out",
-      "findPlayerRotateBy": "Mouse",
+      "findPlayerRotateBy": "Keyboard",
       "findPlayerInterval": 1,
       "findPlayerDoAfterKey": "1",
       "findPlayerDoAfterSleepTime": 90,
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1667,6 +1811,7 @@
         }
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1676,6 +1821,12 @@
       "filterType": "whitelist",
       "atMouse": true,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1738,10 +1889,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -1825,6 +1978,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -1832,18 +1993,20 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
       "findPlayerDoAfter": "Log out",
-      "findPlayerRotateBy": "Mouse",
+      "findPlayerRotateBy": "Keyboard",
       "findPlayerInterval": 1,
       "findPlayerDoAfterKey": "1",
       "findPlayerDoAfterSleepTime": 90,
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -1879,6 +2042,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -1888,6 +2052,12 @@
       "filterType": "whitelist",
       "atMouse": false,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -1950,10 +2120,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
@@ -2042,6 +2214,14 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "findPlayer": false,
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
       "findPlayerHp": {
         "x": 0,
         "y": 0,
@@ -2049,18 +2229,20 @@
         "precision": 95
       },
       "findPlayerTargetKey": "tab",
-      "findPlayerTargetKeyAddUse": true,
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
       "findPlayerTargetKeyAdd": "tab",
       "findPlayerCameraDistance": 15,
       "findPlayerCameraVertical": 5,
       "findPlayerDoAfter": "Log out",
-      "findPlayerRotateBy": "Mouse",
+      "findPlayerRotateBy": "Keyboard",
       "findPlayerInterval": 1,
       "findPlayerDoAfterKey": "1",
       "findPlayerDoAfterSleepTime": 90,
       "findPlayerMouseSpeed": 50,
       "findPlayerFrontInterval": 1,
       "aggroCheck": false,
+      "aggroCheckTurnAround": true,
       "aggroCheckInterval": 1,
       "aggroCheckUserHp": {
         "x": 0,
@@ -2096,6 +2278,7 @@
         "height": 0.34074074074074073
       },
       "whitelist": false,
+      "filterConfidence": 90,
       "whitelistWords": "",
       "whiteListBlueGreen": true,
       "confirmSoulbound": true,
@@ -2105,6 +2288,12 @@
       "filterType": "whitelist",
       "atMouse": false,
       "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
 
       "lures": false,
       "luresType": "key",
@@ -2167,10 +2356,12 @@
       "missOnPurposeRandomDelay": { "from": 1, "to": 8 },
       "logOut": false,
       "logOutEvery": { "from": 50, "to": 120 },
-      "logOutFor": { "from": 30, "to": 90 },
-      "logOutAfter": { "from": 30, "to": 90 },
+      "logOutFor": { "from": 1, "to": 3 },
+      "logOutAfter": { "from": 1, "to": 3 },
       "logOutUseMacro": false,
       "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
       "mammoth": false,
       "mammothKey": "5",
       "mammothKeyDelay": 3000,
