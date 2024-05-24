@@ -21,7 +21,6 @@ const trialIsOn = false;
 const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
 const createPointZone = require(`./wins/pointZone/main.js`);
-const fsPromise = require('fs/promises');
 const trialEncryption = require('./../trialEnc.js')
 
 
@@ -39,14 +38,8 @@ const getProfile = () => {
   return getJson(`./config/config.json`);
 };
 
-const createTrialTime = async () => {
-  let data;
-  try {
-    data = await fsPromise.readFile("badd7ae8f43", "utf8");
-  } catch(e) {
-    throw e;
-  }
-
+const createTrialTime = () => {
+  const data = readFileSync(path.join(__dirname, "badd7ae8f43"), "utf8");
   const key = "26612137141ed19dcefd816de67f04e9593ac46461c8953d0a437b3762778644";
   const iv = "ef8945445e29a2cfe32bae03bd71477f"
 
@@ -62,7 +55,9 @@ const createTrialTime = async () => {
           doIfElapsed();
         }
         let encData = trialEncryption.encrypt(trialTime, key, iv);
-        fsPromise.writeFile("badd7ae8f43", encData);
+        writeFile(path.join(__dirname, "badd7ae8f43"), encData, (err, done) => {
+
+        });
       }, 5000);
     },
 
@@ -75,8 +70,6 @@ const createTrialTime = async () => {
     },
 
     stop() {
-      fsPromise.readFile("badd7ae8f43", "utf8").then((data) => {
-      })
       clearInterval(intervalId);
     }
   }
@@ -158,6 +151,7 @@ const random = (from, to) => {
 };
 
 let win;
+let trial;
 const createWindow = async () => {
   win = new BrowserWindow({
     title: generateName(Math.floor(random(5, 15))),
@@ -173,6 +167,10 @@ const createWindow = async () => {
     icon: "./app/img/icon.png",
   });
 
+  if(trialIsOn) {
+    trial = createTrialTime();
+  }
+
   win.loadFile("./app/index.html");
 
   win.on("closed", () => {
@@ -187,20 +185,19 @@ const createWindow = async () => {
     win.webContents.send("log-data", data);
   });
 
+  const createArduinoDevice = require(`./game/arduino.js`);
+  let arduino = createArduinoDevice();
 
-const createArduinoDevice = require(`./game/arduino.js`);
-let arduino = createArduinoDevice();
+  let tmBot = {
+    bot: null,
+    ctx: null,
+    stats: [],
+    reconnects: [],
+    ss: [],
+    replies: []
+  };
 
-let tmBot = {
-  bot: null,
-  ctx: null,
-  stats: [],
-  reconnects: [],
-  ss: [],
-  replies: []
-};
-
-const connectToTelegram = (key) => {
+  const connectToTelegram = (key) => {
   tmBot.bot = new Telegraf(key);
   const helpMessage = `
 <b>🟢 Start</b> - Starts the bot.\n
@@ -268,13 +265,7 @@ You can also write in this chat directly to do:
 
   return tmBot.bot.launch();
 };
-  let trial;
   ipcMain.on(`onload`, async () => {
-
-    if(trialIsOn) {
-      trial = await createTrialTime();
-    }
-
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
@@ -312,6 +303,7 @@ You can also write in this chat directly to do:
     }
 
     let { version } = getJson('../package.json');
+
     if(trialIsOn) {
       let trialTimeLeft = Math.round((trial.timeLeft() / 1000 / 60) * 10) / 10;
       if(trialTimeLeft < 0) trialTimeLeft = 0;
@@ -319,7 +311,6 @@ You can also write in this chat directly to do:
     } else {
       win.webContents.send('set-version', version);
     }
-
 
     await new Promise(function(resolve, reject) {
       setTimeout(resolve, 350);
@@ -357,7 +348,6 @@ By pressing "Accept" you agree to everything stated above.`,
       log.warn("The bot detected more than 1 display: use both the game and the bot on the primary one.")
     }
   });
-
   win.once("ready-to-show", () => {
     //win.openDevTools({mode: `detach`});
     win.show();

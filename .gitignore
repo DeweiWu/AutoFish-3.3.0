@@ -1,5 +1,6 @@
 package-lock.json
 forge.config.js
+obfuscator.js
 random.js
 eng.traineddata
 # Logs
