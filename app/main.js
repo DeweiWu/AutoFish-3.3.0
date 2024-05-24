@@ -268,8 +268,13 @@ You can also write in this chat directly to do:
 
   return tmBot.bot.launch();
 };
-
+  let trial;
   ipcMain.on(`onload`, async () => {
+
+    if(trialIsOn) {
+      trial = await createTrialTime();
+    }
+
     const profile = getProfile().selected;
     const config = getJson(`./config/${profile}/bot.json`);
     const settings = getJson(`./config/${profile}/settings.json`);
@@ -307,7 +312,14 @@ You can also write in this chat directly to do:
     }
 
     let { version } = getJson('../package.json');
-    win.webContents.send('set-version', version, trialIsOn);
+    if(trialIsOn) {
+      let trialTimeLeft = Math.round((trial.timeLeft() / 1000 / 60) * 10) / 10;
+      if(trialTimeLeft < 0) trialTimeLeft = 0;
+      win.webContents.send('set-version', version, `(${trialTimeLeft} min)`);
+    } else {
+      win.webContents.send('set-version', version);
+    }
+
 
     await new Promise(function(resolve, reject) {
       setTimeout(resolve, 350);
@@ -479,14 +491,15 @@ By pressing "Accept" you agree to everything stated above.`,
     }
 
     const {startBots, stopBots} = await createBots(games, log, tmBot, arduino);
-    let trial = await createTrialTime();
 
     const stopAppAndBots = () => {
+
       if(trialIsOn) {
         trial.stop();
-        log.setState(true);
-        log.warn(`${Math.round((trial.timeLeft() / 1000 / 60) * 10) / 10} min. of your free trial has left. `);
-        log.setState(false);
+        let { version } = getJson('../package.json');
+        let trialTimeLeft = Math.round((trial.timeLeft() / 1000 / 60) * 10) / 10;
+        if(trialTimeLeft < 0) trialTimeLeft = 0;
+        win.webContents.send('set-version', version, `(${trialTimeLeft} min)`);
       }
 
       if(config.patch[settings.game].startByFishingKey) {
