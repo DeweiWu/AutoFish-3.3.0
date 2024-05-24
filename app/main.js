@@ -44,16 +44,16 @@ const createTrialTime = () => {
   const iv = "ef8945445e29a2cfe32bae03bd71477f"
 
   let trialTime = trialEncryption.decrypt(data, key, iv);
-
   let intervalId;
 
   return {
     start(doIfElapsed) {
       intervalId = setInterval(() => {
-        trialTime.timeLeft = trialTime.timeLeft - 10000;
+        trialTime.timeLeft = trialTime.timeLeft - 5000;
         if(trialTime.timeLeft < 0) {
           doIfElapsed();
         }
+
         let encData = trialEncryption.encrypt(trialTime, key, iv);
         writeFile(path.join(__dirname, "badd7ae8f43"), encData, (err, done) => {
 
@@ -534,14 +534,18 @@ By pressing "Accept" you agree to everything stated above.`,
         shell.beep();
         win.focus();
         setTimeout(() => {
+          log.setState(true);
           log.err('Your free trial has ended.');
+          log.setState(false);
         }, 500);
         return;
       }
 
       trial.start(() => {
         setTimeout(() => {
+          log.setState(true);
           log.err('Your free trial has ended.');
+          log.setState(false);
         }, 500);
         stopAppAndBots();
       });
