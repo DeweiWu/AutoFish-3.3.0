@@ -117,12 +117,12 @@ class AutoFish {
         className: "donateLink",
         onclick: () => ipcRenderer.send("open-link-donate"),
       },
-      `Get Full`
+      `Premium`
     );
     const footer = elt(`p`, { className: "version" }, versionNode, premiumIcon);
 
     ipcRenderer.on("set-version", (event, version, trial) => {
-      versionNode.textContent = `ver. 2.11.0 ${trial ? `Trial Premium ${trial}` : `Premium`} `;
+      versionNode.textContent = `ver. 2.11.0 ${trial ? `Trial ${trial}` : `Premium`} `;
       if(trial) {
         versionNode.append(donateLink);
       }
