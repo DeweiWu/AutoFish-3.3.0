@@ -5,199 +5,111 @@ const isInLimits = ({ x, y }, { width, height }) => {
 };
 
 const createRgb = ({ data, width, height }) => {
-  let pixelData = Array.from(data.values());
-  let bitmap = [];
-  for (let y = 0, i = 0; y < height; y++) {
-    let row = [];
-    for (let x = 0; x < width; x++, i += 4) {
-      let r = pixelData[i];
-      let g = pixelData[i + 1];
-      let b = pixelData[i + 2];
-      row[x] = [r, g, b];
-    }
-    bitmap[y] = row;
-  }
+  const getPixelIndex = (x, y) => (y * width + x) * 4;
 
   return {
     getBitmap() {
-      return {data: Buffer.from(bitmap.flatMap((v) => v).flatMap(v => v)), width, height};
+      return { data, width, height };
     },
 
     colorAt(pos) {
       if (isInLimits(pos, { width, height })) {
-        return bitmap[pos.y][pos.x];
+        let idx = getPixelIndex(pos.x, pos.y);
+        return [data[idx], data[idx + 1], data[idx + 2]];
       } else {
         return [0, 0, 0];
       }
     },
 
     saturate(rs, gs, bs) {
-      bitmap = bitmap.map(y => y.map(([r, g, b]) => [r + rs, g + gs, b + bs]));
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          let idx = getPixelIndex(x, y);
+          data[idx] = Math.min(255, data[idx] + rs);
+          data[idx + 1] = Math.min(255, data[idx + 1] + gs);
+          data[idx + 2] = Math.min(255, data[idx + 2] + bs);
+        }
+      }
     },
 
     cutOut(exception) {
       exception.forEach(({ x, y }) => {
-        if(isInLimits({ x, y }, { width, height })) {
-          bitmap[y][x] = [0, 0, 0];
+        if (isInLimits({ x, y }, { width, height })) {
+          let idx = getPixelIndex(x, y);
+          data[idx] = 0;
+          data[idx + 1] = 0;
+          data[idx + 2] = 0;
         }
-      })
+      });
     },
 
     findColors({ isColor, atFirstMet, task, limit, direction, saveColor }) {
       let colors = [];
+      if (!direction) direction = `normal`;
 
-      if(!direction) direction = `normal`;
+      const checkAndPushColor = (x, y) => {
+        let pos = new Vec(x, y);
+        let idx = getPixelIndex(x, y);
+        let color = [data[idx], data[idx + 1], data[idx + 2]];
+        if (isColor(color)) {
+          if (limit != null) {
+            limit--;
+            if (limit < 0) return null;
+          }
+          if (!task || task(pos, color, this)) {
+            if (atFirstMet) {
+              return saveColor ? { pos, color } : pos;
+            } else {
+              colors.push(saveColor ? { pos, color } : pos);
+            }
+          }
+        }
+        return null;
+      };
 
       switch (direction) {
-        case `normal`: {
+        case `normal`:
           for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
-              let pos = new Vec(x, y);
-              let color = bitmap[y][x];
-              if (isColor(color)) {
-                if (limit != null) {
-                  limit--;
-                  if (limit < 0) {
-                    return null;
-                  }
-                }
-
-                if (!task || task(pos, color, this)) {
-                  if (atFirstMet) {
-                    if(saveColor) {
-                      return {pos, color}
-                    } else {
-                      return pos;
-                    }
-                  } else {
-                    if(saveColor) {
-                      colors.push({pos, color})
-                    } else {
-                      colors.push(pos);
-                    }
-                  }
-                }
-              }
+              let result = checkAndPushColor(x, y);
+              if (result) return result;
             }
           }
           break;
-        }
-
-        case `normalright`: {
+        case `normalright`:
           for (let y = 0; y < height; y++) {
-            for (let x = width - 1; x > -1; x--) {
-              let pos = new Vec(x, y);
-              let color = bitmap[y][x];
-              if (isColor(color)) {
-                if (limit != null) {
-                  limit--;
-                  if (limit < 0) {
-                    return null;
-                  }
-                }
-
-                if (!task || task(pos, color, this)) {
-                  if (atFirstMet) {
-                    if(saveColor) {
-                      return {pos, color}
-                    } else {
-                      return pos;
-                    }
-                  } else {
-                    if(saveColor) {
-                      colors.push({pos, color})
-                    } else {
-                      colors.push(pos);
-                    }
-                  }
-                }
-              }
+            for (let x = width - 1; x >= 0; x--) {
+              let result = checkAndPushColor(x, y);
+              if (result) return result;
             }
           }
           break;
-        }
-
-        case `reverse`: {
-          for (let y = height - 1; y > -1; y--) {
+        case `reverse`:
+          for (let y = height - 1; y >= 0; y--) {
             for (let x = 0; x < width; x++) {
-              let pos = new Vec(x, y);
-              let color = bitmap[y][x];
-              if (isColor(color)) {
-                if (limit != null) {
-                  limit--;
-                  if (limit < 0) {
-                    return null;
-                  }
-                }
-
-                if (!task || task(pos, color, this)) {
-                  if (atFirstMet) {
-                    if(saveColor) {
-                      return {pos, color}
-                    } else {
-                      return pos;
-                    }
-                  } else {
-                    if(saveColor) {
-                      colors.push({pos, color})
-                    } else {
-                      colors.push(pos);
-                    }
-                  }
-                }
-              }
+              let result = checkAndPushColor(x, y);
+              if (result) return result;
             }
           }
           break;
-        }
         case `center`: {
-          let center = {x: Math.floor(width / 2), y: Math.floor(height / 2)};
-          let stepDiffX = 1;
-          let stepDiffY = 1;
-
-          if(height > width) stepDiffX = width / height;
-          if(width > height) stepDiffY = height / width;
+          let center = { x: Math.floor(width / 2), y: Math.floor(height / 2) };
+          let stepDiffX = 1, stepDiffY = 1;
+          if (height > width) stepDiffX = width / height;
+          if (width > height) stepDiffY = height / width;
           for (let step = 1; step < Math.floor(Math.max(height, width) / 2); step++) {
-            for(let angle = 0; angle < Math.PI * 2; angle += ((Math.PI * 2 / 8) / step)) {
+            for (let angle = 0; angle < Math.PI * 2; angle += ((Math.PI * 2 / 8) / step)) {
               let x = center.x + Math.round(Math.cos(angle) * (step * stepDiffX));
               let y = center.y + Math.round(Math.sin(angle) * (step * stepDiffY));
-
-              let pos = new Vec(x, y);
-              if(!bitmap[y] || !bitmap[y][x]) {
-                continue;
-              }
-              let color = bitmap[y][x];
-              if (isColor(color)) {
-                if (limit != null) {
-                  limit--;
-                  if (limit < 0) {
-                    return null;
-                  }
-                }
-
-                if (!task || task(pos, color, this)) {
-                  if (atFirstMet) {
-                    if(saveColor) {
-                      return {pos, color}
-                    } else {
-                      return pos;
-                    }
-                  } else {
-                    if(saveColor) {
-                      colors.push({pos, color})
-                    } else {
-                      colors.push(pos);
-                    }
-                  }
-                }
+              if (x >= 0 && y >= 0 && x < width && y < height) {
+                let result = checkAndPushColor(x, y);
+                if (result) return result;
               }
             }
           }
-
           break;
         }
       }
-
 
       return colors.length ? colors : null;
     },
