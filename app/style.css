@@ -581,9 +581,10 @@ input[type=range].threshold_disabled::-webkit-slider-thumb {
 }
 
 .profiles {
-  width: 150px;
+  width: 217px;
   height: 20px;
   margin-top: 7px;
+  margin-right: 8px;
   display: flex;
   justify-content: space-around;
 }
@@ -614,7 +615,7 @@ input[type=range].threshold_disabled::-webkit-slider-thumb {
 
 
 .profiles select, .profiles input[type=text].profiles_text {
-  width: 100px;
+  width: 127px;
 }
 
 .profiles input[type=text].profiles_text:focus {
@@ -630,6 +631,20 @@ input[type=range].threshold_disabled::-webkit-slider-thumb {
 
 .profile_button_remove {
   background-image: url('img/remove.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.profile_button_save {
+  background-image: url('img/save.png');
+  background-size: 12px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.profile_button_load {
+  background-image: url('img/load.png');
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;

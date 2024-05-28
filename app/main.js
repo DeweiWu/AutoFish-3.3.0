@@ -22,7 +22,7 @@ const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
 const createPointZone = require(`./wins/pointZone/main.js`);
 const trialEncryption = require('./../trialEnc.js')
-
+const { saveArchive, loadArchive } = require('./utils/saveArchive.js');
 
 const getJson = (jsonPath) => {
   return JSON.parse(readFileSync(path.join(__dirname, jsonPath), "utf8"));
@@ -291,7 +291,7 @@ You can also write in this chat directly to do:
       .then((msg) => log.ok(msg))
       .catch((err) => log.err(err))
     } else {
-      log.warn(`You don't use Arduino board, the input commands of the bot might be detectable!`);
+      log.warn(`You don't use an Arduino board, the input commands of the bot might be detectable!`);
     }
 
     if(tmKey) {
@@ -299,7 +299,7 @@ You can also write in this chat directly to do:
       .then(() => log.ok(`Connected to Telegram!`))
       .catch(e => log.err(`Telegram error: ${e.message}`))
     } else {
-      log.warn(`Provide a Telegram Token! (from BotFather)`);
+      log.warn(`Telegram isn't connected. Provide a Telegram token.`);
     }
 
     let { version } = getJson('../package.json');
@@ -569,6 +569,14 @@ By pressing "Accept" you agree to everything stated above.`,
     let settings = getJson(`./config/${profile.selected}/settings.json`);
     let config = getJson(`./config/${profile.selected}/bot.json`);
     globalShortcut.unregister(settings.fishingKey);
+  })
+
+  ipcMain.on('save-config', () => {
+    saveArchive(log);
+  });
+
+  ipcMain.handle('load-config', async () => {
+    return await loadArchive(log);
   })
 
   ipcMain.on("open-link-youtube", () =>

@@ -11,13 +11,17 @@ const renderLogo = () => {
 const renderProfiles = (profiles) => {
   let select = elt(`select`, null, ...profiles.users.map(profile => elt(`option`, {selected: profile == profiles.selected}, profile)))
 
-  let add = elt(`input`, {type: `button`, style: `color: green`, className: `profile_button profile_button_add`, state: `+`});
-  let remove = elt(`input`, {type: `button`, style: `color: red`, className: `profile_button profile_button_remove`, state: `x`});
+  let add = elt(`input`, {type: `button`, title: `Add a new profile`, style: `color: green`, className: `profile_button profile_button_add`, state: `+`});
+  let remove = elt(`input`, {type: `button`, title: `Delete this profile`, style: `color: red`, className: `profile_button profile_button_remove`, state: `x`});
+  let save = elt(`input`, {type: `button`, title: `Save config`,style: `color: green`, onclick() {
+    ipcRenderer.send('save-config');
+  }, className: `profile_button profile_button_save`});
+  let load = elt(`input`, {type: `button`, title: `Load config`, style: `color: green`, className: `profile_button profile_button_load`});
 
-  let dom = elt(`div`, {className: `profiles`}, select, add, remove);
+  let dom = elt(`div`, {className: `profiles`}, select, add, remove, save, load);
   let value = ``;
 
-  return {value, dom, select, add, remove};
+  return {value, dom, select, add, save, load, remove};
 }
 
 const loggerMemory = [];
@@ -101,6 +105,14 @@ class AutoFish {
       inputText.focus();
       inputText.addEventListener(`blur`, inputTextDone);
     });
+
+    profile.load.addEventListener(`click`, async () => {
+      await ipcRenderer.invoke("load-config");
+      profile.select.value = 'Default'; 
+      await ipcRenderer.invoke("change-selected-profile", 'Default');
+      this.settings.config = await ipcRenderer.invoke("get-settings");
+      this.settings.reRender();
+    })
 
     profile.select.addEventListener(`change`, async (event) => {
       await ipcRenderer.invoke("change-selected-profile", event.target.value)
