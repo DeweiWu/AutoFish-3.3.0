@@ -37,9 +37,22 @@ const {
 
 const { createTimer } = require("../utils/time.js");
 
-const sleep = (time) => {
+const sleep = (time, toDo, every = 100) => {
   return new Promise((resolve) => {
-    setTimeout(resolve, time);
+    if(toDo) {
+      let startTime = Date.now();
+      setTimeout(function repeat() {
+        toDo().then(() => {
+          if((Date.now() - startTime) < time) {
+            setTimeout(repeat, every);
+          } else {
+            resolve();
+          }
+        })
+      }, every);
+    } else {
+      setTimeout(resolve, time);
+    }
   });
 };
 
@@ -1689,16 +1702,20 @@ if(lootWindowPatch.exitButton) {
     if (state.status == "initial") {
       await sleep(250);
       if (!config.ignorePreliminary && await notificationZone.check("error")) {
-        throw new Error(`Game error notification occured on casting fishing.`);
+        throw new Error(`Game error notification occured on casting fishing. Turn on "Ignore Preliminary Checks" in Advanced Settings to ignore this error.`);
       } else {
         state.status = "working";
       }
     }
 
     if(settings.checkLogic == `pixelmatch`) {
-      await sleep(2500);
+      await sleep(2500, async () => {
+        await hoverMouse(0.75);
+      });
     } else {
-      await sleep(random(config.castDelay, config.castDelay + 500));
+      await sleep(random(config.castDelay, config.castDelay + 500), async () => {
+        await hoverMouse(0.75);
+      });
     }
   };
 
@@ -1746,6 +1763,18 @@ if(lootWindowPatch.exitButton) {
   };
   findBobber.memory = null;
   findBobber.maxAttempts = config.maxAttempts;
+
+  const hoverMouse = async (chance = .97) => {
+    if(!config.likeHumanHover || config.arduino || config.multipleWindows) {
+      return;
+    }
+
+    let cPos = mouse.getPos();
+    if(Math.random() > chance) {
+      await moveTo({pos: cPos});
+      return true;
+    }
+  }
 
   const checkBobber = async (pos, state) => {
     checkBobberTimer.start();
@@ -1817,7 +1846,9 @@ if (settings.soundDetection) {
     }
 
   }
-    await sleep(config.checkingDelay);
+    if(!(await hoverMouse())) {
+      await sleep(config.checkingDelay);
+    }
 }
 
 };
@@ -2042,7 +2073,9 @@ if (settings.soundDetection) {
     }
 
     if (config.sleepAfterHook && random(0, 100) < config.sleepAfterHookChance) {
-      await sleep(random(config.afterHookDelay.from, config.afterHookDelay.to));
+      await sleep(random(config.afterHookDelay.from, config.afterHookDelay.to), async () => {
+        await hoverMouse(.97);
+      });
     }
     return caught;
   };

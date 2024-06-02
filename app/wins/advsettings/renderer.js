@@ -133,6 +133,17 @@ const renderLikeHumanFineTune = ({likeHumanFineTune, arduino, likeHuman}) => {
   return dom;
 }
 
+const renderLikeHumanHover = ({likeHumanHover = true, arduino, likeHuman}) => {
+  let dom = elt("input", {
+    type: "checkbox",
+    disabled: !likeHuman || arduino,
+    className: "option",
+    checked: arduino ? false : likeHumanHover,
+    name: "likeHumanHover",
+  });
+  return dom;
+}
+
 const renderCastDelay = ({castDelay}) => {
   return elt('input', {type: `number`, name: `castDelay`, value: castDelay})
 };
@@ -1135,47 +1146,23 @@ const renderSettings = (config) => {
   wrapInLabel(`Start Bot By Fishing Key`, renderStartByFishingKey(config), `Your Fishing Key (the same assigned in the bot) in the game will start the bot and you don't need to alt-tab to start it manually, you still need to stop it either by Stop Key or manually (the bot won't stop if you just move away as it happens in the game). Warning! The key you assigned for Fishing Key will be blocked on your machine and if used will start the bot. Turn this feature on only after you have configured all the settings.`),
   wrapInLabel(`Human-like Movement: `, renderLikeHuman(config), `The bot will move your mouse in a human way: random speed and with a slight random deviation in the movement. Otherwise it will move the mouse instantly, which might be a better option if you use a lot of windows.`),
   wrapInLabel(`Human-like Accuracy: `, renderLikeHumanFineTune(config), `The bot will "fine-tune" the mouse position after moving to the bobber, imitating a human-like way of reaching the mouse-movement target position.`),
+  wrapInLabel(`Human-like Hovering: `, renderLikeHumanHover(config), `The bot will hover over the bobber from time to time to simulate slight movements when the hand rests on the mouse. This feature might impact performance.`),
+  wrapInLabel(`Hide Bot Window After Start: `, renderHideWin(config), `The window of the bot will be hidden and you will be able to focus it only after using stop key.`),
   wrapInLabel(
     "Use Shift+Click: ",
     renderShiftClick(config),
     `Use shift + click instead of Auto Loot. Check this option if you don't want to turn on Auto Loot option in the game. Your "Loot key" in the game should be assigned to shift.`
   ),
     wrapInLabel(`Auto-Confirm SB Items: `, renderCheckConfirm(config), `The bot will check for confirmation window after every catch and will auto-confirm soulbound items (even in AutoLoot mode).`),
-  wrapInLabel(`Attempts Limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
-  wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `ONLY FOR MANUAL MODE. After attempts limit the bot will dynamically change threshold by the provided value.`),
-  wrapInLabel(`Catch With Mouse Button: `, renderCatchFishButton(config), `Choose the button you want the bot to click when it wants to catch the fish.`),
   ),
 
-  elt(`p`, {className: `settings_header advanced_settings_header`}, `🖱️`), elt(`span`, {className: `advanced_settings_header_text`}, `Mouse & Keyboard`),
-  elt(`div`, {className: `settings_section`},
-    wrapInLabel(`Random Mouse Speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
-    wrapInLabel(`Random Mouse Curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
-    wrapInLabel(`Highlight Bobber (%): `, renderHighlightPercent(config), `How often the bot should highlight the bobber before checking on it (if in your game the bobber become brigther or more colourfull after highlighting, then change this value to 100% if you don't care for randomness)`),
-    wrapInLabel(`Input Library: `, renderLibraryTypeInput(config), `Different ways of simulating keyboard and mouse actions.`),
-    wrapInLabel(`Mouse/keyboard Random Delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
+
+    elt(`p`, {className: `settings_header`}, `🖥️`), elt(`span`, {className: `advanced_settings_header_text`}, `Window`),
+    elt(`div`, {className: `settings_section`},
+    wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
   ),
 
-  elt(`p`, {className: `settings_header`}, `🖥️`), elt(`span`, {className: `advanced_settings_header_text`}, `Window`),
-  elt(`div`, {className: `settings_section`},
-  wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
-  wrapInLabel(`Hide bot after start: `, renderHideWin(config), `The window of the bot will be hidden and you will be able to focus it only after using stop key.`),
-),
 
-  elt("p", {className: 'settings_header advanced_settings_header'}, "🔎"),  elt(`span`, {className: `advanced_settings_header_text`}, `Filter`),
-  elt(
-    "div",
-    { className: "settings_section" },
-    wrapInLabel("Use Filter: ",
-      renderWhitelist(config),
-      `The bot will loot only items in the whitelist. Before using, turn off AutoLoot in the game and set UI Scale to default. The names of the items must be exactly the same as in the game, separated by comma. `
-    ),
-    wrapInLabel("Mode: ", renderFilterType(config), `Filter Mode will decide whether to pick or to ignore items in the list.`),
-    wrapInLabel("Language: ", renderWhitelistLanguage(config), `If it's the first time you using a language from the list, wait until the bot downloads the tesseract data for your language. `),
-    wrapInLabel(`Close Loot Window With: `, renderCloseLoot(config), `The bot will use mouse/esc or randomly one of them to close the loot window while filtering the loot.`),
-    wrapInLabel("Loot Window At Mouse: ", renderFilterAtMouse(config), `Loot window at mouse will tell the bot whether it should check the loot window at mouse or the default loot window at the left side of the screen.`),
-    wrapInLabel("Filter Confidence (%): ", renderFilterConfidence(config), `Confidence determines how close and similar recognized words should be to the provided ones.`),
-    wrapInLabel("", renderWhitelistWords(config))
-  ),
   elt(`p`, {className: `settings_header`}, `🎣`), elt(`span`, {className: `advanced_settings_header_text`}, `Lures`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),
   elt(`div`, {className: `settings_section`},
     wrapInLabel(
@@ -1201,14 +1188,44 @@ const renderSettings = (config) => {
   wrapInLabel(`Omit Initial Application:`, renderLuresOmitInitial(config), `Don't apply lures at the beggining, wait until timer elapses.`),
   wrapInLabel(`Auto-Confirm Lures:`, renderConfirmLures(config), `If you want the bot to apply lures earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same, in that case you don't need to turn on this option.`)
   ),
-  elt(`p`, {className: `settings_header`}, `⏲️`), elt(`span`, {className: `advanced_settings_header_text`}, `Timer`),
-  elt('div', {className: "settings_section"},
-  wrapInLabel("Use Timer: ", renderTimer(config),`It's timer. It's too dificult to explain here, so you can ask AI what is it exactly.`),
-  wrapInLabel("Time (min): ", renderTimerTime(config), `The bot will work for the given period of minutes.`),
-  wrapInLabel("Do After Timer: ", renderAfterTimer(config),`What the bot should do after the timer elapses (you can set it in the main window)`),
-  wrapInLabel("HS Key: ", renderHsKey(config), `A key your HS is assigned.`),
-  wrapInLabel("HS Delay (ms): ", renderHsKeyDelay(config), `How long it take to use HS`),
-  wrapInLabel("Shut Down Computer After Quitting: ", renderShutDown(config), `The bot will press Left Windows Key and launch command line, after that it will write shutdown -s -t 10 command which will shut down your computer in 10 seconds. `),
+
+
+    elt("p", {className: 'settings_header advanced_settings_header'}, "🔎"),  elt(`span`, {className: `advanced_settings_header_text`}, `Filter`),
+    elt(
+      "div",
+      { className: "settings_section" },
+      wrapInLabel("Use Filter: ",
+        renderWhitelist(config),
+        `The bot will loot only items in the whitelist. Before using, turn off AutoLoot in the game and set UI Scale to default. The names of the items must be exactly the same as in the game, separated by comma. `
+      ),
+      wrapInLabel("Mode: ", renderFilterType(config), `Filter Mode will decide whether to pick or to ignore items in the list.`),
+      wrapInLabel("Language: ", renderWhitelistLanguage(config), `If it's the first time you using a language from the list, wait until the bot downloads the tesseract data for your language. `),
+      wrapInLabel(`Close Loot Window With: `, renderCloseLoot(config), `The bot will use mouse/esc or randomly one of them to close the loot window while filtering the loot.`),
+      wrapInLabel("Loot Window At Mouse: ", renderFilterAtMouse(config), `Loot window at mouse will tell the bot whether it should check the loot window at mouse or the default loot window at the left side of the screen.`),
+      wrapInLabel("Filter Confidence (%): ", renderFilterConfidence(config), `Confidence determines how close and similar recognized words should be to the provided ones.`),
+      wrapInLabel("", renderWhitelistWords(config))
+    ),
+
+
+    elt(`p`, {className: `settings_header`}, `⏲️`), elt(`span`, {className: `advanced_settings_header_text`}, `Timer`),
+    elt('div', {className: "settings_section"},
+    wrapInLabel("Use Timer: ", renderTimer(config),`It's timer. It's too dificult to explain here, so you can ask AI what is it exactly.`),
+    wrapInLabel("Time (min): ", renderTimerTime(config), `The bot will work for the given period of minutes.`),
+    wrapInLabel("Do After Timer: ", renderAfterTimer(config),`What the bot should do after the timer elapses (you can set it in the main window)`),
+    wrapInLabel("HS Key: ", renderHsKey(config), `A key your HS is assigned.`),
+    wrapInLabel("HS Delay (ms): ", renderHsKeyDelay(config), `How long it take to use HS`),
+    wrapInLabel("Shut Down Computer After Quitting: ", renderShutDown(config), `The bot will press Left Windows Key and launch command line, after that it will write shutdown -s -t 10 command which will shut down your computer in 10 seconds. `),
+    ),
+
+
+  elt(`p`, {className: `settings_header advanced_settings_header`}, `🖱️`), elt(`span`, {className: `advanced_settings_header_text`}, `Mouse & Keyboard`),
+  elt(`div`, {className: `settings_section`},
+    wrapInLabel(`Random Mouse Speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
+    wrapInLabel(`Random Mouse Curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
+    wrapInLabel(`Highlight Bobber (%): `, renderHighlightPercent(config), `How often the bot should highlight the bobber before checking on it (if in your game the bobber become brigther or more colourfull after highlighting, then change this value to 100% if you don't care for randomness)`),
+    wrapInLabel(`Input Library: `, renderLibraryTypeInput(config), `Different ways of simulating keyboard and mouse actions.`),
+    wrapInLabel(`Catch With Mouse Button: `, renderCatchFishButton(config), `Choose the button you want the bot to click when it wants to catch the fish.`),
+    wrapInLabel(`Mouse/Keyboard Random Delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
   ),
 
     elt(`p`, {className: `settings_header`}, `🎯`), elt(`span`, {className: `advanced_settings_header_text`}, `Miss On Purpose`),
@@ -1224,7 +1241,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Random Log Out For: (min)`, renderLogOutFor(config), `How long the bot should be stayed logged out. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
     wrapInLabel(`Random Log Out After: (min)`, renderLogOutAfter(config), `How long the bot should wait before starting fishing again. The bot will generate a random number from the provided values. The number is generated every time the bot logs out: so the next time the bot logs out, it will be always different (randomly generated).`),
     wrapInLabel(`Use Macro: `, renderLogOutMacro(config), `Use your own macro in the game instead of the bot typing /logout command.`),
-    wrapInLabel(`Do After: `, renderLogOutDoAfter(config), `Press the key after logging in.`)
+    wrapInLabel(`Do After Logging In: `, renderLogOutDoAfter(config), `Press the key after logging in.`)
     ),
     elt(`p`, {className: `settings_header`}, `💤`), elt(`span`, {className: `advanced_settings_header_text`}, `Random Sleep`),
     elt('div', {className: "settings_section"},
@@ -1357,6 +1374,8 @@ const renderSettings = (config) => {
   wrapInLabel(`Visual Library: `, renderLibraryType(config), `If something doesn't work with default library you can choose another one. Mind that keysender works only with dx11 and will be force for Multiple Fishing or Alt-Tab Fishing modes.`),
   wrapInLabel(`Check Mode: `, renderCheckLogic(config), `check mode`),
   wrapInLabel(`Ignore Preliminary Checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
+  wrapInLabel(`Cast Attempts Limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
+  wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `ONLY FOR MANUAL MODE. After attempts limit the bot will dynamically change threshold by the provided value.`),
   wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting. If you use some special addons which turn off loot window completely, you can set this value to 0 to make the bot work faster.`),
   wrapInLabel(`Max Check Time (sec):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do After Max Check Time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
