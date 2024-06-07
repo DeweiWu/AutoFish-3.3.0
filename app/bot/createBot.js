@@ -590,9 +590,9 @@ if(lootWindowPatch.exitButton) {
     }
   }, []);
 
-
   spares = spares.map((spare) => {
       const applySpareDummy = (spare) => async () => {
+
         switch(spare.type) {
           case "Pixel Color TRUE": {
             let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
@@ -622,9 +622,18 @@ if(lootWindowPatch.exitButton) {
             }
             break;
           }
+
+          case "Chance": {
+            let chance = Math.random() < (spare.chance / 100);
+            if(chance) {
+              return "break";
+            }
+
+            break;
+          }
         }
 
-        for(let times = 0; times < Number(spare.repeat); times++) {
+        for(let times = 0; times < Number(spare.repeat || 1); times++) {
           await action(async () => {
           switch(spare.type) {
             case "Print Text": {
@@ -659,6 +668,26 @@ if(lootWindowPatch.exitButton) {
               }
               await mouse.toggle('left', true, delay);
               await mouse.toggle('left', false, delay)
+              break;
+            }
+
+            case "Drag Mouse By Right": {
+              await mouse.toggle('right', true, delay);
+              await moveTo({pos: {x: spare.x - screenSize.x, y: spare.y - screenSize.y}, randomRange: 3});
+              if (config.reaction) {
+                await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+              }
+              await mouse.toggle('right', false, delay);
+              break;
+            }
+
+            case "Drag Mouse By Left": {
+              await mouse.toggle('left', true, delay);
+              await moveTo({pos: {x: spare.x - screenSize.x, y: spare.y - screenSize.y}, randomRange: 3});
+              if (config.reaction) {
+                await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+              }
+              await mouse.toggle('left', false, delay);
               break;
             }
 
@@ -729,7 +758,6 @@ if(lootWindowPatch.exitButton) {
 
       return applySpare;
   })
-
 
   const randomSleep = async () => {
     let likelihood = Math.random() * 100;

@@ -570,7 +570,7 @@ const renderLuresDelayMin = ({lures, luresDelayMin}) => {
 
 const renderSkills = ({aggroCheck, skills}) => {
 
-  const addButton = elt('input', {type: 'button', className: `spares-addButton ${!aggroCheck ? `disabledButtonPremium` : ``}`, onclick() {
+  const addButton = elt('input', {type: 'button', className: `spares-addButton ${!aggroCheck ? `disabledButtonPremium add_button_disabled` : ``}`, onclick() {
     if(!aggroCheck) return;
     let key = elt('input', {type: 'text', value: `1`, className: "spares-key", name: `spareKey`, "data-skills": "key"});
     key.setAttribute('readonly', true);
@@ -662,8 +662,8 @@ const renderAggroCheckControlBy = ({aggroCheck, aggroCheckControlBy}) => {
 /* REAL SPARES */
 const renderSpares = ({spares}) => {
 
-  const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
-  const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE'];
+  const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Drag Mouse By Right", "Drag Mouse By Left", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
+  const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE', 'Chance'];
   const addButton = elt('input', {type: 'button', className: "spares-addButton", onclick() {
     let key = elt('input', {type: 'text', value: `1`, className: "spares-key", name: `spareKey`,"data-spares": "key"});
     key.setAttribute('readonly', true);
@@ -674,6 +674,10 @@ const renderSpares = ({spares}) => {
     const text = elt('input', {type: `text`, className: `spares-text`, style: `display: none`, "data-spares": "text", value: ``})
     const colorPicker = elt('input', {type: `color`, className: `spares-color-picker`, value: rgbToHex(255, 255, 255), "data-spares": "color", style:  `display: none`})
     const precision = elt('input', {type: `number`, value: 100, style: `cursor: help; display: none`, title: `How accurate the color should be`, "data-spares": "precision"})
+
+    const chanceWin = elt(`input`, {type: `number`, value: 100, "data-spares": "chance"})
+    const chanceRange = elt('input', {type: `range`, max: 100, min: 1, step: 1, value: 100, oninput: function() {chanceWin.value = this.value}, "data-spares": "chance"});
+    const chanceContainer =  elt(`div`, {style: `display: none`}, chanceRange, chanceWin);
 
     const coordsButton = elt('input', {type: `button`, style: `display: none`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
@@ -687,7 +691,6 @@ const renderSpares = ({spares}) => {
       })
     }});
 
-
     this.parentNode.insertBefore(elt('form', {className: "spareContainer"},
       elt(`div`, {className: `spare-inner`, style: ``},
         wrapInLabel(``, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"}), ``, 'description-inner'),
@@ -696,7 +699,7 @@ const renderSpares = ({spares}) => {
         elt('optgroup', {label: `Actions`}, ...types.map((type) => elt('option', {value: type}, type))),
         elt('optgroup', {label: `Conditions`}, ...conditions.map((type) => elt('option', {value: type}, type))),
         ),  `Press Key: the bot will press the same key bound to the action in the game.\nMove Mouse: the bot will move your cursor to the provided coordinates on the screen and make a click (if chosen).\nPrint Text: the bot will print the provided text.\nPixel Color: The bot will use the provided pixel on the screen as a condition (positive or negative: true or false) for the next actions. Any following actions should be used with "Execute after action above" option turned on if you need them under this condition.\n`),
-        wrapInLabel(`Key:`, elt('div', null, precision, colorPicker, text, key, x, y, coordsButton), `Same key bound to the action in the game.` ),
+        wrapInLabel(`Key:`, elt('div', null, chanceContainer, precision, colorPicker, text, key, x, y, coordsButton), `Same key bound to the action in the game.` ),
         wrapInLabel(`Auto-confirm Action: `,  elt(`input`, {type: `checkbox`, checked: false, "data-spares": "autoconfirm"}), `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`),
         wrapInLabel(`Omit Initial Application: `, elt(`input`, {type: `checkbox`, checked: false, "data-spares": "omitinitial"}), `Don't apply this action just after the bot started, wait until timer elapses.`),
         wrapInLabel(`Interval (min):`, elt('input', {type: 'number', value: 10, step: 0.1, "data-spares": "repeatTime"}), `Time after which the bot will apply action. The value is in minutes (you can use decimals for smaller values: 0.5)`),
@@ -708,22 +711,30 @@ const renderSpares = ({spares}) => {
   }});
 
   const sparesNodes = spares.map((spare, i) => {
-    const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
-    const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE'];
+    const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Drag Mouse By Right", "Drag Mouse By Left", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
+    const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE', 'Chance'];
     const key = elt('input', {type: 'text', name: `spareKey`, style: `${spare.type == `Press Key` ? `` : `display: none;`}`, value: spare.key, className: "spares-key", "data-spares": "key"});
 
-    const x = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` ||  spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`,  "data-spares": "x", value: spare.x});
-    const y = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click`  || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, "data-spares": "y", value: spare.y})
+    const x = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Drag Mouse By Right` || spare.type == `Drag Mouse By Left` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` ||  spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`,  "data-spares": "x", value: spare.x});
+    const y = elt('input', {type: `number`, style: `${spare.type == `Move Mouse` || spare.type == `Drag Mouse By Right` || spare.type == `Drag Mouse By Left` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click`  || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, "data-spares": "y", value: spare.y})
 
     const text = elt('input', {type: `text`, className: `spares-text`, style: `${spare.type == `Print Text` ? `` : `display: none`}`, "data-spares": "text", value: spare.text})
     const colorPicker = elt('input', {type: `color`, className: `spares-color-picker`, value: spare.color, "data-spares": "color", style: `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `` : `display: none;`}`})
+
+    if(!spare.chance) {
+      spare.chance = 100;
+    }
+
+    const chanceWin = elt(`input`, {type: `number`, value: spare.chance, "data-spares": "chance"})
+    const chanceRange = elt('input', {type: `range`, max: 100, min: 1, step: 1, value: spare.chance, oninput: function() {chanceWin.value = this.value}, "data-spares": "chance"});
+    const chanceContainer =  elt(`div`, {style: `${spare.type == `Chance` ? `` : `display: none;`}`}, chanceRange, chanceWin);
 
     if(spare.precision < 0) spare.precision = 0;
     if(spare.precision > 100) spare.precision = 100;
 
     const precision = elt('input', {type: `number`, value: spare.precision, style: `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `` : `display: none;`} cursor: help; margin-left: 3px;`, title: `How accurate the color should be in %`, "data-spares": "precision"})
 
-    const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
+    const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Drag Mouse By Right` || spare.type == `Drag Mouse By Left` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
         if(!data) {
           return;
@@ -736,6 +747,55 @@ const renderSpares = ({spares}) => {
     }});
 
     key.setAttribute('readonly', true);
+
+    let typeName;
+    let typeHint;
+
+    switch(true) {
+      case spare.type == 'Press Key': {
+        typeName = `Key: `;
+        typeHint = `Same key bound to the action in the game.`;
+        break;
+      }
+
+      case spare.type == `Move Mouse`: {
+        typeName = `Coordinates: `;
+        typeHint = `The bot will move your cursor to the provided coordinates on the screen.`
+        break;
+      }
+
+      case spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click`: {
+        typeName = `Coordinates: `;
+        typeHint = `The bot will move your cursor to the provided coordinates on the screen and make a chosen click.`
+        break;
+      }
+
+      case spare.type == `Drag Mouse By Right` || spare.type == `Drag Mouse By Left`: {
+        typeName = `Coordinates: `;
+        typeHint = `The bot will drag your cursor to the provided coordinates on the screen. Left - left button. Right - right button.`
+        break;
+      }
+
+      case spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`: {
+        typeName = `Coordinates: `;
+        typeHint = `The bot will use the provided pixel on the screen as a condition for the next actions. Any following actions should be used with "Execute after action above" option turned on if you need them under this condition.`;
+        break;
+      }
+
+      case spare.type == `Print Text`: {
+        typeName = `Text: `
+        typeHint = `Text the bot will print. You can combine it with action: enter + print text + action: enter to write something in the chat (or action Move Mouse + Left Click on the chat)`;
+        break;
+      }
+
+      case spare.type == `Chance`: {
+        typeName = `Chance (%): `;
+        typeHint = `The bot will apply any following actions under the condition of the given chance.`;
+        break;
+      }
+
+    }
+
     return elt('form', {className: "spareContainer"},
       elt(`div`, {className: `spare-inner ${spare.execute ? `spare-execute` : ``}`, style: ``},
         wrapInLabel(``, elt('input', { className: "spares-description", value: spare.description, "data-spares": "description"}), ``, 'description-inner'),
@@ -744,15 +804,16 @@ const renderSpares = ({spares}) => {
         elt('optgroup', {label: `Actions`}, ...types.map((type) => elt('option', {selected: type == spare.type}, type))),
         elt('optgroup', {label: `Conditions`}, ...conditions.map((type) => elt('option', {selected: type == spare.type}, type))),
       ), `Press Key: the bot will press the same key bound to the action in the game.\nMove Mouse: the bot will move your cursor to the provided coordinates on the screen and make a click (if chosen).\nPrint Text: the bot will print the provided text.\nPixel Color: The bot will use the provided pixel on the screen as a condition (positive or negative: true or false) for the next actions. Any following actions should be used with "Execute after action above" option turned on if you need them under this condition.\n`),
-        wrapInLabel(spare.type == `Press Key` ? `Key: ` : spare.type == `Move Mouse` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `Coordinates: ` : spare.type == `Print Text` ? `Text: `: ``,
-        elt('div', null, elt(`div`, null, x, y, coordsButton, colorPicker, precision), key, text),
-        `${spare.type == `Press Key` ?
-           `Same key bound to the action in the game.` : spare.type == `Print Text` ? `Text the bot will print. You can combine it with action: enter + print text + action: enter to write something in the chat (or action Move Mouse + Left Click on the chat)` : spare.type == `Move Mouse` ||  spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `The bot will move your cursor to the provided coordinates on the screen and make a click (if chosen).` : spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `The bot will use the provided pixel on the screen as a condition for the next actions. Any following actions should be used with "Execute after action above" option turned on if you need them under this condition.` : ``}`, null, `${spare.type != `Press Key` && spare.type != `Print Text` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` && spare.type != `Pixel Color TRUE` && spare.type != `Pixel Color FALSE` ? `display: none` : ``}`),
-        wrapInLabel(`Auto-confirm Action: `, elt(`input`, {type: `checkbox`, checked: spare.autoconfirm, "data-spares": "autoconfirm"}), `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`, null, `${spare.type == 'Sleep' ? `display: none` : ``}`),
+        wrapInLabel(typeName,
+        elt('div', null, elt(`div`, null, x, y, coordsButton, colorPicker, precision), key, text, chanceContainer),
+        typeHint, null,
+        `${spare.type != `Press Key` && spare.type != `Print Text` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` && spare.type != `Pixel Color TRUE` && spare.type != `Pixel Color FALSE` && spare.type != `Chance` && spare.type != `Drag Mouse By Right` && spare.type != `Drag Mouse By Left` ? `display: none` : ``}`),
+
+        spare.type != `Pixel Color FALSE` && spare.type != `Pixel Color TRUE` && spare.type != `Chance` ? wrapInLabel(`Auto-confirm Action: `, elt(`input`, {type: `checkbox`, checked: spare.autoconfirm, "data-spares": "autoconfirm"}), `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`, null, `${spare.type == 'Sleep' ? `display: none` : ``}`) : ``,
         wrapInLabel(`Omit Initial Application: `, elt(`input`, {type: `checkbox`, disabled: spare.execute, checked: spare.omitinitial, "data-spares": "omitinitial"}), `Don't apply this action just after the bot started`),
         wrapInLabel(`Interval (min): `, elt('input', {type: 'number', disabled: spare.execute, value: spare.repeatTime, step: 0.1, "data-spares": "repeatTime"}), `Time after which the bot will apply action.`),
-        wrapInLabel(`${spare.type == `Sleep` ? `Sleep Time (sec)` : `Delay After Action (sec)`}: `, elt(`input`, {type: `number`, value: spare.delay, "data-spares": "delay"}), `Delay after action.`, null, `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `display: none` : ``}`),
-        wrapInLabel(`Repeat (times): `, elt(`input`, {type: `number`, "data-spares": "repeat", value: spare.repeat}), `How many times the bot should repeat this action consequentially (one after another).`, null, `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` || spare.type == 'Move Mouse' || spare.type == "Move Mouse + Left Click" || spare.type == "Move Mouse + Right Click" || spare.type == "Sleep" ? `display: none` : ``}`),
+        wrapInLabel(`${spare.type == `Sleep` ? `Sleep Time (sec)` : `Delay After Action (sec)`}: `, elt(`input`, {type: `number`, value: spare.delay, "data-spares": "delay"}), `Delay after action.`, null, `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` || spare.type == 'Chance' ? `display: none` : ``}`),
+        spare.type != `Pixel Color FALSE` && spare.type != `Pixel Color TRUE` && spare.type != `Chance` &&  spare.type != `Drag Mouse By Left` && spare.type != `Drag Mouse By Left` ? wrapInLabel(`Repeat (times): `, elt(`input`, {type: `number`, "data-spares": "repeat", value: spare.repeat}), `How many times the bot should repeat this action consequentially (one after another).`, null, `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` || spare.type == 'Move Mouse' || spare.type == "Move Mouse + Left Click" || spare.type == "Move Mouse + Right Click" || spare.type == "Sleep" ? `display: none` : ``}`) : ``,
         elt('input', {type: 'button', className: "spares-removeButton"})
       ),
     )
@@ -976,7 +1037,7 @@ const renderTestSkillsButton = ({aggroCheck, skills}) => {
 };
 
 const renderAggroCheckEnemyName = ({aggroCheck, aggroCheckEnemyName}) => {
-  const winRange = elt(`input`, {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyName, style: `color: white; border: 1px solid grey;  background-image: linear-gradient(to right, rgb(${aggroCheckEnemyName - 50}, 0, 0), rgb(${aggroCheckEnemyName}, 0, 0));`,  name: "aggroCheckEnemyName"})
+  const winRange = elt(`input`, {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyName, style: `color: white; border: 1px solid rgb(180, 180, 180); ${aggroCheck ? `background-image: linear-gradient(to right, rgb(${aggroCheckEnemyName - 50}, 0, 0), rgb(${aggroCheckEnemyName}, 0, 0));` : `background-image: linear-gradient(to right, rgb(${aggroCheckEnemyName + 175 - 50}, 175, 175), rgb(${aggroCheckEnemyName}, 175, 175));`} `,  name: "aggroCheckEnemyName"})
   const range = elt('input', {type: `range`, max: 255, disabled: !aggroCheck, className: `${!aggroCheck ? `threshold_disabled` : ``}`, value: aggroCheckEnemyName, oninput: function() {
     winRange.value = this.value;
     winRange.style = `color: white; border: 1px solid grey;  background-image: linear-gradient(to right, rgb(${this.value - 50}, 0, 0), rgb(${this.value}, 0, 0));`;
@@ -1327,7 +1388,7 @@ const renderSettings = (config) => {
       wrapInLabel('Equip Weapon: ', renderAggroCheckEquip(config), `Equip weapon/armor before attacking. Use your own macro for that.`),
       wrapInLabel('Combat Zone: ', renderCombatZone(config), `The zone in which the bot will look for Enemy Name colors and center your camera relative to the position of the name.`)
     ) : ``,
-      config.aggroCheckDoAfterType == `Attack` ?  elt('p', {style: `font-weight: bold; text-align: center;`}, `Rotation: `) : ``,
+      config.aggroCheckDoAfterType == `Attack` ?  elt('p', {style: `font-weight: bold; text-align: center; margin-bottom: 3px;`}, `Rotation: `) : ``,
       config.aggroCheckDoAfterType == `Attack` ?  renderSkills(config) : ``,
       renderTestSkillsButton(config)
     ),
@@ -1371,9 +1432,9 @@ const renderSettings = (config) => {
 
   elt(`p`, {className: `settings_header settings_header_critical`}, `⚠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Critical`),
   elt('div', {className: "settings_section settings_critical"},
+  wrapInLabel(`Ignore Preliminary Checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
   wrapInLabel(`Visual Library: `, renderLibraryType(config), `If something doesn't work with default library you can choose another one. Mind that keysender works only with dx11 and will be force for Multiple Fishing or Alt-Tab Fishing modes.`),
   wrapInLabel(`Check Mode: `, renderCheckLogic(config), `check mode`),
-  wrapInLabel(`Ignore Preliminary Checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
   wrapInLabel(`Cast Attempts Limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
   wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `ONLY FOR MANUAL MODE. After attempts limit the bot will dynamically change threshold by the provided value.`),
   wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting. If you use some special addons which turn off loot window completely, you can set this value to 0 to make the bot work faster.`),
