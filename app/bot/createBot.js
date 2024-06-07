@@ -729,11 +729,11 @@ if(lootWindowPatch.exitButton) {
           await altTab();
         }
 
-          await sleep(spare.delay * 1000);
+          await sleep(random(spare.delayFrom * 1000, spare.delayTo * 1000));
 
           if (config.reaction) {
-          await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
-        }
+            await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+          }
        }
 
        if(spare.inner) {

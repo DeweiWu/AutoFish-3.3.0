@@ -679,6 +679,8 @@ const renderSpares = ({spares}) => {
     const chanceRange = elt('input', {type: `range`, max: 100, min: 1, step: 1, value: 100, oninput: function() {chanceWin.value = this.value}, "data-spares": "chance"});
     const chanceContainer =  elt(`div`, {style: `display: none`}, chanceRange, chanceWin);
 
+    const delayContainer = elt('div', null, elt('span', {style: `margin-right: 5px`}, `from: `), elt(`input`, {type: `number`, value: 1, "data-spares": "delayFrom"}), elt('span', {style: `margin-right: 5px`}, `to: `), elt(`input`, {type: `number`, value: 3, "data-spares": "delayTo"}))
+
     const coordsButton = elt('input', {type: `button`, style: `display: none`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
         if(!data) {
@@ -703,7 +705,7 @@ const renderSpares = ({spares}) => {
         wrapInLabel(`Auto-confirm Action: `,  elt(`input`, {type: `checkbox`, checked: false, "data-spares": "autoconfirm"}), `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`),
         wrapInLabel(`Omit Initial Application: `, elt(`input`, {type: `checkbox`, checked: false, "data-spares": "omitinitial"}), `Don't apply this action just after the bot started, wait until timer elapses.`),
         wrapInLabel(`Interval (min):`, elt('input', {type: 'number', value: 10, step: 0.1, "data-spares": "repeatTime"}), `Time after which the bot will apply action. The value is in minutes (you can use decimals for smaller values: 0.5)`),
-        wrapInLabel(`Delay After Action (sec):`, elt(`input`, {type: `number`, value: 3, "data-spares": "delay"}), `Delay after action.`),
+        wrapInLabel(`Random Delay After Action (sec):`, delayContainer, `Delay after action.`),
         wrapInLabel(`Repeat (times):`, elt(`input`, {type: `number`, value: 1, "data-spares": "repeat"}), `How many times the bot should repeat this action consequentially (one after another).`),
         elt('input', {type: 'button', className: "spares-removeButton"})
       ),
@@ -711,6 +713,43 @@ const renderSpares = ({spares}) => {
   }});
 
   const sparesNodes = spares.map((spare, i) => {
+
+    if(!spare.chance) {
+      spare.chance = 100;
+    }
+
+    if(spare.repeat == null) {
+      spare.repeat = 1;
+    }
+
+    if(spare.autoconfirm == null) {
+      spare.autoconfirm = false;
+    }
+
+    if(!spare.x) {
+      spare.x = 0;
+    }
+
+    if(!spare.y) {
+      spare.y = 0;
+    }
+
+    if(!spare.key) {
+      spare.key = `1`;
+    }
+
+    if(spare.text == null) {
+      spare.text = ``;
+    }
+
+    if(!spare.color) {
+      spare.color = `#ffffff`
+    }
+
+    if(!spare.precision) {
+      spare.precision = 100;
+    }
+
     const types = ['Press Key', "Move Mouse", "Move Mouse + Left Click", "Move Mouse + Right Click", "Drag Mouse By Right", "Drag Mouse By Left", "Left Click", "Right Click", "Middle Click", "Print Text", "Sleep"];
     const conditions = ['Pixel Color TRUE', 'Pixel Color FALSE', 'Chance'];
     const key = elt('input', {type: 'text', name: `spareKey`, style: `${spare.type == `Press Key` ? `` : `display: none;`}`, value: spare.key, className: "spares-key", "data-spares": "key"});
@@ -721,9 +760,6 @@ const renderSpares = ({spares}) => {
     const text = elt('input', {type: `text`, className: `spares-text`, style: `${spare.type == `Print Text` ? `` : `display: none`}`, "data-spares": "text", value: spare.text})
     const colorPicker = elt('input', {type: `color`, className: `spares-color-picker`, value: spare.color, "data-spares": "color", style: `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `` : `display: none;`}`})
 
-    if(!spare.chance) {
-      spare.chance = 100;
-    }
 
     const chanceWin = elt(`input`, {type: `number`, value: spare.chance, "data-spares": "chance"})
     const chanceRange = elt('input', {type: `range`, max: 100, min: 1, step: 1, value: spare.chance, oninput: function() {chanceWin.value = this.value}, "data-spares": "chance"});
@@ -733,6 +769,8 @@ const renderSpares = ({spares}) => {
     if(spare.precision > 100) spare.precision = 100;
 
     const precision = elt('input', {type: `number`, value: spare.precision, style: `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` ? `` : `display: none;`} cursor: help; margin-left: 3px;`, title: `How accurate the color should be in %`, "data-spares": "precision"})
+
+    const delayContainer = elt('div', null, elt('span', {style: `margin-right: 5px`}, `from: `), elt(`input`, {type: `number`, value: spare.delayFrom, "data-spares": "delayFrom"}), elt('span', {style: `margin-right: 5px`}, `to: `), elt(`input`, {type: `number`, value: spare.delayTo, "data-spares": "delayTo"}))
 
     const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Drag Mouse By Right` || spare.type == `Drag Mouse By Left` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
@@ -793,7 +831,6 @@ const renderSpares = ({spares}) => {
         typeHint = `The bot will apply any following actions under the condition of the given chance.`;
         break;
       }
-
     }
 
     return elt('form', {className: "spareContainer"},
@@ -804,7 +841,7 @@ const renderSpares = ({spares}) => {
         elt('optgroup', {label: `Actions`}, ...types.map((type) => elt('option', {selected: type == spare.type}, type))),
         elt('optgroup', {label: `Conditions`}, ...conditions.map((type) => elt('option', {selected: type == spare.type}, type))),
       ), `Press Key: the bot will press the same key bound to the action in the game.\nMove Mouse: the bot will move your cursor to the provided coordinates on the screen and make a click (if chosen).\nPrint Text: the bot will print the provided text.\nPixel Color: The bot will use the provided pixel on the screen as a condition (positive or negative: true or false) for the next actions. Any following actions should be used with "Execute after action above" option turned on if you need them under this condition.\n`),
-        wrapInLabel(typeName,
+        !typeName ? `` : wrapInLabel(typeName,
         elt('div', null, elt(`div`, null, x, y, coordsButton, colorPicker, precision), key, text, chanceContainer),
         typeHint, null,
         `${spare.type != `Press Key` && spare.type != `Print Text` && spare.type != `Move Mouse` && spare.type != `Move Mouse + Left Click` && spare.type != `Move Mouse + Right Click` && spare.type != `Pixel Color TRUE` && spare.type != `Pixel Color FALSE` && spare.type != `Chance` && spare.type != `Drag Mouse By Right` && spare.type != `Drag Mouse By Left` ? `display: none` : ``}`),
@@ -812,7 +849,7 @@ const renderSpares = ({spares}) => {
         spare.type != `Pixel Color FALSE` && spare.type != `Pixel Color TRUE` && spare.type != `Chance` ? wrapInLabel(`Auto-confirm Action: `, elt(`input`, {type: `checkbox`, checked: spare.autoconfirm, "data-spares": "autoconfirm"}), `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`, null, `${spare.type == 'Sleep' ? `display: none` : ``}`) : ``,
         wrapInLabel(`Omit Initial Application: `, elt(`input`, {type: `checkbox`, disabled: spare.execute, checked: spare.omitinitial, "data-spares": "omitinitial"}), `Don't apply this action just after the bot started`),
         wrapInLabel(`Interval (min): `, elt('input', {type: 'number', disabled: spare.execute, value: spare.repeatTime, step: 0.1, "data-spares": "repeatTime"}), `Time after which the bot will apply action.`),
-        wrapInLabel(`${spare.type == `Sleep` ? `Sleep Time (sec)` : `Delay After Action (sec)`}: `, elt(`input`, {type: `number`, value: spare.delay, "data-spares": "delay"}), `Delay after action.`, null, `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` || spare.type == 'Chance' ? `display: none` : ``}`),
+        wrapInLabel(`${spare.type == `Sleep` ? `Random Sleep Time (sec)` : `Random Delay After Action (sec)`}: `, delayContainer, `Delay after action.`, null, `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` || spare.type == 'Chance' ? `display: none` : ``}`),
         spare.type != `Pixel Color FALSE` && spare.type != `Pixel Color TRUE` && spare.type != `Chance` &&  spare.type != `Drag Mouse By Left` && spare.type != `Drag Mouse By Left` ? wrapInLabel(`Repeat (times): `, elt(`input`, {type: `number`, "data-spares": "repeat", value: spare.repeat}), `How many times the bot should repeat this action consequentially (one after another).`, null, `${spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE` || spare.type == 'Move Mouse' || spare.type == "Move Mouse + Left Click" || spare.type == "Move Mouse + Right Click" || spare.type == "Sleep" ? `display: none` : ``}`) : ``,
         elt('input', {type: 'button', className: "spares-removeButton"})
       ),
