@@ -258,9 +258,9 @@ return elt(
 
       !config.soundDetection ? wrapInLabel("Feather: ", renderColorSwitch(config), `Bobber color. The color the bot will search within Fishing Zone (${config.bobberColor}, in your case). If the water and environment is bluish, choose red color. If the water and environment is reddish, choose blue color. If nothing helps and the bot still can't find the bobber: choose Manual color and pick color of your bobber.`, `thLabel colorLabel`) : ``,
 
-      wrapInLabel(`${config.soundDetection ? `` : config.bobberColor == `Manual` ? `Precision: ` : `Intensity: `}`,
+      wrapInLabel(`${config.soundDetection ? `` : config.bobberColor == `Manual` ? `Tolerance: ` : `Intensity: `}`,
         renderThreshold(config),
-        config.soundDetection ? `The bot will listen to your main output device for any abrupt changes of sound to detect the "splash" sound when the bobber plunging. Sound range determines the sensitivity of listening.` : config.bobberColor == `Manual` ? `Precision value determines how accurate the chosen color should be. If it's 100% then the bot won't search for any similar colors and will look for exactly the chosen one.` : `Decrease this value, if the bot can't find the bobber (e.g. at night, bad weather). Increase this value if you want the bot to ignore more ${config.bobberColor} colors.`
+        config.soundDetection ? `The bot will listen to your main output device for any abrupt changes of sound to detect the "splash" sound when the bobber plunging. Sound range determines the sensitivity of listening.` : config.bobberColor == `Manual` ? `Adjust the tolerance to set how closely other colors must match the chosen color.` : `Decrease this value, if the bot can't find the bobber (e.g. at night, bad weather). Increase this value if you want the bot to ignore more ${config.bobberColor} colors.`
         , `thLabel`),
       !config.soundDetection ? wrapInLabel("Sensitivity: ", renderBobberSensitivity(config), config.game == `Vanilla (splash)` ?
        `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value. If in Auto mode: The bot will auto-adjust both sensitivity value per each cast.`

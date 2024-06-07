@@ -384,7 +384,7 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
       })
     }});
 
-    const colorPercent = elt('input', {type: `number`, title: `Percent of how accurate the color should be.`, value: 100, min: 0, max: 100, className: `whisperColorRange`});
+    const colorPercent = elt('input', {type: `number`, title: `Tolerance: % of how closely other colors must match the chosen color.`, value: 100, min: 0, max: 100, className: `whisperColorRange`});
     const removeButton = elt('input', {type: `button`, className: `whisperColorRemoveButton`, onclick() {
       this.parentNode.remove();
     }})
@@ -404,7 +404,7 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
       })
     }});
 
-    const colorPercent = elt('input', {type: `number`, title: `Percent of how accurate the color should be.`, value: percent, min: 0, max: 100, className: `whisperColorRange`});
+    const colorPercent = elt('input', {type: `number`, title: `Tolerance: % of how closely other colors must match the chosen color.`, value: percent, min: 0, max: 100, className: `whisperColorRange`});
     const removeButton = elt('input', {type: `button`, className: `whisperColorRemoveButton`, onclick() {
       this.parentNode.remove();
     }})
@@ -693,12 +693,12 @@ const renderSpares = ({spares}) => {
 
     this.parentNode.insertBefore(elt('form', {className: "spareContainer"},
       elt(`div`, {className: `spare-inner`, style: ``},
-        wrapInLabel(``, elt('input', { className: "spares-description", value: `Additional Action #${spareNumber++}`,"data-spares": "description"}), ``, 'description-inner'),
+        wrapInLabel(``, elt('input', { className: "spares-description", value: `Action №${spareNumber++}`,"data-spares": "description"}), ``, 'description-inner'),
         wrapInLabel(`Execute After Action Above`, elt(`input`, {type: `checkbox`, disabled: spareNumber == 2, checked: false, "data-spares": "execute"}), `The action will be executed just after the action or condition above.`),
         wrapInLabel(`Type:`, elt('select', { className: "spares-type", value: `Press Key`,"data-spares": "type"},
         elt('optgroup', {label: `Actions`}, ...types.map((type) => elt('option', {value: type}, type))),
         elt('optgroup', {label: `Conditions`}, ...conditions.map((type) => elt('option', {value: type}, type))),
-        ),  `Press Key: the bot will press the same key bound to the action in the game.\nMove Mouse: the bot will move your cursor to the provided coordinates on the screen and make a click (if chosen).\nPrint Text: the bot will print the provided text.\nPixel Color: The bot will use the provided pixel on the screen as a condition (positive or negative: true or false) for the next actions. Any following actions should be used with "Execute after action above" option turned on if you need them under this condition.\n`),
+      ),  `Press Key: the bot will press the same key bound to the action in the game.\nMove Mouse: the bot will move your cursor to the provided coordinates on the screen and make a click (if chosen).\nPrint Text: the bot will print the provided text.\nPixel Color: The bot will use the provided pixel on the screen as a condition (positive or negative: true or false) for the next actions.Any following actions should be used with "Execute after action above" option turned on if you need them under this condition.\nChance: the bot will execute all the inner actions only if random value lesser than the chosen one.Any following actions should be used with "Execute after action above" option turned on if you need them under this condition.\n`),
         wrapInLabel(`Key:`, elt('div', null, chanceContainer, precision, colorPicker, text, key, x, y, coordsButton), `Same key bound to the action in the game.` ),
         wrapInLabel(`Auto-confirm Action: `,  elt(`input`, {type: `checkbox`, checked: false, "data-spares": "autoconfirm"}), `If you want the bot to apply actions earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same (in the guide), in that case you don't need to turn on this option.`),
         wrapInLabel(`Omit Initial Application: `, elt(`input`, {type: `checkbox`, checked: false, "data-spares": "omitinitial"}), `Don't apply this action just after the bot started, wait until timer elapses.`),
@@ -936,7 +936,7 @@ const renderAggroCheckUserHp = ({aggroCheck, aggroCheckUserHp}) => {
     })
   }});
 
-  return elt('div', {"data-collection": `aggroCheckUserHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+  return elt('div', {"data-collection": `aggroCheckUserHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `t: `), precision, colorPicker, colorBox)
 
 };
 /*
@@ -987,7 +987,7 @@ const renderAggroCheckEnemyHp = ({aggroCheck, aggroCheckEnemyHp}) => {
     })
   }});
 
-  return elt('div', {"data-collection": `aggroCheckEnemyHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+  return elt('div', {"data-collection": `aggroCheckEnemyHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `t: `), precision, colorPicker, colorBox)
 
 };
 
@@ -1077,7 +1077,7 @@ const renderFindPlayerHp = ({findPlayer, findPlayerHp}) => {
       })
     }});
 
-    return elt('div', {"data-collection": `findPlayerHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+    return elt('div', {"data-collection": `findPlayerHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `t: `), precision, colorPicker, colorBox)
 };
 
 const renderFindPlayerHpException = ({findPlayer, findPlayerHpException}) => {
@@ -1100,7 +1100,7 @@ const renderFindPlayerHpException = ({findPlayer, findPlayerHpException}) => {
       })
     }});
 
-    return elt('div', {"data-collection": `findPlayerHpException`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `acc: `), precision, colorPicker, colorBox)
+    return elt('div', {"data-collection": `findPlayerHpException`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `t: `), precision, colorPicker, colorBox)
 };
 
 const renderFindPlayerCameraDistance = ({findPlayer, findPlayerCameraDistance}) => {
@@ -1345,8 +1345,8 @@ const renderSettings = (config) => {
     elt(`p`, {className: `settings_header settings_header_premium`}, `🔭`),elt(`span`, {className: `advanced_settings_header_text`}, `Players Check`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#check-for-players-around-telescope")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Find Player: ', renderFindPlayer(config), `The bot will look around to see any other (friendly) players nearby (within target range).`),
-      wrapInLabel('Target HP: ', renderFindPlayerHp(config), `Point it anywhere on the healthbar of your target.`),
-      config.game == 'Vanilla' || config.game == 'Vanilla (splash)' ? wrapInLabel('Target HP Exception: ', renderFindPlayerHpException(config), `Some servers when "Target Friendly Player" used make your character target itself. Point at some unique pixel of your HP bar to make the bot differentiate between your own character and others.`) : ``,
+      wrapInLabel('Target HP: ', renderFindPlayerHp(config), `Point it anywhere on the healthbar of your target.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`),
+      config.game == 'Vanilla' || config.game == 'Vanilla (splash)' ? wrapInLabel('Target HP Exception: ', renderFindPlayerHpException(config), `Some servers when "Target Friendly Player" used make your character target itself. Point at some unique pixel of your HP bar to make the bot differentiate between your own character and others.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`) : ``,
       wrapInLabel('Target Key: ', renderFindPlayerTargetKey(config), `The same key you use to target other friendly players in the game (Options -> Keybindings -> Targeting -> Target Nearest Friendly Player)`),
       wrapInLabel('Target Key (additional): ', renderFindPlayerTargetKeyAdd(config), `Additional key in case you want to target something else. Enemies for example.`),
       wrapInLabel('Rotate Camera By: ', renderFindPlayerRotateBy(config), `Keyboard: the bot will rotate by using arrow keys, it will be visible to others because your character will move as well.\nMouse: the bot will look around by using mouse, it won't be visible to others.`),
@@ -1371,8 +1371,8 @@ const renderSettings = (config) => {
       wrapInLabel('Center Camera By: ', renderAggroCheckControlBy(config), `What input command the bot should use to center camera.`),
       config.aggroCheckControlBy == 'Mouse' ? wrapInLabel('Mouse Speed: ', renderAggroCheckMouseSpeed(config), `Adjust the speed at which the bot should move your camera.`) : ``,
       wrapInLabel('Enemy Name Color: ', renderAggroCheckEnemyName(config), `The color of the enemy names the bot should look for when attacked.`),
-      wrapInLabel('Combat Indication Pixel', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's in combat mode. Usually should be the place which changes when the character is in combat mode (on character level or on the rim around the avatar which changes to red when in combat mode) or on the end of the green HP field of your character.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
-      wrapInLabel('Enemy HP Pixel', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted. Usually should be somewhere on the green HP field.\n\nAcc: accuracy of the color. Lower it if your hp bar isn't solid and slightly transparent, making it always a little bit different.`),
+      wrapInLabel('Combat Indication Pixel', renderAggroCheckUserHp(config), `The pixel on the screen bot will check to determine whether it's in combat mode. Usually should be the place which changes when the character is in combat mode (on character level or on the rim around the avatar which changes to red when in combat mode) or on the end of the green HP field of your character.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`),
+      wrapInLabel('Enemy HP Pixel', renderAggroCheckEnemyHp(config), `The pixel on the screen bot will check to determine whether the enemy is targeted. Usually should be somewhere on the green HP field.\n\t: Adjust the tolerance to set how closely other colors must match the chosen color.`),
       wrapInLabel('Quit The Game After: ', renderAggroCheckQuit(config), `The bot will quit the game and the bot after it either ran away, stopped, killed or being killed.`),
       config.aggroCheckDoAfterType != 'Stop Bot' ? elt('div', {style: `border-bottom: 1px solid grey; margin-bottom: 5px;`}) : ``,
       config.aggroCheckDoAfterType == 'Run Away' ?
