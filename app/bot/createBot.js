@@ -1698,7 +1698,6 @@ if(lootWindowPatch.exitButton) {
   aggroCheck.status = Promise.resolve();
 
   let lastMovementFrom;
-
   const castFishing = async (state) => {
     await action(async () => {
       await keyboard.sendKey(settings.fishingKey, delay);
@@ -1720,7 +1719,7 @@ if(lootWindowPatch.exitButton) {
             config.findPlayerTurnDir = config.findPlayerTurnDir == 'left' ? 'right' : 'left'; // switch to different direction for find player if run into shallow waters.
           }
 
-          await sleep(3000);
+          await sleep(random(3000, 4000));
           await action(async () => {
             await keyboard.sendKey(settings.fishingKey, delay);
           });
@@ -1738,11 +1737,11 @@ if(lootWindowPatch.exitButton) {
 
     if(settings.checkLogic == `pixelmatch`) {
       await sleep(2500, async () => {
-        await hoverMouse(0.75);
+        await hoverMouse();
       });
     } else {
       await sleep(random(config.castDelay, config.castDelay + 500), async () => {
-        await hoverMouse(0.75);
+        await hoverMouse();
       });
     }
   };
@@ -1789,16 +1788,17 @@ if(lootWindowPatch.exitButton) {
 
     return pos;
   };
+
   findBobber.memory = null;
   findBobber.maxAttempts = config.maxAttempts;
 
-  const hoverMouse = async (chance = .97) => {
-    if(!config.likeHumanHover || config.arduino || config.multipleWindows) {
+  const hoverMouse = async (chance = .02) => {
+    if(!config.likeHumanHover || config.arduino || settings.multipleWindows || settings.afkmode) {
       return;
     }
 
     let cPos = mouse.getPos();
-    if(Math.random() > chance) {
+    if(Math.random() < chance) {
       await moveTo({pos: cPos});
       return true;
     }
@@ -2102,7 +2102,7 @@ if (settings.soundDetection) {
 
     if (config.sleepAfterHook && random(0, 100) < config.sleepAfterHookChance) {
       await sleep(random(config.afterHookDelay.from, config.afterHookDelay.to), async () => {
-        await hoverMouse(.97);
+        await hoverMouse();
       });
     }
     return caught;
