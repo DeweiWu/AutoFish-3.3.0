@@ -54,6 +54,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`lures-warn`);
     ipcMain.removeAllListeners(`whitelist-warn`);
     ipcMain.removeAllListeners(`start-by-fishing-key-warn`);
+    ipcMain.removeAllListeners(`aggroCheck-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
     ipcMain.removeHandler(`get-game-config`);
     ipcMain.removeHandler("remove-spare-confirm");
