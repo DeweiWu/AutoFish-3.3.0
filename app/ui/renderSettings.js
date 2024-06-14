@@ -63,7 +63,7 @@ const renderThreshold = ({ threshold, bobberColor, bobberColorManual, autoTh, ga
     } else if(bobberColor == `blue`) {
       document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
     } else {
-      document.styleSheets[0].rules[78].style.backgroundImage = `linear-gradient(to right, rgb(${rgbBobberColorManual.r - 50}, ${rgbBobberColorManual.g  - 50}, ${rgbBobberColorManual.b  - 50}), rgb(${rgbBobberColorManual.r}, ${rgbBobberColorManual.g}, ${rgbBobberColorManual.b}))`;
+      document.styleSheets[0].rules[78].style.backgroundImage = `linear-gradient(to right, rgb(${rgbBobberColorManual.r - 25}, ${rgbBobberColorManual.g - 25}, ${rgbBobberColorManual.b - 25}), rgb(${rgbBobberColorManual.r + 25}, ${rgbBobberColorManual.g + 25}, ${rgbBobberColorManual.b + 25}))`;
     }
 
     return elt(`div`, { className: `thresholdRange` }, rangeContainer); // autoThSwitch
