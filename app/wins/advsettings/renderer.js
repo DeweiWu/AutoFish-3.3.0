@@ -1187,6 +1187,12 @@ const renderFindPlayerRotateBy = ({game, findPlayer, findPlayerRotateBy}) => {
   return elt(`div`, null, typeSelect);
 };
 
+const renderFindPlayerType = ({findPlayer, findPlayerType}) => {
+  const types = ['Front', 'Around', 'Front + Around'];
+  const typeSelect = elt(`select`, {name: 'findPlayerType', disabled: !findPlayer}, ...types.map((type) => elt('option', {selected: type == findPlayerType, value: type}, type)));
+  return elt(`div`, null, typeSelect);
+};
+
 const renderFindPlayerDoAfter = ({findPlayer, findPlayerDoAfter}) => {
   const types = ['Sleep', 'Press Key', 'Log out', 'Random Movement', "Face and Wave", "Stop", "Exit"];
   const typeSelect = elt(`select`, {name: 'findPlayerDoAfter', disabled: !findPlayer}, ...types.map((type) => elt('option', {selected: type == findPlayerDoAfter, value: type}, type)));
@@ -1382,20 +1388,21 @@ const renderSettings = (config) => {
     elt(`p`, {className: `settings_header settings_header_premium`}, `🔭`),elt(`span`, {className: `advanced_settings_header_text`}, `Players Check`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#check-for-players-around-telescope")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Find Player: ', renderFindPlayer(config), `The bot will look around to see any other (friendly) players nearby (within target range).`),
+      wrapInLabel('Find Player Mode: ', renderFindPlayerType(config), `How the bot should look for the players.`),
       wrapInLabel('Target HP: ', renderFindPlayerHp(config), `Point it anywhere on the healthbar of your target.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`),
       config.game == 'Vanilla' || config.game == 'Vanilla (splash)' ? wrapInLabel('Target HP Exception: ', renderFindPlayerHpException(config), `Some servers when "Target Friendly Player" used make your character target itself. Point at some unique pixel of your HP bar to make the bot differentiate between your own character and others.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`) : ``,
       wrapInLabel('Target Key: ', renderFindPlayerTargetKey(config), `The same key you use to target other friendly players in the game (Options -> Keybindings -> Targeting -> Target Nearest Friendly Player)`),
       wrapInLabel('Target Key (additional): ', renderFindPlayerTargetKeyAdd(config), `Additional key in case you want to target something else. Enemies for example.`),
-      wrapInLabel('Rotate Camera By: ', renderFindPlayerRotateBy(config), `Keyboard: the bot will rotate by using arrow keys, it will be visible to others because your character will move as well.\nMouse: the bot will look around by using mouse, it won't be visible to others.`),
-      config.findPlayerRotateBy == 'Mouse' ? wrapInLabel('Mouse Speed: ', renderFindPlayerMouseSpeed(config), `Adjust the speed at which the bot should move your camera.`) : ``,
-      wrapInLabel('Scroll Camera Distance (steps):', renderFindPlayerCameraDistance(config), `The bot will scroll down your camera to see more, the value is number of "scroll steps", which is how far it should place your camera before checking.`),
-      wrapInLabel('Vertical Camera Position (steps):', renderFindPlayerCameraVertical(config), `Vertical position of the camera view. In simple words: how low the bot should position your camera to better see the horizon. Leave it at 0 if you don't need it.`),
-      wrapInLabel('Search For Players Around Every (min): ', renderFindPlayerInterval(config), `How often the bot should search for players nearby. You can use decimals for seconds (0.5 is every 30 seconds), but remember that the bot will check only after it finishes current fishing cast.`),
-      wrapInLabel('Search For Players In Front Every (sec): ', renderFindPlayerFrontInterval(config), `How often the bot should search for players in front of the character.`),
+      config.findPlayerType != `Front` ? wrapInLabel('Rotate Camera By: ', renderFindPlayerRotateBy(config), `Keyboard: the bot will rotate by using arrow keys, it will be visible to others because your character will move as well.\nMouse: the bot will look around by using mouse, it won't be visible to others.`) : ``,
+      config.findPlayerRotateBy == 'Mouse' && config.findPlayerType != `Front` ? wrapInLabel('Mouse Speed: ', renderFindPlayerMouseSpeed(config), `Adjust the speed at which the bot should move your camera.`) : ``,
+      config.findPlayerType != `Front` ? wrapInLabel('Scroll Camera Distance (steps):', renderFindPlayerCameraDistance(config), `The bot will scroll down your camera to see more, the value is number of "scroll steps", which is how far it should place your camera before checking.`) : ``,
+      config.findPlayerType != `Front` ? wrapInLabel('Vertical Camera Position (steps):', renderFindPlayerCameraVertical(config), `Vertical position of the camera view. In simple words: how low the bot should position your camera to better see the horizon. Leave it at 0 if you don't need it.`) : ``,
+      config.findPlayerType != `Front` ? wrapInLabel('Search For Players Around Every (min): ', renderFindPlayerInterval(config), `How often the bot should search for players nearby. You can use decimals for seconds (0.5 is every 30 seconds), but remember that the bot will check only after it finishes current fishing cast.`) : ``,
+      config.findPlayerType != `Around` ? wrapInLabel('Search For Players In Front Every (sec): ', renderFindPlayerFrontInterval(config), `How often the bot should search for players in front of the character.`) : ``,
       wrapInLabel('Do After Player Found: ', renderFindPlayerDoAfter(config), `What to do if you targeted someone in the vicinity of your range distance.\n\nSleep: the bot will sleep for the provided time.\nPress Key: the bot will press the key you bound.\nLog out: the bot will log out and will use settings from "Logging Out" section.\nRandom Movement: the bot will move slightly, it will use settings from Random Movement section.\nFace and Wave: The bot will face the player, print /wave in the chat and sleep for the provided time. It won't face and wave any other player within the next 15 minutes to prevent pretty obvious automated behaviour.\nStop: the bot will stop working.\nExit: the bot will exit the game and stop working.`),
       config.findPlayerDoAfter == 'Press Key' ? wrapInLabel('Press Key: ', renderFindPlayerDoAfterKey(config), `The key to press in case the bot finds someone.`) : ``,
       wrapInLabel('Sleep After Player Found (sec): ', renderFindPlayerDoAfterSleepTime(config), `For how long the bot should sleep in case it finds someone or after chosen action.`),
-      wrapInLabel('Rotation Time (ms): ', renderFindPlayerRotationTime(config), `How long the bot should rotate. Tweak this if the rotation the bot makes isn't complete or overcomplete.`)
+      config.findPlayerType != `Front` ? wrapInLabel('Rotation Time (ms): ', renderFindPlayerRotationTime(config), `How long the bot should rotate. Tweak this if the rotation the bot makes isn't complete or overcomplete.`) : ``
     ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#aggro-checking-crossed_swords")}}, `(Guide)`),

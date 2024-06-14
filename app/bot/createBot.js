@@ -39,7 +39,7 @@ const { createTimer } = require("../utils/time.js");
 
 const sleep = (time, toDo, every = 100) => {
   return new Promise((resolve) => {
-    if(toDo) {
+    if(toDo && typeof toDo == `function`) {
       let startTime = Date.now();
       setTimeout(function repeat() {
         toDo().then(() => {
@@ -929,6 +929,7 @@ if(lootWindowPatch.exitButton) {
   let rotationTime = config.findPlayerRotationTimeKeyboard; // arduino: 1995  soft: 2000
 
   const findPlayer = async (state, log, onError) => {
+
     if(config.arduino) {
       config.findPlayerMouseSpeed = 50;
     }
@@ -1053,7 +1054,7 @@ if(lootWindowPatch.exitButton) {
           }
         }
 
-        await sleep(delay[0], delay[1]);
+        await sleep(random(delay[0], delay[1]));
 
 
         if(await checkTarget() && !foundPlayer) {
@@ -1239,10 +1240,10 @@ if(lootWindowPatch.exitButton) {
    });
   };
   findPlayer.timer = createTimer(() => config.findPlayerInterval * 60 * 1000);
-  findPlayer.on = config.findPlayer;
+  findPlayer.on = config.findPlayer && config.findPlayerType != 'Front';
   findPlayer.state;
   findPlayer.frontCheck = async (state, log, onError) => {
-    if(!config.findPlayer || settings.multipleWindows || settings.afkmode || config.game == 'Vanilla' || config.game == 'Vanilla (splash)') {
+    if(!config.findPlayer || config.findPlayerType == 'Around' || settings.multipleWindows || settings.afkmode || config.game == 'Vanilla' || config.game == 'Vanilla (splash)') {
       return;
     }
 
