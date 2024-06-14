@@ -196,6 +196,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
@@ -449,6 +451,8 @@
       "mammothMacroKey": "8",
       "mammothAfterTradeDelay": 10,
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
@@ -712,6 +716,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
@@ -967,6 +973,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
@@ -1200,6 +1208,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
@@ -1436,6 +1446,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
@@ -1681,6 +1693,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
@@ -1931,6 +1945,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
@@ -2164,6 +2180,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
@@ -2402,6 +2420,8 @@
       "rngMoveDirLengthMax": 4,
 
       "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
       "detectWhisper": true,
       "closeAtWhisper": false,
       "whispSpecColors": [{ "r": 255, "g": 128, "b": 255, "percent": 100 }],
