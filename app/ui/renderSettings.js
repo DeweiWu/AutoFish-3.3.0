@@ -46,8 +46,14 @@ const renderBobberSensitivity = ({game, bobberSensitivity, bobberColor, soundDet
 const renderThreshold = ({ threshold, bobberColor, bobberColorManual, autoTh, game, soundDetection, soundDetectionRange }) => {
   if(!soundDetection) {
 
-    if(threshold < 1) threshold = 1;
-    else if(threshold > 250) threshold = 250;
+    if(bobberColor != `Manual`) {
+      if(threshold < 1) threshold = 1;
+      else if(threshold > 250) threshold = 250;
+    } else {
+      if(threshold < 1) threshold = 1;
+      else if(threshold > 100) threshold = 100;
+    }
+
 
     if(game == `Vanilla (splash)` || bobberColor == `Manual`) autoTh = false;
 

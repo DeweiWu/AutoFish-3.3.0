@@ -22,6 +22,9 @@ const isBlue = (threshold, closeness = 255, size = 255, upperLimit = 335) => ([r
                                                         r < size && g < size && b <= upperLimit && r != 0 && g != 0;
 
 const isManual = (specColor, percentPrecision) => ([r, g, b]) => {
+
+  if(percentPrecision > 100) percentPrecision = 100;
+
   let percR = specColor.r / 100 * (100 - percentPrecision);
   let percG = specColor.g / 100 * (100 - percentPrecision);
   let percB = specColor.b / 100 * (100 - percentPrecision);
