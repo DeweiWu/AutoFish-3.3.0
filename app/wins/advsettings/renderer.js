@@ -367,6 +367,12 @@ const renderTmApiKey = ({tmApiKey}) => {
   return elt('div', null, elt('input', {type: `text`, name: `tmApiKey`, value: tmApiKey, className: `tmApiKey`}), elt('input', {type: `button`, value: `Connect`, id: `tm`}));
 };
 
+const renderTmUsername = ({tmUseUsername = false, tmUsername = ``}) => {
+  const checkbox = elt('input', {type: `checkbox`, checked: tmUseUsername, name: 'tmUseUsername'});
+  const text = elt('input', {type: `text`, style: `width: 100px;`,disabled: !tmUseUsername, value: tmUsername, name: 'tmUsername'});
+  return elt('div', null, checkbox, text);
+};
+
 const renderDetectWhisper = ({detectWhisper}) => {
   return elt('input', {type: `checkbox`, checked: detectWhisper, name: `detectWhisper`});
 };
@@ -1187,7 +1193,7 @@ const renderFindPlayerRotateBy = ({game, findPlayer, findPlayerRotateBy}) => {
   return elt(`div`, null, typeSelect);
 };
 
-const renderFindPlayerType = ({findPlayer, findPlayerType}) => {
+const renderFindPlayerType = ({findPlayer, findPlayerType = 'Front + Around'}) => {
   const types = ['Front', 'Around', 'Front + Around'];
   const typeSelect = elt(`select`, {name: 'findPlayerType', disabled: !findPlayer}, ...types.map((type) => elt('option', {selected: type == findPlayerType, value: type}, type)));
   return elt(`div`, null, typeSelect);
@@ -1373,6 +1379,7 @@ const renderSettings = (config) => {
       wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
       wrapInLabel(`Detect Chat Messages:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
       wrapInLabel(`Stop and Close the Game at Chat Message:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
+      wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Avoid "@", put in just the name.`),
       elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
       renderWhisperColors(config),
     ),
@@ -1539,6 +1546,7 @@ const runApp = async () => {
     }
 
     if(event.target.value == `Connect` && event.target.id == "tm") {
+      event.target.value = `⌛`;
       ipcRenderer.invoke(`connect-telegram`, config.tmApiKey)
       .then(() => {
         event.target.style.backgroundColor = `rgb(65, 255, 65)`;
@@ -1556,6 +1564,7 @@ const runApp = async () => {
     }
 
     if(event.target.value == `Connect` && event.target.id == "arduino") {
+      event.target.value = `⌛`;
       ipcRenderer.invoke(`connect-arduino`, {port: config.arduinoPort, speed: config.arduinoRate})
       .then(() => {
         event.target.style.backgroundColor = `rgb(65, 255, 65)`;

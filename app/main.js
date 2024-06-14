@@ -198,6 +198,7 @@ const createWindow = async () => {
   };
 
   const connectToTelegram = (key) => {
+
   tmBot.bot = new Telegraf(key);
   const helpMessage = `
 <b>🟢 Start</b> - Starts the bot.\n
@@ -218,6 +219,18 @@ You can also write in this chat directly to do:
   const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n${helpMessage}`;
 
   tmBot.bot.command("start", async (ctx) => {
+
+    const profile = getProfile().selected;
+    const config = getJson(`./config/${profile}/bot.json`);
+    const settings = getJson(`./config/${profile}/settings.json`);
+    let tmUseUsername = config.patch[settings.game].tmUseUsername;
+    let tmUsername = config.patch[settings.game].tmUsername;
+
+    if(tmUseUsername && tmUsername != ctx.from.username) {
+      ctx.reply(`Forbidden.`);
+      return;
+    }
+
     tmBot.ctx = ctx;
     await ctx.reply(`${welcomeMessage}`,  { parse_mode: "HTML" });
     return await ctx.reply(
@@ -349,7 +362,7 @@ By pressing "Accept" you agree to everything stated above.`,
     }
   });
   win.once("ready-to-show", () => {
-    //win.openDevTools({mode: `detach`});
+    win.openDevTools({mode: `detach`});
     win.show();
   });
 
