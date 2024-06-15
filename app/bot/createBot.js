@@ -1239,7 +1239,7 @@ if(lootWindowPatch.exitButton) {
     findPlayer.state = false;
    });
   };
-  findPlayer.timer = createTimer(() => config.findPlayerInterval * 60 * 1000);
+  findPlayer.timer = createTimer(() => random(config.findPlayerInterval.from * 60 * 1000, config.findPlayerInterval.to * 60 * 1000));
   findPlayer.on = config.findPlayer && config.findPlayerType != 'Front';
   findPlayer.state;
   findPlayer.frontCheck = async (state, log, onError) => {
@@ -1248,7 +1248,7 @@ if(lootWindowPatch.exitButton) {
     }
 
     while(state.status != 'stop') {
-      await sleep(config.findPlayerFrontInterval * 1000);
+      await sleep(random(config.findPlayerFrontInterval.from * 1000, config.findPlayerFrontInterval.to * 1000));
 
       if(state.status == 'stop') {
         break;
@@ -1259,6 +1259,7 @@ if(lootWindowPatch.exitButton) {
       }
 
       await keyboard.sendKey(config.findPlayerTargetKey, delay);
+
       if(config.findPlayerTargetKeyAddUse) {
         await keyboard.sendKey(config.findPlayerTargetKeyAdd, delay);
       }
