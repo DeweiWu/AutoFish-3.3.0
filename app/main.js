@@ -154,7 +154,7 @@ let win;
 let trial;
 const createWindow = async () => {
   win = new BrowserWindow({
-    title: generateName(Math.floor(random(5, 15))),
+    title: "Settings",
     width: 341,
     height: 689,
     show: false,
@@ -362,7 +362,7 @@ By pressing "Accept" you agree to everything stated above.`,
     }
   });
   win.once("ready-to-show", () => {
-    win.openDevTools({mode: `detach`});
+    //win.openDevTools({mode: `detach`});
     win.show();
   });
 
