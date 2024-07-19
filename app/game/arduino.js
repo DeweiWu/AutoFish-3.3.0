@@ -275,7 +275,7 @@ const createArduinoDevice = () => {
           if(initial && data.toString() == `ready`) {
             let {write} = createEventLine(port);
             Object.assign(keyboard, createKeyboard(write));
-            Object.assign(mouse, createMouse(write));;
+            Object.assign(mouse, createMouse(write));
             resolve(`Connected to Arduino Board!`);
             initial = false;
           }

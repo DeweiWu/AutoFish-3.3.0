@@ -76,11 +76,11 @@ keyboard.config.autoDelayMs = 0;
 
 module.exports = {
   mouse: {
-  async humanMoveTo({from, to, speed, deviation, fishingZone, static}) {
+  async humanMoveTo({from, to, speed, deviation, fishingZone, staticSpeed}) {
     const distance = Math.sqrt(Math.pow(Math.round(from.x - to.x), 2) + Math.pow(Math.round(from.y - to.y), 2));
     const fZoneSize = Math.sqrt(Math.pow(fishingZone.width, 2) + Math.pow(fishingZone.height, 2)) * .25;
     /* apply distance relation to zone size only if distance is more than 5% */
-    mouse.config.mouseSpeed = static ? (speed * 100 * 15) : (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 0.25);
+    mouse.config.mouseSpeed = staticSpeed ? (speed * 100 * 15) : (speed * 100 * 20) * (distance > fZoneSize * .05 ? distance / fZoneSize : 0.25);
     const path = generateBezierPath(from, to, distance, deviation / 150);
     path[path.length - 1] = new Point(to.x, to.y);
     await mouse.move(path, randomHumanLikeCursorEasing); //

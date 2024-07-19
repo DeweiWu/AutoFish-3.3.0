@@ -60,7 +60,7 @@ const sortWordsByItem = (words, lootWindow, isRetail) => {
       selected[Math.floor(word.y / itemHeight)] += ` ${word.text}`;
     }
   });
-  return selected.flat();;
+  return selected.flat();
 };
 
 module.exports = {
