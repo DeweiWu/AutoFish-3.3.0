@@ -45,6 +45,7 @@
     "@electron-forge/cli": "^7.4.0",
     "@electron-forge/maker-squirrel": "^7.4.0",
     "@electron-forge/maker-zip": "^7.4.0",
+    "@faker-js/faker": "^8.4.1",
     "electron": "^20.0.0",
     "electron-rebuild": "^3.2.9",
     "eslint": "^8.15.0",
