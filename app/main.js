@@ -21,7 +21,7 @@ const trialIsOn = false;
 const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
 const createPointZone = require(`./wins/pointZone/main.js`);
-const trialEncryption = require('./../trialEnc.js')
+const trialEncryption = require('./../enc.js')
 const { saveArchive, loadArchive } = require('./utils/saveArchive.js');
 
 const getJson = (jsonPath) => {
