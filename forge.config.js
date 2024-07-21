@@ -1,30 +1,39 @@
-const generatedName = require('./app/utils/generateName.js');
+const { faker } = require("@faker-js/faker");
 const { obfuscateFiles, obfuscateFolder } = require('./obfuscator.js');
+const path = require('path');
 
-const random = (from, to) => {
-  return from + Math.random() * (to - from);
-};
-
-const name = generatedName(Math.floor(random(5, 15)));
-const filesToObfuscate = ['./app/main.js', './app/bot/createBot.js'];
+let name = 'app';
 
 module.exports = {
   hooks: {
     prePackage: async (forgeConfig, appProcess) => {
-      await obfuscateFiles(filesToObfuscate);
-    }
+      await obfuscateFiles(['./app/main.js']);
+    },
   },
   packagerConfig: {
     "name": name,
-    "icon": "./app/img/icon-premium.ico"
+    "icon": "./app/img/icon-premium.ico",
+    "asar": {
+      unpackDir: 'app/config',   // Unpack the entire config directory
+      unpack: 'app/config/**'    // Additionally, ensure all files in the config directory are unpacked
+    },
+    "ignore": [
+      '.gitignore',
+      '.eslintrc.js',
+      'forge.config.js',
+      'LICENSE',
+      'obfuscator.js',
+      'random.js',
+      '.github'
+    ]
   },
   makers: [
     {
-      "name": "@electron-forge/maker-squirrel",
+      "name": "@electron-forge/maker-zip",
       "config": {
-        "name": generatedName(Math.floor(random(5, 15))),
-        "authors": generatedName(Math.floor(random(5, 15))),
-        "description": 'Application',
+        "name": name,
+        "authors": faker.person.fullName(),
+        "description": faker.commerce.productDescription(),
         "setupIcon": "./app/img/icon-premium.ico",
         "setupExe": `AutoFish (${name}) Setup.exe`,
         "skipUpdateIcon": true,

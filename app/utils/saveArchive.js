@@ -8,7 +8,7 @@ function saveArchive(log) {
   // Open the save dialog
   dialog.showSaveDialog({
     title: 'Select Destination',
-    defaultPath: path.join(__dirname, '../config.zip'),
+    defaultPath: path.join(__dirname, '../../../app.asar.unpacked/app/config'),
     buttonLabel: 'Save',
     filters: [
       { name: 'Zip Files', extensions: ['zip'] }
@@ -36,7 +36,7 @@ function saveArchive(log) {
       archive.pipe(output);
 
       // Append files and folders from the /config directory to the archive
-      const configDir = path.join(__dirname, '../config');
+      const configDir = path.join(__dirname, '../../../app.asar.unpacked/app/config');
       archive.directory(configDir, 'config');
 
       // Finalize the archive (complete the file)
@@ -63,13 +63,13 @@ function loadArchive(log) {
         const fileName = path.basename(filePath, '.zip');
 
         // Path to the /config directory
-        const configDir = path.join(__dirname, '../config');
+        const configDir = path.join(__dirname, '../../../app.asar.unpacked/app');
 
         // Remove the existing /config directory
         fs.rmSync(configDir, { recursive: true, force: true });
 
         // Extract the selected archive to the /config directory
-        extract(filePath, { dir: path.join(__dirname, '../') }).then(() => {
+        extract(filePath, { dir: path.join(__dirname, '../../../app.asar.unpacked/app') }).then(() => {
           log.ok(`Config loaded successfully.`);
           resolve();
         }).catch(err => {
