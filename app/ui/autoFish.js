@@ -108,7 +108,7 @@ class AutoFish {
 
     profile.load.addEventListener(`click`, async () => {
       await ipcRenderer.invoke("load-config");
-      profile.select.value = 'Default'; 
+      profile.select.value = 'Default';
       await ipcRenderer.invoke("change-selected-profile", 'Default');
       this.settings.config = await ipcRenderer.invoke("get-settings");
       this.settings.reRender();
@@ -134,7 +134,7 @@ class AutoFish {
     const footer = elt(`p`, { className: "version" }, versionNode, premiumIcon);
 
     ipcRenderer.on("set-version", (event, version, trial) => {
-      versionNode.textContent = `ver. 2.11.0 ${trial ? `Trial ${trial}` : `Premium`} `;
+      versionNode.textContent = `ver. 3.0.0 ${trial ? `Trial ${trial}` : `Premium`} `;
       if(trial) {
         versionNode.append(donateLink);
       }

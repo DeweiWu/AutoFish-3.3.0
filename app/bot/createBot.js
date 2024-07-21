@@ -1780,14 +1780,6 @@ if(lootWindowPatch.exitButton) {
     }
 
     const pos = await fishingZone.findBobber(findBobber.memory, log, highlight);
-
-    if(pos && process.env.NODE_ENV == `dev`) {
-      screen.config.highlightOpacity = 1;
-      screen.config.highlightDurationMs = 250;
-      const highlightRegion = new Region(screenSize.x + (pos.x - 5), screenSize.y + (pos.y - 5), 10, 10);
-      await screen.highlight(highlightRegion);
-    }
-
     return pos;
   };
 
@@ -2292,13 +2284,6 @@ if (settings.soundDetection) {
 
     if(config.afterTimer == `HS + Quit` || config.afterTimer == `Quit`) {
       if(wins.every(win => win.state.status == `stop`)) {
-
-        if(process.env.NODE_ENV == `dev`) {
-          const date = new Date()
-          const name = `stats-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
-          createWriteStream(`${name}.txt`).write(stats.show().toString());
-        }
-
         if(config.timerShutDown) {
             await keyboard.sendKey(`lWin`, delay);
             await sleep(random(1000, 2000));

@@ -16,6 +16,9 @@ const path = require("path");
 const { readFileSync, writeFileSync, writeFile, mkdir, rmdir, readdir } = require("fs");
 const { unlink } = require("fs").promises;
 
+process.env.NODE_ENV = `dev`;
+
+const configPath = process.env.NODE_ENV == `dev` ? './config/' : '../../app.asar.unpacked/app/config/';
 const trialIsOn = false;
 
 const createAdvSettings = require(`./wins/advsettings/main.js`);
@@ -35,7 +38,7 @@ const sleep = (time) => {
 };
 
 const getProfile = () => {
-  return getJson(`../../app.asar.unpacked/app/config/config.json`);
+  return getJson(`${configPath}config.json`);
 };
 
 const createTrialTime = () => {
@@ -221,8 +224,8 @@ You can also write in this chat directly to do:
   tmBot.bot.command("start", async (ctx) => {
 
     const profile = getProfile().selected;
-    const config = getJson(`../../app.asar.unpacked/app/config/${profile}/bot.json`);
-    const settings = getJson(`../../app.asar.unpacked/app/config/${profile}/settings.json`);
+    const config = getJson(`${configPath}${profile}/bot.json`);
+    const settings = getJson(`${configPath}${profile}/settings.json`);
     let tmUseUsername = config.patch[settings.game].tmUseUsername;
     let tmUsername = config.patch[settings.game].tmUsername;
 
@@ -251,9 +254,9 @@ You can also write in this chat directly to do:
     let newThreshold = Number(text.slice((`/th`).length));
 
     if(!isNaN(newThreshold) && newThreshold > 1 && newThreshold < 150) {
-      let settings = getJson(`../../app.asar.unpacked/app/config/${profile}/settings.json`);
+      let settings = getJson(`${configPath}${profile}/settings.json`);
       settings.threshold = newThreshold;
-      writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/${profile}/settings.json`), JSON.stringify(settings));
+      writeFileSync(path.join(__dirname, `${configPath}${profile}/settings.json`), JSON.stringify(settings));
       ctx.reply(`Threshold is changed to ${newThreshold}`);
     } else {
       ctx.reply(`The value is incorrect. Provide a proper numeric value between 1 and 150.`);
@@ -280,8 +283,8 @@ You can also write in this chat directly to do:
 };
   ipcMain.on(`onload`, async () => {
     const profile = getProfile().selected;
-    const config = getJson(`../../app.asar.unpacked/app/config/${profile}/bot.json`);
-    const settings = getJson(`../../app.asar.unpacked/app/config/${profile}/settings.json`);
+    const config = getJson(`${configPath}${profile}/bot.json`);
+    const settings = getJson(`${configPath}${profile}/settings.json`);
 
     if(config.patch[settings.game].startByFishingKey) {
       globalShortcut.register(settings.fishingKey, () => {
@@ -355,7 +358,7 @@ By pressing "Accept" you agree to everything stated above.`,
       settings.game = games[initialGameChoice];
     }
 
-    writeFile(path.join(__dirname, `../../app.asar.unpacked/app/config/${profile}/settings.json`), JSON.stringify(settings), () => {})
+    writeFile(path.join(__dirname, `${configPath}${profile}/settings.json`), JSON.stringify(settings), () => {})
 
     if(screen.getAllDisplays().length > 1) {
       log.warn("The bot detected more than 1 display: use both the game and the bot on the primary one.")
@@ -368,9 +371,9 @@ By pressing "Accept" you agree to everything stated above.`,
 
   ipcMain.handle("start-bot", async (event, type) => {
     const profile = getProfile().selected;
-    const config = getJson(`../../app.asar.unpacked/app/config/${profile}/bot.json`);
-    const configDefault = getJson(`../../app.asar.unpacked/app/config/${profile}/defaults.json`);
-    const settings = getJson(`../../app.asar.unpacked/app/config/${profile}/settings.json`);
+    const config = getJson(`${configPath}${profile}/bot.json`);
+    const configDefault = getJson(`${configPath}${profile}/defaults.json`);
+    const settings = getJson(`${configPath}${profile}/settings.json`);
 
     log.send(`Looking for the windows of the game...`);
 
@@ -440,7 +443,7 @@ By pressing "Accept" you agree to everything stated above.`,
 
     if(settings.initialZone) {
       settings.initialZone = false;
-      writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/${profile}/settings.json`), JSON.stringify(settings));
+      writeFileSync(path.join(__dirname, `${configPath}${profile}/settings.json`), JSON.stringify(settings));
     }
 
     if(type == `relZone` || type == `chatZone` || type == `detectZone` || type == `combatZone`) {
@@ -454,7 +457,7 @@ By pressing "Accept" you agree to everything stated above.`,
       let data = await setFishingZone(games[0].game, zoneData, type, config.patch[settings.game], settings);
       if(data) {
         config.patch[settings.game][type] = data;
-        writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/${profile}/bot.json`), JSON.stringify(config));
+        writeFileSync(path.join(__dirname, `${configPath}${profile}/bot.json`), JSON.stringify(config));
         log.ok(`Set ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : type == `combatZone` ? `Combat` : `Motion Detection`} Zone successfully!`);
       } else {
         log.send(`Canceled.`)
@@ -470,8 +473,8 @@ By pressing "Accept" you agree to everything stated above.`,
     if(settings.multipleWindows) { // TEMP:
       games = [];
       for(let i = 1; i <= 10; i++) {
-        const config = getJson(`../../app.asar.unpacked/app/config/WIN${i}/bot.json`);
-        const settings = getJson(`../../app.asar.unpacked/app/config/WIN${i}/settings.json`);
+        const config = getJson(`${configPath}WIN${i}/bot.json`);
+        const settings = getJson(`${configPath}WIN${i}/settings.json`);
 
         const useCustomWindow = config.patch[settings.game].useCustomWindow;
         if(useCustomWindow) {
@@ -569,8 +572,8 @@ By pressing "Accept" you agree to everything stated above.`,
 
   ipcMain.on('reg-start-by-fishing-key', () => {
     let profile = getProfile();
-    let settings = getJson(`../../app.asar.unpacked/app/config/${profile.selected}/settings.json`);
-    let config = getJson(`../../app.asar.unpacked/app/config/${profile.selected}/bot.json`);
+    let settings = getJson(`${configPath}${profile.selected}/settings.json`);
+    let config = getJson(`${configPath}${profile.selected}/bot.json`);
 
     globalShortcut.register(settings.fishingKey, () => {
       win.webContents.send('start-by-fishing-key');
@@ -579,8 +582,8 @@ By pressing "Accept" you agree to everything stated above.`,
 
   ipcMain.on('unreg-start-by-fishing-key', () => {
     let profile = getProfile();
-    let settings = getJson(`../../app.asar.unpacked/app/config/${profile.selected}/settings.json`);
-    let config = getJson(`../../app.asar.unpacked/app/config/${profile.selected}/bot.json`);
+    let settings = getJson(`${configPath}${profile.selected}/settings.json`);
+    let config = getJson(`${configPath}${profile.selected}/bot.json`);
     globalShortcut.unregister(settings.fishingKey);
   })
 
@@ -613,7 +616,7 @@ By pressing "Accept" you agree to everything stated above.`,
   );
 
   ipcMain.on("save-settings", (event, settings) =>
-    writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/${getProfile().selected}/settings.json`), JSON.stringify(settings))
+    writeFileSync(path.join(__dirname, `${configPath}${getProfile().selected}/settings.json`), JSON.stringify(settings))
   );
 
   ipcMain.on("unsupported-key", () => {
@@ -669,7 +672,7 @@ By pressing "Accept" you agree to everything stated above.`,
 
   })
   ipcMain.handle("get-profiles", () => getProfile());
-  ipcMain.handle("get-settings", () => getJson(`../../app.asar.unpacked/app/config/${getProfile().selected}/settings.json`));
+  ipcMain.handle("get-settings", () => getJson(`${configPath}${getProfile().selected}/settings.json`));
 
 ipcMain.handle("delete-user", (event, user) => {
   if(showChoiceWarning(win, `Are you sure you want to delete this profile?`, `Warning`, `Yes`, `No`)) {
@@ -692,21 +695,21 @@ ipcMain.handle("delete-user", (event, user) => {
     return;
   }
   return new Promise((resolve, reject) => {
-  readdir(path.join(__dirname, `../../app.asar.unpacked/app/config/`, user), async (error, files) => {
+  readdir(path.join(__dirname, `${configPath}`, user), async (error, files) => {
       if(error) reject(error);
 
       for(let file of files) {
-        await unlink(path.join(__dirname, `../../app.asar.unpacked/app/config/`, user, file));
+        await unlink(path.join(__dirname, `${configPath}`, user, file));
       }
 
-      rmdir(path.join(__dirname, `../../app.asar.unpacked/app/config/`, user), (error) => {
+      rmdir(path.join(__dirname, `${configPath}`, user), (error) => {
         if (error) {
           reject(error);
         } else {
           let profile = getProfile();
           profile.selected = profile.users[profile.users.indexOf(user) - 1];
           profile.users = profile.users.filter((exstUser) => exstUser != user);
-          writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/`, `config.json`), JSON.stringify(profile));
+          writeFileSync(path.join(__dirname, `${configPath}`, `config.json`), JSON.stringify(profile));
           resolve(profile.selected);
         }
       });
@@ -716,7 +719,7 @@ ipcMain.handle("delete-user", (event, user) => {
 
   ipcMain.handle("create-user", (event, user) => {
     return new Promise((resolve, reject) => {
-      mkdir(path.join(__dirname, `../../app.asar.unpacked/app/config/`, user), (error) => {
+      mkdir(path.join(__dirname, `${configPath}`, user), (error) => {
         if(error) {
           if(error.code == `EEXIST`) {
             log.err(`The user already exist.`);
@@ -724,15 +727,15 @@ ipcMain.handle("delete-user", (event, user) => {
           reject(error);
         } else {
           let profile = getProfile();
-          let settings = getJson(`../../app.asar.unpacked/app/config/${profile.selected}/settings.json`);
-          let config = getJson(`../../app.asar.unpacked/app/config/${profile.selected}/bot.json`);
-          let defConfig = getJson(`../../app.asar.unpacked/app/config/${profile.selected}/defaults.json`);
-          writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/`, user, `settings.json`), JSON.stringify(settings));
-          writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/`, user, `bot.json`), JSON.stringify(config));
-          writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/`, user, `defaults.json`), JSON.stringify(defConfig));
+          let settings = getJson(`${configPath}${profile.selected}/settings.json`);
+          let config = getJson(`${configPath}${profile.selected}/bot.json`);
+          let defConfig = getJson(`${configPath}${profile.selected}/defaults.json`);
+          writeFileSync(path.join(__dirname, `${configPath}`, user, `settings.json`), JSON.stringify(settings));
+          writeFileSync(path.join(__dirname, `${configPath}`, user, `bot.json`), JSON.stringify(config));
+          writeFileSync(path.join(__dirname, `${configPath}`, user, `defaults.json`), JSON.stringify(defConfig));
           profile.selected = user;
           profile.users.push(user);
-          writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/`, `config.json`), JSON.stringify(profile));
+          writeFileSync(path.join(__dirname, `${configPath}`, `config.json`), JSON.stringify(profile));
           resolve();
         }
       })
@@ -740,8 +743,8 @@ ipcMain.handle("delete-user", (event, user) => {
   });
   ipcMain.handle("change-selected-profile", (event, profile) => {
 
-    const config = getJson(`../../app.asar.unpacked/app/config/${profile}/bot.json`);
-    const settings = getJson(`../../app.asar.unpacked/app/config/${profile}/settings.json`);
+    const config = getJson(`${configPath}${profile}/bot.json`);
+    const settings = getJson(`${configPath}${profile}/settings.json`);
     const customWin = config.patch[settings.game].customWindow;
 
     if(!customWin && (profile == 'WIN1' || profile == 'WIN2' || profile == 'WIN3' || profile == 'WIN4' || profile == 'WIN5' || profile == 'WIN6' || profile == 'WIN7' || profile == 'WIN8' || profile == 'WIN9' || profile == 'WIN10')) {
@@ -749,7 +752,7 @@ ipcMain.handle("delete-user", (event, user) => {
     }
     let profiles = getProfile();
     profiles.selected = profile;
-    writeFileSync(path.join(__dirname, `../../app.asar.unpacked/app/config/config.json`), JSON.stringify(profiles));
+    writeFileSync(path.join(__dirname, `${configPath}config.json`), JSON.stringify(profiles));
   });
 }
 
@@ -759,7 +762,7 @@ const menu = Menu.buildFromTemplate([
   {
     label: `Help`,
     submenu: [
-      { label: "AutoFish ver. 2.11.0 Premium" },
+      { label: "AutoFish ver. 3.0.0 Premium" },
       { type: "separator" },
       {
         label: "📘 Read Me",
@@ -772,11 +775,20 @@ const menu = Menu.buildFromTemplate([
         label: "Video",
         click: () => shell.openExternal("https://youtu.be/A3W8UuVIZTo"),
       },
+      { type: "separator" },
       {
         label: "Report issue",
         click: () =>
           shell.openExternal("https://github.com/jsbots/AutoFish/issues"),
       },
+      {
+        label: "Clear Cache",
+        click: () => {
+          win.webContents.session.clearStorageData();
+          showWarning(win, `Cache Cleared. Application Reload May Be Required`);
+        },
+      },
+      { type: "separator" },
       { type: "separator" },
       {
         label: "Discord Server",
@@ -789,51 +801,7 @@ const menu = Menu.buildFromTemplate([
       { type: "separator" },
       { role: "quit" },
     ],
-  },
-    {
-    label: `Cache`,
-    submenu: [
-      {
-        label: "Open Cache",
-        click: () => {
-          shell.openExternal(win.webContents.session.storagePath);
-        },
-      },
-      {
-        label: "Clear Cache",
-        click: () => {
-          win.webContents.session.clearStorageData();
-          showWarning(win, `Cache Cleared. Application Reload May Be Required`);
-        },
-      },
-      { type: "separator" },
-    ],
-  },
-  {
-  label: `Debug`,
-  submenu: [
-    {
-      label: "Debugging On",
-      type: `checkbox`,
-      checked: false,
-      click: () => {
-        if(process.env.NODE_ENV != `dev`) {
-          process.env.NODE_ENV = `dev`
-        } else {
-          process.env.NODE_ENV = `prod`
-        }
-      },
-    },
-    {
-      label: "Open Debugging Folder",
-      click: () => {
-        shell.openExternal(`${__dirname}/debug`);
-      },
-    },
-    { role: 'toggleDevTools' },
-    { type: "separator" },
-  ],
-},
+  }
 ]);
 
 Menu.setApplicationMenu(menu);

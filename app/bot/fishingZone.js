@@ -87,7 +87,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
       if(autoTh) {
         bobber = this._findMost(rgb);
         if(bobber && process.env.NODE_ENV == `dev`) {
-          log.err(`[DEBUG] Color Found: ${bobber.color}, at: ${bobber.pos.x},${bobber.pos.y}`);
+          log.err(`[DEBUG] Color: ${bobber.color}, Pos: ${bobber.pos.x},${bobber.pos.y}`);
         }
         if(!bobber) return;
       } else {
@@ -118,13 +118,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
         if(doubleZoneDims.y + doubleZoneDims.height > rgbZone.y + rgbZone.height) doubleZoneDims.y = rgbZone.y + rgbZone.height - doubleZoneDims.height;
 
         let doubleZoneData = await getDataFrom(doubleZoneDims);
-
-        if(process.env.NODE_ENV == `dev`) {
-          const img = await Jimp.read(doubleZoneData);
-          const date = new Date()
-          const name = `doubleZoneData-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.png`
-          img.write(`${__dirname}/../debug/${name}`);
-        }
 
         let rgbAroundBobber = createRgb(doubleZoneData);
         rgbAroundBobber.saturate(...saturation);

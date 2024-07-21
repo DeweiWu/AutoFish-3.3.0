@@ -4,6 +4,8 @@ const path = require('path');
 const archiver = require('archiver');
 const extract = require('extract-zip');
 
+const configPath = process.env.NODE_ENV == `dev` ? './config/' : '${configPath}';
+
 function saveArchive(log) {
   // Open the save dialog
   dialog.showSaveDialog({

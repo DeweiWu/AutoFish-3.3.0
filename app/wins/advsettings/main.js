@@ -2,10 +2,12 @@ const { BrowserWindow, ipcMain, dialog } = require("electron");
 const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
 
+const configPath = process.env.NODE_ENV == `dev` ? './config/' : '../../app.asar.unpacked/app/config/';
+
 const getJson = (path) => JSON.parse(readFileSync(path), "utf8");
 
 const getProfile = (appPath) => {
-  return getJson(path.join(appPath, `./config/config.json`)).selected;
+  return getJson(path.join(appPath, `${configPath}config.json`)).selected;
 };
 
 
@@ -70,10 +72,10 @@ const createAdvSettings = (appPath) => {
   ipcMain.on("advanced-click", (event, newConfig) => {
     if(newConfig) {
       const profile = getProfile(appPath);
-      const settings = getJson(path.join(appPath, `./config/${profile}/settings.json`));
-      const config = getJson(path.join(appPath, `./config/${profile}/bot.json`));
+      const settings = getJson(path.join(appPath, `${configPath}${profile}/settings.json`));
+      const config = getJson(path.join(appPath, `${configPath}${profile}/bot.json`));
       config.patch[settings.game] = newConfig;
-      writeFileSync(path.join(appPath, `./config/${profile}/bot.json`), JSON.stringify(config));
+      writeFileSync(path.join(appPath, `${configPath}${profile}/bot.json`), JSON.stringify(config));
     }
     win.close();
   });
@@ -108,8 +110,8 @@ const createAdvSettings = (appPath) => {
 
   ipcMain.handle("advanced-defaults", () => {
     const profile = getProfile(appPath);
-    const settings = getJson(path.join(appPath, `./config/${profile}/settings.json`));
-    const defaults = getJson(path.join(appPath, `./config/${profile}/defaults.json`));
+    const settings = getJson(path.join(appPath, `${configPath}${profile}/settings.json`));
+    const defaults = getJson(path.join(appPath, `${configPath}${profile}/defaults.json`));
     return defaults.patch[settings.game];
   })
 
@@ -119,8 +121,8 @@ const createAdvSettings = (appPath) => {
 
   ipcMain.handle("get-game-config", () => {
     const profile = getProfile(appPath);
-    const settings = getJson(path.join(appPath, `./config/${profile}/settings.json`));
-    const config = getJson(path.join(appPath, `./config/${profile}/bot.json`));
+    const settings = getJson(path.join(appPath, `${configPath}${profile}/settings.json`));
+    const config = getJson(path.join(appPath, `${configPath}${profile}/bot.json`));
     return config.patch[settings.game];
   });
 
