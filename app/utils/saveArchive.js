@@ -4,8 +4,8 @@ const path = require('path');
 const archiver = require('archiver');
 const extract = require('extract-zip');
 
-const configPath = process.env.NODE_ENV == `dev` ? './../config/' : `../../app.asar.unpacked/app/config/`;
-const configPathApp =  process.env.NODE_ENV == `dev` ? '../' : `../../app.asar.unpacked/app/`;
+const configPath = process.env.NODE_ENV == `dev` ? './../config/' : `../../../app.asar.unpacked/app/config/`;
+const configPathApp =  process.env.NODE_ENV == `dev` ? '../' : `../../../app.asar.unpacked/app/`;
 
 function saveArchive(log) {
   // Open the save dialog
