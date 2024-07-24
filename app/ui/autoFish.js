@@ -108,8 +108,10 @@ class AutoFish {
 
     profile.load.addEventListener(`click`, async () => {
       await ipcRenderer.invoke("load-config");
-      profile.select.value = 'Default';
-      await ipcRenderer.invoke("change-selected-profile", 'Default');
+      let profiles = await ipcRenderer.invoke("get-profiles");
+      profile.select.innerHTML = ``;
+      profiles.users.forEach(user => profile.select.append(elt(`option`, {selected: user == profiles.selected}, user)));
+      await ipcRenderer.invoke("change-selected-profile", profiles.selected);
       this.settings.config = await ipcRenderer.invoke("get-settings");
       this.settings.reRender();
     })
