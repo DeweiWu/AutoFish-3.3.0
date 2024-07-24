@@ -367,6 +367,7 @@ By pressing "Accept" you agree to everything stated above.`,
   win.once("ready-to-show", () => {
     //win.openDevTools({mode: `detach`});
     win.show();
+    win.focus();
   });
 
   ipcMain.handle("start-bot", async (event, type) => {
