@@ -357,6 +357,11 @@ if(lootWindowPatch.exitButton) {
 
   const logOut = async (state) => {
     findPlayer.state = true;
+
+    if(tmBot.ctx) {
+      tmBot.ctx.reply(`Scheduled Logging out in: ${winNum}!`);
+    }
+
     await action(async () => {
       if(config.logOutUseMacro) {
         await keyboard.toggleKey(config.logOutMacroKey, true, delay);
@@ -425,6 +430,10 @@ if(lootWindowPatch.exitButton) {
 
       if(settings.afkmode) await altTab();
     }
+
+  if(tmBot.ctx) {
+    tmBot.ctx.reply(`Logged back in: ${winNum}!`);
+  }
 
   findPlayer.state = false;
   };
