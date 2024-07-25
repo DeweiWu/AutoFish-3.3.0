@@ -12,13 +12,6 @@ const createLootExitZone = ({ getDataFrom, lootWindow, size }) => {
 
       let rgb = createRgb(await getDataFrom(zone));
 
-      if(process.env.NODE_ENV == `dev`) {
-        const img = await Jimp.read(rgb.getBitmap());
-        const date = new Date()
-        const name = `test-lootExitZone-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.png`
-        img.write(`${__dirname}/../debug/${name}`);
-      }
-
       let result = rgb.findColors({
         isColor: isYellow,
         atFirstMet: true

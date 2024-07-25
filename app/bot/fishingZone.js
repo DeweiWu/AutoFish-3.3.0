@@ -86,9 +86,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
       let bobber;
       if(autoTh) {
         bobber = this._findMost(rgb);
-        if(bobber && process.env.NODE_ENV == `dev`) {
-          log.err(`[DEBUG] Color: ${bobber.color}, Pos: ${bobber.pos.x},${bobber.pos.y}`);
-        }
         if(!bobber) return;
       } else {
         bobber = rgb.findColors({
