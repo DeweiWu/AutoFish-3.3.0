@@ -982,6 +982,34 @@ const renderAggroCheckUserHp = ({aggroCheck, aggroCheckUserHp}) => {
   return elt('div', {"data-collection": `aggroCheckUserHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `t: `), precision, colorPicker, colorBox)
 
 };
+
+const renderDeathCheck = ({deathCheck}) => {
+  return elt('input', {type: `checkbox`, checked: deathCheck, name: 'deathCheck'});
+}
+
+const renderDeathCheckHp = ({deathCheck, deathHp}) => {
+    const x = elt('input', {type: `number`, name: 'x', disabled: !deathCheck, value: deathHp.x});
+    const y = elt('input', {type: `number`, name: 'y', disabled: !deathCheck, value: deathHp.y});
+    const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!deathCheck ? `colorPicker_disabled` : ``}`, disabled: !deathCheck, name: 'color', value: deathHp.color});
+    const precision = elt('input', {type: `number`, disabled: !deathCheck, value: deathHp.precision, "data-skills": "precision"})
+
+    const colorPicker = elt('input', {type: `button`, disabled: !deathCheck, className: `whisperColorPicker ${!deathCheck ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
+      ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        if(!data) {
+          return;
+        }
+
+        x.value = data.x;
+        y.value = data.y;
+
+        const {r, g, b} = data.color;
+        colorBox.value = rgbToHex(r, g, b);
+      })
+    }});
+
+    return elt('div', {"data-collection": `deathHp`}, elt('span', {style: `margin: 0 5px;`}, `x: `), x, elt('span', {style: `margin-right: 5px;`}, `y: `), y, elt('span', {style: `margin-right: 5px;`}, `t: `), precision, colorPicker, colorBox)
+}
+
 /*
 const renderAggroCheckUserHpStart = ({aggroCheck, aggroCheckUserHpStart}) => {
 
@@ -1370,10 +1398,18 @@ const renderSettings = (config) => {
     wrapInLabel(`After Catch Chance (%): `, renderSleepAfterHookChance(config), `Likelihood that the bot will sleep after it caches fish.`),
     wrapInLabel(`After Catch Random Delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
     ),
+
+      elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death/Disconnect Indication`),
+      elt(`div`, {className: `settings_section settings_premium`},
+      wrapInLabel(`Death Indication: `, renderDeathCheck(config), `The bot will check your HP bar to determine whether your character is dead or you are disconnected.`),
+      wrapInLabel(`Death Indication HP: `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death/disconnection.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`)
+    ),
+
     elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
     elt(`div`, {className: `settings_section settings_premium`},
       renderSpares(config)
     ),
+
     elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),

@@ -10,6 +10,7 @@ const random = (from, to) => {
 
 const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) => {
   const {
+    deathCheck,
     findPlayer,
     dynamicThreshold,
     logOut,
@@ -37,6 +38,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
   } = bot;
 
   checkChanges(onError, log);
+  deathCheck(wins, onError);
   aggroCheck(onError, state, aggroTestRun, wins);
   findPlayer.frontCheck(state, log, onError);
 

@@ -1349,6 +1349,29 @@ if(lootWindowPatch.exitButton) {
     }
   }
 
+  const deathCheck = async (wins, onStop) => {
+    if(!config.deathCheck) {
+      return;
+    }
+    const deathHp = new HealthBar(config.deathHp);
+
+    while(true) {
+      await sleep(1000);
+      if(!(await deathHp.checkColor(getDataFrom))) {
+
+        if(tmBot.ctx) {
+          tmBot.ctx.reply(`The bot is dead or disconnected in: ${winNum}! Closing window...`);
+        }
+
+        state.status = 'stop';
+        if(wins.every(win => win.state.status == `stop`)) {
+          onStop();
+          workwindow.close();
+          app.quit();
+        }
+      }
+    }
+  };
 
   const aggroCheck = async (onStop, state, aggroTestRun) => {
     if(!config.aggroCheck) return;
@@ -2366,7 +2389,8 @@ if (settings.soundDetection) {
     replyToChat,
     dx12Case,
     checkChanges,
-    aggroCheck
+    aggroCheck,
+    deathCheck
   };
 };
 
