@@ -1359,13 +1359,14 @@ if(lootWindowPatch.exitButton) {
       await sleep(1000);
       if(!(await deathHp.checkColor(getDataFrom))) {
 
-        if(tmBot.ctx) {
+        if(tmBot.bot) {
           tmBot.ctx.reply(`The bot is dead or disconnected in: ${winNum}! Closing window...`);
         }
 
         state.status = 'stop';
         if(wins.every(win => win.state.status == `stop`)) {
           onStop();
+          await sleep(1000);
           workwindow.close();
           app.quit();
         }
@@ -2326,13 +2327,15 @@ if (settings.soundDetection) {
             await keyboard.printText(`shutdown -s -t 10`, delay);
             await keyboard.sendKey(`enter`, delay);
         }
+        onError();
+        await sleep(1000);
         app.quit();
       }
       workwindow.close();
-    }
-
-    if(wins.every(win => win.state.status == `stop`)) {
-      onError();
+    } else {
+      if(wins.every(win => win.state.status == `stop`)) {
+        onError();
+      }
     }
   }
   doAfterTimer.on = config.timer;
