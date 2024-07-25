@@ -1401,7 +1401,7 @@ const renderSettings = (config) => {
 
       elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death/Disconnect Indication`),
       elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel(`Death Indication: `, renderDeathCheck(config), `The bot will check your HP bar to determine whether your character is dead or you are disconnected.`),
+      wrapInLabel(`Death Indication: `, renderDeathCheck(config), `The bot will check your HP bar to determine whether your character is dead or you are disconnected. It will notify you via Telegram (if connected) and then exit both the game and the bot.`),
       wrapInLabel(`Death Indication HP: `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death/disconnection.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`)
     ),
 
