@@ -133,15 +133,10 @@ const renderLikeHumanFineTune = ({likeHumanFineTune, arduino, likeHuman}) => {
   return dom;
 }
 
-const renderLikeHumanHover = ({likeHumanHover = true, arduino, likeHuman}) => {
-  let dom = elt("input", {
-    type: "checkbox",
-    disabled: !likeHuman || arduino,
-    className: "option",
-    checked: arduino ? false : likeHumanHover,
-    name: "likeHumanHover",
-  });
-  return dom;
+const renderLikeHumanHover = ({likeHumanHover = 2, arduino, likeHuman}) => {
+  const winRange = elt(`input`, {type: `number`, value: likeHumanHover, name: "likeHumanHover", disabled: !likeHuman || arduino})
+  const range = elt('input', {type: `range`, min: 0, className: !likeHuman || arduino ? `threshold_disabled` : ``, max: 100, value: likeHumanHover, disabled: !likeHuman || arduino, oninput: function() {winRange.value = this.value}, name: "likeHumanHover"});
+  return elt(`div`, null, range, winRange);
 }
 
 const renderCastDelay = ({castDelay}) => {
@@ -1284,7 +1279,6 @@ const renderSettings = (config) => {
   wrapInLabel(`Start Bot By Fishing Key`, renderStartByFishingKey(config), `Your Fishing Key (the same assigned in the bot) in the game will start the bot and you don't need to alt-tab to start it manually, you still need to stop it either by Stop Key or manually (the bot won't stop if you just move away as it happens in the game). Warning! The key you assigned for Fishing Key will be blocked on your machine and if used will start the bot. Turn this feature on only after you have configured all the settings.`),
   wrapInLabel(`Human-like Movement: `, renderLikeHuman(config), `The bot will move your mouse in a human way: random speed and with a slight random deviation in the movement. Otherwise it will move the mouse instantly, which might be a better option if you use a lot of windows.`),
   wrapInLabel(`Human-like Accuracy: `, renderLikeHumanFineTune(config), `The bot will "fine-tune" the mouse position after moving to the bobber, imitating a human-like way of reaching the mouse-movement target position.`),
-  wrapInLabel(`Human-like Hovering: `, renderLikeHumanHover(config), `The bot will hover over the bobber from time to time to simulate slight movements when the hand rests on the mouse. This feature might impact performance.`),
   wrapInLabel(`Hide Bot Window After Start: `, renderHideWin(config), `The window of the bot will be hidden and you will be able to focus it only after using stop key.`),
   wrapInLabel(
     "Use Shift+Click: ",
@@ -1360,7 +1354,8 @@ const renderSettings = (config) => {
   elt(`div`, {className: `settings_section`},
     wrapInLabel(`Random Mouse Speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
     wrapInLabel(`Random Mouse Curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
-    wrapInLabel(`Highlight Bobber (%): `, renderHighlightPercent(config), `How often the bot should highlight the bobber before checking on it (if in your game the bobber become brigther or more colourfull after highlighting, then change this value to 100% if you don't care for randomness)`),
+    wrapInLabel(`Highlight Bobber (%): `, renderHighlightPercent(config), `The value is chance of how often the bot should highlight the bobber before checking on it (if in your game the bobber become brigther or more colourfull after highlighting, then change this value to 100% if you don't care for randomness)`),
+    wrapInLabel(`Human-like Hovering (%): `, renderLikeHumanHover(config), `The value is chance of how often the bot should "hover" your cursor from time to time to simulate slight movements when the hand rests on the mouse. This feature might impact performance.`),
     wrapInLabel(`Input Library: `, renderLibraryTypeInput(config), `Different ways of simulating keyboard and mouse actions.`),
     wrapInLabel(`Catch With Mouse Button: `, renderCatchFishButton(config), `Choose the button you want the bot to click when it wants to catch the fish.`),
     wrapInLabel(`Mouse/Keyboard Random Delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
