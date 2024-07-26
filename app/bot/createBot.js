@@ -1355,7 +1355,7 @@ if(lootWindowPatch.exitButton) {
     }
     const deathHp = new HealthBar(config.deathHp);
 
-    while(true) {
+    while(state.status != 'stop') {
       await sleep(1000);
 
       if(findPlayer.state || state.status == 'move' || state.status == 'logout') {
