@@ -1357,6 +1357,11 @@ if(lootWindowPatch.exitButton) {
 
     while(true) {
       await sleep(1000);
+
+      if(findPlayer.state || state.status == 'move' || state.status == 'logout') {
+        continue;
+      }
+
       if(!(await deathHp.checkColor(getDataFrom))) {
 
         if(tmBot.bot) {
