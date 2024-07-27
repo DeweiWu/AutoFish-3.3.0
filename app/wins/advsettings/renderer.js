@@ -1393,16 +1393,15 @@ const renderSettings = (config) => {
     wrapInLabel(`After Catch Chance (%): `, renderSleepAfterHookChance(config), `Likelihood that the bot will sleep after it caches fish.`),
     wrapInLabel(`After Catch Random Delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
     ),
+        elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
+        elt(`div`, {className: `settings_section settings_premium`},
+          renderSpares(config)
+        ),
 
-      elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death/Disconnect Indication`),
+      elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death/Disconnect`),
       elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel(`Death Indication: `, renderDeathCheck(config), `The bot will check your HP bar to determine whether your character is dead or you are disconnected. It will notify you via Telegram (if connected) and then exit both the game and the bot.`),
-      wrapInLabel(`Death Indication HP: `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death/disconnection.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`)
-    ),
-
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
-    elt(`div`, {className: `settings_section settings_premium`},
-      renderSpares(config)
+      wrapInLabel(`Quit and notify at Death/Disconnect: `, renderDeathCheck(config), `The bot will check your HP bar to determine whether your character is dead or you are disconnected. It will notify you via Telegram (if connected) and then exit both the game and the bot.`),
+      wrapInLabel(`Death Indication (User HP): `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death/disconnection.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`)
     ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
