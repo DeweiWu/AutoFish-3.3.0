@@ -2,12 +2,13 @@ const { faker } = require("@faker-js/faker");
 const { obfuscateFiles, obfuscateFolder } = require('./obfuscator.js');
 const path = require('path');
 
-let name = 'app';
+process.env.NODE_ENV = 'prod';
+let name = process.env.NODE_ENV == 'dev' ? 'AutoFish Premium' : 'app';
 
 module.exports = {
   hooks: {
     prePackage: async (forgeConfig, appProcess) => {
-      await obfuscateFiles(['./app/main.js']);
+      process.env.NODE_ENV == 'dev' ? await obfuscateFolder('./app') : await obfuscateFiles(['./app/main.js']);
     },
   },
   packagerConfig: {
