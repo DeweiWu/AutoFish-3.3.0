@@ -1,6 +1,6 @@
 const { BrowserWindow, ipcMain } = require("electron");
 
-const nutJS = require("@nut-tree/nut-js");
+const nutJS = require("@nut-tree-fork/nut-js");
 
 let winClosed = false;
 

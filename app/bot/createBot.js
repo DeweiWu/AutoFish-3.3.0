@@ -18,7 +18,7 @@ const Jimp = require(`jimp`);
 
 const { BrowserWindow, ipcMain, app } = require(`electron`);
 
-const { screen, Region, Point, straightTo } = require("@nut-tree/nut-js");
+const { screen, Region, Point, straightTo } = require("@nut-tree-fork/nut-js");
 
 const nutjs = require("../game/nut.js");
 

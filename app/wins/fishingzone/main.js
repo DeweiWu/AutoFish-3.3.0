@@ -1,6 +1,6 @@
 const { BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-const { screen, Region } = require("@nut-tree/nut-js");
+const { screen, Region } = require("@nut-tree-fork/nut-js");
 const fishZone = require("../../bot/fishingZone.js");
 
 const promisify = fn => (...args) => new Promise((resolve, reject) =>

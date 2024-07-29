@@ -1,4 +1,4 @@
-let { mouse, Point, keyboard, Key } = require("@nut-tree/nut-js");
+let { mouse, Point, keyboard, Key } = require("@nut-tree-fork/nut-js");
 
 function getRandomControlPoint(start, end, range) {
     const deltaX = end.x - start.x;
