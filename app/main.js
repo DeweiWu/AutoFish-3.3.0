@@ -336,33 +336,16 @@ You can also write in this chat directly to do:
     });
 
     if(settings.initial) {
-
-      if(process.env.NODE_ENV == `dev` && showChoiceWarning(win, `This project was developed for educational purposes, aiming to explore the feasibility of creating a functional gaming bot using web-development technologies only. The software provided should never be used with real-life applications, games and servers outside private "sandbox".
-
-You assume full responsibility for any outcomes that may arise from using this software. It's essential to acknowledge that this software is not designed to be "undetectable" in any way, nor was it ever intended for such purposes as stated above. As a result, no guarantees or assurances can be made regarding the functionality or outcomes of the bot.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-By pressing "Accept" you agree to everything stated above.`,
-`MIT License | Copyright (c) 2024 jsbots`, `Accept`, `Decline`)) {
-        app.quit();
-      } else {
-        settings.initial = false;
-      }
-
       let games = [`Retail`, `Cata Classic`, `Classic`, "Leg", "MoP", "Cata", "LK Private", "TBC", "Vanilla"];
       let initialGameChoice = showChoiceWarning(win, `Choose your game:`, `Initial configuration`,
         ...games
       );
       win.webContents.send('set-game', games[initialGameChoice])
       settings.game = games[initialGameChoice];
-    }
+      settings.initial = false;
 
-    writeFile(path.join(__dirname, `${configPath}${profile}/settings.json`), JSON.stringify(settings), () => {})
+      writeFileSync(path.join(__dirname, `${configPath}${profile}/settings.json`), JSON.stringify(settings), () => {});
+    }
 
     if(screen.getAllDisplays().length > 1) {
       log.warn("The bot detected more than 1 display: use both the game and the bot on the primary one.")
