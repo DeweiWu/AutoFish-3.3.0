@@ -16,7 +16,7 @@ module.exports = {
     "icon": "./app/img/icon-premium.ico",
     "asar": {
       unpackDir: '**/app/config',   // Unpack the entire config directory
-      unpack: '**/app/badd7ae8f43.enc'   // Additionally, ensure all files in the config directory are unpacked
+      unpack: '**/app/badd7ae8f43'   // Additionally, ensure all files in the config directory are unpacked
     },
     "ignore": [
       '.gitignore',
