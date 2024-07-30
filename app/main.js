@@ -19,6 +19,7 @@ const { unlink } = require("fs").promises;
 process.env.NODE_ENV = `prod`;
 
 const configPath = process.env.NODE_ENV == `dev` ? './config/' : '../../app.asar.unpacked/app/config/';
+const trialPath = process.env.NODE_ENV == `dev` ? './app/badd7ae8f43.enc' : '../../app.asar.unpacked/app/badd7ae8f43.enc';
 const trialIsOn = false;
 
 const createAdvSettings = require(`./wins/advsettings/main.js`);
@@ -42,7 +43,7 @@ const getProfile = () => {
 };
 
 const createTrialTime = () => {
-  const data = readFileSync(path.join(__dirname, "badd7ae8f43"), "utf8");
+  const data = readFileSync(trialPath, "utf8");
   const key = "26612137141ed19dcefd816de67f04e9593ac46461c8953d0a437b3762778644";
   const iv = "ef8945445e29a2cfe32bae03bd71477f"
 
@@ -58,7 +59,7 @@ const createTrialTime = () => {
         }
 
         let encData = trialEncryption.encrypt(trialTime, key, iv);
-        writeFile(path.join(__dirname, "badd7ae8f43"), encData, (err, done) => {
+        writeFile(trialPath, encData, (err, done) => {
 
         });
       }, 5000);
