@@ -545,13 +545,16 @@ By pressing "Accept" you agree to everything stated above.`,
     if(config.patch[settings.game].hideWin) {
       setTimeout(() => {
         win.hide();
-      }, 500 + Math.random() * 1500);
+      }, Math.random() * 500);
     }
 
     if(trialIsOn) {
       if(trial.isElapsed()) {
         win.webContents.send("stop-bot");
         shell.beep();
+        if(config.patch[settings.game].hideWin) {
+          win.show();
+        }
         win.focus();
         setTimeout(() => {
           log.setState(true);
