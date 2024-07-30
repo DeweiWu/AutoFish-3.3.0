@@ -1368,6 +1368,10 @@ if(lootWindowPatch.exitButton) {
           tmBot.ctx.reply(`The bot is dead or disconnected in: ${winNum}! Closing window...`);
         }
 
+        if(doAfterTimer.on && doAfterTimer.timer.isElapsed() && config.timerShutDown) {
+          return; 
+        }
+
         state.status = 'stop';
         if(wins.every(win => win.state.status == `stop`)) {
           onStop();
