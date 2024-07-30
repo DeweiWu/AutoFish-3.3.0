@@ -30,7 +30,6 @@
     "@nut-tree-fork/nut-js": "^4.2.2",
     "@serialport/parser-readline": "^10.5.0",
     "archiver": "^7.0.1",
-    "electron": "^20.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "extract-zip": "^2.0.1",
     "javascript-obfuscator": "^4.1.0",
@@ -47,6 +46,7 @@
     "@electron-forge/maker-squirrel": "^7.4.0",
     "@electron-forge/maker-zip": "^7.4.0",
     "@faker-js/faker": "^8.4.1",
+    "electron": "^20.0.0",
     "electron-rebuild": "^3.2.9",
     "eslint": "^8.15.0",
     "jest": "^28.1.0"
