@@ -536,9 +536,7 @@ You can also write in this chat directly to do:
 
     win.blur();
     if(config.patch[settings.game].hideWin) {
-      setTimeout(() => {
         win.hide();
-      }, Math.random() * 500);
     }
 
     if(trialIsOn) {
