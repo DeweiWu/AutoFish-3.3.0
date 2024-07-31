@@ -209,7 +209,7 @@ const createWindow = async () => {
 <b>🔴 Stop</b> - Stops the bot.\n
 <b>📢 Stats</b> - Returns stats.\n
 <b>📷 Screenshot</b> - Makes a screenshot of every window of the game.\n
-<b>⌨️ Press Enter</b> - Presses "Enter". Might help in case of manual reconnection.\n
+<b>🏃 Use HS</b> - The bot will use HS. The settings from Timer section will be used.\n
 <b>💼 Check Bags</b> - Opens Bags, makes a screenshot and then closes them. (by pressing shift + b).\n
 <b>❌ Quit</b> - closes both the game and the bot.
 ---
@@ -241,7 +241,7 @@ You can also write in this chat directly to do:
       Markup.keyboard([
         ["🟢 Start", "🔴 Stop"],
         ["📢 Stats", "📷 Screenshot"],
-        ["⌨️ Press Enter", "💼 Check Bags"],
+        ["🏃 Use HS", "💼 Check Bags"],
         ["💬 Help/Restart", "❌ Quit"]
       ]).resize(),
     );

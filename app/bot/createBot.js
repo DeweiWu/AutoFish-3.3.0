@@ -138,8 +138,11 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
 
   tmBot.reconnects.push(async (ctx) => {
     await action(async () => {
-      await keyboard.sendKey(`enter`, delay);
+      await action(async () => {
+        await keyboard.sendKey(config.hsKey, delay);
+      }, true);
     });
+    state.status = 'stop';
   });
 
   tmBot.openBags.push(async (ctx) => {

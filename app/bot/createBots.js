@@ -38,9 +38,9 @@ if (tmBot.bot) {
     tmBot.ss.reduce((a, screenshot) => a.then(() => screenshot(ctx)), Promise.resolve())
   });
 
-  tmBot.bot.hears(`⌨️ Press Enter`, (ctx) => {
+  tmBot.bot.hears(`🏃 Use HS`, (ctx) => {
     tmBot.reconnects.forEach(reconnect => reconnect(ctx));
-    ctx.reply(`Pressed Enter!`);
+    ctx.reply(`Using HS!`);
   });
 
 
