@@ -16,7 +16,7 @@ const path = require("path");
 const { readFileSync, writeFileSync, writeFile, mkdir, rmdir, readdir } = require("fs");
 const { unlink } = require("fs").promises;
 
-process.env.NODE_ENV = `prod`;
+process.env.NODE_ENV = `dev`;
 
 const configPath = process.env.NODE_ENV == `dev` ? './config/' : '../../app.asar.unpacked/app/config/';
 const trialPath = process.env.NODE_ENV == `dev` ? './app/badd7ae8f43' : '../../app.asar.unpacked/app/badd7ae8f43';
@@ -202,8 +202,8 @@ const createWindow = async () => {
   };
 
   const connectToTelegram = (key) => {
+    tmBot.bot = new Telegraf(key);
 
-  tmBot.bot = new Telegraf(key);
   const helpMessage = `
 <b>🟢 Start</b> - Starts the bot.\n
 <b>🔴 Stop</b> - Stops the bot.\n
@@ -223,7 +223,6 @@ You can also write in this chat directly to do:
   const welcomeMessage = `<b>AutoFish Premium</b> is connected successfully!\n${helpMessage}`;
 
   tmBot.bot.command("start", async (ctx) => {
-
     const profile = getProfile().selected;
     const config = getJson(`${configPath}${profile}/bot.json`);
     const settings = getJson(`${configPath}${profile}/settings.json`);
@@ -280,7 +279,19 @@ You can also write in this chat directly to do:
     ctx.reply(helpMessage, { parse_mode: "HTML" });
   });
 
-  return tmBot.bot.launch();
+  tmBot.bot.catch((err, ctx) => {
+    console.log(err);
+  })
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      await tmBot.bot.launch(() => {
+        resolve();
+      });
+    } catch(e) {
+      reject(e);
+    }
+  });
 };
   ipcMain.on(`onload`, async () => {
     const profile = getProfile().selected;
