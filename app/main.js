@@ -242,7 +242,7 @@ You can also write in this chat directly to do:
         ["🟢 Start", "🔴 Stop"],
         ["📢 Stats", "📷 Screenshot"],
         ["🏃 Use HS", "💼 Check Bags"],
-        ["💬 Help/Restart", "❌ Quit"]
+        ["💬 Help", "❌ Quit"]
       ]).resize(),
     );
   });
@@ -274,7 +274,7 @@ You can also write in this chat directly to do:
     win.webContents.send(`stop-tm`);
   });
 
-  tmBot.bot.hears("💬 Help/Restart", (ctx) => {
+  tmBot.bot.hears("💬 Help", (ctx) => {
     if(!tmBot.ctx) tmBot.ctx = ctx;
     ctx.reply(helpMessage, { parse_mode: "HTML" });
   });
