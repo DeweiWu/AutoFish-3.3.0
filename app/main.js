@@ -16,7 +16,7 @@ const path = require("path");
 const { readFileSync, writeFileSync, writeFile, mkdir, rmdir, readdir } = require("fs");
 const { unlink } = require("fs").promises;
 
-process.env.NODE_ENV = `dev`;
+process.env.NODE_ENV = `prod`;
 
 const configPath = process.env.NODE_ENV == `dev` ? './config/' : '../../app.asar.unpacked/app/config/';
 const trialPath = process.env.NODE_ENV == `dev` ? './app/badd7ae8f43' : '../../app.asar.unpacked/app/badd7ae8f43';
