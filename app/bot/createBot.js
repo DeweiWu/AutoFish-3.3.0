@@ -802,7 +802,7 @@ if(lootWindowPatch.exitButton) {
       config.randomSleepDelay.from * 1000,
       config.randomSleepDelay.to * 1000
     );
-    await sleep(sleepFor, () => {
+    await sleep(sleepFor, async () => {
       randomAction();
     });
   };
