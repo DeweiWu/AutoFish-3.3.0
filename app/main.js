@@ -205,13 +205,13 @@ const createWindow = async () => {
     tmBot.bot = new Telegraf(key);
 
   const helpMessage = `
-<b>🟢 Start</b> - Starts the bot.\n
-<b>🔴 Stop</b> - Stops the bot.\n
-<b>📢 Stats</b> - Returns stats.\n
-<b>📷 Screenshot</b> - Makes a screenshot of every window of the game.\n
-<b>🏃 Use HS</b> - The bot will use HS. The settings from Timer section will be used.\n
-<b>💼 Check Bags</b> - Opens Bags, makes a screenshot and then closes them. (by pressing shift + b).\n
-<b>❌ Quit</b> - closes both the game and the bot.
+<b>🟢 Start</b> - Start the bot.\n
+<b>🔴 Stop</b> - Stop the bot.\n
+<b>📢 Stats</b> - Return stats.\n
+<b>📷 Screenshot</b> - Make a screenshot (all wins).\n
+<b>🏃 Use HS</b> - Use HS (all wins). The settings from Timer section will be used.\n
+<b>💼 Check Bags</b> - Open-Screenshot-Close bags (all wins, using shift + b).\n
+<b>❌ Quit</b> - Close both the game and the bot (all wins).
 ---
 You can also write in this chat directly to do:
 
