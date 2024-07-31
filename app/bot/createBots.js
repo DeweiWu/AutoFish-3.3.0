@@ -17,7 +17,7 @@ const getPercent = (value, total) => {
   return Math.ceil((value / (total || 1)) * 100 * 100) / 100;
 };
 
-const createBots = async (games, log, tmBot, arduino) => {
+const createBots = async (games, log, tmBot, arduino, win) => {
   const winSwitch = createWinSwitch(new EventLine());
 
   if(games[0].config.patch[games[0].settings.game].whitelist) { // check language only by first win?
@@ -165,11 +165,13 @@ if (tmBot.bot) {
       bots.forEach((bot) => {
         runBot(bot, onError, bots, aggroTestRun)
         .then(() => {
+            win.show();
             log.setState(true);
             bot.stats.show().forEach((stat) => bot.log.ok(stat));
             bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
         })
         .catch((error) => {
+            win.show();
             bot.state.status = "stop";
             if (bots.every(({state}) => state.status == "stop")) {
               onError();
@@ -187,6 +189,7 @@ if (tmBot.bot) {
     },
     stopBots() {
       log.send('Stopping the bots...');
+      win.show();
       log.setState(false);
       bots.forEach(({state}) => state.status = "stop");
       if(tmBot.ctx) {

@@ -494,7 +494,7 @@ You can also write in this chat directly to do:
       }
     }
 
-    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino);
+    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win);
 
     const stopAppAndBots = () => {
 

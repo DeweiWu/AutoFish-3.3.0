@@ -34,9 +34,13 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     checkChanges,
     aggroCheck,
     applyFatigue,
-    checkConfirm
+    checkConfirm,
+    regOnError
   } = bot;
 
+  regOnError.stopBots = () => {
+    onError();
+  }
   checkChanges(onError, log);
   deathCheck(wins, onError);
   aggroCheck(onError, state, aggroTestRun, wins);

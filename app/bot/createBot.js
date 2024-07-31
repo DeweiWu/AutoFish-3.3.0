@@ -60,7 +60,8 @@ const random = (from, to) => {
   return from + Math.random() * (to - from);
 };
 
-const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) => {
+const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, onError) => {
+  let regOnError = {};
   let chatMsgs = [];
   if(settings.game == `Vanilla (splash)` && settings.autoTh == true) {
     settings.autoTh = false;
@@ -138,11 +139,11 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
 
   tmBot.reconnects.push(async (ctx) => {
     await action(async () => {
-      await action(async () => {
-        await keyboard.sendKey(config.hsKey, delay);
-      }, true);
-    });
-    state.status = 'stop';
+      await keyboard.sendKey(config.hsKey, delay);
+    }, true);
+    if(regOnError.stopBots) {
+      regOnError.stopBots();
+    }
   });
 
   tmBot.openBags.push(async (ctx) => {
@@ -2417,7 +2418,8 @@ if (settings.soundDetection) {
     dx12Case,
     checkChanges,
     aggroCheck,
-    deathCheck
+    deathCheck,
+    regOnError
   };
 };
 
