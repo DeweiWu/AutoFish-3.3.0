@@ -9,6 +9,7 @@ const pixelmatch = require('pixelmatch');
 const Vec = require('../utils/vec.js');
 const { hexToRgb, rgbToHex } = require("./../utils/colors.js");
 const createRgb = require('../utils/rgb.js');
+const createDynamicFunction = require('../utils/dynamicFunction.js');
 
 const { createWriteStream } = require('fs');
 
@@ -37,19 +38,20 @@ const {
 
 const { createTimer } = require("../utils/time.js");
 
-const sleep = (time, toDo, every = 100) => {
+const sleep = (time, toDo, every) => {
+  let everyTime = () => every ? every : 50 + (Math.random() * 150);
   return new Promise((resolve) => {
     if(toDo && typeof toDo == `function`) {
       let startTime = Date.now();
       setTimeout(function repeat() {
         toDo().then(() => {
           if((Date.now() - startTime) < time) {
-            setTimeout(repeat, every);
+            setTimeout(repeat, everyTime());
           } else {
             resolve();
           }
         })
-      }, every);
+      }, everyTime());
     } else {
       setTimeout(resolve, time);
     }
@@ -61,6 +63,8 @@ const random = (from, to) => {
 };
 
 const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, onError) => {
+  const randomAction = settings.game == `Retail` || settings.game == `Classic` || settings.game == `Cata Classic` ? createDynamicFunction() : () => {};
+
   let regOnError = {};
   let chatMsgs = [];
   if(settings.game == `Vanilla (splash)` && settings.autoTh == true) {
@@ -101,11 +105,13 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
 
   const action = async (callback, forced) => {
     if(state.status == `stop` && !forced) return;
+    randomAction();
     if(settings.afkmode && config.reaction) {
        await sleep(random(config.reaction.from, config.reaction.to))
     }
     await winSwitch.execute(workwindow);
     await callback();
+    randomAction();
     winSwitch.finished();
   };
 
@@ -796,7 +802,9 @@ if(lootWindowPatch.exitButton) {
       config.randomSleepDelay.from * 1000,
       config.randomSleepDelay.to * 1000
     );
-    await sleep(sleepFor);
+    await sleep(sleepFor, () => {
+      randomAction();
+    });
   };
 
   randomSleep.on = config.randomSleep;
@@ -1869,6 +1877,7 @@ if(lootWindowPatch.exitButton) {
     }
 
     while (state.status == "checking") {
+      randomAction();
       if (checkBobberTimer.isElapsed()) {
         switch(config.maxFishTimeAfter) {
           case `stop`: {
