@@ -439,11 +439,6 @@ You can also write in this chat directly to do:
       }
     }
 
-    if(settings.initialZone) {
-      settings.initialZone = false;
-      writeFileSync(path.join(__dirname, `${configPath}${profile}/settings.json`), JSON.stringify(settings));
-    }
-
     if(type == `relZone` || type == `chatZone` || type == `detectZone` || type == `combatZone`) {
       log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : type == `combatZone` ? `Combat` : `Motion Detection`} Zone...`);
 
@@ -456,6 +451,10 @@ You can also write in this chat directly to do:
       if(data) {
         config.patch[settings.game][type] = data;
         writeFileSync(path.join(__dirname, `${configPath}${profile}/bot.json`), JSON.stringify(config));
+        if(settings.initialZone) {
+          settings.initialZone = false;
+          writeFileSync(path.join(__dirname, `${configPath}${profile}/settings.json`), JSON.stringify(settings));
+        }
         log.ok(`Set ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : type == `combatZone` ? `Combat` : `Motion Detection`} Zone successfully!`);
       } else {
         log.send(`Canceled.`)
