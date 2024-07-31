@@ -43,11 +43,9 @@ if (tmBot.bot) {
     ctx.reply(`Pressed Enter!`);
   });
 
-  let bagsState = false;
-  tmBot.bot.hears(`💼 Open Bags`, (ctx) => {
+
+  tmBot.bot.hears(`💼 Check Bags`, (ctx) => {
     tmBot.openBags.forEach(bag => bag(ctx));
-    ctx.reply(!bagsState ? `Opened Bags!` : `Closed Bags!`);
-    bagsState = !bagsState;
   });
 
   tmBot.bot.command(`/w`, (ctx) => {

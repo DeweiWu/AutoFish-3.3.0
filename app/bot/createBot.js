@@ -146,6 +146,18 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state) 
     await action(async () => {
       await keyboard.sendKeys([`shift`, `b`], delay);
     });
+
+    await getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
+    .then(Jimp.read)
+    .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
+    .then(async (screenshot) => {
+      await ctx.reply(`Screenshot of the window ${winNum}:`);
+      await ctx.replyWithPhoto({source: screenshot})
+    });
+
+    await action(async () => {
+      await keyboard.sendKeys([`shift`, `b`], delay);
+    });
   });
 
 
@@ -1369,7 +1381,7 @@ if(lootWindowPatch.exitButton) {
         }
 
         if(doAfterTimer.on && doAfterTimer.timer.isElapsed() && config.timerShutDown) {
-          return; 
+          return;
         }
 
         state.status = 'stop';
