@@ -8,6 +8,13 @@
     "Retail": {
       "game": "Retail",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": false,
@@ -281,6 +288,13 @@
     "Cata Classic": {
       "game": "Cata Classic",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
@@ -544,6 +558,13 @@
     "Classic": {
       "game": "Classic",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
@@ -807,6 +828,13 @@
     "Leg": {
       "game": "Leg",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": false,
@@ -1050,6 +1078,13 @@
     "MoP": {
       "game": "MoP",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": false,
@@ -1294,6 +1329,13 @@
     "Cata": {
       "game": "Cata",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": false,
@@ -1534,6 +1576,13 @@
     "LK Private": {
       "game": "LK Private",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
@@ -1793,6 +1842,13 @@
     "TBC": {
       "game": "TBC",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
@@ -2049,6 +2105,13 @@
     "Vanilla": {
       "game": "Vanilla",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
@@ -2296,6 +2359,13 @@
     "Vanilla (splash)": {
       "game": "Vanilla (splash)",
       "timer": false,
+      "streamMode": false,
+      "streamDevice": "",
+      "picoip": "",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
       "checkLogic": "default",
       "timerTime": 30,
       "checkConfirm": true,
