@@ -126,6 +126,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
     if(zone.height > screenSize.height) zone.height = screenSize.height;
 
     switch(true) {
+      case config.streamMode: {
+        return await workwindow.capture(zone);
+      }
+
       case settings.multipleWindows || settings.afkmode || config.libraryType == 'keysender': {
         return workwindow.capture(zone);
       }
@@ -312,7 +316,7 @@ if(lootWindowPatch.exitButton) {
           randomDeviation.from = 0;
         }
 
-        if(!config.arduino && (config.libraryTypeInput === 'nut.js' || forcedNutMouse)) {
+        if(!config.streamMode && !config.arduino && (config.libraryTypeInput === 'nut.js' || forcedNutMouse)) {
           if(!(pos instanceof Vec)) {
             pos = new Vec(pos.x, pos.y);
           }
@@ -1820,7 +1824,7 @@ if(lootWindowPatch.exitButton) {
         settings.afkmode ||
         settings.multipleWindows ||
         settings.colorBobber == `Manual` ||
-        (config.likeHuman && random(0, 100) > config.highlightPercent)) {
+        (random(0, 100) > config.highlightPercent)) {
         return pos;
     }
 
@@ -1829,9 +1833,14 @@ if(lootWindowPatch.exitButton) {
     }
 
     await action(async () => {
-      if(config.likeHumanFineTune) {
+      if(config.likeHumanFineTune && !config.streamMode) {
         let pastPost = generateMovePastPos(pos);
         await moveTo({pos: pastPost, fineTune: null})
+      }
+
+      if(config.streamMode) { // to avoid cursor covering the found pixel
+        pos.y = pos.y + 20;
+        pos.x = pos.x - 20;
       }
 
       await moveTo({ pos, randomRange: 5, fineTune: {offset: 5, steps: [1, 5]}});
@@ -2135,12 +2144,21 @@ if (settings.soundDetection) {
 
         if (config.shiftClick) {
           await keyboard.toggleKey("shift", true, delay);
-          await mouse.toggle(config.catchFishButton, true, delay);
-          await mouse.toggle(config.catchFishButton, false, delay);
+          if(config.streamMode) {
+            await mouse.click(config.catchFishButton, delay);
+          } else {
+            await mouse.toggle(config.catchFishButton, true, delay);
+            await mouse.toggle(config.catchFishButton, false, delay);
+          }
+
           await keyboard.toggleKey("shift", false, delay);
         } else {
-          await mouse.toggle(config.catchFishButton, true, delay);
-          await mouse.toggle(config.catchFishButton, false, delay);
+          if(config.streamMode) {
+            await mouse.click(config.catchFishButton, delay);
+          } else {
+            await mouse.toggle(config.catchFishButton, true, delay);
+            await mouse.toggle(config.catchFishButton, false, delay);
+          }
         }
       }
 

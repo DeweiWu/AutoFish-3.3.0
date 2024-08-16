@@ -16,7 +16,7 @@ const path = require("path");
 const { readFileSync, writeFileSync, writeFile, mkdir, rmdir, readdir } = require("fs");
 const { unlink } = require("fs").promises;
 
-process.env.NODE_ENV = `prod`;
+process.env.NODE_ENV = `dev`;
 
 const configPath = process.env.NODE_ENV == `dev` ? './config/' : '../../app.asar.unpacked/app/config/';
 const trialPath = process.env.NODE_ENV == `dev` ? './app/badd7ae8f43' : '../../app.asar.unpacked/app/badd7ae8f43';
@@ -176,7 +176,7 @@ const createWindow = async () => {
   }
 
   win.loadFile("./app/index.html");
-
+  //win.openDevTools({mode: 'detach'})
   win.on("closed", () => {
     if (process.platform === "darwin") {
       return false;
@@ -363,7 +363,6 @@ You can also write in this chat directly to do:
     }
   });
   win.once("ready-to-show", () => {
-    //win.openDevTools({mode: `detach`});
     win.show();
   });
 
@@ -374,7 +373,6 @@ You can also write in this chat directly to do:
     const settings = getJson(`${configPath}${profile}/settings.json`);
 
     log.send(`Looking for the windows of the game...`);
-
     const useCustomWindow = config.patch[settings.game].useCustomWindow;
     if(useCustomWindow) {
       const customWindow = config.patch[settings.game].customWindow;
@@ -393,7 +391,7 @@ You can also write in this chat directly to do:
       config.game = configDefault.game;
     }
 
-    let games = findGameWindows(config);
+    let games = await findGameWindows(config, config.patch[settings.game], type);
 
     if (!games) {
       log.err(`Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
@@ -417,8 +415,12 @@ You can also write in this chat directly to do:
         games[0].game.workwindow.setForeground();
       }
 
-      const scale = screen.getPrimaryDisplay().scaleFactor || 1;
-      let data = await createPointZone(BrowserWindow.getAllWindows()[0], scale);
+      const screenData = screen.getPrimaryDisplay();
+      let data = await createPointZone(BrowserWindow.getAllWindows()[0], screenData);
+
+      if(config.patch[settings.game].streamMode) {
+          games[0].game.workwindow.close();
+      }
 
       if(data) {
         log.ok(`Set point to x: ${data.x}, y: ${data.y} successfully!`);
@@ -459,6 +461,11 @@ You can also write in this chat directly to do:
       } else {
         log.send(`Canceled.`)
       }
+
+      if(config.patch[settings.game].streamMode) {
+          games[0].game.workwindow.close();
+      }
+
       win.focus();
       return data;
     }
@@ -493,9 +500,20 @@ You can also write in this chat directly to do:
       }
     }
 
+    if(config.patch[settings.game].streamMode && !config.patch[settings.game].picoip) {
+      // TEMP: Check Pico Connection Logic
+      log.err('Connect to your Pico W device, first.');
+      win.webContents.send("stop-bot");
+      return;
+    }
+
     const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win);
 
     const stopAppAndBots = () => {
+
+      if(config.patch[settings.game].streamMode) {
+        win.webContents.send('stop-stream');
+      }
 
       if(trialIsOn) {
         trial.stop();
@@ -512,6 +530,10 @@ You can also write in this chat directly to do:
       }
 
       games.forEach(async ({game}) => {
+        if(config.patch[settings.game].streamMode) {
+          return;
+        }
+
         const {mouse, keyboard, workwindow} = game;
         while(!workwindow.isForeground()) await sleep(100);
           mouse.humanMoveTo.cancelCurrent();
@@ -534,7 +556,10 @@ You can also write in this chat directly to do:
     ipcMain.on("stop-bot", stopAppAndBots);
     globalShortcut.register(settings.stopKey, stopAppAndBots);
 
-    win.blur();
+    if(!config.patch[settings.game].streamMode) {
+      win.blur();
+    }
+
     if(config.patch[settings.game].hideWin) {
         win.hide();
     }
@@ -563,6 +588,31 @@ You can also write in this chat directly to do:
         }, 500);
         stopAppAndBots();
       });
+    }
+
+
+    if(config.patch[settings.game].streamMode) {
+      console.log(`im not here`);
+      log.send(`Connecting to the stream...`);
+      try {
+        await (new Promise(function(resolve, reject) {
+          win.webContents.send('connect-to-stream-main', {
+            deviceId: config.patch[settings.game].streamDevice,
+            screenSize: config.patch[settings.game].streamScreenSize
+         });
+          ipcMain.once('connect-to-stream-main-end', (event, e) => {
+            if(e) {
+              log.err(e);
+              reject(e);
+            }
+
+            resolve();
+          })
+        }));
+      } catch(e) {
+        log.err(e);
+        return;
+      }
     }
 
     startBots(stopAppAndBots, type == 'skills-test');
@@ -650,6 +700,18 @@ You can also write in this chat directly to do:
     })
   });
 
+  ipcMain.handle('connect-pico', async (event, ip) => {
+    const { pingDevice } = require('./game/pico.js');
+    try {
+      return await pingDevice(ip).then(() => {
+        log.ok(`Connected to Pico!`)
+      })
+    } catch(e) {
+      log.err(`No pico device under this IP!`)
+      return Promise.reject(e);
+    }
+  })
+
   ipcMain.handle('get-profile-name', () => {
     return getProfile().selected;
   });
@@ -663,9 +725,9 @@ You can also write in this chat directly to do:
   })
   ipcMain.handle("get-bitmap", getBitmapAsync);
   ipcMain.handle("get-all-windows", getAllWindows);
-  ipcMain.on('focus-win', (event, winHandle) => {
+  ipcMain.on('focus-win', async (event, winHandle) => {
     const {handle, title, className} = getAllWindows().find(({handle}) => handle == winHandle);
-    let game = findGameWindows({game: {handles: [handle], names: [title], classNames: [className]}});
+    let game = await findGameWindows({game: {handles: [handle], names: [title], classNames: [className]}});
     game[0].workwindow.setForeground();
 
   })

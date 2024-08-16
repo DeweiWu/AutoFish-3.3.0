@@ -270,7 +270,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       if (isHooked) {
         stats.caught++;
         log.ok(`Caught ${typeof isHooked == `boolean` ? `the fish!` : isHooked}`);
-
+        
         await checkConfirm();
 
         if(runRngMove.on && runRngMove.timer.isElapsed()) {

@@ -67,8 +67,8 @@ const renderIgnorePreliminary = ({ignorePreliminary}) => {
   return elt(`input`, {type: `checkbox`, checked: ignorePreliminary, name: `ignorePreliminary`});
 };
 
-const renderArduino = ({arduino}) => {
-    return elt(`input`, {type: `checkbox`, checked: arduino, name: `arduino`});
+const renderArduino = ({arduino, streamMode}) => {
+    return elt(`input`, {type: `checkbox`, disabled: streamMode, checked: arduino, name: `arduino`});
 };
 
 const renderArduinoPort = ({arduino, arduinoPort}) => {
@@ -314,9 +314,40 @@ const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensi
    bobberSensitivityWin);
 };
 
-const renderCustomWindow = ({useCustomWindow, customWindow}) => {
+const renderStreamDevice = ({streamMode, streamDevice}) => {
+  const select = elt(`select`, {name: `streamDevice`, className: `streamSelect`, disabled: !streamMode});
+  const renderUseStreamMode = elt(`input`, {name: `streamMode`, type: `checkbox`, checked: streamMode});
+
+  if(streamMode) {
+    navigator.mediaDevices.enumerateDevices()
+    .then(devices => {
+      devices
+      .filter(device => device.kind === 'videoinput')
+      .forEach(device => {
+          select.append(elt(`option`, { selected: device.deviceId == streamDevice, value: device.deviceId }, device.label));
+      })
+    })
+  }
+  return elt(`div`, null, renderUseStreamMode, select);
+};
+
+const renderPicoIp = ({streamMode, picoip}) => {
+  const focusButton = elt(`input`, {type: `button`, value: `Connect`,  id: 'pico', className: `${streamMode ? `` : `disabledButton`}`, disabled: !streamMode, onclick() {
+    ipcRenderer.send('ping-pico');
+  }});
+  return elt('div', null, elt('input', {type: 'text', value: picoip, className: 'picoip', name: 'picoip', disabled: !streamMode}), focusButton);
+};
+
+const renderStreamScreenSize = ({streamMode, streamScreenSize}) => {
+  return elt(`div`, {"data-collection": `streamScreenSize`}, elt(`span`, {className: `option_text`}, `width:`),
+  elt('input', {type: `number`, name: `width`, value: streamScreenSize.width, disabled: !streamMode}), elt(`span`, {className: `option_text`}, `height:`),
+  elt('input', {type: `number`, name: `height`, value: streamScreenSize.height, disabled: !streamMode})
+  );
+}
+
+const renderCustomWindow = ({useCustomWindow, customWindow, streamMode}) => {
   const select = elt(`select`, {name: `customWindow`, className: `customWindow`, disabled: !useCustomWindow});
-  const renderUseCustomWindow = elt(`input`, {name: `useCustomWindow`, type: `checkbox`, checked: useCustomWindow});
+  const renderUseCustomWindow = elt(`input`, {name: `useCustomWindow`, type: `checkbox`, checked: useCustomWindow, disabled: streamMode});
   const focusButton = elt(`input`, {type: `button`, value: `Focus`,  className: `${useCustomWindow ? `` : `disabledButton`}`, disabled: !useCustomWindow, onclick() {
     ipcRenderer.send('focus-win', customWindow);
   }});
@@ -331,7 +362,6 @@ const renderCustomWindow = ({useCustomWindow, customWindow}) => {
     });
   }
   return elt(`div`, null, renderUseCustomWindow, select, focusButton);
-
 };
 
 const renderAfterTimer = ({afterTimer, timer}) => {
@@ -1288,6 +1318,13 @@ const renderSettings = (config) => {
     wrapInLabel(`Auto-Confirm SB Items: `, renderCheckConfirm(config), `The bot will check for confirmation window after every catch and will auto-confirm soulbound items (even in AutoLoot mode).`),
   ),
 
+  elt(`p`, {className: `settings_header`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream`),
+  elt(`div`, {className: `settings_section`},
+    wrapInLabel(`Video Capture Device: `, renderStreamDevice(config), `Stream logic`),
+    wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Ip address`),
+    wrapInLabel(`Streaming PC resolution: `, renderStreamScreenSize(config), `streaming resolution`)
+  ),
+
 
     elt(`p`, {className: `settings_header`}, `🖥️`), elt(`span`, {className: `advanced_settings_header_text`}, `Window`),
     elt(`div`, {className: `settings_section`},
@@ -1593,6 +1630,25 @@ const runApp = async () => {
       }, 1000);
     }
 
+    if(event.target.value == `Connect` && event.target.id == "pico") {
+      event.target.value = `⌛`;
+      ipcRenderer.invoke(`connect-pico`, config.picoip)
+      .then(() => {
+        event.target.style.backgroundColor = `rgb(65, 255, 65)`;
+        event.target.value = `Success!`
+      })
+      .catch(() => {
+        event.target.style.backgroundColor = `rgb(255, 65, 65)`;
+        event.target.value = `Error!`
+      });
+
+      setTimeout(() => {
+        event.target.value = `Connect`;
+        event.target.style.backgroundColor = `rgb(240, 240, 240)`;
+      }, 1500);
+    }
+
+
     if(event.target.value == `Connect` && event.target.id == "arduino") {
       event.target.value = `⌛`;
       ipcRenderer.invoke(`connect-arduino`, {port: config.arduinoPort, speed: config.arduinoRate})
@@ -1608,7 +1664,7 @@ const runApp = async () => {
       setTimeout(() => {
         event.target.value = `Connect`;
         event.target.style.backgroundColor = `rgb(240, 240, 240)`;
-      }, 3000);
+      }, 1000);
     }
 
 

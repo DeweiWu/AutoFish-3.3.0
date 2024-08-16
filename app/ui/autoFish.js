@@ -1,5 +1,6 @@
 const elt = require("./utils/elt.js");
 const { ipcRenderer } = require("electron");
+const { connectToStream, stopStream } = require('./webcam.js');
 
 const renderLogo = () => {
   return elt(
@@ -48,6 +49,20 @@ class AutoFish {
     this.button = startButton;
     this.logger = renderLogger();
     let profile = renderProfiles(profiles);
+
+    ipcRenderer.on('connect-to-stream-main', (event, {deviceId, screenSize}) => {
+      connectToStream(deviceId, screenSize)
+      .then(() => {
+          ipcRenderer.send('connect-to-stream-main-end')
+      })
+      .catch(e => {
+          ipcRenderer.send('connect-to-stream-main-end', e)
+      })
+    });
+
+    ipcRenderer.on('stop-stream', () => {
+      stopStream();
+    })
 
     const inputTextWriting = (event) => {
        profile.value = event.target.value;

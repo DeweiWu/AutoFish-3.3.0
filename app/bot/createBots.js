@@ -1,8 +1,13 @@
 const runBot = require("./runBot.js");
 const createBot = require("./createBot.js");
 
+const { ipcMain } = require("electron");
+
 const { convertMs } = require('../utils/time.js');
 const Stats = require('./stats.js');
+
+const Jimp = require('jimp');
+const { createPicoInterface } = require('../game/pico.js');
 
 const { createIdLog } = require("../utils/logger.js");
 const EventLine = require("../utils/eventLine.js");
@@ -16,6 +21,28 @@ let properLanguages = {eng: `English`, spa: "Spanish", spa_old: "Spanish Old", d
 const getPercent = (value, total) => {
   return Math.ceil((value / (total || 1)) * 100 * 100) / 100;
 };
+
+function cropImage({ data, width, height }, crop) {
+    const croppedData = new Uint8Array(crop.width * crop.height * 4); // 4 bytes per pixel (RGBA)
+
+    for (let row = 0; row < crop.height; row++) {
+        for (let col = 0; col < crop.width; col++) {
+            const sourceIndex = ((crop.y + row) * width + (crop.x + col)) * 4;
+            const destIndex = (row * crop.width + col) * 4;
+
+            croppedData[destIndex] = data[sourceIndex];       // R
+            croppedData[destIndex + 1] = data[sourceIndex + 1]; // G
+            croppedData[destIndex + 2] = data[sourceIndex + 2]; // B
+            croppedData[destIndex + 3] = data[sourceIndex + 3]; // A
+        }
+    }
+
+    return {
+        data: Buffer.from(croppedData),
+        width: crop.width,
+        height: crop.height
+    };
+}
 
 const createBots = async (games, log, tmBot, arduino, win) => {
   const winSwitch = createWinSwitch(new EventLine());
@@ -121,8 +148,26 @@ if (tmBot.bot) {
 
   const bots = games.map(({game, config, settings}, i) => {
 
-    if(config.patch[settings.game].arduino) {
+    if(config.patch[settings.game].streamMode) {
+      let gameConfig = config.patch[settings.game];
+      const pico = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize);
+      game.workwindow.capture = (zone) =>
+        new Promise(function(resolve, reject) {
+          win.webContents.send('request-frame', zone);
+          ipcMain.once('video-frame', async (event, buffer) => {
+            resolve({
+              width: zone.width,
+              height: zone.height,
+              data: Buffer.from(buffer)
+            });
+          })
+      });
+      pico.mouse.moveTo(-9999, -9999); // TEMP:
+      pico.mouse.getPos = () => ({x: 0, y: 0});
+      game = {mouse: pico.mouse, workwindow: game.workwindow, keyboard: pico.keyboard}
+    }
 
+    if(config.patch[settings.game].arduino) {
       if(i == 0 && (settings.multipleWindows || settings.afkmode)) {
         game.keyboard.sendKey('backspace', [100, 400]);
       }
@@ -177,7 +222,7 @@ if (tmBot.bot) {
               onError();
             }
             log.setState(true);
-            bot.log.err(`${error.message}`);
+            bot.log.err(`${error.message, error.stack}`);
             if(tmBot.ctx) {
               tmBot.ctx.reply(`[ERROR]${error.message}`);
             }

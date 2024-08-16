@@ -65,7 +65,7 @@ const createAdvSettings = (appPath) => {
   win.removeMenu();
 
   win.once("ready-to-show", () => {
-    //win.openDevTools({mode: `detach`});
+    win.openDevTools({mode: `detach`});
     win.show();
   });
 

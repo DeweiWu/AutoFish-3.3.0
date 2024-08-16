@@ -29,9 +29,12 @@ const createMouseCoordsEvent = (resolve, win, botWin, scaleFactor) => {
   })
 }
 
-const createPointZone = async (botWin, scaleFactor) => {
+const createPointZone = async (botWin, screenData) => {
+  let scaleFactor = screenData.scaleFactor || 1
   let win = new BrowserWindow({
-    fullscreen: true,
+    width: screenData.bounds.width - 1,
+    height: screenData.bounds.height - 1,
+    alwaysOnTop: true, 
     frame: false,
     transparent: true,
     resizable: false,

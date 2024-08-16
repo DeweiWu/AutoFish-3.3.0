@@ -1354,3 +1354,11 @@ input[type=number] {
   cursor: default !important;
   border: 1px solid rgb(199, 190, 185) !important;
 }
+
+.streamSelect {
+  width: 225px !important;
+}
+
+.picoip {
+  width: 150px !important;
+}
