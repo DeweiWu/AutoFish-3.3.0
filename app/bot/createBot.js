@@ -98,7 +98,6 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
      let percR = this.color.r / 100 * (100 - this.precision);
      let percG = this.color.g / 100 * (100 - this.precision);
      let percB = this.color.b / 100 * (100 - this.precision);
-
      return closeEnough(percR)(this.color.r, r) && closeEnough(percG)(this.color.g, g) && closeEnough(percB)(this.color.b, b)
    }
  }
@@ -1382,7 +1381,6 @@ if(lootWindowPatch.exitButton) {
       return;
     }
     const deathHp = new HealthBar(config.deathHp);
-
     while(state.status != 'stop') {
       await sleep(1000);
 
@@ -1775,6 +1773,10 @@ if(lootWindowPatch.exitButton) {
       await keyboard.sendKey(settings.fishingKey, delay);
     });
 
+    if(state.status == 'initial' && config.streamMode && !settings.useInt) {
+       await mouse.humanMoveTo(-9999, -9999);
+    }
+
     if(settings.afkmode) await altTab();
 
     if(config.rngMove || config.findPlayer) {
@@ -1839,8 +1841,8 @@ if(lootWindowPatch.exitButton) {
       }
 
       if(config.streamMode) { // to avoid cursor covering the found pixel
-        pos.y = pos.y + 20;
-        pos.x = pos.x - 20;
+        pos.y = pos.y + (screenSize.height / 1080) * 20;
+        pos.x = pos.x - (screenSize.height / 1080) * 20;
       }
 
       await moveTo({ pos, randomRange: 5, fineTune: {offset: 5, steps: [1, 5]}});

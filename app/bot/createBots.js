@@ -153,8 +153,9 @@ if (tmBot.bot) {
       const pico = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize);
       game.workwindow.capture = (zone) =>
         new Promise(function(resolve, reject) {
-          win.webContents.send('request-frame', zone);
-          ipcMain.once('video-frame', async (event, buffer) => {
+          let reqCh = `channel-${Math.random()}`;
+          win.webContents.send('request-frame', zone, reqCh);
+          ipcMain.once(reqCh, async (event, buffer) => {
             resolve({
               width: zone.width,
               height: zone.height,
@@ -162,7 +163,6 @@ if (tmBot.bot) {
             });
           })
       });
-      pico.mouse.moveTo(-9999, -9999); // TEMP:
       pico.mouse.getPos = () => ({x: 0, y: 0});
       game = {mouse: pico.mouse, workwindow: game.workwindow, keyboard: pico.keyboard}
     }

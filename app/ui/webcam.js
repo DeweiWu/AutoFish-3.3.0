@@ -7,7 +7,7 @@ const generateEventsFor = (stream, screenSize) => {
     video.addEventListener("loadeddata", () => {
       video.play();
       video.addEventListener("play", () => {
-        ipcRenderer.on("request-frame", (event, pos) => {
+        ipcRenderer.on("request-frame", (event, pos, reqCh) => {
           const offscreenCanvas = new OffscreenCanvas(pos.width, pos.height); // Set desired resolution
           const context = offscreenCanvas.getContext("2d");
           context.drawImage(
@@ -22,7 +22,7 @@ const generateEventsFor = (stream, screenSize) => {
             pos.height
           );
           const imageData = context.getImageData(0, 0, pos.width, pos.height);
-          ipcRenderer.send("video-frame", imageData.data.buffer);
+          ipcRenderer.send(reqCh, imageData.data.buffer);
         });
       });
       resolve();

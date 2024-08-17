@@ -418,8 +418,40 @@ You can also write in this chat directly to do:
       const screenData = screen.getPrimaryDisplay();
       let data = await createPointZone(BrowserWindow.getAllWindows()[0], screenData);
 
-      if(config.patch[settings.game].streamMode) {
-          games[0].game.workwindow.close();
+      if(data && config.patch[settings.game].streamMode) {
+        let streamColor;
+        try {
+           streamColor = await (new Promise(function(resolve, reject) {
+            win.webContents.send('connect-to-stream-main', {
+              deviceId: config.patch[settings.game].streamDevice,
+              screenSize: config.patch[settings.game].streamScreenSize
+           });
+
+            ipcMain.once('connect-to-stream-main-end', (event, e) => {
+              if(e) {
+                log.err(e);
+                reject(e);
+              }
+
+             let reqCh = `channel-${Math.random()}`;
+             win.webContents.send('request-frame', {x: data.x, y: data.y, width: 1, height: 1}, reqCh);
+             ipcMain.once(reqCh, async (event, buffer) => {
+               resolve({
+                 width: 1,
+                 height: 1,
+                 data: Buffer.from(buffer)
+               });
+             })
+            })
+          }));
+        } catch(e) {
+          log.err(e);
+          return;
+        }
+        win.webContents.send('stop-webcam-stream');
+        let streamColorRGB = {r: Array.from(streamColor.data)[0], g: Array.from(streamColor.data)[1], b: Array.from(streamColor.data)[2]}
+        data.color = streamColorRGB;
+        games[0].game.workwindow.close();
       }
 
       if(data) {
@@ -592,7 +624,6 @@ You can also write in this chat directly to do:
 
 
     if(config.patch[settings.game].streamMode) {
-      console.log(`im not here`);
       log.send(`Connecting to the stream...`);
       try {
         await (new Promise(function(resolve, reject) {
