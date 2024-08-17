@@ -60,10 +60,6 @@ class AutoFish {
       })
     });
 
-    ipcRenderer.on('stop-stream', () => {
-      stopStream();
-    })
-
     const inputTextWriting = (event) => {
        profile.value = event.target.value;
     };

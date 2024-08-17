@@ -512,7 +512,7 @@ You can also write in this chat directly to do:
     const stopAppAndBots = () => {
 
       if(config.patch[settings.game].streamMode) {
-        win.webContents.send('stop-stream');
+        win.webContents.send('stop-webcam-stream');
       }
 
       if(trialIsOn) {

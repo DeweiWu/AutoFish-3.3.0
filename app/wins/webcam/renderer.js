@@ -1,7 +1,6 @@
 const { ipcRenderer } = require('electron');
 
 ipcRenderer.on('connect-to-stream', (event, deviceId, screenSize) => {
-  console.log(screenSize);
   navigator.mediaDevices.getUserMedia({
     video: {
       deviceId: { exact: deviceId },
@@ -21,6 +20,10 @@ ipcRenderer.on('connect-to-stream', (event, deviceId, screenSize) => {
         document.body.append(video);
         ipcRenderer.send('stream-loaded');
       })
+    })
+    ipcRenderer.once('stop-webcam-win-stream', () => {
+      let tracks = stream.getTracks(); // Get all tracks (audio and video)
+      tracks.forEach(track => track.stop()); // Stop each track
     })
   })
   .catch(err => {
