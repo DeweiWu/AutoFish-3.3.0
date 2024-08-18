@@ -45,8 +45,8 @@ const keyboard = {
     await send('togglekey', {key, toggleType})
   },
 
-  async printText(text) {
-    await send('printtext', {text});
+  async printText(text, delays) {
+    await send('printtext', {text, delayFrom: delays[0], delayTo: delays[1]});
   }
 }
 
