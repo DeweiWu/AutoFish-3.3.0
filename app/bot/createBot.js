@@ -63,7 +63,16 @@ const random = (from, to) => {
 };
 
 const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, onError) => {
-  const randomAction = settings.game == `Retail` || settings.game == `Classic` || settings.game == `Cata Classic` ? createDynamicFunction() : () => {};
+  if(config.streamMode) { // in stream mode we should consider network delay
+    config.reaction = {
+      from: 25,
+      to: 125
+    }
+    config.afterHookDelay = {
+      from: 25,
+      to: 125
+    }
+  }
 
   let regOnError = {};
   let chatMsgs = [];
@@ -104,13 +113,11 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
 
   const action = async (callback, forced) => {
     if(state.status == `stop` && !forced) return;
-    randomAction();
     if(settings.afkmode && config.reaction) {
        await sleep(random(config.reaction.from, config.reaction.to))
     }
     await winSwitch.execute(workwindow);
     await callback();
-    randomAction();
     winSwitch.finished();
   };
 
@@ -350,7 +357,9 @@ if(lootWindowPatch.exitButton) {
               random(randomSpeed.from / 3, randomSpeed.to / 3),
               random(randomDeviation.from, randomDeviation.to)
             );
-            await sleep(random(25, 150));
+            if(!config.streamMode) {
+              await sleep(random(25, 150));
+            }
           }
         }
       } else {
@@ -805,9 +814,7 @@ if(lootWindowPatch.exitButton) {
       config.randomSleepDelay.from * 1000,
       config.randomSleepDelay.to * 1000
     );
-    await sleep(sleepFor, async () => {
-      randomAction();
-    });
+    await sleep(sleepFor);
   };
 
   randomSleep.on = config.randomSleep;
@@ -1400,6 +1407,11 @@ if(lootWindowPatch.exitButton) {
 
         state.status = 'stop';
         if(wins.every(win => win.state.status == `stop`)) {
+          if(config.streamMode) {
+            await keyboard.sendKey('enter', delay);
+            await keyboard.printText('/quit', delay);
+            await keyboard.sendKey('enter', delay);
+          }
           onStop();
           await sleep(1000);
           workwindow.close();
@@ -1839,13 +1851,13 @@ if(lootWindowPatch.exitButton) {
         let pastPost = generateMovePastPos(pos);
         await moveTo({pos: pastPost, fineTune: null})
       }
-
+      let posToHighlight = {...pos};
       if(config.streamMode) { // to avoid cursor covering the found pixel
-        pos.y = pos.y + (screenSize.height / 1080) * 20;
-        pos.x = pos.x - (screenSize.height / 1080) * 20;
+        posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 20;
+        posToHighlight.x = posToHighlight.x - (screenSize.height / 1080) * 20;
       }
 
-      await moveTo({ pos, randomRange: 5, fineTune: {offset: 5, steps: [1, 5]}});
+      await moveTo({ pos: posToHighlight, randomRange: 5, fineTune: {offset: 5, steps: [1, 5]}});
     });
 
    return await findBobber(log, pos);
@@ -1864,7 +1876,7 @@ if(lootWindowPatch.exitButton) {
   findBobber.maxAttempts = config.maxAttempts;
 
   const hoverMouse = async (chance = (config.likeHumanHover / 100)) => {
-    if(!config.likeHumanHover || config.arduino || settings.multipleWindows || settings.afkmode) {
+    if(!config.likeHumanHover || config.arduino || settings.multipleWindows || settings.afkmode || config.streamMode) {
       return;
     }
 
@@ -1888,7 +1900,6 @@ if(lootWindowPatch.exitButton) {
     }
 
     while (state.status == "checking") {
-      randomAction();
       if (checkBobberTimer.isElapsed()) {
         switch(config.maxFishTimeAfter) {
           case `stop`: {

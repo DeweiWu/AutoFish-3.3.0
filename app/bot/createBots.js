@@ -155,7 +155,7 @@ if (tmBot.bot) {
         new Promise(function(resolve, reject) {
           let reqCh = `channel-${Math.random()}`;
           win.webContents.send('request-frame', zone, reqCh);
-          ipcMain.once(reqCh, async (event, buffer) => {
+          ipcMain.once(reqCh, (event, buffer) => {
             resolve({
               width: zone.width,
               height: zone.height,
