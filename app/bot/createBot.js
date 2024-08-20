@@ -385,7 +385,7 @@ if(lootWindowPatch.exitButton) {
     };
 
 
-  const checkBobberTimer = createTimer(() => config.maxFishTime * 1000);
+  const checkBobberTimer = createTimer(() => random(config.maxFishTime.from * 1000, config.maxFishTime.to * 1000));
   const missOnPurposeTimer = createTimer(() => random(config.missOnPurposeRandomDelay.from, config.missOnPurposeRandomDelay.to) * 1000);
   const logOutTimer = createTimer(() => random(config.logOutEvery.from * 1000 * 60, config.logOutEvery.to * 1000 * 60));
 
@@ -1839,7 +1839,7 @@ if(lootWindowPatch.exitButton) {
         await hoverMouse();
       });
     } else {
-      await sleep(random(config.castDelay, config.castDelay + 500), async () => {
+      await sleep(random(config.castDelay.from, config.castDelay.to), async () => {
         await hoverMouse();
       });
     }
@@ -1901,7 +1901,7 @@ if(lootWindowPatch.exitButton) {
   }
 
   const checkBobber = async (pos, state) => {
-    checkBobberTimer.start();
+    checkBobberTimer.update();
     const startTime = Date.now();
     const missOnPurpose = random(0, 100) < missOnPurposeValue;
     if(missOnPurpose) {

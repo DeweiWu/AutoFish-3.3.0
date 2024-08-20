@@ -140,7 +140,9 @@ const renderLikeHumanHover = ({likeHumanHover = 2, arduino, likeHuman}) => {
 }
 
 const renderCastDelay = ({castDelay}) => {
-  return elt('input', {type: `number`, name: `castDelay`, value: castDelay})
+  return elt(`div`, {"data-collection": `castDelay`}, elt(`span`, {className: `option_text`}, `from:`),
+     elt('input', {type: `number`, name: `from`, value: castDelay.from}), elt(`span`, {className: `option_text`}, `to:`),
+     elt('input', {type: `number`, name: `to`, value: castDelay.to}));
 };
 
 const renderLogOut = ({logOut}) => {
@@ -206,7 +208,9 @@ const renderAfterHookDelay = ({sleepAfterHook, afterHookDelay}) => {
 };
 
 const renderMaxFishTime = ({maxFishTime}) => {
-  return elt(`input`, {type: `number`, name: `maxFishTime`, value: maxFishTime});
+  return elt(`div`, {"data-collection": `maxFishTime`}, elt(`span`, {className: `option_text`}, `from:`),
+     elt('input', {type: `number`, name: `from`, value: maxFishTime.from}), elt(`span`, {className: `option_text`}, `to:`),
+     elt('input', {type: `number`, name: `to`, value: maxFishTime.to}));
 };
 
 const renderCloseAtWhisper = ({closeAtWhisper}) => elt(`input`, {type: `checkbox`, checked: closeAtWhisper, name: `closeAtWhisper`});
