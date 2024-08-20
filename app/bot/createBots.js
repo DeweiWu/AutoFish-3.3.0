@@ -163,7 +163,6 @@ if (tmBot.bot) {
             });
           })
       });
-      pico.mouse.getPos = () => ({x: 0, y: 0});
       game = {mouse: pico.mouse, workwindow: game.workwindow, keyboard: pico.keyboard}
     }
 

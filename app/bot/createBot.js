@@ -64,13 +64,13 @@ const random = (from, to) => {
 
 const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, onError) => {
   if(config.streamMode) { // in stream mode we should consider network delay
-    config.reaction = {
-      from: 25,
-      to: 125
+    config.reactionDelay = {
+      from:  Math.round(config.reactionDelay.from / 6),
+      to:  Math.round(config.reactionDelay.to / 3)
     }
     config.afterHookDelay = {
-      from: 25,
-      to: 125
+      from:  Math.round(config.afterHookDelay.from / 6),
+      to:  Math.round(config.afterHookDelay.to / 3)
     }
   }
 
@@ -839,8 +839,21 @@ if(lootWindowPatch.exitButton) {
   }
 
   const findAllBobberColors = async () => {
+    let bobber = [];
+    if(config.streamMode) {
+      let cursorPos = mouse.getPos();
+      let cursorArea = cutOutNotification({
+        x: cursorPos.x / screenSize.width,
+        y: cursorPos.y / screenSize.height,
+        width: (35 * screenSize.height / 1080) / screenSize.width,
+        height: (35 * screenSize.height / 1080) / screenSize.height
+      })
+      bobber = [...bobber, ...cursorArea];
+    }
+
     if(settings.game != `Retail` && settings.game != `Cata Classic` && settings.game != `Classic`) {
-      let bobber = await fishingZone.getBobberPrint(10);
+        let bobberPrint = await fishingZone.getBobberPrint(7);
+        bobber = [...bobber, ...(bobberPrint ? bobberPrint : [])];
 
       if(!bobber) {
         return;

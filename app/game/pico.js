@@ -103,6 +103,10 @@ const mouse = {
       amount = -amount
     }
     await send('scrollwheel', {amount});
+  },
+
+  getPos() {
+    return previousPos;
   }
 }
 
