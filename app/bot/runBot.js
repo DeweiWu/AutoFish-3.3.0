@@ -216,7 +216,6 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     checkChanges.unblock();
 
     log.send(`Looking for the bobber...`);
-
     let bobber = await findBobber(log);
 
     if(bobber) {
@@ -228,6 +227,10 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       log.ok(`Found the bobber!`);
       attempts = 0;
     } else {
+      if(state.status == 'stop') {
+        return;
+      }
+
       failedCast = true;
       stats.confused++;
       log.err(`Can't find the bobber!`);
@@ -270,7 +273,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       if (isHooked) {
         stats.caught++;
         log.ok(`Caught ${typeof isHooked == `boolean` ? `the fish!` : isHooked}`);
-        
+
         await checkConfirm();
 
         if(runRngMove.on && runRngMove.timer.isElapsed()) {

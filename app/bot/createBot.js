@@ -1834,12 +1834,13 @@ if(lootWindowPatch.exitButton) {
       }
     }
 
-    if(settings.checkLogic == `pixelmatch`) {
+    if(settings.checkLogic == `pixelmatch` && state.status != 'stop') {
       await sleep(2500, async () => {
         await hoverMouse();
       });
     } else {
-      await sleep(random(config.castDelay.from, config.castDelay.to), async () => {
+      let castDelaySleepValue = random(config.castDelay.from, config.castDelay.to);
+      await sleep(castDelaySleepValue, async () => {
         await hoverMouse();
       });
     }
@@ -1877,6 +1878,10 @@ if(lootWindowPatch.exitButton) {
   };
 
   const findBobber = async (log, highlight) => {
+    if(state.status == 'stop') {
+      return;
+    }
+
     if(settings.useInt && settings.soundDetection) {
       return true;
     }
