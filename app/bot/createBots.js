@@ -147,10 +147,9 @@ if (tmBot.bot) {
 }
 
   const bots = games.map(({game, config, settings}, i) => {
-
     if(config.patch[settings.game].streamMode) {
       let gameConfig = config.patch[settings.game];
-      const pico = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize);
+      const pico = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize, log);
       game.workwindow.capture = (zone) =>
         new Promise(function(resolve, reject) {
           let reqCh = `channel-${Math.random()}`;

@@ -10,7 +10,7 @@ const sleep = (time) => {
 
 const delay = [50, 150];
 let previousPos, speedDistCoof, picoIp;
-
+let log;
 
 async function send(type, jsonData) {
   try {
@@ -23,7 +23,7 @@ async function send(type, jsonData) {
         }
       );
   } catch (error) {
-    console.error('Error:', error.response ? error.response.data : error.message);
+    log.err(`Pico Error: ${error.response ? error.response.data : error.message}`);
   }
 }
 
@@ -110,10 +110,11 @@ const mouse = {
   }
 }
 
-const createPicoInterface = (ip, screenSize) => {
+const createPicoInterface = (ip, screenSize, mainLog) => {
   previousPos = {x: 0, y: 0};
   speedDistCoof = screenSize.width / 6; // TEMP:
   picoIp = ip;
+  log = mainLog;
 
   return {
     keyboard, mouse
