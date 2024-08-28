@@ -35,7 +35,7 @@ const isManual = (specColor, percentPrecision) => ([r, g, b]) => {
 let imgAroundBobberPrev;
 let pixelMatchMax;
 
-const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, threshold, bobberColor, bobberColorManual, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, splashColor}) => {
+const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, threshold, bobberColor, bobberColorManual, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, splashColor, manualPositionOnBobberOn, manualPositionOnBobber }) => {
   let checkAboveCompensateValue = 0;
   const doubleZoneSize = Math.round((screenSize.height / 1080) * 50); // 25
   sensitivity = (game == `Retail` || game == `Vanilla (splash)` || bobberColor == `Manual` ? 30 - sensitivity[game] : 10 - sensitivity[game]) || 1;
@@ -158,7 +158,13 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
           let mostLeft = mostRedPoints.reduce((a, b) => a.pos.x < b.pos.x ? a : b);
           let mostRight = mostRedPoints.reduce((a, b) => a.pos.x > b.pos.x ? a : b);
-          let middleValue = (mostLeft.pos.x + mostRight.pos.x) / (bobberColor == `red` ? 2 : 1.5); // position on the feather
+          let middleValue;
+          if(manualPositionOnBobberOn) {
+            middleValue = mostLeft.pos.x + ((mostRight.pos.x - mostLeft.pos.x) * (manualPositionOnBobber / 100));
+          } else {
+            middleValue = (mostLeft.pos.x + mostRight.pos.x) / (bobberColor == `red` ? 2 : 1.5); // position on the feather
+          }
+
           let mostTop = mostRedPoints.reduce((a, b) => a.pos.y < b.pos.y ? a : b);
           let mostTopMiddle = mostRedPoints.reduce((a, b) => {
             if(
@@ -241,7 +247,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
     async adjustSensitivity(bobberSize) {
       if(game == `Retail`) {
-         let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 3 : 2.5))); // 4 2.5
+         let calculatedSens = Math.round(Math.sqrt(bobberSize / (bobberColor == `red` ? 4 : 2.5))); // 4 2.5
          if(calculatedSens < 3) calculatedSens = 3;
          sensitivity = calculatedSens;
        } else {

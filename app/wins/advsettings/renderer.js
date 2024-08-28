@@ -499,6 +499,12 @@ const renderDynamicThreshold = ({dynamicThreshold, dynamicThresholdValue}) => {
   return elt(`div`, null, checkbox, input);
 };
 
+const renderManualPositionOnBobber = ({manualPositionOnBobberOn, manualPositionOnBobber}) => {
+  let checkbox = elt(`input`, {type: `checkbox`, name: `manualPositionOnBobberOn`, checked: manualPositionOnBobberOn});
+  let input = elt(`input`, {type: `number`, min: 0, max: 100, name: `manualPositionOnBobber`, disabled: !manualPositionOnBobberOn, value: manualPositionOnBobber});
+  return elt(`div`, null, checkbox, input);
+};
+
 const renderRngMove = ({rngMove}) => {
   return elt(`input`, {type: `checkbox`, name: `rngMove`, checked: rngMove});
 };
@@ -1558,7 +1564,8 @@ const renderSettings = (config) => {
   wrapInLabel(`Visual Library: `, renderLibraryType(config), `If something doesn't work with default library you can choose another one. Mind that keysender works only with dx11 and will be force for Multiple Fishing or Alt-Tab Fishing modes.`),
   wrapInLabel(`Check Mode: `, renderCheckLogic(config), `check mode`),
   wrapInLabel(`Cast Attempts Limit: `, renderMaxAttempts(config), `How many times the bot will fail finding bobber before stopping.`),
-  wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `ONLY FOR MANUAL MODE. After attempts limit the bot will dynamically change threshold by the provided value.`),
+  wrapInLabel(`Manual Position On Bobber: `, renderManualPositionOnBobber(config), `Manual position on the feather the bot should stick to when found the bobber: 0 - most left, 100 - most right.`),
+  // wrapInLabel(`Dynamic Threshold: `, renderDynamicThreshold(config), `ONLY FOR MANUAL MODE. After attempts limit the bot will dynamically change threshold by the provided value.`),
   wrapInLabel(`Loot Window Closing Delay (ms):`, renderCloseLootDelay(config), `How much does it take for the loot window to disappear after looting. If you use some special addons which turn off loot window completely, you can set this value to 0 to make the bot work faster.`),
   wrapInLabel(`Max Check Time (sec):`, renderMaxFishTime(config), `Maximum time the bot will wait for the bobber to jerk before casting again.`),
   wrapInLabel(`Do After Max Check Time:`, renderMaxFishTimeAfter(config), `What the bot should do if it reaches the maximum checking time.`),
