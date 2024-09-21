@@ -153,7 +153,6 @@ if (tmBot.bot) {
       game.workwindow.capture = (zone) =>
         new Promise(function(resolve, reject) {
           let reqCh = `channel-${Math.random()}`;
-          win.webContents.send('request-frame', zone, reqCh);
           ipcMain.once(reqCh, (event, buffer) => {
             resolve({
               width: zone.width,
@@ -161,6 +160,9 @@ if (tmBot.bot) {
               data: Buffer.from(buffer)
             });
           })
+          setTimeout(() => {
+            win.webContents.send('request-frame', zone, reqCh);
+          }, 0)
       });
       game = {mouse: pico.mouse, workwindow: game.workwindow, keyboard: pico.keyboard}
     }

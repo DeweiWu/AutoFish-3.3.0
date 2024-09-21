@@ -32,10 +32,12 @@ const renderLogger = () => {
     dom: elt("section", { className: `logger` }),
     show({ text, type, position, margin }) {
       let row = elt("p", {style: `text-align: ${position ? position : "left"}; margin: ${margin ? margin : ``}`}, text);
+      /*
       loggerMemory.push(row);
       if(loggerMemory.length > 100) {
         loggerMemory.shift().remove()
       }
+      */
       row.style.color = type;
       this.dom.append(row);
       this.dom.scrollTop += 30;
@@ -56,7 +58,7 @@ class AutoFish {
           ipcRenderer.send('connect-to-stream-main-end')
       })
       .catch(e => {
-          ipcRenderer.send('connect-to-stream-main-end', e)
+          ipcRenderer.send('connect-to-stream-main-end', e.message)
       })
     });
 

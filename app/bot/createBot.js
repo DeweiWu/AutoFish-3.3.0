@@ -10,7 +10,7 @@ const Vec = require('../utils/vec.js');
 const { hexToRgb, rgbToHex } = require("./../utils/colors.js");
 const createRgb = require('../utils/rgb.js');
 const createDynamicFunction = require('../utils/dynamicFunction.js');
-
+const sharp = require('sharp');
 const { createWriteStream } = require('fs');
 
 const closeEnough = value => (v1, v2) => Math.abs(v1 - v2) <= value;
@@ -123,8 +123,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
 
   const screenSize = workwindow.getView();
   const actionOnce = once(action);
-
   const missOnPurposeValue = config.missOnPurpose ? random(config.missOnPurposeRandom.from, config.missOnPurposeRandom.to) : 0;
+
+  /* --- GET DATA FROM --- */
   const getDataFrom = async (zone) => {
     if(zone.x < 0) zone.x = 0;
     if(zone.y < 0) zone.y = 0;
@@ -141,11 +142,51 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
       }
 
       case config.libraryType == 'nut.js': {
-        let grabbed = await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
-        return grabbed;
+        return await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
       }
     }
   };
+  /* --- GET DATA FROM END --- */
+
+
+  /* --- GET DATA FROM FISHING ZONE --- */
+  const getDataFromFishingZone = async (zone) => {
+    if(zone.x < 0) zone.x = 0;
+    if(zone.y < 0) zone.y = 0;
+    if(zone.width > screenSize.width) zone.width = screenSize.width;
+    if(zone.height > screenSize.height) zone.height = screenSize.height;
+
+    switch(true) {
+      case config.streamMode: {
+        let data = await workwindow.capture(zone);
+        let result = await sharp(data.data, {
+           raw: {
+             width: Math.floor(data.width),
+             height: Math.floor(data.height),
+             channels: 4
+          }
+        })
+        .sharpen()
+        .modulate({
+          saturation: 2, // Increase the saturation to make the colors more vibrant 1.5
+        })
+        .toBuffer()
+
+        data.data = result;
+        return data;
+      }
+
+
+      case settings.multipleWindows || settings.afkmode || config.libraryType == 'keysender': {
+        return workwindow.capture(zone);
+      }
+
+      case config.libraryType == 'nut.js': {
+        return await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
+      }
+    }
+  };
+  /* --- GET DATA FROM FISHINGZONE END --- */
 
   if(tmBot.bot) {
   tmBot.replies.push({win: winNum, fn: (message) => {
@@ -192,10 +233,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
    })
   }
 
-  let fishingZone = createFishingZone(getDataFrom, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
+  let fishingZone = createFishingZone(getDataFromFishingZone, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
 
   const notificationZone = createNotificationZone({
-    getDataFrom,
+    getDataFromFishingZone,
     zone: Zone.from({
       x: Math.round((screenSize.width / 2) - (screenSize.width * config.notificationPos.width)),
       y: Math.round(screenSize.height * config.notificationPos.y),
@@ -257,8 +298,8 @@ if(lootWindowPatch.itemHeightAdd) {
 const confirmationWindow = {
   x: (screenSize.width / 2) - (confirmationWindowPatch.x * screenSize.width),
   y: confirmationWindowPatch.y * screenSize.height,
-  width: confirmationWindowPatch.width * screenSize.width,
-  height: confirmationWindowPatch.height * screenSize.height
+  width: Math.floor(confirmationWindowPatch.width * screenSize.width),
+  height: Math.floor(confirmationWindowPatch.height * screenSize.height)
 };
 
 if(lootWindowPatch.cursorPos) {
@@ -368,16 +409,16 @@ if(lootWindowPatch.exitButton) {
     };
 
     const checkRedButton = async (buttonPos) => {
-        const redButtonZone = createRedButtonZone({getDataFrom, zone: buttonPos});
+        const redButtonZone = createRedButtonZone({getDataFromFishingZone, zone: buttonPos});
         const colorPositions = await redButtonZone.isOn(mouse.getPos());
-        if(colorPositions){
-          let colorPos = colorPositions.yellow || colorPositions.red;
+        if(colorPositions) {
           await action(async () => {
             await moveTo({pos: {
-              x: buttonPos.x + colorPos.x,
-              y: buttonPos.y + colorPos.y},
+              x: buttonPos.x + 10,
+              y: buttonPos.y + 10
+            },
               randomRange: 2,
-              });
+            });
           });
 
           return await redButtonZone.isOnAfterHighlight()
@@ -569,7 +610,7 @@ if(lootWindowPatch.exitButton) {
       });
     } else {
       await action(async () => {
-        await moveTo({pos: {x: config.luresCoords.x - screenSize.x, y: config.luresCoords.y - screenSize.y}, randomRange: 3, fineTune: false});
+        await moveTo({pos: {x: config.luresCoords.x - screenSize.x, y: config.luresCoords.y - screenSize.y}, randomRange: 0, fineTune: false});
         await mouse.toggle('right', true, delay);
         await mouse.toggle('right', false, delay);
         if(config.luresOpenCharacterWin) {
@@ -840,34 +881,18 @@ if(lootWindowPatch.exitButton) {
 
   const findAllBobberColors = async () => {
     let bobber = [];
-    if(config.streamMode) {
-      let cursorPos = mouse.getPos();
-      let cursorArea = cutOutNotification({
-        x: cursorPos.x / screenSize.width,
-        y: cursorPos.y / screenSize.height,
-        width: (35 * screenSize.height / 1080) / screenSize.width,
-        height: (35 * screenSize.height / 1080) / screenSize.height
-      })
-      bobber = [...bobber, ...cursorArea];
-    }
 
     if(settings.game != `Retail` && settings.game != `Cata Classic` && settings.game != `Classic`) {
         let bobberPrint = await fishingZone.getBobberPrint(7);
         bobber = [...bobber, ...(bobberPrint ? bobberPrint : [])];
 
-      if(!bobber) {
-        return;
-      }
-
-      if(config.ignoreInterrupted) {
-        let interruptedArea = cutOutNotification(ignoreInterruptedPatch);
-        bobber = [...bobber, ...interruptedArea];
-      }
-
-      return bobber;
-    } else {
-      return null;
+        if(config.ignoreInterrupted) {
+          let interruptedArea = cutOutNotification(ignoreInterruptedPatch);
+          bobber = [...bobber, ...interruptedArea];
+        }
     }
+
+    return bobber;
   };
 
   const detectZone = Zone.from(screenSize).toRel(config.detectZone);
@@ -1792,15 +1817,37 @@ if(lootWindowPatch.exitButton) {
   };
   aggroCheck.status = Promise.resolve();
 
+  const streamModeInitialMouse = async () => {
+    if(state.status == 'initial' && config.streamMode && !settings.useInt) {
+      await keyboard.toggleKey('ALT', true);
+      await keyboard.toggleKey('TAB', true);
+      await keyboard.toggleKey('ALT', false);
+      await keyboard.toggleKey('TAB', false);
+      await mouse.moveTo(-9999, -9999);
+      await mouse.moveTo(Math.floor(screenSize.width / 2), Math.floor(screenSize.height / 2));
+      await keyboard.toggleKey('ALT', true);
+      await keyboard.toggleKey('TAB', true);
+      await keyboard.toggleKey('ALT', false);
+      await keyboard.toggleKey('TAB', false);
+      await sleep(random(500, 2000));
+    }
+  }
+
   let lastMovementFrom;
   const castFishing = async (state) => {
+
+    /*
+    if(config.streamMode && !settings.useInt) {
+      let fZone = Zone.from(screenSize).toRel(config.relZone);
+      await moveTo({pos: {x: fZone.x + fZone.width / 2 + random(-fZone.width, fZone.width), y: fZone.y + fZone.height + random(0, 100)}});
+    }
+    */
+
+    let timeSpentOnCastingStart = Date.now();
     await action(async () => {
       await keyboard.sendKey(settings.fishingKey, delay);
     });
-
-    if(state.status == 'initial' && config.streamMode && !settings.useInt) {
-       await mouse.humanMoveTo(-9999, -9999);
-    }
+    let timeSpentOnCasting = Date.now() - timeSpentOnCastingStart;
 
     if(settings.afkmode) await altTab();
 
@@ -1839,7 +1886,8 @@ if(lootWindowPatch.exitButton) {
         await hoverMouse();
       });
     } else {
-      let castDelaySleepValue = random(config.castDelay.from, config.castDelay.to);
+
+      let castDelaySleepValue = Math.max(0, random(config.castDelay.from, config.castDelay.to) - timeSpentOnCasting);
       await sleep(castDelaySleepValue, async () => {
         await hoverMouse();
       });
@@ -1866,18 +1914,43 @@ if(lootWindowPatch.exitButton) {
         await moveTo({pos: pastPost, fineTune: null})
       }
       let posToHighlight = {...pos};
+      let randomRange = 5;
+      let fineTune = {offset: 5, steps: [1, 5]};
+
       if(config.streamMode) { // to avoid cursor covering the found pixel
-        posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 20;
-        posToHighlight.x = posToHighlight.x - (screenSize.height / 1080) * 20;
+        if(settings.game == 'Retail') {
+          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 10;
+          posToHighlight.x = posToHighlight.x + (screenSize.height / 1080) * 10;
+        } else if(settings.game == 'Classic' || settings.game == 'Cata Classic' ) {
+          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 10;
+          posToHighlight.x = posToHighlight.x + (screenSize.height / 1080) * 10;
+          randomRange = 0;
+          fineTune = {offset: 3, steps: [1, 3]};
+        } else {
+          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 10;
+          posToHighlight.x = posToHighlight.x - (screenSize.height / 1080) * 10;
+        }
       }
 
-      await moveTo({ pos: posToHighlight, randomRange: 5, fineTune: {offset: 5, steps: [1, 5]}});
+      await moveTo({ pos: posToHighlight, randomRange, fineTune });
     });
 
    return await findBobber(log, pos);
   };
 
   const findBobber = async (log, highlight) => {
+
+    let cursorArea = []
+    if(config.streamMode) {
+      let cursorPos = mouse.getPos();
+      cursorArea = cutOutNotification({
+        x: cursorPos.x / screenSize.width,
+        y: cursorPos.y / screenSize.height,
+        width: 35  / screenSize.width,
+        height: 35 / screenSize.height
+      })
+    }
+
     if(state.status == 'stop') {
       return;
     }
@@ -1886,7 +1959,7 @@ if(lootWindowPatch.exitButton) {
       return true;
     }
 
-    const pos = await fishingZone.findBobber(findBobber.memory, log, highlight);
+    const pos = await fishingZone.findBobber([...findBobber.memory, ...cursorArea], log, highlight);
     return pos;
   };
 
@@ -1905,7 +1978,7 @@ if(lootWindowPatch.exitButton) {
     }
   }
 
-  const checkBobber = async (pos, state) => {
+  const checkBobber = async (pos, state, log) => {
     checkBobberTimer.update();
     const startTime = Date.now();
     const missOnPurpose = random(0, 100) < missOnPurposeValue;
@@ -1926,7 +1999,10 @@ if(lootWindowPatch.exitButton) {
             );
           }
           case `recast`: {
-            state.status = `working`;
+            if(state.status != 'stop') {
+              state.status = `working`;
+            }
+            log.warn('Missed by recasting.');
             return false;
           }
         }
@@ -1953,7 +2029,7 @@ if (settings.soundDetection) {
     return pos;
   };
 } else if(settings.game == `Retail` || settings.bobberColor == `Manual`) {
-   if(!(await fishingZone.checkBobberPrint(pos))) {
+   if(!(await fishingZone.checkBobberPrint(pos, log))) {
      return pos;
    }
 } else if (settings.game == `Vanilla (splash)`) {
@@ -2477,7 +2553,8 @@ if (settings.soundDetection) {
     checkChanges,
     aggroCheck,
     deathCheck,
-    regOnError
+    regOnError,
+    streamModeInitialMouse
   };
 };
 

@@ -1,15 +1,35 @@
 const { ipcRenderer } = require('electron');
+let stream;
+ipcRenderer.on('close-stream', () => {
+  stream.getTracks().forEach(track => track.stop());
+  stream = null;
+})
 
-ipcRenderer.on('connect-to-stream', (event, deviceId, screenSize) => {
-  navigator.mediaDevices.getUserMedia({
-    video: {
-      deviceId: { exact: deviceId },
-      width: { ideal: screenSize.width },
-      height: { ideal: screenSize.height },
-      frameRate: { ideal: 60 }
+ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSize) => {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    if(!devices.find((device) => device.deviceId == deviceId)) {
+      throw new Error(`Can't find video capture device. Try to reassign.`)
     }
-  })
-  .then(stream => {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        deviceId: { exact: deviceId },
+        width: { ideal: screenSize.width },
+        height: { ideal: screenSize.height },
+        frameRate: { ideal: 60 }
+      }
+    })
+
+    const videoTrack = stream.getVideoTracks()[0];
+    const capabilities = videoTrack.getCapabilities();
+
+    videoTrack.applyConstraints({ advanced: [{
+      brightness: 48,
+      saturation: 43,
+      contrast: 50,
+      }]
+    });
+
     const video = document.createElement('video');
     video.srcObject = stream;
     video.videoWidth = `${screenSize.width}px`;
@@ -21,12 +41,7 @@ ipcRenderer.on('connect-to-stream', (event, deviceId, screenSize) => {
         ipcRenderer.send('stream-loaded');
       })
     })
-    ipcRenderer.once('stop-webcam-win-stream', () => {
-      let tracks = stream.getTracks(); // Get all tracks (audio and video)
-      tracks.forEach(track => track.stop()); // Stop each track
-    })
-  })
-  .catch(err => {
-    ipcRenderer.send('connect-to-stream-error', err);
-  });
+  } catch(e) {
+      ipcRenderer.send('connect-to-stream-error', e.message);
+  }
 })

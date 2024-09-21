@@ -35,12 +35,15 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     aggroCheck,
     applyFatigue,
     checkConfirm,
-    regOnError
+    regOnError,
+    streamModeInitialMouse
   } = bot;
 
   regOnError.stopBots = () => {
     onError();
   }
+
+  await streamModeInitialMouse();
   checkChanges(onError, log);
   deathCheck(wins, onError);
   aggroCheck(onError, state, aggroTestRun, wins);
@@ -256,7 +259,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     }
 
     log.send(`Checking the hook...`);
-    if ((bobber = await checkBobber(bobber, state))) {
+    if ((bobber = await checkBobber(bobber, state, log))) {
 
       if(state.status != `stop`) state.status = `working`;
 

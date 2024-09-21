@@ -12,20 +12,21 @@ const showColorPixel = async (scale) => {
 
 const createMouseCoordsEvent = (resolve, win, botWin, scaleFactor) => {
   ipcMain.on('mouse-coords', async (event, data) => {
-    if(data) {
-    data.x = data.x * scaleFactor;
-    data.y = data.y * scaleFactor;
+      if(data) {
+      data.x = data.x * scaleFactor;
+      data.y = data.y * scaleFactor;
 
-    let color = await(await nutJS.screen.grabRegion(new nutJS.Region(data.x, data.y, 1, 1))).toRGB();
-    data.color = {r: color.data[0], g: color.data[1], b: color.data[2]};
-    resolve(data);
+      let color = await(await nutJS.screen.grabRegion(new nutJS.Region(data.x, data.y, 1, 1))).toRGB();
+      data.color = {r: color.data[0], g: color.data[1], b: color.data[2]};
+      resolve(data);
     } else {
-    resolve();
+      resolve();
     }
-    ipcMain.removeAllListeners(`mouse-coords`);
-    ipcMain.removeHandler(`get-pixel-color`);
     win.close();
     botWin.focus();
+
+    ipcMain.removeAllListeners(`mouse-coords`);
+    ipcMain.removeHandler(`get-pixel-color`);
   })
 }
 
@@ -34,7 +35,7 @@ const createPointZone = async (botWin, screenData) => {
   let win = new BrowserWindow({
     width: screenData.bounds.width - 1,
     height: screenData.bounds.height - 1,
-    alwaysOnTop: true, 
+    alwaysOnTop: true,
     frame: false,
     transparent: true,
     resizable: false,

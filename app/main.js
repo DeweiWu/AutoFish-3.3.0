@@ -128,7 +128,7 @@ const setFishingZone = async ({workwindow}, relZone, type, config, settings) => 
     workwindow.setForeground();
   }
   const screenSize = workwindow.getView();
-  const scale = screen.getPrimaryDisplay().scaleFactor || 1;
+  const scale = config.streamMode ? 1 : (screen.getPrimaryDisplay().scaleFactor || 1);
 
   const pos = {
     x: (screenSize.x + relZone.x * screenSize.width) / scale,
@@ -167,9 +167,11 @@ const createWindow = async () => {
       spellcheck: false,
       contextIsolation: false,
       nodeIntegration: true,
+      backgroundThrottling: false
     },
     icon: "./app/img/icon.png",
   });
+
 
   if(trialIsOn) {
     trial = createTrialTime();
@@ -318,8 +320,10 @@ You can also write in this chat directly to do:
       arduino.connectTo(config.patch[settings.game].arduinoPort, Number(config.patch[settings.game].arduinoRate))
       .then((msg) => log.ok(msg))
       .catch((err) => log.err(err))
-    } else {
-      log.warn(`You don't use an Arduino board, the input commands of the bot might be detectable!`);
+    }
+
+    if(!config.patch[settings.game].streamMode) {
+      log.warn(`You are not in a streaming mode! Go to Advanced Settings and connect to your Pico W board and video capture device.`);
     }
 
     if(tmKey) {
@@ -391,7 +395,15 @@ You can also write in this chat directly to do:
       config.game = configDefault.game;
     }
 
-    let games = await findGameWindows(config, config.patch[settings.game], type);
+    let games
+    try {
+      games =  await findGameWindows(config, config.patch[settings.game], type);
+    } catch(e) {
+      log.err(e);
+      win.webContents.send("stop-bot");
+      shell.beep();
+      return;
+    }
 
     if (!games) {
       log.err(`Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
@@ -415,17 +427,17 @@ You can also write in this chat directly to do:
         games[0].game.workwindow.setForeground();
       }
 
-      const screenData = screen.getPrimaryDisplay();
+      const screenData = screen.getPrimaryDisplay(); // ???
       let data = await createPointZone(BrowserWindow.getAllWindows()[0], screenData);
 
       if(data && config.patch[settings.game].streamMode) {
         let streamColor;
         try {
            streamColor = await (new Promise(function(resolve, reject) {
-            win.webContents.send('connect-to-stream-main', {
-              deviceId: config.patch[settings.game].streamDevice,
-              screenSize: config.patch[settings.game].streamScreenSize
-           });
+             win.webContents.send('connect-to-stream-main', {
+               deviceId: config.patch[settings.game].streamDevice,
+               screenSize: config.patch[settings.game].streamScreenSize
+            });
 
             ipcMain.once('connect-to-stream-main-end', (event, e) => {
               if(e) {
@@ -451,13 +463,16 @@ You can also write in this chat directly to do:
         win.webContents.send('stop-webcam-stream');
         let streamColorRGB = {r: Array.from(streamColor.data)[0], g: Array.from(streamColor.data)[1], b: Array.from(streamColor.data)[2]}
         data.color = streamColorRGB;
-        games[0].game.workwindow.close();
       }
 
       if(data) {
         log.ok(`Set point to x: ${data.x}, y: ${data.y} successfully!`);
       } else {
         log.ok('Canceled.')
+      }
+
+      if(config.patch[settings.game].streamMode) {
+          games[0].game.workwindow.close();
       }
 
       return data;
@@ -527,7 +542,7 @@ You can also write in this chat directly to do:
           config.game.classNames = [className];
           config.game.handles = [handle];
 
-          games.push({game: findGameWindows(config)[0], settings, config});
+          games.push({game: (await findGameWindows(config)[0]), settings, config});
         }
       }
     }
@@ -539,14 +554,44 @@ You can also write in this chat directly to do:
       return;
     }
 
-    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win);
+
+    let sharedArray;
+    if(config.patch[settings.game].streamMode) {
+      log.send(`Connecting to capture device...`);
+      let secondValue = 3;
+      setTimeout(function logSeconds() {
+        log.send(`Start in ${secondValue--}...`);
+        if(secondValue > 0) {
+          setTimeout(logSeconds, 1000);
+        }
+      });
+
+      try {
+        sharedArray = await (new Promise(function(resolve, reject) {
+          win.webContents.send('connect-to-stream-main', {
+            deviceId: config.patch[settings.game].streamDevice,
+            screenSize: config.patch[settings.game].streamScreenSize
+         });
+          ipcMain.once('connect-to-stream-main-end', (event, e, sharedArray) => {
+            if(e) {
+              log.err(e);
+              reject(e);
+            }
+
+            resolve(sharedArray);
+          })
+          log.ok(`Connected successfully!`);
+        }));
+      } catch(e) {
+        log.err(e.message);
+        log.err(e.stack)
+        return;
+      }
+    }
+
+    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win, sharedArray);
 
     const stopAppAndBots = () => {
-
-      if(config.patch[settings.game].streamMode) {
-        win.webContents.send('stop-webcam-stream');
-      }
-
       if(trialIsOn) {
         trial.stop();
         let { version } = getJson('../package.json');
@@ -582,6 +627,14 @@ You can also write in this chat directly to do:
       }
       globalShortcut.unregister(settings.stopKey);
       win.webContents.send("stop-bot");
+
+
+      if(config.patch[settings.game].streamMode) {
+        setTimeout(() => {
+          win.webContents.send('stop-webcam-stream');
+        }, 500);
+      }
+
       ipcMain.removeAllListeners("stop-bot");
     };
 
@@ -620,30 +673,6 @@ You can also write in this chat directly to do:
         }, 500);
         stopAppAndBots();
       });
-    }
-
-
-    if(config.patch[settings.game].streamMode) {
-      log.send(`Connecting to the stream...`);
-      try {
-        await (new Promise(function(resolve, reject) {
-          win.webContents.send('connect-to-stream-main', {
-            deviceId: config.patch[settings.game].streamDevice,
-            screenSize: config.patch[settings.game].streamScreenSize
-         });
-          ipcMain.once('connect-to-stream-main-end', (event, e) => {
-            if(e) {
-              log.err(e);
-              reject(e);
-            }
-
-            resolve();
-          })
-        }));
-      } catch(e) {
-        log.err(e);
-        return;
-      }
     }
 
     startBots(stopAppAndBots, type == 'skills-test');
@@ -898,5 +927,7 @@ const menu = Menu.buildFromTemplate([
 Menu.setApplicationMenu(menu);
   createWindow();
 });
+
+app.commandLine.appendSwitch('enable-features','SharedArrayBuffer')
 
 crashReporter.start({uploadToServer: false});

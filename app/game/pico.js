@@ -1,7 +1,9 @@
 const axios = require('axios');
+
 const random = (from, to) => {
   return from + Math.random() * (to - from);
 };
+
 const sleep = (time) => {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
@@ -11,6 +13,7 @@ const sleep = (time) => {
 const delay = [50, 150];
 let previousPos, speedDistCoof, picoIp;
 let log;
+let attempts = 0;
 
 async function send(type, jsonData) {
   try {
@@ -22,20 +25,28 @@ async function send(type, jsonData) {
           },
         }
       );
+      attempts = 0;
   } catch (error) {
-    log.err(`Pico Error: ${error.response ? error.response.data : error.message}`);
+    log.err(`Pico: Error: ${error.response ? error.response.data : error.message}`);
+    await sleep(1000);
+    if(attempts++ < 3) {
+      log.send(`Pico: Sending Again (${attempts})...`);
+      await send(type, jsonData);
+    } else {
+      throw new Error(`Something wrong with the connection to Pico Board.`)
+    }
   }
 }
 
 const keyboard = {
   async sendKey(key, delays = [50, 150]) {
-    key = key.toUpperCase();
+    // key = key.toUpperCase();
     let delay = Math.round(random(delays[0], delays[1]))
     await send('presskey', {key, delay})
   },
 
   async toggleKey(key, type) {
-    key = key.toUpperCase();
+    // key = key.toUpperCase();
     let toggleType = 'release';
     if(type) {
       toggleType = 'press';
@@ -61,25 +72,22 @@ const mouse = {
     await send('movemouse', {x: newX, y: newY});
   },
 
-  async humanMoveTo(x, y) { // speed = 88, curvature = 20
-    // TEMP:
-    let speed = 90;
-    let curvature = 10;
-    // TEMP END
+  async humanMoveTo(x, y, mainSpeed, deviation) { // speed = 88, curvature = 20
+    x = x + 1;
+    y = y + 1;
+    let speed = mainSpeed * 15; // 15 // % of step from distance
+    let curvature = (deviation / 100) * 30; //20 // % from distance
 
     const newX = Math.round(x - previousPos.x);
     const newY = Math.round(y - previousPos.y);
-    const distance = Math.sqrt(Math.pow(Math.round(newX), 2) + Math.pow(Math.round(newY), 2));
 
     if(x != -9999 && y != -9999) {
       previousPos = {x, y};
     }
 
-    const convertedSpeed = (100 - speed) * (speedDistCoof / distance);
-    if(convertedSpeed <= 0) {
-      convertedSpeed = 1;
-    }
+    const distance = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
 
+    let convertedSpeed = speed * (distance / (1920 / 8));
     await send('movemousehuman', {x: newX, y: newY, speed: convertedSpeed, curvature});
   },
 
@@ -112,7 +120,7 @@ const mouse = {
 
 const createPicoInterface = (ip, screenSize, mainLog) => {
   previousPos = {x: 0, y: 0};
-  speedDistCoof = screenSize.width / 6; // TEMP:
+  speedDistCoof = screenSize.width / 4; // TEMP:
   picoIp = ip;
   log = mainLog;
 

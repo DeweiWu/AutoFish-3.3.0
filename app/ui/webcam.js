@@ -22,28 +22,57 @@ const generateEventsFor = (stream, screenSize) => {
             pos.height
           );
           const imageData = context.getImageData(0, 0, pos.width, pos.height);
-          ipcRenderer.send(reqCh, imageData.data.buffer);
+
+          setTimeout(() => {
+            ipcRenderer.send(reqCh, imageData.data.buffer);
+          }, 0);
         });
       });
-      resolve();
+
+      setTimeout(() => { // give some time to start
+          resolve();
+      }, 3000);
+
     });
-    ipcRenderer.once('stop-webcam-stream', () => {
-      let tracks = stream.getTracks(); // Get all tracks (audio and video)
-      tracks.forEach(track => track.stop()); // Stop each track
+    ipcRenderer.once('stop-webcam-stream', async () => {
       ipcRenderer.removeAllListeners('request-frame');
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
+      video.remove();
     })
   });
 };
 
 const connectToStream = async (deviceId, screenSize) => {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: {
-      deviceId: { exact: deviceId },
-      width: { ideal: screenSize.width },
-      height: { ideal: screenSize.height },
-      frameRate: { ideal: 60 },
-    },
-  });
+  let stream;
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    if(!devices.find((device) => device.deviceId == deviceId)) {
+      throw new Error(`Can't find video capture device. Try to reassign.`)
+    }
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        deviceId: { exact: deviceId },
+        width: { ideal: screenSize.width },
+        height: { ideal: screenSize.height },
+        frameRate: { ideal: 60 },
+      },
+    });
+
+    const videoTrack = stream.getVideoTracks()[0];
+    const capabilities = videoTrack.getCapabilities();
+
+    videoTrack.applyConstraints({ advanced: [{
+      brightness: 48,
+      saturation: 43,
+      contrast: 50,
+      }]
+    });
+
+  } catch(err) {
+    throw err
+  }
+
   return await generateEventsFor(stream, screenSize);
 };
 

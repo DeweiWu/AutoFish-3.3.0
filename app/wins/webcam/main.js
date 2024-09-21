@@ -16,10 +16,11 @@ const createWebCamWin = (deviceId, screenSize) =>
 
     //mainWindow.openDevTools({mode: 'detach'})
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
+
     mainWindow.on('close', () => {
+      mainWindow.webContents.send('close-stream');
       ipcMain.removeAllListeners(`stream-loaded`);
       ipcMain.removeAllListeners(`connect-to-stream-error`);
-      mainWindow.webContents.send('stop-webcam-win-stream');
     })
 
     mainWindow.on('ready-to-show', () => {
