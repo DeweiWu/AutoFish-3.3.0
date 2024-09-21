@@ -1900,7 +1900,7 @@ if(lootWindowPatch.exitButton) {
         settings.afkmode ||
         settings.multipleWindows ||
         settings.colorBobber == `Manual` ||
-        (random(0, 100) > config.highlightPercent)) {
+        config.highlightPercent) {
         return pos;
     }
 

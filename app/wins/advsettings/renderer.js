@@ -50,9 +50,7 @@ const renderStartByFishingKey = ({startByFishingKey = false}) => {
 }
 
 const renderHighlightPercent = ({highlightPercent}) => {
-  const winRange = elt(`input`, {type: `number`, value: highlightPercent, name: "highlightPercent"})
-  const range = elt('input', {type: `range`, max: 100, value: highlightPercent, oninput: function() {winRange.value = this.value}, name: "highlightPercent"});
-  return elt(`div`, null, range, winRange);
+  return elt(`input`, {type: `checkbox`, checked: highlightPercent, name: `highlightPercent`});
 };
 
 const renderFindBobberDirection = ({findBobberDirection, game}) => {
@@ -1401,7 +1399,7 @@ const renderSettings = (config) => {
   elt(`div`, {className: `settings_section`},
     wrapInLabel(`Random Mouse Speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
     wrapInLabel(`Random Mouse Curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
-    wrapInLabel(`Highlight Bobber (%): `, renderHighlightPercent(config), `The value is chance of how often the bot should highlight the bobber before checking on it (if in your game the bobber become brigther or more colourfull after highlighting, then change this value to 100% if you don't care for randomness)`),
+    wrapInLabel(`Highlight Bobber: `, renderHighlightPercent(config), `Whether the bot should move the cursor to the bobber (highlight it) before starting checking (if in your game the bobber become brigther or more colourfull after highlighting turn it on to improve performance)`),
     wrapInLabel(`Human-like Hovering (%): `, renderLikeHumanHover(config), `The value is chance of how often the bot should "hover" your cursor from time to time to simulate slight movements when the hand rests on the mouse. This feature might impact performance.`),
     wrapInLabel(`Input Library: `, renderLibraryTypeInput(config), `Different ways of simulating keyboard and mouse actions.`),
     wrapInLabel(`Catch With Mouse Button: `, renderCatchFishButton(config), `Choose the button you want the bot to click when it wants to catch the fish.`),

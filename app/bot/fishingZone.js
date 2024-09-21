@@ -112,7 +112,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
         if(!bobber) return;
 
-        if(highlightPercent > 0 && !highlight) {
+        if(highlightPercent && !highlight) {
             return bobber.pos.plus({x: rgbZone.x, y: rgbZone.y});
         }
 
