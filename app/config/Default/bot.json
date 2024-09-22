@@ -10,7 +10,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -292,7 +292,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -564,7 +564,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -836,7 +836,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -1088,7 +1088,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -1341,7 +1341,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -1590,7 +1590,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -1858,7 +1858,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -2123,7 +2123,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
@@ -2379,7 +2379,7 @@
       "timer": false,
       "streamMode": false,
       "streamDevice": "",
-      "picoip": "",
+      "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
         "height": 1080
