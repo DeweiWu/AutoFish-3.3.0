@@ -1,7 +1,7 @@
 const { getCurrentTime } = require("./time.js");
 const { createWriteStream } = require('fs');
 
-const createLog = (sendToWindow) => {
+const createLog = (sendToWindow, sendToWindowStats) => {
   let state = true;
   return {
     send(text, type = "black") {
@@ -10,6 +10,10 @@ const createLog = (sendToWindow) => {
         text = `[${hr}:${min}:${sec}] ${text}`;
         sendToWindow({ text, type });
       }
+    },
+
+    showStats(stats, time) {
+      sendToWindowStats(stats, time);
     },
 
     msg(text) {

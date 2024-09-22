@@ -187,9 +187,14 @@ const createWindow = async () => {
     app.quit();
   });
 
-  const log = createLog((data) => {
-    win.webContents.send("log-data", data);
-  });
+  const log = createLog(
+    (data) => {
+      win.webContents.send("log-data", data);
+    },
+    (stats, time) => {
+      win.webContents.send("log-data-stats", stats, time);
+    }
+  );
 
   const createArduinoDevice = require(`./game/arduino.js`);
   let arduino = createArduinoDevice();

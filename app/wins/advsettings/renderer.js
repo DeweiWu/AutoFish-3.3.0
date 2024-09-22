@@ -1326,11 +1326,11 @@ const renderSettings = (config) => {
     wrapInLabel(`Auto-Confirm SB Items: `, renderCheckConfirm(config), `The bot will check for confirmation window after every catch and will auto-confirm soulbound items (even in AutoLoot mode).`),
   ),
 
-  elt(`p`, {className: `settings_header`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream`),
+  elt(`p`, {className: `settings_header`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream (beta)`),
   elt(`div`, {className: `settings_section`},
     wrapInLabel(`Video Capture Device: `, renderStreamDevice(config), `Stream logic`),
     wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Ip address`),
-    wrapInLabel(`Streaming PC resolution: `, renderStreamScreenSize(config), `streaming resolution`)
+    wrapInLabel(`Streaming PC Resolution (game): `, renderStreamScreenSize(config), `streaming resolution`)
   ),
 
 
@@ -1397,10 +1397,10 @@ const renderSettings = (config) => {
 
   elt(`p`, {className: `settings_header advanced_settings_header`}, `🖱️`), elt(`span`, {className: `advanced_settings_header_text`}, `Mouse & Keyboard`),
   elt(`div`, {className: `settings_section`},
+    wrapInLabel(`Highlight Bobber: `, renderHighlightPercent(config), `Whether the bot should move the cursor to the bobber (highlight it) before starting checking (if in your game the bobber become brigther or more colourfull after highlighting turn it on to improve performance)`),
     wrapInLabel(`Random Mouse Speed: `, renderMouseMoveSpeed(config), `The bot will generate a random number between the provided values. The higher the value the faster the bot moves the cursor. Works only if Like a human option is on.`),
     wrapInLabel(`Random Mouse Curvature: `, renderMouseCurvature(config), `The bot will generate a random number between the provided values. The higher the value the stronger is the deviation of the movement. Works only if Like a human option is on.`),
-    wrapInLabel(`Highlight Bobber: `, renderHighlightPercent(config), `Whether the bot should move the cursor to the bobber (highlight it) before starting checking (if in your game the bobber become brigther or more colourfull after highlighting turn it on to improve performance)`),
-    wrapInLabel(`Human-like Hovering (%): `, renderLikeHumanHover(config), `The value is chance of how often the bot should "hover" your cursor from time to time to simulate slight movements when the hand rests on the mouse. This feature might impact performance.`),
+    wrapInLabel(`Human-like Hovering (%): `, renderLikeHumanHover(config), `The value is chance of how often the bot should "hover" your cursor from time to time to simulate slight movements when the hand rests on the mouse. Doesn't work in streaming mode. This feature might impact performance.`),
     wrapInLabel(`Input Library: `, renderLibraryTypeInput(config), `Different ways of simulating keyboard and mouse actions.`),
     wrapInLabel(`Catch With Mouse Button: `, renderCatchFishButton(config), `Choose the button you want the bot to click when it wants to catch the fish.`),
     wrapInLabel(`Mouse/Keyboard Random Delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
@@ -1467,7 +1467,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Use Movements Randomly Every (min): `, renderRngMoveTimer(config), `How often the bot should move your camera/character. The value is chosen randomly within the provided values.`),
     ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🔭`),elt(`span`, {className: `advanced_settings_header_text`}, `Players Check`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#check-for-players-around-telescope")}}, `(Guide)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🔭`),elt(`span`, {className: `advanced_settings_header_text`}, `Players Check (beta)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#check-for-players-around-telescope")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Find Player: ', renderFindPlayer(config), `The bot will look around to see any other (friendly) players nearby (within target range).`),
       wrapInLabel('Find Player Mode: ', renderFindPlayerType(config), `How the bot should look for the players.`),
@@ -1487,7 +1487,7 @@ const renderSettings = (config) => {
       config.findPlayerType != `Front` ? wrapInLabel('Rotation Time (ms): ', renderFindPlayerRotationTime(config), `How long the bot should rotate. Tweak this if the rotation the bot makes isn't complete or overcomplete.`) : ``
     ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#aggro-checking-crossed_swords")}}, `(Guide)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check (beta)`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#aggro-checking-crossed_swords")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)\n\nUse "Test Rotation" button to see what will happen if you are attacked during fishing and check whether your rotation and the bot works properly for you.`),
       wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),

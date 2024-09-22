@@ -52,6 +52,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
   let failedCast = false;
   let attempts = 0;
   do {
+    log.showStats(stats, Date.now() - state.startTime)
     await dx12Case();
     await aggroCheck.status;
     if (state.status == "initial") {

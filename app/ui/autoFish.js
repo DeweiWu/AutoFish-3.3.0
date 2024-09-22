@@ -45,11 +45,23 @@ const renderLogger = () => {
   };
 };
 
+const renderLoggerStats = () => {
+  let dom = elt('span', {style: `display: inline-block;cursor: help; width: 270px; text-align: right;`, title: `Caught: 0  Missed: 0  Time: 0`}, `🐟: 0  🙁: 0  🕑: 0 (min)`);
+  return {
+    dom,
+    showStats(stats, time) {
+      dom.textContent = `🐟: ${stats.caught}  🙁: ${stats.miss + stats.confused}  🕑: ${Math.floor(time / 1000 / 60)} (min)`
+      dom.setAttribute('title', `Caught: ${stats.caught}| Missed: ${stats.miss + stats.confused} | Time: ${Math.floor(time / 1000 / 60)} minutes`);
+    }
+  }
+}
+
 class AutoFish {
   constructor(settings, startButton, profiles) {
     this.settings = settings;
     this.button = startButton;
     this.logger = renderLogger();
+    this.loggerStats = renderLoggerStats();
     let profile = renderProfiles(profiles);
 
     ipcRenderer.on('connect-to-stream-main', (event, {deviceId, screenSize}) => {
@@ -229,6 +241,10 @@ class AutoFish {
       this.logger.show(data);
     });
 
+    ipcRenderer.on('log-data-stats', (event, stats, time) => {
+      this.loggerStats.showStats(stats, time)
+    })
+
     let settingsVisibility = true;
     let foldSettingsContainer = elt(`img`, {src: `img/unfold.png`, className: `settingsFolder`})
     foldSettingsContainer.addEventListener(`click`, (event) => {
@@ -252,7 +268,7 @@ class AutoFish {
       renderLogo(),
             elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header settings_header_main settings_header_fold"}, "⚙️"), foldSettingsContainer, profile.dom),
       this.settings.dom,
-            elt("p", { className: "settings_header settings_header_log settings_header_main" }, "📋"),
+            elt("p", { className: "settings_header settings_header_log settings_header_main" }, "📋"), this.loggerStats.dom,
       this.logger.dom,
       this.button.dom,
       footer

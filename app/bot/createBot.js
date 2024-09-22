@@ -236,7 +236,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
   let fishingZone = createFishingZone(getDataFromFishingZone, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
 
   const notificationZone = createNotificationZone({
-    getDataFromFishingZone,
+    getDataFrom: getDataFromFishingZone,
     zone: Zone.from({
       x: Math.round((screenSize.width / 2) - (screenSize.width * config.notificationPos.width)),
       y: Math.round(screenSize.height * config.notificationPos.y),
@@ -409,7 +409,7 @@ if(lootWindowPatch.exitButton) {
     };
 
     const checkRedButton = async (buttonPos) => {
-        const redButtonZone = createRedButtonZone({getDataFromFishingZone, zone: buttonPos});
+        const redButtonZone = createRedButtonZone({getDataFrom: getDataFromFishingZone, zone: buttonPos});
         const colorPositions = await redButtonZone.isOn(mouse.getPos());
         if(colorPositions) {
           await action(async () => {
@@ -1900,7 +1900,7 @@ if(lootWindowPatch.exitButton) {
         settings.afkmode ||
         settings.multipleWindows ||
         settings.colorBobber == `Manual` ||
-        config.highlightPercent) {
+        !config.highlightPercent) {
         return pos;
     }
 
@@ -2331,7 +2331,7 @@ if (settings.soundDetection) {
 
   const dynamicThreshold = () => {
     settings.threshold = settings.threshold - config.dynamicThresholdValue;
-    fishingZone = createFishingZone(getDataFrom, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
+    fishingZone = createFishingZone(getDataFromFishingZone, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
   }
 
   dynamicThreshold.on = config.dynamicThreshold && !settings.autoTh;
