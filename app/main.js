@@ -887,7 +887,7 @@ const menu = Menu.buildFromTemplate([
   {
     label: `Help`,
     submenu: [
-      { label: "AutoFish ver. 3.0.0 Premium" },
+      { label: "AutoFish ver. 3.1.0 Premium" },
       { type: "separator" },
       {
         label: "📘 Read Me",
@@ -904,7 +904,7 @@ const menu = Menu.buildFromTemplate([
       {
         label: "Report issue",
         click: () =>
-          shell.openExternal("https://github.com/jsbots/AutoFish/issues"),
+          shell.openExternal("https://discord.com/channels/1006827456931569735/1008328201031921694"),
       },
       {
         label: "Clear Cache",

@@ -54,6 +54,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`unsupported-key-win`);
     ipcMain.removeAllListeners(`rngMove-warn`);
     ipcMain.removeAllListeners(`lures-warn`);
+    ipcMain.removeAllListeners(`stream-warn`);
     ipcMain.removeAllListeners(`whitelist-warn`);
     ipcMain.removeAllListeners(`start-by-fishing-key-warn`);
     ipcMain.removeAllListeners(`aggroCheck-warn`);
@@ -98,6 +99,10 @@ const createAdvSettings = (appPath) => {
 
   ipcMain.on("unsupported-key-win", () => {
     showWarning(win, `The key you pressed is not supported by AutoFish.`);
+  });
+
+  ipcMain.on("stream-warn", () => {
+    showWarning(win, `- Doesn't support windowed mode\n- Scaling in Windows (game pc) should be 100%\n- Multiple Fishing and Alt-Tab modes won't work.`);
   });
 
   ipcMain.on("aggroCheck-warn", () => {

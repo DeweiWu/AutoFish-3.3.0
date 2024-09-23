@@ -1328,9 +1328,9 @@ const renderSettings = (config) => {
 
   elt(`p`, {className: `settings_header`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream (beta)`),
   elt(`div`, {className: `settings_section`},
-    wrapInLabel(`Video Capture Device: `, renderStreamDevice(config), `Stream logic`),
-    wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Ip address`),
-    wrapInLabel(`Streaming PC Resolution (game): `, renderStreamScreenSize(config), `streaming resolution`)
+    wrapInLabel(`Video Capture Device: `, renderStreamDevice(config), `Streaming logic is used to run the bot and the game on different machines. Video Capture device is a capture device HDMI part of which you connect to your GPU on the Game PC and USB part of which you connect to your Bot PC.`),
+    wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Same IP address you configured for your Pico W device in its own code.`),
+    wrapInLabel(`Streaming PC Resolution: `, renderStreamScreenSize(config), `The resolution of the Game PC. Same resolution should be for the game, meaning it shouldn't be in windowed mode.`)
   ),
 
 
@@ -1454,7 +1454,7 @@ const renderSettings = (config) => {
       wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
       wrapInLabel(`Detect Chat Messages:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
       wrapInLabel(`Stop and Close the Game at Chat Message:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
-      wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Avoid "@", put in just the name.`),
+      wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Omit "@", put in just the name.`),
       elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
       renderWhisperColors(config),
     ),
@@ -1687,6 +1687,10 @@ const runApp = async () => {
 
     if(event.target.name == `rngMove` && event.target.checked) {
       ipcRenderer.send("rngMove-warn");
+    }
+
+    if(event.target.name == `streamMode` && event.target.checked) {
+      ipcRenderer.send("stream-warn");
     }
 
     if(event.target.name == `lures` && event.target.checked) {

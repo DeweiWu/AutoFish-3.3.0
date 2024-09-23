@@ -51,7 +51,7 @@ const renderLoggerStats = () => {
     dom,
     showStats(stats, time) {
       dom.textContent = `🐟: ${stats.caught}  🙁: ${stats.miss + stats.confused}  🕑: ${Math.floor(time / 1000 / 60)} (min)`
-      dom.setAttribute('title', `Caught: ${stats.caught}| Missed: ${stats.miss + stats.confused} | Time: ${Math.floor(time / 1000 / 60)} minutes`);
+      dom.setAttribute('title', `Caught: ${stats.caught} | Missed: ${stats.miss + stats.confused} | Time: ${Math.floor(time / 1000 / 60)} minutes`);
     }
   }
 }
@@ -161,7 +161,7 @@ class AutoFish {
     const footer = elt(`p`, { className: "version" }, versionNode, premiumIcon);
 
     ipcRenderer.on("set-version", (event, version, trial) => {
-      versionNode.textContent = `ver. 3.0.0 ${trial ? `Trial ${trial}` : `Premium`} `;
+      versionNode.textContent = `ver. 3.1.0 ${trial ? `Trial ${trial}` : `Premium`} `;
       if(trial) {
         versionNode.append(donateLink);
       }
