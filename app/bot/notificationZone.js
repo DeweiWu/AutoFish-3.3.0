@@ -3,8 +3,8 @@ const Jimp = require('jimp');
 
 const createNotificationZone = ({ getDataFrom, zone }) => {
   const notifications = {
-    isWarning: ([r, g, b]) => r - b > 200 && g - b > 200,
-    isError: ([r, g, b]) => r - g > 220 && r - b > 220
+    isWarning: ([r, g, b]) => r - b > 150 && g - b > 150,
+    isError: ([r, g, b]) => r - g > 175 && r - b > 175
   }
 
   return {

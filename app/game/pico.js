@@ -10,7 +10,7 @@ const sleep = (time) => {
   });
 };
 
-const delay = [50, 150];
+let delay;
 let previousPos, speedDistCoof, picoIp;
 let log;
 let attempts = 0;
@@ -73,13 +73,14 @@ const mouse = {
   },
 
   async humanMoveTo(x, y, mainSpeed, deviation) { // speed = 88, curvature = 20
-    x = x + 1;
-    y = y + 1;
     let speed = mainSpeed * 15; // 15 // % of step from distance
     let curvature = (deviation / 100) * 30; //20 // % from distance
 
-    const newX = Math.round(x - previousPos.x);
-    const newY = Math.round(y - previousPos.y);
+    x = Math.round(x);
+    y = Math.round(y);
+
+    const newX = x - previousPos.x;
+    const newY = y - previousPos.y;
 
     if(x != -9999 && y != -9999) {
       previousPos = {x, y};
@@ -87,7 +88,7 @@ const mouse = {
 
     const distance = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
 
-    let convertedSpeed = speed * (distance / (1920 / 8));
+    let convertedSpeed = speed * (distance / speedDistCoof);
     await send('movemousehuman', {x: newX, y: newY, speed: convertedSpeed, curvature});
   },
 
@@ -118,12 +119,13 @@ const mouse = {
   }
 }
 
-const createPicoInterface = (ip, screenSize, mainLog) => {
+const createPicoInterface = ({picoip, streamScreenSize, delay: delays}, mainLog) => {
   previousPos = {x: 0, y: 0};
-  speedDistCoof = screenSize.width / 4; // TEMP:
-  picoIp = ip;
+  speedDistCoof = streamScreenSize.width / 8;
+  picoIp = picoip;
   log = mainLog;
-
+  delay = delays;
+  console.log(`delay`, delay);
   return {
     keyboard, mouse
   }

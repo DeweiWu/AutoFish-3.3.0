@@ -62,7 +62,13 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
   let isBobber = bobberColor == `red` ? isRed(threshold, 50) : bobberColor == `blue` ? isBlue(threshold, 50) : isManual(hexToRgb(bobberColorManual), threshold);
   let newThreshold;
-  let saturation = bobberColor == `red` ? [0, 0, 0] : bobberColor == `blue` ? [0, 0, 0] : [0, 0, 0]; //let saturation = bobberColor == `red` ? [80, 0, 0] : bobberColor == `blue` ? [0, 0, 80] : [0, 0, 0];
+  let saturation;
+
+  if(streamMode) {
+    saturation = bobberColor == `red` ? [0, 0, 0] : bobberColor == `blue` ? [0, 0, 0] : [0, 0, 0];
+  } else {
+    saturation = bobberColor == `red` ? [80, 0, 0] : bobberColor == `blue` ? [0, 0, 80] : [0, 0, 0];
+  }
 
   const looksLikeBobber = (size) => (pos, color, rgb) => {
     let pointsFound = pos.getPointsAround(Math.round(size * (screenSize.height / 1080)) || 1).filter((pos) => isBobber(rgb.colorAt(pos)));
@@ -103,8 +109,8 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
         rgb.cutOut(exception);
       }
 
-      //let img = await Jimp.read(rgb.getBitmap());
-      //img.write("main.png");
+       //let img = await Jimp.read(rgb.getBitmap());
+       //img.write(`${nnn++}_cursor.png`);
 
       let bobber;
       if(autoTh) {
@@ -169,6 +175,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
               }
             }
+
           /*
           rgb.cutOut(mostRedPoints.map(({pos}) => pos));
           let img = await Jimp.read(rgb.getBitmap())
@@ -329,7 +336,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
          if(calculatedSens < defaultMinimumSens) calculatedSens = defaultMinimumSens;
          sensitivity = calculatedSens;
        } else {
-         if(game == `Vanilla` || streamMode) {
+         if(game == `Vanilla` ) {
            sensitivity = 2;
          } else {
            sensitivity = Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 2)), 2);

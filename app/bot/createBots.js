@@ -149,7 +149,7 @@ if (tmBot.bot) {
   const bots = games.map(({game, config, settings}, i) => {
     if(config.patch[settings.game].streamMode) {
       let gameConfig = config.patch[settings.game];
-      const pico = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize, log);
+      const pico = createPicoInterface(gameConfig, log);
       game.workwindow.capture = (zone) =>
         new Promise(function(resolve, reject) {
           let reqCh = `channel-${Math.random()}`;
@@ -212,8 +212,8 @@ if (tmBot.bot) {
         .then(() => {
             win.show();
             log.setState(true);
-            bot.stats.show().forEach((stat) => bot.log.ok(stat));
-            bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
+            //bot.stats.show().forEach((stat) => bot.log.ok(stat));
+            //bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
         })
         .catch((error) => {
             win.show();
@@ -227,8 +227,8 @@ if (tmBot.bot) {
               tmBot.ctx.reply(`[ERROR]${error.message}`);
             }
 
-            bot.stats.show().forEach((stat) => bot.log.ok(stat));
-            bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
+            //bot.stats.show().forEach((stat) => bot.log.ok(stat));
+            //bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
         });
       })
     },

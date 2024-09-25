@@ -327,8 +327,8 @@ You can also write in this chat directly to do:
       .catch((err) => log.err(err))
     }
 
-    if(!config.patch[settings.game].streamMode) {
-      log.warn(`You are not in a streaming mode! Go to Advanced Settings and connect to your Pico W board and video capture device.`);
+    if((settings.game == 'Retail' || settings.game == 'Classic' || settings.game == 'Cata Classic') && !config.patch[settings.game].streamMode) {
+      log.warn(`You aren't in a streaming mode, the bot is easily detectable on official servers.`);
     }
 
     if(tmKey) {
@@ -336,7 +336,7 @@ You can also write in this chat directly to do:
       .then(() => log.ok(`Connected to Telegram!`))
       .catch(e => log.err(`Telegram error: ${e.message}`))
     } else {
-      log.warn(`Telegram isn't connected. Provide a Telegram token.`);
+      log.warn(`Telegram isn't connected.`);
     }
 
     let { version } = getJson('../package.json');
@@ -713,11 +713,11 @@ You can also write in this chat directly to do:
   );
 
   ipcMain.on("afk-fishing-warn", () => {
-    showWarning(win, `Don't forget to switch to DirectX 11 in the game.\n\nTurn off Human-like Accuracy feature (Advanced Settings) and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.`);
+    showWarning(win, `Don't forget to switch to DirectX 11 in the game.\n\nTurn off Human-like Accuracy feature (Advanced Settings) and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.\n\nWarning! This doesn't work in streaming mode!`);
   });
 
   ipcMain.on("multiple-fishing-warn", () => {
-    showWarning(win, `In this mode the bot will use config from respective to the window profiles: WIN1, WIN2, WIN3 and so on.\n\nEvery "WIN" profile should have "Custom window" set (Advanced Settings -> Window). You can use "Focus" button to understand which window you chose exactly. The bot will ignore profiles for which you didn't set custom window.\n\nDon't forget to switch to DirectX 11 in the game.`);
+    showWarning(win, `In this mode the bot will use config from respective to the window profiles: WIN1, WIN2, WIN3 and so on.\n\nEvery "WIN" profile should have "Custom window" set (Advanced Settings -> Window). You can use "Focus" button to understand which window you chose exactly. The bot will ignore profiles for which you didn't set custom window.\n\nDon't forget to switch to DirectX 11 in the game.\n\nWarning! This doesn't work in streaming mode!`);
   })
 
   ipcMain.on("splash-warn", () => {

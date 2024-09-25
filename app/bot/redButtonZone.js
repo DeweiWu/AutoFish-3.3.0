@@ -12,13 +12,12 @@ const mouseWithinZone = (mouse, zone) => {
 
 
 const createRedButtonZone = ({getDataFrom, zone}) => {
-  const isRed = ([r, g, b]) => r - g > 125 && r - b > 125;
-  const isYellow = ([r, g, b]) => r - b > 175 && g - b > 175;
-  const isWhite = ([r, g, b]) => r > 220 && g > 220 && b > 220;
+  const isRed = ([r, g, b]) => r - g > 100 && r - b > 100;
+  const isYellow = ([r, g, b]) => r - b > 150 && g - b > 150;
+  const isWhite = ([r, g, b]) => r > 195 && g > 195 && b > 195;
   return {
     async isOn(mousePos) {
       const rgb = createRgb(await getDataFrom(zone));
-
       let red = rgb.findColors({isColor: isRed, atFirstMet: true});
       let yellow = mouseWithinZone(mousePos, zone) || rgb.findColors({isColor: isYellow, atFirstMet: true});
       if(red && yellow) {

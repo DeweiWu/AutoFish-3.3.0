@@ -338,8 +338,8 @@ if(lootWindowPatch.exitButton) {
 
     const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation, cPos}) => {
       if (randomRange) {
-        pos.x = pos.x + random(-randomRange, randomRange);
-        pos.y = pos.y + random(-randomRange, randomRange);
+        pos.x = pos.x + Math.round(random(-randomRange, randomRange));
+        pos.y = pos.y + Math.round(random(-randomRange, randomRange));
       }
 
       if (config.likeHuman) {
@@ -386,6 +386,8 @@ if(lootWindowPatch.exitButton) {
             await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
           }
         } else {
+          let nutjspos = await nutjs.mouse.getPos();
+          let normalpos = mouse.getPos();
           await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
         }
 
@@ -393,10 +395,10 @@ if(lootWindowPatch.exitButton) {
           let times = random(fineTune.steps[0], fineTune.steps[1]);
           for(let i = 1; i <= times; i++) {
             await mouse.humanMoveTo(
-              pos.x + random(-fineTune.offset / i, fineTune.offset / i),
-              pos.y + random(-fineTune.offset / i, fineTune.offset / i),
-              random(randomSpeed.from / 3, randomSpeed.to / 3),
-              random(randomDeviation.from, randomDeviation.to)
+              pos.x + Math.round(random(-fineTune.offset / i, fineTune.offset / i)),
+              pos.y + Math.round(random(-fineTune.offset / i, fineTune.offset / i)),
+              Math.round(random(randomSpeed.from / 3, randomSpeed.to / 3)),
+              Math.round(random(randomDeviation.from, randomDeviation.to))
             );
             if(!config.streamMode) {
               await sleep(random(25, 150));
@@ -411,11 +413,12 @@ if(lootWindowPatch.exitButton) {
     const checkRedButton = async (buttonPos) => {
         const redButtonZone = createRedButtonZone({getDataFrom: getDataFromFishingZone, zone: buttonPos});
         const colorPositions = await redButtonZone.isOn(mouse.getPos());
+
         if(colorPositions) {
           await action(async () => {
             await moveTo({pos: {
-              x: buttonPos.x + 10,
-              y: buttonPos.y + 10
+              x: buttonPos.x + 30,
+              y: buttonPos.y + 30
             },
               randomRange: 2,
             });
@@ -627,10 +630,10 @@ if(lootWindowPatch.exitButton) {
     }
 
     if(config.confirmLures) {
-      if (config.reaction) {
+      if (config.reaction && !config.streamMode) {
         await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
       } else {
-        await sleep(250) // wait for the window to appear
+        await sleep(random(500, 1000)) // wait for the window to appear
       }
       const needsConfirm = await checkRedButton(confirmationWindow);
       if(needsConfirm) {
@@ -795,11 +798,11 @@ if(lootWindowPatch.exitButton) {
         });
 
           if(spare.autoconfirm) {
-          if (config.reaction) {
-            await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
-          } else {
-            await sleep(250) // wait for the window to appear
-          }
+            if (config.reaction && !config.streamMode) {
+              await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+            } else {
+              await sleep(random(500, 1000)) // wait for the window to appear
+            }
           const needsConfirm = await checkRedButton(confirmationWindow);
           if(needsConfirm) {
             await action(async () => {
@@ -1924,7 +1927,7 @@ if(lootWindowPatch.exitButton) {
         } else if(settings.game == 'Classic' || settings.game == 'Cata Classic' ) {
           posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 10;
           posToHighlight.x = posToHighlight.x + (screenSize.height / 1080) * 10;
-          randomRange = 0;
+          randomRange = 2;
           fineTune = {offset: 3, steps: [1, 3]};
         } else {
           posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 10;
@@ -1935,6 +1938,7 @@ if(lootWindowPatch.exitButton) {
       await moveTo({ pos: posToHighlight, randomRange, fineTune });
     });
 
+   await sleep(250) // some time for highlighting?
    return await findBobber(log, pos);
   };
 
@@ -1946,7 +1950,7 @@ if(lootWindowPatch.exitButton) {
       cursorArea = cutOutNotification({
         x: cursorPos.x / screenSize.width,
         y: cursorPos.y / screenSize.height,
-        width: 35  / screenSize.width,
+        width: 35 / screenSize.width,
         height: 35 / screenSize.height
       })
     }
@@ -2157,10 +2161,10 @@ if (settings.soundDetection) {
         await mouse.toggle("right", false, delay);
 
         if(typeof isInList == `boolean` && config.confirmSoulbound) {
-          if (config.reaction) {
+          if (config.reaction && !config.streamMode) {
             await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
           } else {
-            await sleep(250) // wait for the window to appear
+            await sleep(random(500, 1000)) // wait for the window to appear
           }
           const needsConfirm = await checkRedButton(confirmationWindow);
           if(needsConfirm) {
@@ -2269,7 +2273,12 @@ if (settings.soundDetection) {
         }
       }
 
-    await sleep(250);
+    if(config.streamMode) {
+      await sleep(350);
+    } else {
+      await sleep(250);
+    }
+
     if (!(await notificationZone.check("warning")) && !pos.missedIntentionally) {
       caught = true;
       if (config.whitelist) {
@@ -2517,7 +2526,7 @@ if (settings.soundDetection) {
 
   const checkConfirm = async () => {
     if(config.checkConfirm && !config.whitelist) {
-      await sleep(250) // wait for the window to appear
+      await sleep(350) // wait for the window to appear
       const needsConfirm = await checkRedButton(confirmationWindow);
       if(needsConfirm) {
         await action(async () => {
