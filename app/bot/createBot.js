@@ -178,11 +178,41 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
 
 
       case settings.multipleWindows || settings.afkmode || config.libraryType == 'keysender': {
-        return workwindow.capture(zone);
+        let data = workwindow.capture(zone);
+        let result = await sharp(data.data, {
+           raw: {
+             width: Math.floor(data.width),
+             height: Math.floor(data.height),
+             channels: 4
+          }
+        })
+        .sharpen()
+        .modulate({
+          saturation: 2, // Increase the saturation to make the colors more vibrant 2
+        })
+        .toBuffer()
+
+        data.data = result;
+        return data;
       }
 
       case config.libraryType == 'nut.js': {
-        return await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
+        let data = await(await screen.grabRegion(new Region(zone.x + screenSize.x, zone.y + screenSize.y, zone.width, zone.height))).toRGB();
+        let result = await sharp(data.data, {
+           raw: {
+             width: Math.floor(data.width),
+             height: Math.floor(data.height),
+             channels: 4
+          }
+        })
+        .sharpen()
+        .modulate({
+          saturation: 2, // Increase the saturation to make the colors more vibrant 2
+        })
+        .toBuffer()
+
+        data.data = result;
+        return data;
       }
     }
   };
@@ -395,10 +425,10 @@ if(lootWindowPatch.exitButton) {
           let times = random(fineTune.steps[0], fineTune.steps[1]);
           for(let i = 1; i <= times; i++) {
             await mouse.humanMoveTo(
-              pos.x + Math.round(random(-fineTune.offset / i, fineTune.offset / i)),
-              pos.y + Math.round(random(-fineTune.offset / i, fineTune.offset / i)),
-              Math.round(random(randomSpeed.from / 3, randomSpeed.to / 3)),
-              Math.round(random(randomDeviation.from, randomDeviation.to))
+              pos.x + random(-fineTune.offset / i, fineTune.offset / i),
+              pos.y + random(-fineTune.offset / i, fineTune.offset / i),
+              random(randomSpeed.from / 3, randomSpeed.to / 3),
+              random(randomDeviation.from, randomDeviation.to)
             );
             if(!config.streamMode) {
               await sleep(random(25, 150));
@@ -1030,7 +1060,7 @@ if(lootWindowPatch.exitButton) {
     }
 
     const scrollCamera = async (direction, value) => {
-        if(config.arduino) {
+        if(config.arduino || config.streamMode) {
           await mouse.scroll(direction, value);
         } else {
           for(let step = 0; step < value; step++) {
@@ -1099,7 +1129,7 @@ if(lootWindowPatch.exitButton) {
 
     await lowerCamera(false);
     await scrollCamera(false, config.findPlayerCameraDistance);
-    if(config.arduino) await sleep(1000);
+    if(config.arduino || config.streamMode) await sleep(1000);
     await sleep(random(delay[0], delay[1]));
 
     if(config.findPlayerRotateBy == 'Mouse') {
@@ -1120,7 +1150,7 @@ if(lootWindowPatch.exitButton) {
           randomYvalue = -yCompensation;
         }
 
-        if(config.arduino) randomYvalue = 0;
+        if(config.arduino || config.streamMode) randomYvalue = 0;
 
         let x = cPos.x - (config.findPlayerTurnDir == 'left' ? step : -step);
 
@@ -1244,7 +1274,7 @@ if(lootWindowPatch.exitButton) {
     }
 
     await scrollCamera(true, config.findPlayerCameraDistance);
-    if(config.arduino) await sleep(1000);
+    if(config.arduino || config.streamMode) await sleep(1000);
     await lowerCamera(true);
 
     lastMovementFrom = 'findPlayer';
@@ -1626,7 +1656,7 @@ if(lootWindowPatch.exitButton) {
       await sleep(random(delay[0], delay[1]));
     }
     const scrollCamera = async (direction, value) => { // config.aggroCheckCameraDistance
-        if(config.arduino) {
+        if(config.arduino || config.streamMode) {
           await mouse.scroll(direction, value);
         } else {
           for(let step = 0; step < value; step++) {
@@ -1912,13 +1942,14 @@ if(lootWindowPatch.exitButton) {
     }
 
     await action(async () => {
-      if(config.likeHumanFineTune && !config.streamMode) {
-        let pastPost = generateMovePastPos(pos);
-        await moveTo({pos: pastPost, fineTune: null})
-      }
       let posToHighlight = {...pos};
       let randomRange = 5;
       let fineTune = {offset: 5, steps: [1, 5]};
+
+      if(config.likeHumanFineTune && !config.streamMode) {
+        let pastPost = generateMovePastPos(posToHighlight);
+        await moveTo({pos: pastPost, randomRange, fineTune: null})
+      }
 
       if(config.streamMode) { // to avoid cursor covering the found pixel
         if(settings.game == 'Retail') {
@@ -2441,8 +2472,9 @@ if (settings.soundDetection) {
 
     if(!nomove && config.rngMoveKeys && (Math.abs(moveMemory.value) < ((config.rngMoveRadiusMax * .25) / 360 * 500))) { // Use keys only if we face within 10(20 combined) degrees from the center
       let rngKey = getRandomKey();
+
       await mouse.toggle(`right`, true, delay);
-      await keyboard.toggleKey(rngKey.key, true, rngKey.value);
+      await keyboard.toggleKey(rngKey.key, true, config.streamMode ? rngKey.value / 8 : rngKey.value);
       await keyboard.toggleKey(rngKey.key, false, delay);
       await mouse.toggle(`right`, false, delay);
     }
@@ -2451,7 +2483,7 @@ if (settings.soundDetection) {
       await sleep(random(config.reaction.from, config.reaction.to))
     }
 
-    await keyboard.toggleKey(rngPos.direction, true, rngPos.delay);
+    await keyboard.toggleKey(rngPos.direction, true, config.streamMode ? rngPos.delay / 8 : rngPos.delay);
     await keyboard.toggleKey(rngPos.direction, false, delay);
     moveMemory.value += rngPos.value;
     moveMemory.lastDir = rngPos.direction;

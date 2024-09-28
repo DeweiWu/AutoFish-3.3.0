@@ -432,7 +432,19 @@ You can also write in this chat directly to do:
         games[0].game.workwindow.setForeground();
       }
 
-      const screenData = screen.getPrimaryDisplay(); // ???
+      let screenData;
+      if(config.patch[settings.game].streamMode) {
+        screenData = {
+          scaleFactor: 1,
+          bounds: {
+            ...config.patch[settings.game].streamScreenSize
+          }
+        }
+        console.log(screenData);
+      } else {
+        screenData = screen.getPrimaryDisplay();
+      }
+
       let data = await createPointZone(BrowserWindow.getAllWindows()[0], screenData);
 
       if(data && config.patch[settings.game].streamMode) {

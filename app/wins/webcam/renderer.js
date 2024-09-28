@@ -32,8 +32,8 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSize) => {
 
     const video = document.createElement('video');
     video.srcObject = stream;
-    video.videoWidth = `${screenSize.width}px`;
-    video.videoHeight = `${screenSize.height}px`;
+    video.style.width = `${screenSize.width}px`;
+    video.style.height = `${screenSize.height}px`;
     video.addEventListener('loadeddata', () => {
       video.play();
       video.addEventListener('play', () => {

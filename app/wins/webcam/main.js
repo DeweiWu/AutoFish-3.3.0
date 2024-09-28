@@ -4,6 +4,8 @@ const path = require('path');
 const createWebCamWin = (deviceId, screenSize) =>
   new Promise(function(resolve, reject) {
     let mainWindow = new BrowserWindow({
+        x: 0,
+        y: 0,
         width: screenSize.width, // 15 px offset
         height: screenSize.height, // 65 px offset
         show: false,

@@ -33,6 +33,8 @@ const createMouseCoordsEvent = (resolve, win, botWin, scaleFactor) => {
 const createPointZone = async (botWin, screenData) => {
   let scaleFactor = screenData.scaleFactor || 1
   let win = new BrowserWindow({
+    x: 0,
+    y: 0,
     width: screenData.bounds.width - 1,
     height: screenData.bounds.height - 1,
     alwaysOnTop: true,

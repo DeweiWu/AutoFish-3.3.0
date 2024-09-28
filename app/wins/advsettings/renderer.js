@@ -1538,7 +1538,7 @@ const renderSettings = (config) => {
     config.checkChangesDoAfter == `sleep` || config.checkChangesDoAfter == `press key` || config.checkChangesDoAfter == `random` ? wrapInLabel('Sleep Time (min): ', renderCheckChangesDoAfterSleepTime(config), `Time the bot will sleep after the event occured.`) : ``,
     ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🎮`), elt(`span`, {className: `advanced_settings_header_text`}, `Arduino Control`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#arduino-control-joystick")}}, `(Guide)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🎮`), elt(`span`, {className: `advanced_settings_header_text`}, `Arduino Control (legacy)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#arduino-control-joystick")}}, `(Guide)`),
     elt('div', {className: "settings_section settings_premium"},
     wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
     wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),
