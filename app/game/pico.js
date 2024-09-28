@@ -15,6 +15,32 @@ let previousPos, speedDistCoof, picoIp;
 let log;
 let attempts = 0;
 
+const keysSheet = {
+  left: "LEFT_ARROW",
+  up: "UP_ARROW",
+  right: "RIGHT_ARROW",
+  down: "DOWN_ARROW",
+  lWin: "WINDOWS",
+  alt: "ALT",
+  tab: "TAB",
+  backspace: "BACKSPACE",
+  enter: "ENTER",
+  pause: "PAUSE",
+  capsLock: "CAPS_LOCK",
+  escape: "ESCAPE",
+  space: "SPACEBAR",
+  pageup: "PAGE_UP",
+  pagedown: "PAGE_DOWN",
+  end: "END",
+  home: "HOME",
+  printscreen: "PRINT_SCREEN",
+  insert: "INSERT",
+  delete: "DELETE",
+  numlock: "KEYPAD_NUMLOCK",
+  scrolllock: "SCROLL_LOCK",
+  shift: "SHIFT"
+}
+
 async function send(type, jsonData) {
   try {
       const response = await axios.post(`http://${picoIp}:5000/${type}`,
@@ -39,24 +65,46 @@ async function send(type, jsonData) {
 }
 
 const keyboard = {
-  async sendKey(key, delays = [50, 150]) {
+  async sendKey(key, delays = delay) {
     // key = key.toUpperCase();
-    let delay = Math.round(random(delays[0], delays[1]))
-    await send('presskey', {key, delay})
+
+    if(keysSheet[key]) {
+      key = keysSheet[key];
+    }
+
+    if(!Array.isArray(delays)) {
+      delays = [delays, delays];
+    }
+
+    await send('presskey', {key, delay: Math.round(random(delays[0], delays[1]))})
   },
 
-  async toggleKey(key, type) {
+  async toggleKey(key, type, delays = delay) {
     // key = key.toUpperCase();
+
+    if(!Array.isArray(delays)) {
+      delays = [delays, delays];
+    }
+
+    if(keysSheet[key]) {
+      key = keysSheet[key];
+    }
+
     let toggleType = 'release';
     if(type) {
       toggleType = 'press';
     } else {
       toggleType = 'release';
     }
-    await send('togglekey', {key, toggleType})
+    await send('togglekey', {key, toggleType, delay: Math.round(random(delays[0], delays[1]))})
   },
 
   async printText(text, delays) {
+
+    if(!Array.isArray(delays)) {
+      delays = [delays, delays];
+    }
+
     await send('printtext', {text, delayFrom: delays[0], delayTo: delays[1]});
   }
 }
@@ -92,19 +140,28 @@ const mouse = {
     await send('movemousehuman', {x: newX, y: newY, speed: convertedSpeed, curvature});
   },
 
-  async click(button, delays) {
-    let delay = Math.round(random(delays[0], delays[1]));
-    await send('clickbutton', {button, delay})
+  async click(button, delays = delay) {
+
+  if(!Array.isArray(delays)) {
+    delays = [delays, delays];
+  }
+
+    await send('clickbutton', {button, delay: Math.round(random(delays[0], delays[1]))})
   },
 
-  async toggle(button, type) {
+  async toggle(button, type, delays = delay) {
+
+    if(!Array.isArray(delays)) {
+      delays = [delays, delays];
+    }
+
     let toggleType = 'release';
     if(type) {
       toggleType = 'press';
     } else {
       toggleType = 'release'
     }
-    await send('togglebutton', {button, toggleType})
+    await send('togglebutton', {button, toggleType, delay: Math.round(random(delays[0], delays[1]))})
   },
 
   async scroll(type, amount) {
