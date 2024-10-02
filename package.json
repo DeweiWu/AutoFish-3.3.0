@@ -1,14 +1,14 @@
 {
   "name": "AutoFish",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "An easy-to-use fishing bot for official and unofficial wow servers.",
   "main": "./app/main.js",
   "scripts": {
     "start": "electron .",
     "startf": "electron-forge start",
     "test": "jest",
-    "package": "electron-forge package",
     "premake": "node random.js",
+    "package": "electron-forge package",
     "make": "electron-forge make"
   },
   "keywords": [
@@ -30,6 +30,7 @@
     "@nut-tree-fork/nut-js": "^4.2.2",
     "@serialport/parser-readline": "^10.5.0",
     "archiver": "^7.0.1",
+    "axios": "^1.7.3",
     "electron-squirrel-startup": "^1.0.0",
     "extract-zip": "^2.0.1",
     "javascript-obfuscator": "^4.1.0",
@@ -37,6 +38,7 @@
     "keysender": "^2.3.0",
     "pixelmatch": "^5.3.0",
     "serialport": "^10.5.0",
+    "sharp": "^0.32.0",
     "telegraf": "^4.9.2",
     "tesseract.js": "^5.0.2",
     "web-audio-analyser": "^2.0.1"

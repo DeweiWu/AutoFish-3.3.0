@@ -8,7 +8,7 @@ let name = process.env.NODE_ENV == 'dev' ? 'AutoFish Premium' : 'app';
 module.exports = {
   hooks: {
     prePackage: async (forgeConfig, appProcess) => {
-      process.env.NODE_ENV == 'dev' ? await obfuscateFolder('./app') : await obfuscateFiles(['./app/main.js']);
+       process.env.NODE_ENV == 'dev' ? await obfuscateFolder('./app') : await obfuscateFiles(['./app/main.js']);
     },
   },
   packagerConfig: {
