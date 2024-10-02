@@ -367,6 +367,7 @@ if(lootWindowPatch.exitButton) {
     }
 
     const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation, cPos}) => {
+
       if (randomRange) {
         pos.x = pos.x + Math.round(random(-randomRange, randomRange));
         pos.y = pos.y + Math.round(random(-randomRange, randomRange));
@@ -1868,14 +1869,6 @@ if(lootWindowPatch.exitButton) {
 
   let lastMovementFrom;
   const castFishing = async (state) => {
-
-    /*
-    if(config.streamMode && !settings.useInt) {
-      let fZone = Zone.from(screenSize).toRel(config.relZone);
-      await moveTo({pos: {x: fZone.x + fZone.width / 2 + random(-fZone.width, fZone.width), y: fZone.y + fZone.height + random(0, 100)}});
-    }
-    */
-
     let timeSpentOnCastingStart = Date.now();
     await action(async () => {
       await keyboard.sendKey(settings.fishingKey, delay);
@@ -2474,8 +2467,14 @@ if (settings.soundDetection) {
       let rngKey = getRandomKey();
 
       await mouse.toggle(`right`, true, delay);
-      await keyboard.toggleKey(rngKey.key, true, config.streamMode ? rngKey.value / 8 : rngKey.value);
-      await keyboard.toggleKey(rngKey.key, false, delay);
+      if(config.streamMode) {
+        await keyboard.sendKey(rngKey.key, rngKey.value);
+      } else {
+        await keyboard.toggleKey(rngKey.key, true, rngKey.value);
+        await keyboard.toggleKey(rngKey.key, false, delay);
+      }
+
+
       await mouse.toggle(`right`, false, delay);
     }
 
@@ -2483,8 +2482,13 @@ if (settings.soundDetection) {
       await sleep(random(config.reaction.from, config.reaction.to))
     }
 
-    await keyboard.toggleKey(rngPos.direction, true, config.streamMode ? rngPos.delay / 8 : rngPos.delay);
-    await keyboard.toggleKey(rngPos.direction, false, delay);
+    if(config.streamMode) {
+      await keyboard.sendKey(rngPos.direction, rngPos.delay)
+    } else {
+      await keyboard.toggleKey(rngPos.direction, true, rngPos.delay);
+      await keyboard.toggleKey(rngPos.direction, false, delay);
+    }
+
     moveMemory.value += rngPos.value;
     moveMemory.lastDir = rngPos.direction;
   }

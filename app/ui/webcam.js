@@ -55,8 +55,8 @@ const connectToStream = async (deviceId, screenSize) => {
         deviceId: { exact: deviceId },
         width: { ideal: screenSize.width },
         height: { ideal: screenSize.height },
-        frameRate: { ideal: 60 },
-      },
+        frameRate: { ideal: 60 }
+      }
     });
 
     const videoTrack = stream.getVideoTracks()[0];

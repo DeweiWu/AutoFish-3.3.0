@@ -136,7 +136,9 @@ const mouse = {
 
     const distance = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
 
-    let convertedSpeed = speed * (distance / speedDistCoof);
+    let speedDistCoofConverted = distance / speedDistCoof;
+
+    let convertedSpeed = speed * speedDistCoofConverted;
     await send('movemousehuman', {x: newX, y: newY, speed: convertedSpeed, curvature});
   },
 
@@ -178,11 +180,11 @@ const mouse = {
 
 const createPicoInterface = ({picoip, streamScreenSize, delay: delays}, mainLog) => {
   previousPos = {x: 0, y: 0};
-  speedDistCoof = streamScreenSize.width / 8;
+  speedDistCoof = streamScreenSize.width / 10;
   picoIp = picoip;
   log = mainLog;
   delay = delays;
-  console.log(`delay`, delay);
+
   return {
     keyboard, mouse
   }

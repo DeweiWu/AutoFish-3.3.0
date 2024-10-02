@@ -48,6 +48,7 @@ let imgAroundBobberPrev;
 let pixelMatchMax;
 
 const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, threshold, bobberColor, bobberColorManual, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, streamMode, highlightPercent, splashColor, manualPositionOnBobberOn, manualPositionOnBobber }) => {
+
   let checkAboveCompensateValue = 0;
   const doubleZoneSize = Math.round((screenSize.height / 1080) * 50); // 25
   sensitivity = (game == `Retail` || game == `Vanilla (splash)` || bobberColor == `Manual` ? 30 - sensitivity[game] : 10 - sensitivity[game]) || 1;
@@ -94,8 +95,8 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
       let rgbData = await getDataFrom(rgbZone);
 
-      let img = await Jimp.read(rgbData);
-      img.write(`test_fishing_zone${nn++}.png`);
+      //let img = await Jimp.read(rgbData);
+      //img.write(`test_fishing_zone${nn++}.png`);
 
       let rgb = createRgb(rgbData);
       rgb.saturate(...saturation)
@@ -333,7 +334,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
          if(game == `Vanilla` ) {
            sensitivity = 2;
          } else {
-           sensitivity = Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 3)), 3); // 3 : 2
+           sensitivity = bobberPoints.length < 100 ? 2 : 3; // Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 3)), 3); // 3 : 2
          }
        }
     },
