@@ -440,7 +440,6 @@ You can also write in this chat directly to do:
             ...config.patch[settings.game].streamScreenSize
           }
         }
-        console.log(screenData);
       } else {
         screenData = screen.getPrimaryDisplay();
       }
@@ -559,7 +558,7 @@ You can also write in this chat directly to do:
           config.game.classNames = [className];
           config.game.handles = [handle];
 
-          games.push({game: (await findGameWindows(config)[0]), settings, config});
+          games.push({game: (await findGameWindows(config, {}))[0], settings, config});
         }
       }
     }
@@ -804,9 +803,8 @@ You can also write in this chat directly to do:
   ipcMain.handle("get-all-windows", getAllWindows);
   ipcMain.on('focus-win', async (event, winHandle) => {
     const {handle, title, className} = getAllWindows().find(({handle}) => handle == winHandle);
-    let game = await findGameWindows({game: {handles: [handle], names: [title], classNames: [className]}});
+    let game = await findGameWindows({game: {handles: [handle], names: [title], classNames: [className]}}, {});
     game[0].workwindow.setForeground();
-
   })
   ipcMain.handle("get-profiles", () => getProfile());
   ipcMain.handle("get-settings", () => getJson(`${configPath}${getProfile().selected}/settings.json`));
