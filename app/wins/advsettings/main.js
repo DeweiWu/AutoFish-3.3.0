@@ -102,7 +102,7 @@ const createAdvSettings = (appPath) => {
   });
 
   ipcMain.on("stream-warn", () => {
-    showWarning(win, `-Multiple Fishing and Alt-Tab modes won't work.\n- Doesn't support windowed mode\n- Scaling in Windows (game pc) should be 100%\n- Works best with default 1920x1080 or lower resolution (higher resolutions will needlessly load your hdmi-capture device)`);
+    showWarning(win, `- Multiple Fishing and Alt-Tab modes won't work.\n- Doesn't support windowed mode\n- Scaling in Windows (game pc) should be 100%\n- Works best with default 1920x1080 or lower resolution (higher resolutions will needlessly load your hdmi-capture device)`);
   });
 
   ipcMain.on("aggroCheck-warn", () => {
