@@ -1326,8 +1326,8 @@ const renderSettings = (config) => {
     wrapInLabel(`Auto-Confirm SB Items: `, renderCheckConfirm(config), `The bot will check for confirmation window after every catch and will auto-confirm soulbound items (even in AutoLoot mode).`),
   ),
 
-  elt(`p`, {className: `settings_header`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream (beta)`),
-  elt(`div`, {className: `settings_section`},
+  elt(`p`, {className: `settings_header settings_header_premium`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream (beta)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://youtu.be/Kacworq8j8Q")}}, `(Guide)`),
+  elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Video Capture Device: `, renderStreamDevice(config), `Streaming logic is used to run the bot and the game on different machines. Video Capture device is a capture device HDMI part of which you connect to your GPU on the Game PC and USB part of which you connect to your Bot PC.`),
     wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Same IP address you configured for your Pico W device in its own code.`),
     wrapInLabel(`Streaming PC Resolution: `, renderStreamScreenSize(config), `The resolution of the Game PC. Same resolution should be for the game, meaning it shouldn't be in windowed mode.`)
@@ -1365,6 +1365,11 @@ const renderSettings = (config) => {
   wrapInLabel(`Omit Initial Application:`, renderLuresOmitInitial(config), `Don't apply lures at the beggining, wait until timer elapses.`),
   wrapInLabel(`Auto-Confirm Lures:`, renderConfirmLures(config), `If you want the bot to apply lures earlier than they expire, some games might require confirmation for this. If on, the bot will auto-confirm in such cases. You can also use a macro for the same, in that case you don't need to turn on this option.`)
   ),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
+  elt(`div`, {className: `settings_section settings_premium`},
+    renderSpares(config)
+  ),
+
 
 
     elt("p", {className: 'settings_header advanced_settings_header'}, "🔎"),  elt(`span`, {className: `advanced_settings_header_text`}, `Filter`),
@@ -1438,10 +1443,6 @@ const renderSettings = (config) => {
     wrapInLabel(`After Catch Chance (%): `, renderSleepAfterHookChance(config), `Likelihood that the bot will sleep after it caches fish.`),
     wrapInLabel(`After Catch Random Delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
     ),
-        elt(`p`, {className: `settings_header settings_header_premium`}, `🧙`),elt(`span`, {className: `advanced_settings_header_text`}, `Additional Actions`),
-        elt(`div`, {className: `settings_section settings_premium`},
-          renderSpares(config)
-        ),
 
       elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death/Disconnect`),
       elt(`div`, {className: `settings_section settings_premium`},
