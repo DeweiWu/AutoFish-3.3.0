@@ -3,6 +3,7 @@ const { createWriteStream } = require('fs');
 
 const createLog = (sendToWindow, sendToWindowStats) => {
   let state = true;
+  let statsMemory = [];
   return {
     send(text, type = "black") {
       if(state) {
@@ -13,7 +14,17 @@ const createLog = (sendToWindow, sendToWindowStats) => {
     },
 
     showStats(stats, time) {
-      sendToWindowStats(stats, time);
+      statsMemory[stats.win] = stats; 
+
+      let combinedStats = statsMemory.reduce((a, b) => {
+        return {
+          caught: a.caught + b.caught,
+          miss: a.miss + b.miss,
+          confused: a.confused + b.confused,
+          misspurpose: a.misspurpose + b.misspurpose
+        }
+      })
+      sendToWindowStats(combinedStats, time);
     },
 
     msg(text) {

@@ -181,7 +181,7 @@ if (tmBot.bot) {
       bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1, state),
       log: createIdLog(log, ++i),
       state,
-      stats: new Stats()
+      stats: new Stats(i)
   }
   });
 
@@ -211,7 +211,9 @@ if (tmBot.bot) {
         runBot(bot, onError, bots, aggroTestRun)
         .then(() => {
             win.show();
-            log.setState(true);
+            if(bots.every(({state}) => state.status == 'stop')) {
+              setTimeout(() => log.setState(true), 500);
+            }
             //bot.stats.show().forEach((stat) => bot.log.ok(stat));
             //bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
         })
@@ -233,8 +235,8 @@ if (tmBot.bot) {
       })
     },
     stopBots() {
-      log.send('Stopped.');
       win.show();
+      log.send('Stopped.');
       log.setState(false);
       bots.forEach(({state}) => state.status = "stop");
       if(tmBot.ctx) {

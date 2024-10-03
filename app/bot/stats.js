@@ -3,7 +3,8 @@ const getPercent = (value, total) => {
 };
 
 class Stats {
-  constructor() {
+  constructor(win) {
+    this.win = win;
     this.caught = 0;
     this.miss = 0;
     this.confused = 0;
