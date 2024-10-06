@@ -156,7 +156,13 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
             const mostRedPoints = [{pos: new Vec(bobber.pos.x, bobber.pos.y), color: bobber.color}];
             this._findThreshold(bobber, 0.4); // 0.4
+            let startLimitCheck = Date.now();
             for(const savedPoint of mostRedPoints) {
+
+              if(Date.now() - startLimitCheck > 2000) {
+                return;
+              }
+
               for(const innerPoint of savedPoint.pos.getPointsAround()) {
                 if(mostRedPoints.some(mostRedPoint => innerPoint.isEqual(mostRedPoint.pos))) {
                   continue;
