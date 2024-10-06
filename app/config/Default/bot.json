@@ -206,7 +206,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -490,7 +490,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -758,7 +758,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -1031,7 +1031,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -1282,7 +1282,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -1536,7 +1536,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -1799,7 +1799,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -2067,7 +2067,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -2318,7 +2318,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
@@ -2574,7 +2574,7 @@
       "arduinoRate": "9600",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
+      "rngMoveTimer": { "from": 3, "to": 10 },
       "rngMoveRadiusMax": 90,
 
       "rngMoveDirLengthMax": 4,
