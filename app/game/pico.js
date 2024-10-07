@@ -87,7 +87,7 @@ const keyboard = {
     if(isNaN(delays)) {
       delays = delay;
     }
-    console.log(`after delays`, delays);
+
     if(!Array.isArray(delays)) {
       delays = [delays, delays];
     }
