@@ -263,7 +263,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
    })
   }
 
-  let fishingZone = createFishingZone(getDataFromFishingZone, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
+  let fishingZone = createFishingZone(settings.bobberColor == 'Manual' ? getDataFrom : getDataFromFishingZone, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
 
   const notificationZone = createNotificationZone({
     getDataFrom: getDataFromFishingZone,
