@@ -149,7 +149,7 @@ if (tmBot.bot) {
   const bots = games.map(({game, config, settings}, i) => {
     if(config.patch[settings.game].streamMode) {
       let gameConfig = config.patch[settings.game];
-      const pico = createPicoInterface(gameConfig, log);
+      const pico = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize, gameConfig.delay, log);
       game.workwindow.capture = (zone) =>
         new Promise(function(resolve, reject) {
           let reqCh = `channel-${Math.random()}`;
@@ -168,13 +168,23 @@ if (tmBot.bot) {
     }
 
     if(config.patch[settings.game].arduino) {
-      if(i == 0 && (settings.multipleWindows || settings.afkmode)) {
-        game.keyboard.sendKey('backspace', [100, 400]);
+
+      if(config.patch[settings.game].arduinoType == 'arduino') {
+        if(i == 0 && (settings.multipleWindows || settings.afkmode)) {
+          game.keyboard.sendKey('backspace', [100, 400]);
+        }
+
+        arduino.mouse.getPos = game.mouse.getPos;
+        game = {mouse: arduino.mouse, workwindow: game.workwindow, keyboard: arduino.keyboard}
       }
 
-      arduino.mouse.getPos = game.mouse.getPos;
-      game = {mouse: arduino.mouse, workwindow: game.workwindow, keyboard: arduino.keyboard}
+      if(config.patch[settings.game].arduinoType == 'pico') {
+        let gameConfig = config.patch[settings.game];
+        const pico = createPicoInterface(gameConfig.arduinoPicoIp, game.workwindow.getView(), gameConfig.delay, log);
+        game = {mouse: pico.mouse, workwindow: game.workwindow, keyboard: pico.keyboard}
+      }
     }
+
     let state = { status: "initial", startTime: Date.now() };
 
     return {

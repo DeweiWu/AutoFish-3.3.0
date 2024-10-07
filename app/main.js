@@ -322,9 +322,20 @@ You can also write in this chat directly to do:
     let tmKey = config.patch[settings.game].tmApiKey;
 
     if(config.patch[settings.game].arduino) {
-      arduino.connectTo(config.patch[settings.game].arduinoPort, Number(config.patch[settings.game].arduinoRate))
-      .then((msg) => log.ok(msg))
-      .catch((err) => log.err(err))
+      if(config.patch[settings.game].arduinoType == 'arduino') {
+        arduino.connectTo(config.patch[settings.game].arduinoPort, Number(config.patch[settings.game].arduinoRate))
+        .then((msg) => log.ok(msg))
+        .catch((err) => log.err(err))
+      } else {
+        const { pingDevice } = require('./game/pico.js');
+        try {
+          await pingDevice(config.patch[settings.game].arduinoPicoIp).then(() => {
+            log.ok(`Connected to Pico!`)
+          })
+        } catch(e) {
+          log.err(`No pico device under this IP!`)
+        }
+      }
     }
 
     if((settings.game == 'Retail' || settings.game == 'Classic' || settings.game == 'Cata Classic') && !config.patch[settings.game].streamMode) {

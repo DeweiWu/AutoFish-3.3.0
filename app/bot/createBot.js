@@ -63,7 +63,7 @@ const random = (from, to) => {
 };
 
 const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, onError) => {
-  if(config.streamMode) { // in stream mode we should consider network delay
+  if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) { // in stream mode we should consider network delay
     config.reactionDelay = {
       from:  Math.round(config.reactionDelay.from / 6),
       to:  Math.round(config.reactionDelay.to / 3)
@@ -1852,7 +1852,7 @@ if(lootWindowPatch.exitButton) {
   aggroCheck.status = Promise.resolve();
 
   const streamModeInitialMouse = async () => {
-    if(state.status == 'initial' && config.streamMode && !settings.useInt) {
+    if(state.status == 'initial' && (config.streamMode || (config.arduino && config.arduinoType == `pico`)) && !settings.useInt) {
       await keyboard.toggleKey('ALT', true);
       await keyboard.toggleKey('TAB', true);
       await keyboard.toggleKey('ALT', false);
@@ -1946,16 +1946,15 @@ if(lootWindowPatch.exitButton) {
 
       if(config.streamMode) { // to avoid cursor covering the found pixel
         if(settings.game == 'Retail') {
-          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 10;
-          posToHighlight.x = posToHighlight.x + (screenSize.height / 1080) * 10;
+          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 5;
+          posToHighlight.x = posToHighlight.x + (screenSize.height / 1080) * 5;
         } else if(settings.game == 'Classic' || settings.game == 'Cata Classic' ) {
-          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 10;
-          posToHighlight.x = posToHighlight.x + (screenSize.height / 1080) * 10;
-          randomRange = 2;
+          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 5;
+          posToHighlight.x = posToHighlight.x + (screenSize.height / 1080) * 5;
           fineTune = {offset: 3, steps: [1, 3]};
         } else {
-          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 10;
-          posToHighlight.x = posToHighlight.x - (screenSize.height / 1080) * 10;
+          posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 5;
+          posToHighlight.x = posToHighlight.x - (screenSize.height / 1080) * 5;
         }
       }
 
@@ -2279,7 +2278,7 @@ if (settings.soundDetection) {
 
         if (config.shiftClick) {
           await keyboard.toggleKey("shift", true, delay);
-          if(config.streamMode) {
+          if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
             await mouse.click(config.catchFishButton, delay);
           } else {
             await mouse.toggle(config.catchFishButton, true, delay);
@@ -2288,7 +2287,7 @@ if (settings.soundDetection) {
 
           await keyboard.toggleKey("shift", false, delay);
         } else {
-          if(config.streamMode) {
+          if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
             await mouse.click(config.catchFishButton, delay);
           } else {
             await mouse.toggle(config.catchFishButton, true, delay);
@@ -2467,7 +2466,7 @@ if (settings.soundDetection) {
       let rngKey = getRandomKey();
 
       await mouse.toggle(`right`, true, delay);
-      if(config.streamMode) {
+      if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
         await keyboard.sendKey(rngKey.key, rngKey.value);
       } else {
         await keyboard.toggleKey(rngKey.key, true, rngKey.value);
@@ -2482,7 +2481,7 @@ if (settings.soundDetection) {
       await sleep(random(config.reaction.from, config.reaction.to))
     }
 
-    if(config.streamMode) {
+    if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
       await keyboard.sendKey(rngPos.direction, rngPos.delay)
     } else {
       await keyboard.toggleKey(rngPos.direction, true, rngPos.delay);

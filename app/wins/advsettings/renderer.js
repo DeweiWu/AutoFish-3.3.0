@@ -66,8 +66,19 @@ const renderIgnorePreliminary = ({ignorePreliminary}) => {
 };
 
 const renderArduino = ({arduino, streamMode}) => {
-    return elt(`input`, {type: `checkbox`, disabled: streamMode, checked: arduino, name: `arduino`});
+  return elt(`input`, {type: `checkbox`, disabled: streamMode, checked: arduino, name: `arduino`});
 };
+
+const renderArduinoType = ({arduino, arduinoType}) => {
+  return elt(`select`, {disabled: !arduino, name: `arduinoType`}, ...['arduino', 'pico'].map((type) => elt(`option`, {selected: type == arduinoType, value: type}, `${type[0].toUpperCase() + type.slice(1)}`)))
+};
+
+const renderArduinoPicoIp = ({arduino, arduinoPicoIp}) => {
+  const focusButton = elt(`input`, {type: `button`, value: `Connect`,  id: 'pico', className: `${arduino ? `` : `disabledButton`}`, disabled: !arduino, onclick() {
+    ipcRenderer.send('ping-pico');
+  }});
+  return elt('div', null, elt('input', {type: 'text', value: arduinoPicoIp, className: 'picoip', name: 'arduinoPicoIp', disabled: !arduino}), focusButton);
+}
 
 const renderArduinoPort = ({arduino, arduinoPort}) => {
     let select = elt(`select`, {disabled: !arduino, className: `arduino_select`, name: `arduinoPort`});
@@ -1326,6 +1337,11 @@ const renderSettings = (config) => {
     wrapInLabel(`Auto-Confirm SB Items: `, renderCheckConfirm(config), `The bot will check for confirmation window after every catch and will auto-confirm soulbound items (even in AutoLoot mode).`),
   ),
 
+    elt(`p`, {className: `settings_header`}, `🖥️`), elt(`span`, {className: `advanced_settings_header_text`}, `Window`),
+    elt(`div`, {className: `settings_section`},
+    wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
+  ),
+
   elt(`p`, {className: `settings_header settings_header_premium`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream (beta)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://youtu.be/Kacworq8j8Q")}}, `(Guide)`),
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Video Capture Device: `, renderStreamDevice(config), `Streaming logic is used to run the bot and the game on different machines. Video Capture device is a capture device HDMI part of which you connect to your GPU on the Game PC and USB part of which you connect to your Bot PC.`),
@@ -1333,11 +1349,6 @@ const renderSettings = (config) => {
     wrapInLabel(`Streaming PC Resolution: `, renderStreamScreenSize(config), `The resolution of the Game PC. Same resolution should be for the game, meaning it shouldn't be in windowed mode.`)
   ),
 
-
-    elt(`p`, {className: `settings_header`}, `🖥️`), elt(`span`, {className: `advanced_settings_header_text`}, `Window`),
-    elt(`div`, {className: `settings_section`},
-    wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
-  ),
 
 
   elt(`p`, {className: `settings_header`}, `🎣`), elt(`span`, {className: `advanced_settings_header_text`}, `Lures`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),
@@ -1369,7 +1380,6 @@ const renderSettings = (config) => {
   elt(`div`, {className: `settings_section settings_premium`},
     renderSpares(config)
   ),
-
 
 
     elt("p", {className: 'settings_header advanced_settings_header'}, "🔎"),  elt(`span`, {className: `advanced_settings_header_text`}, `Filter`),
@@ -1411,12 +1421,37 @@ const renderSettings = (config) => {
     wrapInLabel(`Mouse/Keyboard Random Delay (ms): `, renderDelay(config), `The bot will generate a random number between the provided values. The number is generated every time bot utilizes your mouse or keyboard and represents the delay between pressing/releasing of mouse/keyboard clicks and pressing.`),
   ),
 
+
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🕹️`), elt(`span`, {className: `advanced_settings_header_text`}, `Hardware Control`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#arduino-control-joystick")}}, `(Guide)`),
+    elt('div', {className: "settings_section settings_premium"},
+    wrapInLabel(`Use Hardware Board: `, renderArduino(config), `Using an Arduino/Pico Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino/Pico Board with AutoFish`),
+    wrapInLabel(`Hardware Board Type: `, renderArduinoType(config), `What type of board you want to use.`),
+    config.arduinoType == `pico` ? wrapInLabel(`Raspberry Pico W IP: `, renderArduinoPicoIp(config), `Same IP address you configured for your Pico W device in its own code.`) : ``,
+    config.arduinoType == `arduino` ? wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`) : ``,
+    config.arduinoType == `arduino` ? wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), `Don't change this value if you don't know what you are doing. The value should be the same as in Arduino Sketch provided in the guide (you can find it in the top of the sketch)`) : ``
+    ),
+
     elt(`p`, {className: `settings_header`}, `🎯`), elt(`span`, {className: `advanced_settings_header_text`}, `Miss On Purpose`),
     elt('div', {className: "settings_section"},
     wrapInLabel(`Miss On Purpose: `, renderMissOnPurpose(config), `The bot will miss fish on purpose to simulate a human mistake. The value is % chance per cast that the bot will miss (it's not % of the whole session, so it might be drastically different).`),
     wrapInLabel(`Miss On Purpose Likelihood Per Cast: (%)`, renderMissOnPurposeRandom(config), `The bot will generate a random number from the provided values. The number is generated every fishing session: so the next time you start the bot, it will be always different (randomly generated) between the given values.`),
     wrapInLabel(`Miss On Purpose Delay: (sec) `,  renderMissOnPurposeRandomDelay(config), `Random delay after which the bot will miss on purpuse. The bot will generate a random number from the provided values. The number is generated every fishing session: so the next time you start the bot, it will be always different (randomly generated) between the given values.`)
     ),
+
+
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🥱`), elt(`span`, {className: `advanced_settings_header_text`}, `Fatigue`),
+    elt('div', {className: "settings_section settings_premium"},
+    wrapInLabel(`Apply Fatigue:`, renderApplyFatigue(config), `The bot will simulate fatigueness by decreasing all the delay values by given rate.`),
+    wrapInLabel(`Apply Fatigue Every (min):`, renderApplyFatigueEvery(config), `The bot will randomly apply fatigueness between the provided interval`),
+    wrapInLabel(`Fatigue Rate (%):`, renderApplyFatigueRate(config), `The rate value of fatigueness which will make all the delay values increase in geometric progression.`),
+    ),
+
+      elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death/Disconnect`),
+      elt(`div`, {className: `settings_section settings_premium`},
+      wrapInLabel(`Quit and notify at Death/Disconnect: `, renderDeathCheck(config), `The bot will check your HP bar to determine whether your character is dead or you are disconnected. It will notify you via Telegram (if connected) and then exit both the game and the bot.`),
+      wrapInLabel(`Death Indication (User HP): `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death/disconnection.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`)
+    ),
+
     elt(`p`, {className: `settings_header`}, `🚪`),elt(`span`, {className: `advanced_settings_header_text`}, `Logging Out`),
     elt('div', {className: "settings_section"},
     wrapInLabel(`Use Log out/Log in:`, renderLogOut(config), `The bot will log out from the game after the given time, wait for a couple of minutes and log back to the game.`),
@@ -1444,12 +1479,6 @@ const renderSettings = (config) => {
     wrapInLabel(`After Catch Random Delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
     ),
 
-      elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death/Disconnect`),
-      elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel(`Quit and notify at Death/Disconnect: `, renderDeathCheck(config), `The bot will check your HP bar to determine whether your character is dead or you are disconnected. It will notify you via Telegram (if connected) and then exit both the game and the bot.`),
-      wrapInLabel(`Death Indication (User HP): `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death/disconnection.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`)
-    ),
-
     elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
@@ -1459,6 +1488,19 @@ const renderSettings = (config) => {
       elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
       renderWhisperColors(config),
     ),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🏃`), elt(`span`, {className: `advanced_settings_header_text`}, `Motion Detection`),
+    elt(`div`, {className: `settings_section settings_premium`},
+    wrapInLabel('Use Motion Detection: ', renderCheckChanges(config), `The bot will detect changes within Detection Zone. The bot will notify you in Telegram if some movement happens within Detection Zone.\n\nYou can set the Detection Zone around your character and decrease sensitivity to make the bot detect any suspicious actions around your character and prevent possible griefing. `),
+    wrapInLabel('Send Screenshot Of The Event To Telegram:', renderCheckChangesSendImg(config), `The bot will send a screenshot of what exactly triggered the event.`),
+    wrapInLabel('Ignore My Actions:', renderCheckChangesIgnoreActions(config), `The bot will try to ignore time when you do something: cast, catch, move camera, log out and so on.`),
+    wrapInLabel('Sensitivity: ', renderCheckChangesSens(config), `Old good sensitivity value for a typical motion detection. Doesn't need an explanation, right?`),
+    wrapInLabel('Interval (sec): ', renderCheckChangesInterval(config), `The bot will check for motion every given interval value.`),
+    wrapInLabel('Ignore Time After Event Occured (sec): ', renderCheckChangesIntervalAfter(config), `After some event happened how long to ignore all the events after. `),
+    wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do after the event occured.\nChoices:\n- Sleep: the bot will sleep for the given duration.\n- Logout: The bot will log out for the given duration (will use settings from the Logging out section).\n- Move: The bot will make a random movement (will use the settings from the Random Movement section)\n- Press key: the bot will press the designated key.\n- Random: the bot will either sleep, move or do nothing randomly.`),
+    config.checkChangesDoAfter == `press key` ? wrapInLabel('Key: ', renderCheckChangesDoAfterKey(config), `Key the bot will press after the event occured. It will sleep after for the prvoided Sleep time. `) : ``,
+    config.checkChangesDoAfter == `sleep` || config.checkChangesDoAfter == `press key` || config.checkChangesDoAfter == `random` ? wrapInLabel('Sleep Time (min): ', renderCheckChangesDoAfterSleepTime(config), `Time the bot will sleep after the event occured.`) : ``,
+    ),
+
     elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement`),
     elt('div', {className: "settings_section settings_premium"},
     wrapInLabel(`Use Random Camera Movement: `, renderRngMove(config), `The bot will randomly move your camera within the provided radius. If the bot overdoes it and "no fishing water" error appear, it will move your camera back for the r * 2 radius.`),
@@ -1520,31 +1562,6 @@ const renderSettings = (config) => {
       renderTestSkillsButton(config)
     ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🥱`), elt(`span`, {className: `advanced_settings_header_text`}, `Fatigue`),
-    elt('div', {className: "settings_section settings_premium"},
-    wrapInLabel(`Apply Fatigue:`, renderApplyFatigue(config), `The bot will simulate fatigueness by decreasing all the delay values by given rate.`),
-    wrapInLabel(`Apply Fatigue Every (min):`, renderApplyFatigueEvery(config), `The bot will randomly apply fatigueness between the provided interval`),
-    wrapInLabel(`Fatigue Rate (%):`, renderApplyFatigueRate(config), `The rate value of fatigueness which will make all the delay values increase in geometric progression.`),
-    ),
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🏃`), elt(`span`, {className: `advanced_settings_header_text`}, `Motion Detection`),
-    elt(`div`, {className: `settings_section settings_premium`},
-    wrapInLabel('Use Motion Detection: ', renderCheckChanges(config), `The bot will detect changes within Detection Zone. The bot will notify you in Telegram if some movement happens within Detection Zone.\n\nYou can set the Detection Zone around your character and decrease sensitivity to make the bot detect any suspicious actions around your character and prevent possible griefing. `),
-    wrapInLabel('Send Screenshot Of The Event To Telegram:', renderCheckChangesSendImg(config), `The bot will send a screenshot of what exactly triggered the event.`),
-    wrapInLabel('Ignore My Actions:', renderCheckChangesIgnoreActions(config), `The bot will try to ignore time when you do something: cast, catch, move camera, log out and so on.`),
-    wrapInLabel('Sensitivity: ', renderCheckChangesSens(config), `Old good sensitivity value for a typical motion detection. Doesn't need an explanation, right?`),
-    wrapInLabel('Interval (sec): ', renderCheckChangesInterval(config), `The bot will check for motion every given interval value.`),
-    wrapInLabel('Ignore Time After Event Occured (sec): ', renderCheckChangesIntervalAfter(config), `After some event happened how long to ignore all the events after. `),
-    wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do after the event occured.\nChoices:\n- Sleep: the bot will sleep for the given duration.\n- Logout: The bot will log out for the given duration (will use settings from the Logging out section).\n- Move: The bot will make a random movement (will use the settings from the Random Movement section)\n- Press key: the bot will press the designated key.\n- Random: the bot will either sleep, move or do nothing randomly.`),
-    config.checkChangesDoAfter == `press key` ? wrapInLabel('Key: ', renderCheckChangesDoAfterKey(config), `Key the bot will press after the event occured. It will sleep after for the prvoided Sleep time. `) : ``,
-    config.checkChangesDoAfter == `sleep` || config.checkChangesDoAfter == `press key` || config.checkChangesDoAfter == `random` ? wrapInLabel('Sleep Time (min): ', renderCheckChangesDoAfterSleepTime(config), `Time the bot will sleep after the event occured.`) : ``,
-    ),
-
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🎮`), elt(`span`, {className: `advanced_settings_header_text`}, `Arduino Control (legacy)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#arduino-control-joystick")}}, `(Guide)`),
-    elt('div', {className: "settings_section settings_premium"},
-    wrapInLabel(`Use Arduino Board: `, renderArduino(config), `Using an Arduino Board will allow you to emulate a device in 100% hardware way: it will look like a real keyboard or mouse to the OS and the game. Check the guide on how to use an Arduino Board with AutoFish (Help -> Arduino Guide)`),
-    wrapInLabel(`COM Port: `, renderArduinoPort(config), `Choose the COM port of the Arduino Board connected to your computer and press Connect button.`),
-    wrapInLabel(`Bits Per Second: `, renderArduinoRate(config), `Don't change this value if you don't know what you are doing. The value should be the same as in Arduino Sketch provided in the guide (you can find it in the top of the sketch)`)
-    ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🐘`), elt(`span`, {className: `advanced_settings_header_text`}, `Mount Selling`),
     elt('div', {className: "settings_section settings_premium"},
     wrapInLabel(`Use a Mount for Selling Junk: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),

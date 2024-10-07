@@ -67,6 +67,9 @@ async function send(type, jsonData) {
 const keyboard = {
   async sendKey(key, delays = delay) {
     // key = key.toUpperCase();
+    if(isNaN(delays)) {
+      delays = delay;
+    }
 
     if(keysSheet[key]) {
       key = keysSheet[key];
@@ -81,7 +84,10 @@ const keyboard = {
 
   async toggleKey(key, type, delays = delay) {
     // key = key.toUpperCase();
-
+    if(isNaN(delays)) {
+      delays = delay;
+    }
+    console.log(`after delays`, delays);
     if(!Array.isArray(delays)) {
       delays = [delays, delays];
     }
@@ -100,6 +106,10 @@ const keyboard = {
   },
 
   async printText(text, delays) {
+
+    if(isNaN(delays)) {
+      delays = delay;
+    }
 
     if(!Array.isArray(delays)) {
       delays = [delays, delays];
@@ -144,6 +154,10 @@ const mouse = {
 
   async click(button, delays = delay) {
 
+  if(isNaN(delays)) {
+    delays = delay;
+  }
+
   if(!Array.isArray(delays)) {
     delays = [delays, delays];
   }
@@ -152,6 +166,9 @@ const mouse = {
   },
 
   async toggle(button, type, delays = delay) {
+    if(isNaN(delays)) {
+      delays = delay;
+    }
 
     if(!Array.isArray(delays)) {
       delays = [delays, delays];
@@ -178,12 +195,12 @@ const mouse = {
   }
 }
 
-const createPicoInterface = ({picoip, streamScreenSize, delay: delays}, mainLog) => {
+const createPicoInterface = (picoip, streamScreenSize, delays, mainLog) => {
   previousPos = {x: 0, y: 0};
   speedDistCoof = streamScreenSize.width / 10;
   picoIp = picoip;
   log = mainLog;
-  delay = delays;
+  delay = [delays.from, delays.to];
 
   return {
     keyboard, mouse
