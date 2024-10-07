@@ -1699,6 +1699,10 @@ const runApp = async () => {
       ipcRenderer.send("mammoth-warn");
     }
 
+    if(event.target.name == `findPlayer` && event.target.checked) {
+      ipcRenderer.send("findPlayer-warn");
+    }
+
     if(event.target.name == 'aggroCheck' && event.target.checked) {
       ipcRenderer.send("aggroCheck-warn");
     }

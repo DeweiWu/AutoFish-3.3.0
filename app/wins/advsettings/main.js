@@ -56,6 +56,7 @@ const createAdvSettings = (appPath) => {
     ipcMain.removeAllListeners(`lures-warn`);
     ipcMain.removeAllListeners(`stream-warn`);
     ipcMain.removeAllListeners(`whitelist-warn`);
+    ipcMain.removeAllListeners(`findPlayer-warn`);
     ipcMain.removeAllListeners(`start-by-fishing-key-warn`);
     ipcMain.removeAllListeners(`aggroCheck-warn`);
     ipcMain.removeHandler(`advanced-defaults`);
@@ -106,8 +107,12 @@ const createAdvSettings = (appPath) => {
   });
 
   ipcMain.on("aggroCheck-warn", () => {
-    showWarning(win, `Attack mode is unstable yet, so either carefully test before using or choose "Run Away" for more stable results.`);
+    showWarning(win, `Attack mode is unstable yet, so either carefully test before using or choose "Run Away" for more stable results. As with "Find Player" feature such behaviour might be detectable on official servers. Use at your own risk.`);
   });
+
+  ipcMain.on("findPlayer-warn", () => {
+    showWarning(win, `The bot presses a key at random intervals to target other players but such behaviour might be detectable on official servers. Use at your own risk.`);
+  })
 
   ipcMain.on("whitelist-warn", () => {
     showWarning(win, `Turn off AutoLoot option in the game.\n\nTurn off UI addons and UI scaling in the game.\n\nTurn on Open Loot Window at Mouse option in the game.\n\nFor filtering to work properly, your resolution (in game) and scaling (in Windows) should be one of these:\n- 1366x768 (100% scaling)\n- 1920x1080 (100% scaling)\n- 2560x1440 (125% scaling)\n- 3840x2160 (175% scaling)\n\nYou can change scaling in Windows in Settings -> Display.`);
