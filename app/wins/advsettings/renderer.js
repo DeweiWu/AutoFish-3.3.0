@@ -345,7 +345,7 @@ const renderStreamDevice = ({streamMode, streamDevice}) => {
 };
 
 const renderPicoIp = ({streamMode, picoip}) => {
-  const focusButton = elt(`input`, {type: `button`, value: `Connect`,  id: 'pico', className: `${streamMode ? `` : `disabledButton`}`, disabled: !streamMode, onclick() {
+  const focusButton = elt(`input`, {type: `button`, value: `Connect`,  id: 'pico', className: `${streamMode ? `` : `disabledButtonPremium`}`, disabled: !streamMode, onclick() {
     ipcRenderer.send('ping-pico');
   }});
   return elt('div', null, elt('input', {type: 'text', value: picoip, className: 'picoip', name: 'picoip', disabled: !streamMode}), focusButton);
