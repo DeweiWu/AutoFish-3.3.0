@@ -209,7 +209,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -495,7 +495,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -765,7 +765,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -1040,7 +1040,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -1293,7 +1293,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -1549,7 +1549,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -1814,7 +1814,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -2084,7 +2084,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -2337,7 +2337,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -2595,7 +2595,7 @@
       "rngMove": false,
       "rngMoveKeys": true,
       "rngMoveTimer": { "from": 3, "to": 10 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
