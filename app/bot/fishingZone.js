@@ -340,7 +340,7 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
          if(game == `Vanilla` ) {
            sensitivity = 2;
          } else {
-           sensitivity = bobberPoints.length < 100 ? 2 : 3; // Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 3)), 3); // 3 : 2
+           sensitivity = bobberPoints.length < 200 ? 2 : 3; // Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 3)), 3); // 3 : 2
          }
        }
     },

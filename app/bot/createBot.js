@@ -266,7 +266,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
   let fishingZone = createFishingZone(settings.bobberColor == 'Manual' ? getDataFrom : getDataFromFishingZone, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
 
   const notificationZone = createNotificationZone({
-    getDataFrom: getDataFromFishingZone,
+    getDataFrom: getDataFrom,
     zone: Zone.from({
       x: Math.round((screenSize.width / 2) - (screenSize.width * config.notificationPos.width)),
       y: Math.round(screenSize.height * config.notificationPos.y),
@@ -442,7 +442,7 @@ if(lootWindowPatch.exitButton) {
     };
 
     const checkRedButton = async (buttonPos) => {
-        const redButtonZone = createRedButtonZone({getDataFrom: getDataFromFishingZone, zone: buttonPos});
+        const redButtonZone = createRedButtonZone({getDataFrom: getDataFrom, zone: buttonPos});
         const colorPositions = await redButtonZone.isOn(mouse.getPos());
 
         if(colorPositions) {
@@ -1952,6 +1952,7 @@ if(lootWindowPatch.exitButton) {
           posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 5;
           posToHighlight.x = posToHighlight.x + (screenSize.height / 1080) * 5;
           fineTune = {offset: 3, steps: [1, 3]};
+          randomRange = 3;
         } else {
           posToHighlight.y = posToHighlight.y + (screenSize.height / 1080) * 5;
           posToHighlight.x = posToHighlight.x - (screenSize.height / 1080) * 5;
@@ -2468,6 +2469,7 @@ if (settings.soundDetection) {
       await mouse.toggle(`right`, true, delay);
       if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
         await keyboard.sendKey(rngKey.key, rngKey.value);
+        await sleep(random(delay[0], delay[1]))
       } else {
         await keyboard.toggleKey(rngKey.key, true, rngKey.value);
         await keyboard.toggleKey(rngKey.key, false, delay);
@@ -2482,7 +2484,8 @@ if (settings.soundDetection) {
     }
 
     if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
-      await keyboard.sendKey(rngPos.direction, rngPos.delay)
+      await keyboard.sendKey(rngPos.direction, rngPos.delay);
+      await sleep(random(delay[0], delay[1]))
     } else {
       await keyboard.toggleKey(rngPos.direction, true, rngPos.delay);
       await keyboard.toggleKey(rngPos.direction, false, delay);
