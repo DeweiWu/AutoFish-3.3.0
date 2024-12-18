@@ -135,23 +135,6 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
       if(!bobber) return; // In case the bobber wasn't found in either _findMost or manually - recast.
 
       if(autoTh || direction == `center` || autoSens) {
-        /*
-        const doubleZoneDims = {x: rgbZone.x + bobber.pos.x - doubleZoneSize,
-                                y: rgbZone.y + bobber.pos.y - doubleZoneSize,
-                                width: doubleZoneSize * 2,
-                                height: doubleZoneSize * 2};
-
-        if(doubleZoneDims.x < rgbZone.x) doubleZoneDims.x = rgbZone.x;
-        if(doubleZoneDims.y < rgbZone.y) doubleZoneDims.y = rgbZone.y;
-        if(doubleZoneDims.x + doubleZoneDims.width > rgbZone.x + rgbZone.width) doubleZoneDims.x = rgbZone.x + rgbZone.width - doubleZoneDims.width;
-        if(doubleZoneDims.y + doubleZoneDims.height > rgbZone.y + rgbZone.height) doubleZoneDims.y = rgbZone.y + rgbZone.height - doubleZoneDims.height;
-
-        let doubleZoneData = await getDataFrom(doubleZoneDims);
-        let rgbAroundBobber = createRgb(doubleZoneData);
-
-        rgbAroundBobber.saturate(...saturation);
-        */
-
         if(autoTh) {
 
             const mostRedPoints = [{pos: new Vec(bobber.pos.x, bobber.pos.y), color: bobber.color}];
@@ -257,6 +240,22 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
           this._findThreshold(bobber);
         } else {
           /* if direction == center */
+
+          const doubleZoneDims = {x: rgbZone.x + bobber.pos.x - doubleZoneSize,
+                                  y: rgbZone.y + bobber.pos.y - doubleZoneSize,
+                                  width: doubleZoneSize * 2,
+                                  height: doubleZoneSize * 2};
+
+          if(doubleZoneDims.x < rgbZone.x) doubleZoneDims.x = rgbZone.x;
+          if(doubleZoneDims.y < rgbZone.y) doubleZoneDims.y = rgbZone.y;
+          if(doubleZoneDims.x + doubleZoneDims.width > rgbZone.x + rgbZone.width) doubleZoneDims.x = rgbZone.x + rgbZone.width - doubleZoneDims.width;
+          if(doubleZoneDims.y + doubleZoneDims.height > rgbZone.y + rgbZone.height) doubleZoneDims.y = rgbZone.y + rgbZone.height - doubleZoneDims.height;
+
+          let doubleZoneData = await getDataFrom(doubleZoneDims);
+          let rgbAroundBobber = createRgb(doubleZoneData);
+
+          rgbAroundBobber.saturate(...saturation);
+
           filledBobber = rgbAroundBobber.findColors({isColor: isBobber, saveColor: true});
 
           bobber = rgbAroundBobber.findColors({
