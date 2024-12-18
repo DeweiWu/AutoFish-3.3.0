@@ -1852,13 +1852,17 @@ if(lootWindowPatch.exitButton) {
   aggroCheck.status = Promise.resolve();
 
   const streamModeInitialMouse = async () => {
-    if(state.status == 'initial' && (config.streamMode || (config.arduino && config.arduinoType == `pico`)) && !settings.useInt) {
+    if(state.status == 'initial' && (config.streamMode || (config.arduino && config.arduinoType == `pico`))) {
       await keyboard.toggleKey('ALT', true);
       await keyboard.toggleKey('TAB', true);
       await keyboard.toggleKey('ALT', false);
       await keyboard.toggleKey('TAB', false);
       await mouse.moveTo(-9999, -9999);
-      await mouse.moveTo(Math.floor(screenSize.width / 2), Math.floor(screenSize.height / 2));
+
+      if(!settings.useInt) {
+        await mouse.moveTo(Math.floor(screenSize.width / 2), Math.floor(screenSize.height / 2));
+      }
+
       await keyboard.toggleKey('ALT', true);
       await keyboard.toggleKey('TAB', true);
       await keyboard.toggleKey('ALT', false);
