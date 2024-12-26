@@ -371,6 +371,7 @@ You can also write in this chat directly to do:
       let initialGameChoice = showChoiceWarning(win, `Choose your game:`, `Initial configuration`,
         ...games
       );
+
       win.webContents.send('set-game', games[initialGameChoice])
       settings.game = games[initialGameChoice];
       settings.initial = false;
@@ -542,6 +543,13 @@ You can also write in this chat directly to do:
 
       win.focus();
       return data;
+    }
+
+    if((settings.game == `Retail` || settings.game == `Classic` || settings.game == `Cata Classic`) && !config.patch[settings.game].streamMode) {
+      if((showChoiceWarning(win, `You are about to start the bot in a default mode on official servers.\n\nYour account WILL BE BANNED sooner or later.\n\nAre you sure you want to continue?`, `Warning`, `Yes `, `No (recommended)`))) {
+        win.webContents.send("stop-bot");
+        return;
+      }
     }
 
     if(config.patch[settings.game].startByFishingKey) {
