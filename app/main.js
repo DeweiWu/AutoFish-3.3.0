@@ -593,7 +593,7 @@ You can also write in this chat directly to do:
     let sharedArray;
     if(config.patch[settings.game].streamMode) {
       log.send(`Connecting to capture device...`);
-      let secondValue = 3;
+      let secondValue = 5;
       setTimeout(function logSeconds() {
         log.send(`Start in ${secondValue--}...`);
         if(secondValue > 0) {
