@@ -9,6 +9,7 @@
       "game": "Retail",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -293,6 +294,7 @@
       "game": "Cata Classic",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -567,6 +569,7 @@
       "game": "Classic",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -841,6 +844,7 @@
       "game": "Leg",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -1095,6 +1099,7 @@
       "game": "MoP",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -1350,6 +1355,7 @@
       "game": "Cata",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -1601,6 +1607,7 @@
       "game": "LK Private",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -1871,6 +1878,7 @@
       "game": "TBC",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -2138,6 +2146,7 @@
       "game": "Vanilla",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
@@ -2396,6 +2405,7 @@
       "game": "Vanilla (splash)",
       "timer": false,
       "streamMode": false,
+      "streamManualCursor": false,
       "streamDevice": "",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
