@@ -762,7 +762,7 @@ You can also write in this chat directly to do:
     let config = getJson(`${configPath}${profile.selected}/bot.json`);
     globalShortcut.unregister(settings.fishingKey);
   })
-  
+
   ipcMain.on('save-config', () => {
     saveArchive(log);
   });
@@ -954,7 +954,7 @@ const menu = Menu.buildFromTemplate([
   {
     label: `Help`,
     submenu: [
-      { label: "AutoFish ver. 3.1.2 Premium" },
+      { label: "AutoFish ver. 3.2.0 Premium" },
       { type: "separator" },
       {
         label: "📘 Read Me",
