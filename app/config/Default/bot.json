@@ -10,7 +10,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -295,7 +295,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -570,7 +570,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -845,7 +845,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -1100,7 +1100,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -1356,7 +1356,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -1608,7 +1608,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -1879,7 +1879,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -2147,7 +2147,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -2406,7 +2406,7 @@
       "timer": false,
       "streamMode": false,
       "streamManualCursor": false,
-      "streamDevice": "",
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
