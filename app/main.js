@@ -42,6 +42,33 @@ const getProfile = () => {
   return getJson(`${configPath}config.json`);
 };
 
+const connectToMediaMtx = (log) => {
+  try {
+    require('./utils/rtmp/server.js')(log, __dirname);
+
+    log.ok(`Launched MediaMTX server!`)
+
+    const os = require('os');
+    const networkInterfaces = os.networkInterfaces();
+     const addresses = [];
+
+     for (const iface of Object.values(networkInterfaces)) {
+       for (const config of iface) {
+         if (config.family === 'IPv4' && !config.internal) {
+           addresses.push(config.address);
+         }
+       }
+     }
+    log.send(`Servers for OBS:`);
+    addresses.forEach((address, i) => {
+      log.ok(`rtmp://${address}:1935/live`)
+    })
+  } catch(e) {
+    log.err(`Couldn't launch MediaMTX server!`)
+    return Promise.reject(e);
+  }
+}
+
 const createTrialTime = () => {
   const data = readFileSync(path.join(__dirname, trialPath), "utf8");
   const key = "26612137141ed19dcefd816de67f04e9593ac46461c8953d0a437b3762778644";
@@ -342,6 +369,10 @@ You can also write in this chat directly to do:
       log.warn(`You aren't in a streaming mode, the bot is easily detectable on official servers.`);
     }
 
+    if(config.patch[settings.game].streamDevice == 'Custom Server' && config.patch[settings.game].streamMode) {
+      connectToMediaMtx(log);
+    }
+
     if(tmKey) {
       connectToTelegram(tmKey)
       .then(() => log.ok(`Connected to Telegram!`))
@@ -506,6 +537,7 @@ You can also write in this chat directly to do:
       return data;
     }
 
+    /*
     if(type != `relZone` && type != `chatZone` && type != `detectZone` && type != `pointZone` && type != `combatZone` && settings.initialZone){
       await new Promise(function(resolve, reject) {
         setTimeout(resolve, 50);
@@ -515,6 +547,7 @@ You can also write in this chat directly to do:
         win.webContents.send("stop-bot");
       }
     }
+    */
 
     if(type == `relZone` || type == `chatZone` || type == `detectZone` || type == `combatZone`) {
       log.send(`Setting ${type == `relZone` ? `Fishing` : type == `chatZone` ? `Chat` : type == `combatZone` ? `Combat` : `Motion Detection`} Zone...`);
@@ -729,7 +762,7 @@ You can also write in this chat directly to do:
     let config = getJson(`${configPath}${profile.selected}/bot.json`);
     globalShortcut.unregister(settings.fishingKey);
   })
-
+  
   ipcMain.on('save-config', () => {
     saveArchive(log);
   });
@@ -779,9 +812,9 @@ You can also write in this chat directly to do:
   })
 
   let settWin;
-  ipcMain.on("advanced-settings", () => {
+  ipcMain.on("advanced-settings", (event, settings) => {
     if(!settWin || settWin.isDestroyed()) {
-      settWin = createAdvSettings(__dirname)
+      settWin = createAdvSettings(__dirname, settings.game)
     } else {
       settWin.focus();
     }
@@ -805,6 +838,11 @@ You can also write in this chat directly to do:
       log.err(`No pico device under this IP!`)
       return Promise.reject(e);
     }
+  })
+
+
+  ipcMain.handle('connect-mediamtx', async (event) => {
+    return connectToMediaMtx(log);
   })
 
   ipcMain.handle('get-profile-name', () => {

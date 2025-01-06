@@ -65,11 +65,11 @@ const renderThreshold = ({ threshold, bobberColor, bobberColorManual, autoTh, ga
 
     let rgbBobberColorManual = hexToRgb(bobberColorManual);
     if(bobberColor == `red`) {
-      document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
+      document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
     } else if(bobberColor == `blue`) {
-      document.styleSheets[0].rules[78].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
+      document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
     } else {
-      document.styleSheets[0].rules[78].style.backgroundImage = `linear-gradient(to right, rgb(${rgbBobberColorManual.r - 25}, ${rgbBobberColorManual.g - 25}, ${rgbBobberColorManual.b - 25}), rgb(${rgbBobberColorManual.r + 25}, ${rgbBobberColorManual.g + 25}, ${rgbBobberColorManual.b + 25}))`;
+      document.styleSheets[0].rules[79].style.backgroundImage = `linear-gradient(to right, rgb(${rgbBobberColorManual.r - 25}, ${rgbBobberColorManual.g - 25}, ${rgbBobberColorManual.b - 25}), rgb(${rgbBobberColorManual.r + 25}, ${rgbBobberColorManual.g + 25}, ${rgbBobberColorManual.b + 25}))`;
     }
 
     return elt(`div`, { className: `thresholdRange` }, rangeContainer); // autoThSwitch
@@ -178,7 +178,7 @@ const renderFishingKey = ({fishingKey}) => {
 };
 
 const renderAdvancedSettings = () => {
-  return elt('input', {type: 'button', name:"advancedSettings", value: "Advanced Settings", className: "advanced_settings_button"});
+  return elt('input', {type: 'button', name:"advancedSettings", value: "Advanced Settings", className: "advanced_settings_button advanced_settings_button_fz"});
 };
 
 const renderFishingZone = () => {

@@ -181,8 +181,10 @@ class AutoFish {
       ipcRenderer.send("advanced-settings", config);
     });
 
-    this.settings.regOnFishingZoneClick(() => {
-      ipcRenderer.invoke("start-bot", `relZone`);
+    this.settings.regOnFishingZoneClick((button) => {
+      ipcRenderer.invoke("start-bot", `relZone`).then(() => {
+        button.style.cursor = 'pointer';
+      })
     });
 
     this.settings.regOnDetectZoneClick(() => {

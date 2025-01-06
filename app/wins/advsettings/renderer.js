@@ -74,7 +74,7 @@ const renderArduinoType = ({arduino, arduinoType}) => {
 };
 
 const renderArduinoPicoIp = ({arduino, arduinoPicoIp}) => {
-  const focusButton = elt(`input`, {type: `button`, value: `Connect`,  id: 'pico', className: `${arduino ? `` : `disabledButton`}`, disabled: !arduino, onclick() {
+  const focusButton = elt(`input`, {type: `button`, value: `Test`,  id: 'pico', className: `${arduino ? `` : `disabledButton`}`, disabled: !arduino, onclick() {
     ipcRenderer.send('ping-pico');
   }});
   return elt('div', null, elt('input', {type: 'text', value: arduinoPicoIp, className: 'picoip', name: 'arduinoPicoIp', disabled: !arduino}), focusButton);
@@ -327,8 +327,11 @@ const renderBobberSensitivity = ({bobberSensitivity, soundDetection, bobberSensi
    bobberSensitivityWin);
 };
 
-const renderStreamDevice = ({streamMode, streamDevice}) => {
-  const select = elt(`select`, {name: `streamDevice`, className: `streamSelect`, disabled: !streamMode});
+const renderStreamDevice = ({streamMode, streamDevice = 'Custom Server'}) => {
+  const mediamtxButton = elt(`input`, {type: `button`,value: `Launch`,  id: 'mediamtx', className: `${streamMode ? `` : `disabledButtonPremium`}`, disabled: !streamMode});
+
+  const select = elt(`select`, {name: `streamDevice`, className: streamDevice == 'Custom Server' ? `streamSelectCustomServer` : `streamSelect`, disabled: !streamMode});
+  select.append(elt('option', {selected: streamDevice == 'Custom Server', value: `Custom Server`}, `MediaMTX Server`));
   const renderUseStreamMode = elt(`input`, {name: `streamMode`, type: `checkbox`, checked: streamMode});
 
   if(streamMode) {
@@ -341,15 +344,19 @@ const renderStreamDevice = ({streamMode, streamDevice}) => {
       })
     })
   }
-  return elt(`div`, null, renderUseStreamMode, select);
+  return elt(`div`, null, renderUseStreamMode, select, streamDevice == `Custom Server` || !streamDevice ? mediamtxButton : ``);
 };
 
 const renderPicoIp = ({streamMode, picoip}) => {
-  const focusButton = elt(`input`, {type: `button`, value: `Connect`,  id: 'pico', className: `${streamMode ? `` : `disabledButtonPremium`}`, disabled: !streamMode, onclick() {
+  const focusButton = elt(`input`, {type: `button`, value: `Test`,  id: 'pico', className: `${streamMode ? `` : `disabledButtonPremium`}`, disabled: !streamMode, onclick() {
     ipcRenderer.send('ping-pico');
   }});
   return elt('div', null, elt('input', {type: 'text', value: picoip, className: 'picoip', name: 'picoip', disabled: !streamMode}), focusButton);
 };
+
+const renderStreamManualCursor = ({streamMode, streamManualCursor}) => {
+  return elt(`input`, {type: `checkbox`, checked: streamManualCursor, disabled: !streamMode, name: `streamManualCursor`});
+}
 
 const renderStreamScreenSize = ({streamMode, streamScreenSize}) => {
   return elt(`div`, {"data-collection": `streamScreenSize`}, elt(`span`, {className: `option_text`}, `width:`),
@@ -1344,9 +1351,10 @@ const renderSettings = (config) => {
 
   elt(`p`, {className: `settings_header settings_header_premium`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream (beta)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://youtu.be/Kacworq8j8Q")}}, `(Guide)`),
   elt(`div`, {className: `settings_section settings_premium`},
-    wrapInLabel(`Video Capture Device: `, renderStreamDevice(config), `Streaming logic is used to run the bot and the game on different machines. Video Capture device is a capture device HDMI part of which you connect to your GPU on the Game PC and USB part of which you connect to your Bot PC.`),
+    wrapInLabel(`Streaming Source: `, renderStreamDevice(config), `Streaming logic is used to run the bot and the game on different machines. Streaming Source is either an HDMI capture device or RTMP server.`),
     wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Same IP address you configured for your Pico W device in its own code.`),
-    wrapInLabel(`Streaming PC Resolution: `, renderStreamScreenSize(config), `The resolution of the Game PC. Same resolution should be for the game, meaning it shouldn't be in windowed mode.`)
+    wrapInLabel(`Gaming PC Resolution: `, renderStreamScreenSize(config), `The resolution of the Game PC. Same resolution should be for the game, meaning it shouldn't be in windowed mode.`),
+    wrapInLabel(`Set Initial Cursor Position Manually: `, renderStreamManualCursor(config), `To ensure the bot accurately detects the cursor's position, it should begin from the x:0 and y:0 coordinates, which correspond to the top-left corner of the screen. Enable this option if you encounter any issues with auto-initialization.`)
   ),
 
 
@@ -1657,7 +1665,26 @@ const runApp = async () => {
       }, 1000);
     }
 
-    if(event.target.value == `Connect` && event.target.id == "pico") {
+    if(event.target.value == `Launch` && event.target.id == "mediamtx") {
+      event.target.value = `⌛`;
+      ipcRenderer.invoke(`connect-mediamtx`)
+      .then(() => {
+        event.target.style.backgroundColor = `rgb(65, 255, 65)`;
+        event.target.value = `Success!`
+      })
+      .catch(() => {
+        event.target.style.backgroundColor = `rgb(255, 65, 65)`;
+        event.target.value = `Error!`
+      });
+
+      setTimeout(() => {
+        event.target.value = `Launch`;
+        event.target.style.backgroundColor = `rgb(240, 240, 240)`;
+      }, 1500);
+    }
+
+
+    if(event.target.value == `Test` && event.target.id == "pico") {
       event.target.value = `⌛`;
       ipcRenderer.invoke(`connect-pico`, config.picoip)
       .then(() => {
@@ -1670,7 +1697,7 @@ const runApp = async () => {
       });
 
       setTimeout(() => {
-        event.target.value = `Connect`;
+        event.target.value = `Test`;
         event.target.style.backgroundColor = `rgb(240, 240, 240)`;
       }, 1500);
     }

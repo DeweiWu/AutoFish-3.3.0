@@ -1,37 +1,86 @@
 const { ipcRenderer } = require('electron');
 let stream;
+
 ipcRenderer.on('close-stream', () => {
-  stream.getTracks().forEach(track => track.stop());
-  stream = null;
+  if(stream) {
+    stream.getTracks().forEach(track => track.stop());
+    stream = null;
+  }
 })
 
 ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSize) => {
+  const video = document.createElement('video');
   try {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    if(!devices.find((device) => device.deviceId == deviceId)) {
-      throw new Error(`Can't find video capture device. Try to reassign.`)
-    }
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        deviceId: { exact: deviceId },
-        width: { ideal: screenSize.width },
-        height: { ideal: screenSize.height },
-        frameRate: { ideal: 60 }
+    if(deviceId != 'Custom Server') {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      if(!devices.find((device) => device.deviceId == deviceId)) {
+        throw new Error(`Can't find video capture device. Try to reassign.`)
       }
-    })
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          deviceId: { exact: deviceId },
+          width: { ideal: screenSize.width },
+          height: { ideal: screenSize.height },
+          frameRate: { ideal: 60 }
+        }
+      })
 
-    const videoTrack = stream.getVideoTracks()[0];
-    const capabilities = videoTrack.getCapabilities();
+      const videoTrack = stream.getVideoTracks()[0];
+      const capabilities = videoTrack.getCapabilities();
 
-    videoTrack.applyConstraints({ advanced: [{
-      brightness: 48,
-      saturation: 43,
-      contrast: 50,
-      }]
-    });
+      videoTrack.applyConstraints({ advanced: [{
+        brightness: 48,
+        saturation: 43,
+        contrast: 50,
+        }]
+      });
+      video.srcObject = stream;
+    } else {
+      //video.src = `http://localhost:8888/live/index.m3u8`;
+      const pc = new RTCPeerConnection({
+                iceServers: []
+            });
 
-    const video = document.createElement('video');
-    video.srcObject = stream;
+            pc.ontrack = (event) => {
+                if (event.track.kind === 'video') {
+                    video.srcObject = event.streams[0];
+                }
+            };
+
+            // Create empty offer to start the process
+            const offer = await pc.createOffer({
+                offerToReceiveVideo: true,
+                offerToReceiveAudio: false
+            });
+            await pc.setLocalDescription(offer);
+
+            const response = await fetch('http://localhost:8889/live/whep', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/sdp'
+                  },
+                  body: offer.sdp
+              });
+
+            if(!response.ok) {
+              throw new Error(`Can't find the stream. Make sure you started streaming with OBS to the given rtmp server.`);
+            }
+
+            const serverSdp = await response.text();
+            await pc.setRemoteDescription(new RTCSessionDescription({
+                type: 'answer',
+                sdp: serverSdp
+            }));
+      /*
+      const hls = new Hls();
+      hls.loadSource(`http://localhost:8888/live/index.m3u8`);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.dispatchEvent(new Event('loadeddata'));
+      });
+      */
+    }
+
     video.style.width = `${screenSize.width}px`;
     video.style.height = `${screenSize.height}px`;
     video.addEventListener('loadeddata', () => {

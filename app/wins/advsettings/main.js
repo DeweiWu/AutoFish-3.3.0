@@ -32,11 +32,15 @@ const showWarning = (win, warning) => {
   });
 };
 
-const createAdvSettings = (appPath) => {
+const createAdvSettings = (appPath, gameName) => {
+  let mainWin = BrowserWindow.getAllWindows()[0];
+  const [mainX, mainY] = mainWin.getPosition();
   let win = new BrowserWindow({
-    title: 'Advanced Settings',
+    x: mainX + 100,
+    y: mainY,
+    title: `Advanced Settings for ${gameName}`,
     width: 455,
-    height: 627,
+    height: 667,
     show: false,
     resizable: false,
     webPreferences: {

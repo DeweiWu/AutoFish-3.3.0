@@ -1859,7 +1859,9 @@ if(lootWindowPatch.exitButton) {
       await keyboard.toggleKey('ALT', false);
       await keyboard.toggleKey('TAB', false);
       */
-      await mouse.moveTo(-9999, -9999);
+      if(!config.streamManualCursor) {
+        await mouse.moveTo(-9999, -9999);
+      }
 
       await sleep(random(500, 1500));
 

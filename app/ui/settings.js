@@ -193,7 +193,8 @@ class Settings {
       }
 
       if(event.target.name == `fishingZone`) {
-        this.onFishingZoneClick();
+        event.target.style.cursor = 'progress';
+        this.onFishingZoneClick(event.target);
       }
 
       if(event.target.name == `detectZone`) {
