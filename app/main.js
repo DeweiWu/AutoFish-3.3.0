@@ -365,10 +365,6 @@ You can also write in this chat directly to do:
       }
     }
 
-    if((settings.game == 'Retail' || settings.game == 'Classic' || settings.game == 'Cata Classic') && !config.patch[settings.game].streamMode) {
-      log.warn(`You aren't in a streaming mode, the bot is easily detectable on official servers.`);
-    }
-
     if(config.patch[settings.game].streamDevice == 'Custom Server' && config.patch[settings.game].streamMode) {
       connectToMediaMtx(log);
     }
