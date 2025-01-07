@@ -27,5 +27,7 @@
   "initial": true,
   "initialZone": true,
   "soundDetection": false,
-  "soundDetectionRange": 500
+  "soundDetectionRange": 500,
+  "soundDetectionMode": "Desktop",
+  "soundDetectionInputDevice": ""
 }
