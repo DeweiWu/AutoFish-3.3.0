@@ -107,7 +107,7 @@ const createAdvSettings = (appPath, gameName) => {
   });
 
   ipcMain.on("stream-warn", () => {
-    showWarning(win, `- Multiple Fishing and Alt-Tab modes won't work.\n- Doesn't support windowed mode.\n- Scaling in Windows (game pc) should be 100%.\n- Works best with default 1920x1080 or lower resolution (higher resolutions will needlessly load your hdmi-capture device).\n- Turn off enchance pointer precision in Mouse Properties.`);
+    showWarning(win, `- Multiple Fishing, Alt-Tab and Sound Detection won't work.\n- Doesn't support windowed mode.\n- Scaling in Windows should be 100% (game pc).\n- Works best with default 1920x1080 or lower resolution (higher resolutions could needlessly load your hdmi-capture device).\n- Turn off enchance pointer precision in Mouse Properties. (game pc)`);
   });
 
   ipcMain.on("aggroCheck-warn", () => {
