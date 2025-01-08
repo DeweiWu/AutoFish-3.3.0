@@ -2029,6 +2029,10 @@ if(lootWindowPatch.exitButton) {
       state.status = `checking`;
     }
 
+  if(settings.soundDetection) {
+    config.checkingDelay = 0;
+  }
+
     while (state.status == "checking") {
       if (checkBobberTimer.isElapsed()) {
         switch(config.maxFishTimeAfter) {
@@ -2054,15 +2058,21 @@ if(lootWindowPatch.exitButton) {
 
 if (settings.soundDetection) {
   let caught = await new Promise((resolve, reject) => {
-    ipcMain.once("get-waveform", (event, waveform) => {
-      resolve(waveform.filter((n) => n != 128).length > Number(settings.soundDetectionRange) ? true : false);
+    ipcMain.once("get-audio-result", (event, result) => {
+      // resolve(waveform.filter((n) => n != 128 && n != 127).length > Number(settings.soundDetectionRange) ? false : false);
+      resolve(result)
     });
-    BrowserWindow.getAllWindows()[0].webContents.send("get-audio");
+
+    BrowserWindow.getAllWindows()[0].webContents.send("get-audio",
+     settings.soundDetectionRange,
+     config.maxFishTime,
+     missOnPurpose,
+     config.missOnPurposeRandomDelay,
+     pos);
   });
 
-  if (caught) {
-    return pos;
-  }
+  return caught;
+
 } else if(settings.checkLogic == `pixelmatch`) {
   if(await fishingZone.checkPixelMatch(pos, startTime)) {
     return pos;

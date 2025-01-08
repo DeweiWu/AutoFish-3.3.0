@@ -824,6 +824,23 @@ input[type=range]::-webkit-slider-runnable-track {
     align-items: flex-end;
 }
 
+.soundDetectionModeInputContainer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+}
+
+.soundDetectionModeInputContainer select {
+  width: 188px;
+  height: 18px;
+  margin-left: 5px;
+  font-size: 0.9em;
+  cursor: help;
+}
+
 .thClosed {
   border-bottom: 1px solid grey;
 }

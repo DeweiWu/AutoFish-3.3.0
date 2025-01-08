@@ -1,0 +1,20 @@
+body {
+  padding: 10px;
+  margin: 0;
+}
+
+p {
+  font-family: "Segoe UI";
+  font-size: 1.8em;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  color: #ff6100;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; /* Change to your outline color */
+}
+
+div {
+  background-color: rgba(0,0,0, 0.7);
+  padding: 10px;
+  border-radius: 10px;
+}

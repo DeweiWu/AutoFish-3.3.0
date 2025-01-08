@@ -25,6 +25,7 @@ const trialIsOn = false;
 const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
 const createPointZone = require(`./wins/pointZone/main.js`);
+const createListenWin = require('./wins/listenWin/main.js');
 const trialEncryption = require('./../enc.js')
 const { saveArchive, loadArchive } = require('./utils/saveArchive.js');
 
@@ -653,6 +654,10 @@ You can also write in this chat directly to do:
       }
     }
 
+    if(settings.soundDetection) {
+      win.webContents.send('start-audio', settings);
+    }
+
     const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win, sharedArray);
 
     const stopAppAndBots = () => {
@@ -668,6 +673,10 @@ You can also write in this chat directly to do:
         globalShortcut.register(settings.fishingKey, () => {
           win.webContents.send('start-by-fishing-key');
         });
+      }
+
+      if(settings.soundDetection) {
+        win.webContents.send('stop-audio');
       }
 
       games.forEach(async ({game}) => {
@@ -814,6 +823,22 @@ You can also write in this chat directly to do:
     } else {
       settWin.focus();
     }
+  });
+
+  let listenWin;
+  ipcMain.on('create-listen-win', (event) => {
+    let profile = getProfile();
+    let settings = getJson(`${configPath}${profile.selected}/settings.json`);
+
+    if(!listenWin || listenWin.isDestroyed()) {
+      listenWin = createListenWin(settings);
+    } else {
+      listenWin.focus();
+    }
+  });
+
+  ipcMain.on('destroy-listen-win', (event) => {
+    listenWin.close();
   });
 
   ipcMain.handle("connect-telegram", (event, key) => {

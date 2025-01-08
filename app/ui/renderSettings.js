@@ -43,7 +43,7 @@ const renderBobberSensitivity = ({game, bobberSensitivity, bobberColor, soundDet
   return elt(`div`, {className: `sensitivityContainer`, style: `${soundDetection ? `display: none` : ``}`}, elt('input', {type: `range`, min, max,  value: bobberSensitivity, disabled: soundDetection || autoSens, className: `${autoSens ? `threshold_disabled` : ``}` , oninput: function() {bobberSensitivityWin.value = this.value}, name: `bobberSensitivity`}), bobberSensitivityWin);
 };
 
-const renderThreshold = ({ threshold, bobberColor, bobberColorManual, autoTh, game, soundDetection, soundDetectionRange }) => {
+const renderThreshold = ({ threshold, bobberColor, soundDetectionMode = 'Desktop', soundDetectionInputDevice = '', bobberColorManual, autoTh, game, soundDetection, soundDetectionRange }) => {
   if(!soundDetection) {
 
     if(bobberColor != `Manual`) {
@@ -74,14 +74,51 @@ const renderThreshold = ({ threshold, bobberColor, bobberColorManual, autoTh, ga
 
     return elt(`div`, { className: `thresholdRange` }, rangeContainer); // autoThSwitch
   } else {
-    if(soundDetectionRange > 1100) soundDetectionRange = 1100;
-    if(soundDetectionRange < 128) soundDetectionRange = 128;
+    if(soundDetectionRange > 255) soundDetectionRange = 255;
+    if(soundDetectionRange < 0) soundDetectionRange = 0;
     let soundDetectionRangeWin = elt(`input`, {type: `number`, name: `soundDetectionRange`, value: soundDetectionRange, disabled: !soundDetection});
 
-    const img = elt(`img`, {className: `soundDetection-image`, src: `img/sound-icon.png`});
+    const soundDetectionInputSelect = elt('select', {name: 'soundDetectionInputDevice', disabled: soundDetectionMode == `Desktop`});
 
-    return elt(`div`, {className: `soundDetection-container`}, elt('input', {type: `range`, min: 128, max: 1100, value: soundDetectionRange, disabled: !soundDetection,  oninput: function() {soundDetectionRangeWin.value = this.value}, name: `soundDetectionRange`, className: `${!soundDetection ? `threshold_disabled` : ``}`}),
-     soundDetectionRangeWin, img);
+    const soundDetectionModeContainer = elt('label', null, `Mode: `, elt('select', {name: 'soundDetectionMode'}, ...['Desktop', 'Input'].map((mode) => elt('option', {selected: mode == soundDetectionMode}, mode))));
+    const soundDetectionInputContainer = elt('label', null, `Input: `, soundDetectionInputSelect);
+    const rangeContainer = elt('input', {type: `range`, min: 0, max: 255, value: soundDetectionRange, disabled: !soundDetection,  oninput: function() {soundDetectionRangeWin.value = this.value}, name: `soundDetectionRange`, className: `${!soundDetection ? `threshold_disabled` : ``}`});
+
+
+    navigator.mediaDevices.enumerateDevices()
+    .then(devices => {
+      devices
+      .filter(device => device.kind === 'audioinput')
+      .forEach(device => {
+          soundDetectionInputSelect.append(elt(`option`, { selected: device.deviceId == soundDetectionInputDevice, value: device.deviceId }, device.label));
+      })
+    })
+
+    let listeningOn = false;
+    const listenButton = elt('input', {type: 'button', style: `cursor: pointer; width: 63px; height: 41px; margin-right: -6px;`, value: "Listen", onclick() {
+      if(!listeningOn) {
+        this.value = `Stop`;
+        rangeContainer.disabled = true;
+        rangeContainer.className = `threshold_disabled`;
+        soundDetectionRangeWin.disabled = true;
+        ipcRenderer.send('create-listen-win');
+      } else {
+        ipcRenderer.send('destroy-listen-win');
+        this.value = `Listen`;
+        rangeContainer.disabled = false;
+        rangeContainer.className = ``;
+        soundDetectionRangeWin.disabled = false;
+      }
+      listeningOn = !listeningOn;
+    }, className: "soundDetection-image"});
+
+
+    const soundDetectionModeInputContainer = elt('div', {className: `soundDetectionModeInputContainer`}, soundDetectionModeContainer, soundDetectionInputContainer);
+
+    // const img = elt(`img`, {className: `soundDetection-image`, src: `img/sound-icon.png`});
+
+    return elt(`div`, {className: `soundDetection-container`}, rangeContainer,
+    soundDetectionModeInputContainer, soundDetectionRangeWin, listenButton);
   }
 };
 
@@ -253,7 +290,7 @@ return elt(
         renderAdvancedSettings(config),
         ),
     ),
-    elt("p", {className: `settings_header settings_header_main threshold-header ${config.soundDetection ? `thClosed`: ``}`, "data-thresholdHeader": true}, "🎣"),
+    elt("p", {className: `settings_header settings_header_main threshold-header ${config.soundDetection ? `thClosed`: ``}`, "data-thresholdHeader": true}, "🎨"),
     elt("p", {className: `settings_header settings_header_main soundDeteaction-header ${config.soundDetection ? ``: `thClosed`}`, "data-soundDetectionHeader": true}, "🔊"),
     elt(
       "div",
@@ -266,7 +303,7 @@ return elt(
 
       wrapInLabel(`${config.soundDetection ? `` : config.bobberColor == `Manual` ? `Tolerance: ` : `Intensity: `}`,
         renderThreshold(config),
-        config.soundDetection ? `The bot will listen to your main output device for any abrupt changes of sound to detect the "splash" sound when the bobber plunging. Sound range determines the sensitivity of listening.` : config.bobberColor == `Manual` ? `Adjust the tolerance to set how closely other colors must match the chosen color.` : `Decrease this value, if the bot can't find the bobber (e.g. at night, bad weather). Increase this value if you want the bot to ignore more ${config.bobberColor} colors.`
+        config.soundDetection ? `Amplitude value. The bot will listen to the amplitude value of the audio signal until it reaches the threshold. Use "Listen" button to determine the amplitude of "splash" sound when the fish is caught. If the bot doesn't react to the sound, decrease this value. If the bot reacts too early, increase this value.\n\nIf you click on "Listen" button it will show you two values. Amp: current amplitude. Max: maximum amplitude reached.` : config.bobberColor == `Manual` ? `Adjust the tolerance to set how closely other colors must match the chosen color.` : `Decrease this value, if the bot can't find the bobber (e.g. at night, bad weather). Increase this value if you want the bot to ignore more ${config.bobberColor} colors.`
         , `thLabel`),
       !config.soundDetection ? wrapInLabel("Sensitivity: ", renderBobberSensitivity(config), config.game == `Vanilla (splash)` ?
        `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value. If in Auto mode: The bot will auto-adjust both sensitivity value per each cast.`
