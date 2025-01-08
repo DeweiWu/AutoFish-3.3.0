@@ -576,7 +576,10 @@ You can also write in this chat directly to do:
     }
 
     if((settings.game == `Retail` || settings.game == `Classic` || settings.game == `Cata Classic`) && !config.patch[settings.game].streamMode) {
-      if((showChoiceWarning(win, `You are about to start the bot in a default mode on official servers.\n\nYour account WILL BE BANNED sooner or later.\n\nAre you sure you want to continue?`, `Warning`, `Yes `, `No (recommended)`))) {
+      await new Promise(function(resolve, reject) {
+        setTimeout(resolve, 50);
+      });
+      if((showChoiceWarning(win, `You are about to start the bot in a default mode on official servers.\n\nIt's not just a disclaimer, your account WILL be banned sooner or later.\n\nYou can use Streaming Mode for a much safer approach.\n\nAre you sure you want to continue?`, `Warning`, `Yes `, `No (recommended)`))) {
         win.webContents.send("stop-bot");
         return;
       }
