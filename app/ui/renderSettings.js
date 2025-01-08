@@ -80,8 +80,8 @@ const renderThreshold = ({ threshold, bobberColor, soundDetectionMode = 'Desktop
 
     const soundDetectionInputSelect = elt('select', {name: 'soundDetectionInputDevice', disabled: soundDetectionMode == `Desktop`});
 
-    const soundDetectionModeContainer = elt('label', null, `Mode: `, elt('select', {name: 'soundDetectionMode'}, ...['Desktop', 'Input'].map((mode) => elt('option', {selected: mode == soundDetectionMode}, mode))));
-    const soundDetectionInputContainer = elt('label', null, `Input: `, soundDetectionInputSelect);
+    const soundDetectionModeContainer = elt('label', {title: `Which device the bot should listen to.`}, `Mode: `, elt('select', {name: 'soundDetectionMode'}, ...['Desktop', 'Input'].map((mode) => elt('option', {selected: mode == soundDetectionMode}, mode))));
+    const soundDetectionInputContainer = elt('label', {title: `If you want the bot to listen only to the sounds of the game install Virtual Audio Cable and choose CABLE Input device.`}, `Input: `, soundDetectionInputSelect);
     const rangeContainer = elt('input', {type: `range`, min: 0, max: 255, value: soundDetectionRange, disabled: !soundDetection,  oninput: function() {soundDetectionRangeWin.value = this.value}, name: `soundDetectionRange`, className: `${!soundDetection ? `threshold_disabled` : ``}`});
 
 
