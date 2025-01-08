@@ -189,7 +189,7 @@ if (tmBot.bot) {
 
     return {
       bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1, state),
-      log: createIdLog(log, ++i),
+      log: createIdLog(log, ++i, settings.multipleWindows),
       state,
       stats: new Stats(i)
   }

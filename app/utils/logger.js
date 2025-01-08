@@ -14,7 +14,7 @@ const createLog = (sendToWindow, sendToWindowStats) => {
     },
 
     showStats(stats, time) {
-      statsMemory[stats.win] = stats; 
+      statsMemory[stats.win] = stats;
 
       let combinedStats = statsMemory.reduce((a, b) => {
         return {
@@ -49,11 +49,15 @@ const createLog = (sendToWindow, sendToWindowStats) => {
   };
 };
 
-const createIdLog = (log, id) => {
+const createIdLog = (log, id, multipleWindows) => {
   let logData;
   return Object.assign({}, log, {
     send(text, type) {
+      if(multipleWindows) {
         log.send(`[WIN${id}] ${text}`, type);
+      } else {
+        log.send(`${text}`, type);
+      }
       }
   });
 };
