@@ -2068,7 +2068,8 @@ if (settings.soundDetection) {
      config.maxFishTime,
      missOnPurpose,
      config.missOnPurposeRandomDelay,
-     pos);
+     pos,
+     state);
   });
 
   return caught;
