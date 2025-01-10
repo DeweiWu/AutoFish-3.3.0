@@ -480,10 +480,11 @@ You can also write in this chat directly to do:
       let data = await createPointZone(BrowserWindow.getAllWindows()[0], screenData, config.patch[settings.game].streamMode);
 
       if(config.patch[settings.game].streamMode) {
-        games[0].game.workwindow.close(); // closing stream
+        games[0].game.workwindow.close(); // closing webcam stream
       }
 
       if(data && config.patch[settings.game].streamMode) {
+        showWarning(win, `Please wait a couple of seconds until the data is saved! (After you press "OK")`);
         log.send('Saving data... Please wait.');
         win.webContents.send('show-loading-cursor-start');
 
@@ -530,6 +531,8 @@ You can also write in this chat directly to do:
       } else {
         log.ok('Canceled.')
       }
+
+      BrowserWindow.getAllWindows()[0].show();
 
       win.webContents.send('show-loading-cursor-end');
       return data;
