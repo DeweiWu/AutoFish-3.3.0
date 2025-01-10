@@ -156,7 +156,8 @@ const setFishingZone = async ({workwindow}, relZone, type, config, settings) => 
     workwindow.setForeground();
   }
   const screenSize = workwindow.getView();
-  const scale = config.streamMode ? 1 : (screen.getPrimaryDisplay().scaleFactor || 1);
+
+  const scale = config.streamMode ? config.streamScreenSize.height / screen.getPrimaryDisplay().bounds.height : screen.getPrimaryDisplay().scaleFactor
 
   const pos = {
     x: (screenSize.x + relZone.x * screenSize.width) / scale,
@@ -421,7 +422,12 @@ You can also write in this chat directly to do:
     const configDefault = getJson(`${configPath}${profile}/defaults.json`);
     const settings = getJson(`${configPath}${profile}/settings.json`);
 
-    log.send(`Looking for the windows of the game...`);
+    if(config.patch[settings.game].streamMode) {
+      log.send(`Connecting to stream... Please wait.`);
+    } else {
+      log.send(`Looking for the windows of the game... Please wait.`);
+    }
+
     const useCustomWindow = config.patch[settings.game].useCustomWindow;
     if(useCustomWindow) {
       const customWindow = config.patch[settings.game].customWindow;
@@ -466,28 +472,26 @@ You can also write in this chat directly to do:
     games = games.map(game => ({game, settings, config}));
 
     if(type == `pointZone`) {
-      BrowserWindow.getAllWindows().forEach(win => win.blur());
-
       while(!games[0].game.workwindow.isForeground()) {
         games[0].game.workwindow.setForeground();
       }
 
-      let screenData;
+      let screenData = screen.getPrimaryDisplay();
+      let data = await createPointZone(BrowserWindow.getAllWindows()[0], screenData, config.patch[settings.game].streamMode);
+
       if(config.patch[settings.game].streamMode) {
-        screenData = {
-          scaleFactor: 1,
-          bounds: {
-            ...config.patch[settings.game].streamScreenSize
-          }
-        }
-      } else {
-        screenData = screen.getPrimaryDisplay();
+        games[0].game.workwindow.close(); // closing stream
       }
 
-      let data = await createPointZone(BrowserWindow.getAllWindows()[0], screenData);
-
       if(data && config.patch[settings.game].streamMode) {
+        log.send('Saving data... Please wait.');
+        win.webContents.send('show-loading-cursor-start');
+
         let streamColor;
+        const scale = config.patch[settings.game].streamScreenSize.height / (screen.getPrimaryDisplay().bounds.height * screen.getPrimaryDisplay().scaleFactor)
+
+        data.x = Math.floor(data.x * scale);
+        data.y = Math.floor(data.y * scale);
         try {
            streamColor = await (new Promise(function(resolve, reject) {
              win.webContents.send('connect-to-stream-main', {
@@ -522,15 +526,12 @@ You can also write in this chat directly to do:
       }
 
       if(data) {
-        log.ok(`Set point to x: ${data.x}, y: ${data.y} successfully!`);
+        log.ok(`Set point to [${data.x}, ${data.y}] successfully!`);
       } else {
         log.ok('Canceled.')
       }
 
-      if(config.patch[settings.game].streamMode) {
-          games[0].game.workwindow.close();
-      }
-
+      win.webContents.send('show-loading-cursor-end');
       return data;
     }
 
@@ -625,7 +626,7 @@ You can also write in this chat directly to do:
 
     let sharedArray;
     if(config.patch[settings.game].streamMode) {
-      log.send(`Connecting to capture device...`);
+      log.send(`Connecting to capture device... Please wait.`);
       let secondValue = 5;
       setTimeout(function logSeconds() {
         log.send(`Start in ${secondValue--}...`);
@@ -820,12 +821,17 @@ You can also write in this chat directly to do:
   })
 
   let settWin;
-  ipcMain.on("advanced-settings", (event, settings) => {
+  ipcMain.handle("advanced-settings", async (event, settings) => {
     if(!settWin || settWin.isDestroyed()) {
       settWin = createAdvSettings(__dirname, settings.game)
     } else {
       settWin.focus();
     }
+    await new Promise(function(resolve, reject) {
+      settWin.on('show', () => {
+        resolve();
+      })
+    });
   });
 
   let listenWin;

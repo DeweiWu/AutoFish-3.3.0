@@ -1,15 +1,20 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, screen } = require('electron');
 const path = require('path');
 
-const createWebCamWin = (deviceId, screenSize) =>
+const createWebCamWin = (deviceId, screenSizeGame) =>
   new Promise(function(resolve, reject) {
+
+    let screenSizePC = screen.getPrimaryDisplay().bounds;
+
     let mainWindow = new BrowserWindow({
         x: 0,
         y: 0,
-        width: screenSize.width, // 15 px offset
-        height: screenSize.height, // 65 px offset
+        width: screenSizePC.width, // screenSize.width, // 15 px offset
+        height: screenSizePC.height, // screenSize.height, // 65 px offset
         show: false,
         frame: false,
+        resizable: false,
+        fullscreen: true,
         webPreferences: {
           contextIsolation: false,
           nodeIntegration: true,
@@ -26,7 +31,7 @@ const createWebCamWin = (deviceId, screenSize) =>
     })
 
     mainWindow.on('ready-to-show', () => {
-      mainWindow.webContents.send('connect-to-stream', deviceId, screenSize);
+      mainWindow.webContents.send('connect-to-stream', deviceId, screenSizeGame, screenSizePC);
     })
 
     ipcMain.on('stream-loaded', () => {
@@ -37,7 +42,8 @@ const createWebCamWin = (deviceId, screenSize) =>
       resolve(mainWindow);
     })
 
-    ipcMain.on('connect-to-stream-error', (event, err) => { // TEMP:
+    ipcMain.on('connect-to-stream-error', (event, err) => {
+      mainWindow.close();
       reject(err);
     })
 });

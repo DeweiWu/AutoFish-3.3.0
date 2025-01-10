@@ -2,14 +2,10 @@ const { ipcRenderer } = require('electron');
 
 let previous = null;
 
+const node = document.createElement('div');
+document.body.append(node);
+
 ipcRenderer.on('show-info-box', (event, {x, y, r, g, b, scale}) => {
-  if(previous) {
-    previous.remove();
-  }
-
-  const node = document.createElement('div');
-  previous = node;
-
   node.style =
   `
   position: absolute;
@@ -21,14 +17,13 @@ ipcRenderer.on('show-info-box', (event, {x, y, r, g, b, scale}) => {
   border: 1px solid white;
   background-color: rgb(${r}, ${g}, ${b});
   `
-  document.body.append(node);
 })
+
 document.addEventListener('mousedown', (event) => {
   if(event.button !== 0) {
     return ipcRenderer.send('mouse-coords');
   }
-  let x = event.clientX;
-  let y = event.clientY;
-  ipcRenderer.send('mouse-coords', {x, y});
-  document.body.style = 'cursor: progress';
+
+  ipcRenderer.send('mouse-coords', true);
+  document.body.style.cursor = 'progress';
 })

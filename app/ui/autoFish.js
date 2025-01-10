@@ -177,8 +177,10 @@ class AutoFish {
       ipcRenderer.send("save-settings", config);
     });
 
-    this.settings.regOnClick((config) => {
-      ipcRenderer.send("advanced-settings", config);
+    this.settings.regOnClick(async (config, node) => {
+      node.style.cursor = 'progress';
+      await ipcRenderer.invoke("advanced-settings", config);
+      node.style.cursor = 'pointer';
     });
 
     this.settings.regOnFishingZoneClick((button) => {
@@ -223,6 +225,15 @@ class AutoFish {
     ipcRenderer.on("set-game", (event, game) => {
       this.settings.config.game = game;
       this.settings.reRender();
+    });
+
+
+    ipcRenderer.on("show-loading-cursor-start", () => {
+      document.body.style.cursor = 'progress';
+    });
+
+    ipcRenderer.on("show-loading-cursor-end", () => {
+      document.body.style.cursor = 'default';
     });
 
     ipcRenderer.on('start-tm', () => {

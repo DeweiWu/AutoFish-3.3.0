@@ -8,7 +8,7 @@ ipcRenderer.on('close-stream', () => {
   }
 })
 
-ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSize) => {
+ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, screenSizePC) => {
   const video = document.createElement('video');
   try {
     if(deviceId != 'Custom Server') {
@@ -19,8 +19,8 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSize) => {
       stream = await navigator.mediaDevices.getUserMedia({
         video: {
           deviceId: { exact: deviceId },
-          width: { ideal: screenSize.width },
-          height: { ideal: screenSize.height },
+          width: { ideal: screenSizeGame.width },
+          height: { ideal: screenSizeGame.height },
           frameRate: { ideal: 60 }
         }
       })
@@ -63,7 +63,7 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSize) => {
               });
 
             if(!response.ok) {
-              throw new Error(`Can't find the stream. Make sure you started streaming with OBS to the given rtmp server.`);
+              throw new Error(`Stream Error: ${response.status} ${response.statusText}`);
             }
 
             const serverSdp = await response.text();
@@ -81,8 +81,9 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSize) => {
       */
     }
 
-    video.style.width = `${screenSize.width}px`;
-    video.style.height = `${screenSize.height}px`;
+    video.style.width = `${screenSizePC.width}px`;
+    video.style.height = `${screenSizePC.height}px`;
+
     video.addEventListener('loadeddata', () => {
       video.play();
       video.addEventListener('play', () => {

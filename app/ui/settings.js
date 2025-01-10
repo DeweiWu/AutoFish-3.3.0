@@ -120,7 +120,9 @@ class Settings {
     this.dom.addEventListener('click', (event) => {
 
       if(event.target.className == 'bobberColorPicker') {
+        event.target.style.cursor = 'progress';
         ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+          event.target.style.cursor = 'pointer';
           if(!data) {
             return;
           }
@@ -189,7 +191,7 @@ class Settings {
       }
 
       if(event.target.name == 'advancedSettings') {
-        this.onClick(this.config);
+        this.onClick(this.config, event.target);
       }
 
       if(event.target.name == `fishingZone`) {

@@ -36,7 +36,7 @@ const createAdvSettings = (appPath, gameName) => {
   let mainWin = BrowserWindow.getAllWindows()[0];
   const [mainX, mainY] = mainWin.getPosition();
   let win = new BrowserWindow({
-    x: mainX + 100,
+    x: mainX + 150,
     y: mainY,
     title: `Advanced Settings for ${gameName}`,
     width: 455,
@@ -107,7 +107,7 @@ const createAdvSettings = (appPath, gameName) => {
   });
 
   ipcMain.on("stream-warn", () => {
-    showWarning(win, `- Multiple Fishing, Alt-Tab and Sound Detection won't work.\n- Doesn't support windowed mode.\n- Scaling in Windows should be 100% (game pc).\n- Works best with default 1920x1080 or lower resolution (higher resolutions could needlessly load your hdmi-capture device).\n- Turn off enchance pointer precision in Mouse Properties. (game pc)`);
+    showWarning(win, `- Multiple Fishing, Alt-Tab and Sound Detection won't work.\n- Doesn't support windowed mode (of the game).\n- Turn off enchance pointer precision in Mouse Properties (gaming pc).`);
   });
 
   ipcMain.on("aggroCheck-warn", () => {

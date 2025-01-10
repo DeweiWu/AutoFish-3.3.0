@@ -426,7 +426,9 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
   const addButton = elt(`input`, {type: `button`, className: `whispSpecColorsAdd`, onclick() {
     const colorBox = elt('input', {type: `color`, className: `whisperColorBox`, value: `#ffffff`});
     const colorPicker = elt('input', {type: `button`, className: `whisperColorPicker`, value: ``, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }
@@ -446,7 +448,9 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
   const whispSpecColorsNodes = whispSpecColors.map(({r, g, b, percent}) => {
     const colorBox = elt('input', {type: `color`, className: `whisperColorBox`, value: rgbToHex(r, g, b)});
     const colorPicker = elt('input', {type: `button`, className: `whisperColorPicker`, value: ``, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }
@@ -582,7 +586,9 @@ const renderLuresCoords = ({luresCoords, lures}) => {
   const x = elt('input', {type: `number`, disabled: !lures, name: `x`, value: luresCoords.x});
   const y = elt('input', {type: `number`, disabled: !lures, name: `y`, value: luresCoords.y})
   const button = elt('input', {type: `button`, className: `${!lures ? `disabledButton` : ``}`, disabled: !lures, value: `Set`, onclick() {
+    this.style.cursor = 'progress';
     ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      this.style.cursor = 'pointer';
       if(!data) {
         return;
       }
@@ -601,7 +607,9 @@ const renderFishpolCoords = ({fishpoleCoords, lures}) => {
   const x = elt('input', {type: `number`, disabled: !lures, name: `x`, value: fishpoleCoords.x});
   const y = elt('input', {type: `number`, disabled: !lures, name: `y`, value: fishpoleCoords.y})
   const button = elt('input', {type: `button`, className: `${!lures ? `disabledButton` : ``}`, disabled: !lures, value: `Set`, onclick() {
+    this.style.cursor = 'progress';
     ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      this.style.cursor = 'pointer';
       if(!data) {
         return;
       }
@@ -639,7 +647,9 @@ const renderSkills = ({aggroCheck, skills}) => {
     const precision = elt('input', {type: `number`, value: 95, title: `How accurate the color should be`, "data-skills": "precision"})
 
     const coordsButton = elt('input', {type: `button`, className: `whisperColorPicker`, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }
@@ -680,7 +690,9 @@ const renderSkills = ({aggroCheck, skills}) => {
     const precision = elt('input', {type: `number`, value: skill.precision, "data-skills": "precision"})
 
     const coordsButton = elt('input', {type: `button`, className: `whisperColorPicker`, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }
@@ -739,7 +751,9 @@ const renderSpares = ({spares}) => {
     const delayContainer = elt('div', null, elt('span', {style: `margin-right: 5px`}, `from: `), elt(`input`, {type: `number`, value: 1, "data-spares": "delayFrom"}), elt('span', {style: `margin-right: 5px`}, `to: `), elt(`input`, {type: `number`, value: 3, "data-spares": "delayTo"}))
 
     const coordsButton = elt('input', {type: `button`, style: `display: none`, value: `Set`, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }
@@ -830,7 +844,9 @@ const renderSpares = ({spares}) => {
     const delayContainer = elt('div', null, elt('span', {style: `margin-right: 5px`}, `from: `), elt(`input`, {type: `number`, value: spare.delayFrom, "data-spares": "delayFrom"}), elt('span', {style: `margin-right: 5px`}, `to: `), elt(`input`, {type: `number`, value: spare.delayTo, "data-spares": "delayTo"}))
 
     const coordsButton = elt('input', {type: `button`, style: `${spare.type == `Move Mouse` || spare.type == `Drag Mouse By Right` || spare.type == `Drag Mouse By Left` || spare.type == `Pixel Color TRUE` || spare.type == `Pixel Color FALSE`  || spare.type == `Move Mouse + Left Click` || spare.type == `Move Mouse + Right Click` ? `` : `display: none;`}`, value: `Set`, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }
@@ -1017,7 +1033,9 @@ const renderAggroCheckUserHp = ({aggroCheck, aggroCheckUserHp}) => {
   const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckUserHp.precision, "data-skills": "precision"})
 
   const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
+    this.style.cursor = 'progress';
     ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      this.style.cursor = 'pointer';
       if(!data) {
         return;
       }
@@ -1045,7 +1063,9 @@ const renderDeathCheckHp = ({deathCheck, deathHp}) => {
     const precision = elt('input', {type: `number`, disabled: !deathCheck, value: deathHp.precision, "data-skills": "precision"})
 
     const colorPicker = elt('input', {type: `button`, disabled: !deathCheck, className: `whisperColorPicker ${!deathCheck ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }
@@ -1096,7 +1116,9 @@ const renderAggroCheckEnemyHp = ({aggroCheck, aggroCheckEnemyHp}) => {
   const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyHp.precision, "data-skills": "precision"})
 
   const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
+    this.style.cursor = 'progress';
     ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+      this.style.cursor = 'pointer';
       if(!data) {
         return;
       }
@@ -1186,7 +1208,9 @@ const renderFindPlayerHp = ({findPlayer, findPlayerHp}) => {
     const precision = elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerHp.precision, name: "precision"})
 
     const colorPicker = elt('input', {type: `button`, disabled: !findPlayer, className: `whisperColorPicker ${!findPlayer ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }
@@ -1209,7 +1233,9 @@ const renderFindPlayerHpException = ({findPlayer, findPlayerHpException}) => {
     const precision = elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerHpException.precision, name: "precision"})
 
     const colorPicker = elt('input', {type: `button`, disabled: !findPlayer, className: `whisperColorPicker ${!findPlayer ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
+      this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
+        this.style.cursor = 'pointer';
         if(!data) {
           return;
         }

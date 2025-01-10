@@ -21,7 +21,7 @@ const createFishingZone = ({pos, screenSize, type, config, settings, scale}, fin
     show: true,
     resizable: true,
     opacity: config.streamMode ? 0.6 : 0.3,
-		alwaysOnTop: true, 
+		alwaysOnTop: true,
     frame: false,
     webPreferences: {
       contextIsolation: false,
