@@ -1481,11 +1481,13 @@ if(lootWindowPatch.exitButton) {
 
         state.status = 'stop';
         if(wins.every(win => win.state.status == `stop`)) {
+          /*
           if(config.streamMode) {
             await keyboard.sendKey('enter', delay);
             await keyboard.printText('/quit', delay);
             await keyboard.sendKey('enter', delay);
           }
+          */
           onStop();
           await sleep(1000);
           workwindow.close();
