@@ -9,7 +9,8 @@
       "game": "Retail",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -204,10 +205,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -291,7 +294,8 @@
       "game": "Cata Classic",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -428,7 +432,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 14, "to": 17 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -488,10 +492,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -563,7 +569,8 @@
       "game": "Classic",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -700,7 +707,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 25, "to": 28 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -756,10 +763,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -835,7 +844,8 @@
       "game": "Leg",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -972,7 +982,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 15, "to": 18 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1029,10 +1039,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -1087,7 +1099,8 @@
       "game": "MoP",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -1224,7 +1237,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 15, "to": 18 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1280,10 +1293,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -1340,7 +1355,8 @@
       "game": "Cata",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -1477,7 +1493,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 15, "to": 18 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1534,10 +1550,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -1589,7 +1607,8 @@
       "game": "LK Private",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -1740,7 +1759,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 13, "to": 16 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -1797,10 +1816,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -1857,7 +1878,8 @@
       "game": "TBC",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -2008,7 +2030,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 18, "to": 21 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -2065,10 +2087,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -2122,7 +2146,8 @@
       "game": "Vanilla",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -2259,7 +2284,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 26, "to": 29 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -2316,10 +2341,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
@@ -2378,7 +2405,8 @@
       "game": "Vanilla (splash)",
       "timer": false,
       "streamMode": false,
-      "streamDevice": "",
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
       "picoip": "192.168.1.245",
       "streamScreenSize": {
         "width": 1920,
@@ -2515,7 +2543,7 @@
       "sleepAfterHookChance": 80,
       "maxFishTime": { "from": 26, "to": 29 },
       "maxFishTimeAfter": "recast",
-      "highlightPercent": false,
+      "highlightPercent": true,
       "relZone": {
         "x": 0.34427083333333336,
         "y": 0.08518518518518518,
@@ -2572,10 +2600,12 @@
       "arduino": false,
       "arduinoPort": "COM1",
       "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
       "rngMove": false,
       "rngMoveKeys": true,
-      "rngMoveTimer": { "from": 0.5, "to": 2 },
-      "rngMoveRadiusMax": 90,
+      "rngMoveTimer": { "from": 3, "to": 10 },
+      "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
 
