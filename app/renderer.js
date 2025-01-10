@@ -22,7 +22,7 @@ const runApp = async () => {
 
   ipcRenderer.on('start-audio', async (event, settings) => {
     let analyser = await audioAnalyser.startStream(settings);
-    ipcRenderer.on('get-audio', async (event, threshold, checkBobberTime, missOnPurpose, missOnPurposeValues, pos, state) => { // miss on purpuse?
+    ipcRenderer.on('get-audio', async (event, threshold, checkBobberTime, missOnPurpose, missOnPurposeValues, pos) => { // miss on purpuse?
 
     const checkBobberTimer = createTimer(() => random(checkBobberTime.from * 1000, checkBobberTime.to * 1000));
     const missOnPurposeTimer = createTimer(() => random(missOnPurposeValues.from * 1000, missOnPurposeValues.to * 1000));
@@ -33,7 +33,7 @@ const runApp = async () => {
       missOnPurposeTimer.update();
     }
 
-      for(;!checkBobberTimer.isElapsed() && state.status == "checking";) { 
+      for(;!checkBobberTimer.isElapsed();) {;
         let waveform = analyser.waveform();
         let result = waveform.reduce((a, b) => a > b ? a : b) - waveform.reduce((a, b) => a < b ? a : b) > threshold ? true : false;
 

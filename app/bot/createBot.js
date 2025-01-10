@@ -2068,9 +2068,12 @@ if (settings.soundDetection) {
      config.maxFishTime,
      missOnPurpose,
      config.missOnPurposeRandomDelay,
-     pos,
-     state);
+     pos);
   });
+
+  if(state.status != 'checking') {
+    return;
+  }
 
   return caught;
 

@@ -220,7 +220,7 @@ if (tmBot.bot) {
       bots.forEach((bot) => {
         runBot(bot, onError, bots, aggroTestRun)
         .then(() => {
-            win.show();
+            //win.show();
             if(bots.every(({state}) => state.status == 'stop')) {
               setTimeout(() => log.setState(true), 500);
             }
@@ -245,7 +245,7 @@ if (tmBot.bot) {
       })
     },
     stopBots() {
-      win.show();
+      //win.show();
       log.send('Stopped.');
       log.setState(false);
       bots.forEach(({state}) => state.status = "stop");
