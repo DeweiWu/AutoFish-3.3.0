@@ -6,6 +6,12 @@ const fs = require('fs');
 let wholeLog = ``;
 let mediamtxProcess;
 
+function extractIPAddress(logLine) {
+    const regex = /(\d+\.\d+\.\d+\.\d+):\d+.*?is publishing to path 'live'/;
+    const match = logLine.match(regex);
+    return match ? match[1] : null;
+}
+
 module.exports = (log, mainPath) => {
   // Path to the MediaMTX binary
   if(mediamtxProcess) {
@@ -21,6 +27,10 @@ module.exports = (log, mainPath) => {
 
   // Handle process output
   mediamtxProcess.stdout.on("data", (data) => {
+    let remoteConnection = extractIPAddress(data.toString());
+    if(remoteConnection) {
+      log.ok(`${remoteConnection} Started streaming!`);
+    }
     wholeLog += data.toString();
   });
 
@@ -30,6 +40,7 @@ module.exports = (log, mainPath) => {
 
   // Handle process errors
   mediamtxProcess.on("error", (error) => {
+    log.err(`RTMP Server Error: ${error.message.toString()}`);
     wholeLog += error.message.toString();
   });
 
