@@ -1060,7 +1060,7 @@ const renderDeathCheckHp = ({deathCheck, deathHp}) => {
     const x = elt('input', {type: `number`, name: 'x', disabled: !deathCheck, value: deathHp.x});
     const y = elt('input', {type: `number`, name: 'y', disabled: !deathCheck, value: deathHp.y});
     const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!deathCheck ? `colorPicker_disabled` : ``}`, disabled: !deathCheck, name: 'color', value: deathHp.color});
-    const precision = elt('input', {type: `number`, disabled: !deathCheck, value: deathHp.precision, "data-skills": "precision"})
+    const precision = elt('input', {type: `number`, disabled: !deathCheck, value: deathHp.precision, name: 'precision'})
 
     const colorPicker = elt('input', {type: `button`, disabled: !deathCheck, className: `whisperColorPicker ${!deathCheck ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
       this.style.cursor = 'progress';
@@ -1113,7 +1113,7 @@ const renderAggroCheckEnemyHp = ({aggroCheck, aggroCheckEnemyHp}) => {
   const x = elt('input', {type: `number`, name: 'x', disabled: !aggroCheck, value: aggroCheckEnemyHp.x});
   const y = elt('input', {type: `number`, name: 'y', disabled: !aggroCheck, value: aggroCheckEnemyHp.y});
   const colorBox = elt('input', {type: `color`, className: `whisperColorBox ${!aggroCheck ? `colorPicker_disabled` : ``}`, disabled: !aggroCheck, name: 'color', value: aggroCheckEnemyHp.color});
-  const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyHp.precision, "data-skills": "precision"})
+  const precision = elt('input', {type: `number`, disabled: !aggroCheck, value: aggroCheckEnemyHp.precision, name: "precision"})
 
   const colorPicker = elt('input', {type: `button`, disabled: !aggroCheck, className: `whisperColorPicker ${!aggroCheck ? `disabledButtonPremium` : ``}`, value: ``, onclick() {
     this.style.cursor = 'progress';

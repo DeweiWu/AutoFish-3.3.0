@@ -104,9 +104,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
      const pixelData = await getDataFrom({x: this.x - screenSize.x, y: this.y - screenSize.y, width: 1, height: 1});
      const [r, g, b] = Array.from(pixelData.data);
 
-     let percR = this.color.r / 100 * (100 - this.precision);
-     let percG = this.color.g / 100 * (100 - this.precision);
-     let percB = this.color.b / 100 * (100 - this.precision);
+     let percR = 255 - (255 * (this.precision / 100))
+     let percG = 255 - (255 * (this.precision / 100))
+     let percB = 255 - (255 * (this.precision / 100))
+
      return closeEnough(percR)(this.color.r, r) && closeEnough(percG)(this.color.g, g) && closeEnough(percB)(this.color.b, b)
    }
  }
@@ -716,11 +717,12 @@ if(lootWindowPatch.exitButton) {
             let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
             let color = hexToRgb(spare.color);
 
-            let percR = color.r / 100 * (100 - spare.precision);
-            let percG = color.g / 100 * (100 - spare.precision);
-            let percB = color.b / 100 * (100 - spare.precision);
+           let percR = 255 - (255 * (spare.precision / 100))
+           let percG = 255 - (255 * (spare.precision / 100))
+           let percB = 255 - (255 * (spare.precision / 100))
 
-            if(!closeEnough(percR)(r, color.r) && !closeEnough(percG)(g, color.g) && !closeEnough(percB)(b, color.b)) {
+            if(!
+              (percR)(r, color.r) && !closeEnough(percG)(g, color.g) && !closeEnough(percB)(b, color.b)) {
               return "break";
             }
 
@@ -731,9 +733,9 @@ if(lootWindowPatch.exitButton) {
             let [r, g, b] = Array.from((await getDataFrom({x: spare.x - screenSize.x, y: spare.y - screenSize.y, width: 1, height: 1})).data);
             let color = hexToRgb(spare.color);
 
-            let percR = color.r / 100 * (100 - spare.precision);
-            let percG = color.g / 100 * (100 - spare.precision);
-            let percB = color.b / 100 * (100 - spare.precision);
+            let percR = 255 - (255 * (spare.precision / 100))
+            let percG = 255 - (255 * (spare.precision / 100))
+            let percB = 255 - (255 * (spare.precision / 100))
 
             if(closeEnough(percR)(r, color.r) && closeEnough(percG)(g, color.g) && closeEnough(percB)(b, color.b)) {
               return "break";
