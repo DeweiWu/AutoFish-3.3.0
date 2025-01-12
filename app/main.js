@@ -26,6 +26,7 @@ const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
 const createPointZone = require(`./wins/pointZone/main.js`);
 const createListenWin = require('./wins/listenWin/main.js');
+const createHintWin = require('./wins/hintWin/main.js');
 const trialEncryption = require('./../enc.js')
 const { saveArchive, loadArchive } = require('./utils/saveArchive.js');
 
@@ -777,6 +778,36 @@ You can also write in this chat directly to do:
 
   ipcMain.on('save-config', () => {
     saveArchive(log);
+  });
+
+  let hintWin;
+  ipcMain.on('create-hint-win', (event, data) => {
+    if(hintWin) {
+      hintWin.close();
+      hintWin = false;
+    }
+
+    let focusedWinPos = BrowserWindow.getFocusedWindow();
+    let winPos = focusedWinPos.getPosition();
+    let compensate = 0;
+    let scaleFactor = screen.getPrimaryDisplay().scaleFactor;
+    if(focusedWinPos.isMenuBarVisible()) {
+      compensate = Math.floor((compensate + 25) / scaleFactor);
+    }
+
+    data.pos = {
+      x: data.pos.x + winPos[0],
+      y: data.pos.y + winPos[1] + Math.floor((compensate + 18) / scaleFactor)
+    };
+
+    hintWin = createHintWin(data);
+  });
+
+  ipcMain.on('close-hint-win', (event) => {
+    if(hintWin) {
+      hintWin.close();
+      hintWin = false;
+    }
   });
 
   ipcMain.handle('load-config', async () => {

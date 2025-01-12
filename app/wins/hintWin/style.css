@@ -1,0 +1,29 @@
+@keyframes appearFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.container {
+  border-radius: 10px; /* Optional: adds rounded corners */
+  padding: 0;
+  margin: 0;
+  background-color: #ffffe5;
+  border: 1px solid grey;
+  opacity: 0; /* Start with the div being invisible */
+  position: relative;
+  display: inline-block; /* Adjust as needed for your layout */
+  animation: appearFromLeft 0.3s ease-in-out forwards; /* Duration: 1s, Easing: ease-in-out */
+}
+
+.container p {
+  font-size: 0.8em;
+  padding: 5px;
+  margin: 0;
+  font-family: "Segoe UI";
+}

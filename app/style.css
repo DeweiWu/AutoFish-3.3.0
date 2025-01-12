@@ -5,7 +5,7 @@ html {
 *,
 *:before,
 *:after {
-  box-sizing: inherit; 
+  box-sizing: inherit;
 }
 
 body,
@@ -15,7 +15,7 @@ button,
 p,
 select {
   font-family: "Segoe UI";
-  font-size: 12px;
+  font-size: 12px; 
 }
 
 select {
@@ -205,7 +205,7 @@ section {
 }
 
 .settings .option_hint {
-  cursor: help;
+  cursor: pointer;
   height: 13px;
   margin-left: 2px;
   margin-top: 3px;
