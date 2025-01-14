@@ -18,12 +18,13 @@
   opacity: 0; /* Start with the div being invisible */
   position: relative;
   display: inline-block; /* Adjust as needed for your layout */
-  animation: appearFromLeft 0.3s ease-in-out forwards; /* Duration: 1s, Easing: ease-in-out */
+  animation: appearFromLeft 0.2s ease-in-out forwards; /* Duration: 1s, Easing: ease-in-out */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .container p {
-  font-size: 0.8em;
-  padding: 5px;
+  font-size: 12px;
+  padding: 8px;
   margin: 0;
   font-family: "Segoe UI";
 }

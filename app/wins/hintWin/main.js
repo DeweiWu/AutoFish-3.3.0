@@ -9,6 +9,7 @@ const createHintWin = (data) => {
     transparent: true,
     focusable: false,
     frame: false,
+    show: true,
     width: 300,
     height: 500,
     resizable: false,
@@ -21,7 +22,12 @@ const createHintWin = (data) => {
   win.loadFile("./app/wins/hintWin/index.html");
 
   win.once("ready-to-show", async () => {
-    win.webContents.send('show-hint', text);
+    win.show();
+    setTimeout(() => {
+      if(win.isDestroyed()) return;
+      win.webContents.send('show-hint', text);
+    }, 150)
+
     //win.openDevTools({mode: `detach`})
   });
 

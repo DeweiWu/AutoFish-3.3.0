@@ -238,37 +238,39 @@ return elt(
       "div",
       { className: "settings_section" },
       wrapInLabel(
-        "",
-        renderGameNames(config),
-        `Choose the version of the game you want the bot to work on.`
+          "",
+          renderGameNames(config),
+          `Select the version of the game you want the bot to operate on. Ensure the chosen version matches your game client.`
       ),
       wrapInLabel(
-        "Fishing Key: ",
-        renderFishingKey(config),
-        `Assign the same key you use for fishing. If you use /castFishing instead, then you should assign a key for fishing.`
+          "Fishing Key: ",
+          renderFishingKey(config),
+          `Assign the same key you use for fishing in the game. If you use a command like /castFishing, assign a key in the game to trigger the fishing skill.`
       ),
       wrapInLabel(
-        "Int. Key: ",
-        renderPoleKey(config),
-        `Exclusively for Retail. Use interaction key instead of mouse for catching.`
+          "Int. Key: ",
+          renderPoleKey(config),
+          `Use the interaction key instead of the mouse for catching fish.`
       ),
       wrapInLabel(
-        "Stop Key: ",
-        renderStopKey(config),
-        `Assign a key that you will use to stop the bot.`
+          "Stop Key: ",
+          renderStopKey(config),
+          `Assign a key to stop the bot at any time. This key will immediately halt all bot operations when pressed.`
       ),
       wrapInLabel(
-        "Alt-Tab Fishing: ",
-        renderAfkmode(config),
-        `ONLY ON DIRECTX 11. The bot will automatically alt+tab after it casts (bringing back the previous window) and automatically focus the window of the game when it needs to catch. If you use your mouse too much during AFK fishing the whitelist feature might be unstable. `,
-        `premium_label`
+          "Alt-Tab Fishing: ",
+          renderAfkmode(config),
+          `**This mode works only for the games in DirectX 11 or lower** *(older games doesn't need it)*. The bot will automatically alt+tab after casting (returning to the previous window) and refocus the game window when it's time to catch.`,
+          `premium_label`
       ),
       wrapInLabel(
-        "Multiple Fishing: ",
-         renderMultipleWindows(config),
-        `ONLY ON DIRECTX 11. If you want to use multiple windows check this option. You need to launch every window and configure them properly, make sure every window is in DirectX 11 mode. The bot will switch between windows automatically.`,
-        `premium_label`
-      ),
+          "Multiple Fishing: ",
+          renderMultipleWindows(config),
+          `Enable this option to use the bot across multiple game windows. Ensure each window is properly launched and configured, and **every game instance is set to DirectX 11 or lower** *(older games doesn't need it)*. The bot will automatically switch between windows as needed.\n\nIn this mode, the bot will use special profiles specific to each window: WIN1, WIN2, WIN3, and so on *(check in profiles list)*.\n\nEach "WIN" profile must have a **"Custom Window"** configured *(found under Advanced Settings -> Window)*. Use the **"Focus"** button to check which window you've selected.\n\n**Simple guide:** choose WIN1 in profiles above -> Go to Advanced Settings -> Custom Window -> Choose the window for the first game -> Repeat the same for every next window.`,
+          `premium_label`
+      )
+
+
     ),
     elt(
       "div",
@@ -303,7 +305,7 @@ return elt(
 
       wrapInLabel(`${config.soundDetection ? `` : config.bobberColor == `Manual` ? `Tolerance: ` : `Intensity: `}`,
         renderThreshold(config),
-        config.soundDetection ? `Amplitude value. The bot will listen to the amplitude value of the audio signal until it reaches the threshold. Use "Listen" button to determine the amplitude of "splash" sound when the fish is caught. If the bot doesn't react to the sound, decrease this value. If the bot reacts too early, increase this value.\n\nIf you click on "Listen" button it will show you two values. Amp: current amplitude. Max: maximum amplitude reached.` : config.bobberColor == `Manual` ? `Adjust the tolerance to set how closely other colors must match the chosen color.` : `Decrease this value, if the bot can't find the bobber (e.g. at night, bad weather). Increase this value if you want the bot to ignore more ${config.bobberColor} colors.`
+        config.soundDetection ? `Amplitude value. The bot will listen to the amplitude value of the audio signal until it reaches the threshold. Use **"Listen"** button to determine the amplitude of "splash" sound when the fish is caught. If the bot doesn't react to the sound, decrease this value. If the bot reacts too early, increase this value.\n\nIf you click on **"Listen"** button it will show you two values: **Amp:** current amplitude, **Max:** maximum amplitude reached during listening.\n\n**Simple guide:** click **"Listen"** button -> focus your game and use fishing skill -> wait for the fish to bite -> look at **"Max"** value -> change threshold to a little bit lower than that.` : config.bobberColor == `Manual` ? `Adjust the tolerance to set how closely other colors must match the chosen color.` : `Decrease this value, if the bot can't find the bobber (e.g. at night, bad weather). Increase this value if you want the bot to ignore more ${config.bobberColor} background colors.`
         , `thLabel`),
       !config.soundDetection ? wrapInLabel("Sensitivity: ", renderBobberSensitivity(config), config.game == `Vanilla (splash)` ?
        `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value. If in Auto mode: The bot will auto-adjust both sensitivity value per each cast.`

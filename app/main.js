@@ -797,7 +797,7 @@ You can also write in this chat directly to do:
 
     data.pos = {
       x: data.pos.x + winPos[0],
-      y: data.pos.y + winPos[1] + Math.floor((compensate + 18) / scaleFactor)
+      y: data.pos.y + winPos[1] + Math.floor((compensate + 8) / scaleFactor)
     };
 
     hintWin = createHintWin(data);
@@ -821,11 +821,11 @@ You can also write in this chat directly to do:
   ipcMain.on("afk-fishing-warn", () => {
     showWarning(win, `Don't forget to switch to DirectX 11 in the game.\n\nTurn off Human-like Accuracy feature (Advanced Settings) and increase Mouse Random Speed to make it work better.\n\nDecreasing all sleeping and reaction values should also help.\n\nWarning! This doesn't work in streaming mode!`);
   });
-
+/*
   ipcMain.on("multiple-fishing-warn", () => {
     showWarning(win, `In this mode the bot will use config from respective to the window profiles: WIN1, WIN2, WIN3 and so on.\n\nEvery "WIN" profile should have "Custom window" set (Advanced Settings -> Window). You can use "Focus" button to understand which window you chose exactly. The bot will ignore profiles for which you didn't set custom window.\n\nDon't forget to switch to DirectX 11 in the game.\n\nWarning! This doesn't work in streaming mode!`);
   })
-
+*/
   ipcMain.on("splash-warn", () => {
     showWarning(win, `The bot will try to detect splash animation instead of the bobber animation. If possible, increase the visual quality of the water either by installing modded textures or in the settings of the game.\n\nIf the splash isn't detected, you can increase Sensitivity and Splash Color values (You can find the Splash Color value in the Advanced Settings).`);
   });
