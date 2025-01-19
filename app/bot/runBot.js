@@ -35,17 +35,15 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     aggroCheck,
     applyFatigue,
     checkConfirm,
-    regOnError,
-    streamModeInitialMouse
+    regOnError
   } = bot;
 
   regOnError.stopBots = () => {
     onError();
   }
 
-  await streamModeInitialMouse();
   checkChanges(onError, log);
-  deathCheck(wins, onError);
+  deathCheck(wins, onError, log);
   aggroCheck(onError, state, aggroTestRun, wins);
   findPlayer.frontCheck(state, log, onError);
 

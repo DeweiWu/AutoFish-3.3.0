@@ -22,6 +22,10 @@ const getPercent = (value, total) => {
   return Math.ceil((value / (total || 1)) * 100 * 100) / 100;
 };
 
+const random = (from, to) => {
+  return from + Math.random() * (to - from);
+};
+
 function cropImage({ data, width, height }, crop) {
     const croppedData = new Uint8Array(crop.width * crop.height * 4); // 4 bytes per pixel (RGBA)
 
@@ -44,16 +48,26 @@ function cropImage({ data, width, height }, crop) {
     };
 }
 
-const createBots = async (games, log, tmBot, arduino, win) => {
-  const winSwitch = createWinSwitch(new EventLine());
 
-  if(games[0].config.patch[games[0].settings.game].whitelist) { // check language only by first win?
+const sleep = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};
+
+
+const createBots = async (games, log, tmBot, arduino, win) => {
+  const winSwitch = createWinSwitch(new EventLine(), games.length);
+
+  let chosenConfig = games[0].config.patch[games[0].settings.game];
+  let chosenSettings = games[0].settings;
+
+  if(chosenConfig.whitelist) { // check language only by main win (???)
     log.send(`Downloading data for ${properLanguages[games[0].config.patch[games[0].settings.game].whitelistLanguage]} language, it might take a while...`);
     await setWorker(games[0].config.patch[games[0].settings.game].whitelistLanguage);
   }
 
-
-if (tmBot.bot) {
+  if (tmBot.bot) {
   tmBot.ss = [];
   tmBot.replies = [];
   tmBot.reconnects = [];
@@ -145,13 +159,18 @@ if (tmBot.bot) {
     }
   });
 }
-
+  let picoInterface;
   const bots = games.map(({game, config, settings}, i) => {
     if(config.patch[settings.game].streamMode) {
       let gameConfig = config.patch[settings.game];
-      const pico = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize, gameConfig.delay, log);
-      game.workwindow.capture = (zone) =>
-        new Promise(function(resolve, reject) {
+      if(!picoInterface) {
+        console.log(`creating pico again`);
+        picoInterface = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize, gameConfig.delay, log); // streamScreenSize? what if we use pico normally?
+      }
+
+      let streamWindow = settings.multipleWindows ? i + 1 : ``;
+      game.workwindow.capture = (zone) => {
+        return new Promise(function(resolve, reject) {
           let reqCh = `channel-${Math.random()}`;
           ipcMain.once(reqCh, (event, buffer) => {
             resolve({
@@ -160,11 +179,15 @@ if (tmBot.bot) {
               data: Buffer.from(buffer)
             });
           })
+
           setTimeout(() => {
-            win.webContents.send('request-frame', zone, reqCh);
+            //console.log(`channel requested`, `request-frame-${i}`);
+            win.webContents.send(`request-frame-${streamWindow}`, zone, reqCh);
           }, 0)
       });
-      game = {mouse: pico.mouse, workwindow: game.workwindow, keyboard: pico.keyboard}
+      }
+
+      game = {mouse: picoInterface.mouse, workwindow: game.workwindow, keyboard: picoInterface.keyboard}
     }
 
     if(config.patch[settings.game].arduino) {
@@ -195,6 +218,22 @@ if (tmBot.bot) {
   }
   });
 
+  if(chosenConfig.streamMode || (chosenConfig.arduino && chosenConfig.arduinoType == `pico`)) {
+    let screenSize = chosenConfig.streamMode ? chosenConfig.streamScreenSize : games[0].game.workwindow.getView();
+
+    if(!chosenConfig.streamManualCursor) {
+      await picoInterface.mouse.moveTo(-9999, -9999);
+    }
+
+    await sleep(random(250, 1000));
+
+    if(!chosenSettings.useInt) {
+      await picoInterface.mouse.moveTo(Math.floor(screenSize.width / 2), Math.floor(screenSize.height / 2));
+    }
+
+    await sleep(random(250, 1000));
+  }
+
 if (tmBot.bot) {
   tmBot.stats = bots.map(({ stats, state }) => ({stats, state}));
 
@@ -215,9 +254,9 @@ if (tmBot.bot) {
 }
 
   return {
-    startBots(onError, aggroTestRun) {
+    startBots: async (onError, aggroTestRun) => {
       log.send("Starting the bots...");
-      bots.forEach((bot) => {
+      for(const bot of bots) {
         runBot(bot, onError, bots, aggroTestRun)
         .then(() => {
             //win.show();
@@ -242,7 +281,7 @@ if (tmBot.bot) {
             //bot.stats.show().forEach((stat) => bot.log.ok(stat));
             //bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
         });
-      })
+      }
     },
     stopBots() {
       //win.show();

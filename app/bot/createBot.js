@@ -80,6 +80,10 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
     settings.autoTh = false;
   };
 
+  if(settings.multipleWindows) {
+    config.highlightPercent = false;
+  }
+
   const { keyboard, mouse, workwindow } = game;
   let delay = [config.delay.from, config.delay.to];
 
@@ -117,7 +121,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
     if(settings.afkmode && config.reaction) {
        await sleep(random(config.reaction.from, config.reaction.to))
     }
-    await winSwitch.execute(workwindow);
+    await winSwitch.execute(workwindow, async (steps) => {
+      await keyboard.altTab(steps, delay);
+    }, winNum);
     await callback();
     winSwitch.finished();
   };
@@ -148,7 +154,6 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
     }
   };
   /* --- GET DATA FROM END --- */
-
 
   /* --- GET DATA FROM FISHING ZONE --- */
   const getDataFromFishingZone = async (zone) => {
@@ -367,7 +372,7 @@ if(lootWindowPatch.exitButton) {
       return {x: posFromCurrent.x + mouse.getPos().x, y: posFromCurrent.y + mouse.getPos().y};
     }
 
-    const moveTo = async ({ pos, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation, cPos}) => {
+    const moveTo = async ({ pos, withClick, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation, cPos}) => {
 
       if (randomRange) {
         pos.x = pos.x + Math.round(random(-randomRange, randomRange));
@@ -418,9 +423,13 @@ if(lootWindowPatch.exitButton) {
             await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
           }
         } else {
-          let nutjspos = await nutjs.mouse.getPos();
-          let normalpos = mouse.getPos();
-          await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+          //let nutjspos = await nutjs.mouse.getPos();
+          //let normalpos = mouse.getPos();
+          if(withClick) {
+            await mouse.humanMoveToRClick(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+          } else {
+            await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+          }
         }
 
         if(config.likeHumanFineTune && fineTune && !settings.multipleWindows && state.status != "stop") {
@@ -1457,7 +1466,7 @@ if(lootWindowPatch.exitButton) {
     }
   }
 
-  const deathCheck = async (wins, onStop) => {
+  const deathCheck = async (wins, onStop, log) => {
     if(!config.deathCheck) {
       return;
     }
@@ -1469,8 +1478,9 @@ if(lootWindowPatch.exitButton) {
         continue;
       }
 
-      if(!(await deathHp.checkColor(getDataFrom))) {
 
+      if(!(await deathHp.checkColor(getDataFrom))) {
+        log.warn(`The bot is dead or disconnected in: ${winNum}! Closing window...`);
         if(tmBot.bot) {
           tmBot.ctx.reply(`The bot is dead or disconnected in: ${winNum}! Closing window...`);
         }
@@ -1855,39 +1865,13 @@ if(lootWindowPatch.exitButton) {
   };
   aggroCheck.status = Promise.resolve();
 
-  const streamModeInitialMouse = async () => {
-    if(state.status == 'initial' && (config.streamMode || (config.arduino && config.arduinoType == `pico`))) {
-      /*
-      await keyboard.toggleKey('ALT', true);
-      await keyboard.toggleKey('TAB', true);
-      await keyboard.toggleKey('ALT', false);
-      await keyboard.toggleKey('TAB', false);
-      */
-      if(!config.streamManualCursor) {
-        await mouse.moveTo(-9999, -9999);
-      }
-
-      await sleep(random(500, 1500));
-
-      if(!settings.useInt) {
-        await mouse.moveTo(Math.floor(screenSize.width / 2), Math.floor(screenSize.height / 2));
-      }
-/*
-      await keyboard.toggleKey('ALT', true);
-      await keyboard.toggleKey('TAB', true);
-      await keyboard.toggleKey('ALT', false);
-      await keyboard.toggleKey('TAB', false);
-  */
-      await sleep(random(500, 2000));
-    }
-  }
-
   let lastMovementFrom;
   const castFishing = async (state) => {
     let timeSpentOnCastingStart = Date.now();
     await action(async () => {
       await keyboard.sendKey(settings.fishingKey, delay);
     });
+
     let timeSpentOnCasting = Date.now() - timeSpentOnCastingStart;
 
     if(settings.afkmode) await altTab();
@@ -1928,7 +1912,7 @@ if(lootWindowPatch.exitButton) {
       });
     } else {
 
-      let castDelaySleepValue = Math.max(0, random(config.castDelay.from, config.castDelay.to) - timeSpentOnCasting);
+      let castDelaySleepValue = config.streamMode && settings.multipleWindows ? random(config.castDelay.from, config.castDelay.to) : Math.max(0, random(config.castDelay.from, config.castDelay.to) - timeSpentOnCasting);
       await sleep(castDelaySleepValue, async () => {
         await hoverMouse();
       });
@@ -1984,7 +1968,7 @@ if(lootWindowPatch.exitButton) {
   const findBobber = async (log, highlight) => {
 
     let cursorArea = []
-    if(config.streamMode) {
+    if(config.streamMode && config.streamDevice != 'Custom Server') {
       let cursorPos = mouse.getPos();
       cursorArea = cutOutNotification({
         x: cursorPos.x / screenSize.width,
@@ -2304,12 +2288,14 @@ if (settings.soundDetection) {
         await keyboard.toggleKey(settings.intKey, true, delay);
         await keyboard.toggleKey(settings.intKey, false, delay);
       } else {
-        await moveTo({ pos, randomRange: 5});
+        if(!config.streamMode)
+          await moveTo({ pos, randomRange: 5});
 
         if (config.shiftClick) {
           await keyboard.toggleKey("shift", true, delay);
           if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
-            await mouse.click(config.catchFishButton, delay);
+            await moveTo({ pos, randomRange: 5, withClick: true});
+            // await mouse.click(config.catchFishButton, delay);
           } else {
             await mouse.toggle(config.catchFishButton, true, delay);
             await mouse.toggle(config.catchFishButton, false, delay);
@@ -2318,7 +2304,8 @@ if (settings.soundDetection) {
           await keyboard.toggleKey("shift", false, delay);
         } else {
           if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
-            await mouse.click(config.catchFishButton, delay);
+            await moveTo({ pos, randomRange: 5, withClick: true});
+            // await mouse.click(config.catchFishButton, delay);
           } else {
             await mouse.toggle(config.catchFishButton, true, delay);
             await mouse.toggle(config.catchFishButton, false, delay);
@@ -2386,7 +2373,7 @@ if (settings.soundDetection) {
   }
 
   const dx12Case = async () => {
-    if(!settings.multipleWindows && !settings.afkmode) {
+    if(!settings.multipleWindows && !settings.afkmode && !config.streamMode) {
         await actionOnce(() => {});
     }
   }
@@ -2629,8 +2616,7 @@ if (settings.soundDetection) {
     checkChanges,
     aggroCheck,
     deathCheck,
-    regOnError,
-    streamModeInitialMouse
+    regOnError
   };
 };
 

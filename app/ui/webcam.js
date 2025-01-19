@@ -2,12 +2,13 @@ const { ipcRenderer } = require("electron");
 
 let stream;
 
-const generateEventsFor = (video, screenSize) => {
+const generateEventsFor = (video, screenSize, mWin) => {
+
   return new Promise(function (resolve, reject) {
     video.addEventListener("loadeddata", () => {
       video.play();
       video.addEventListener("play", () => {
-        ipcRenderer.on("request-frame", (event, pos, reqCh) => {
+        ipcRenderer.on(`request-frame-${mWin}`, (event, pos, reqCh) => {
           const offscreenCanvas = new OffscreenCanvas(pos.width, pos.height); // Set desired resolution
           const context = offscreenCanvas.getContext("2d");
           context.drawImage(
@@ -45,7 +46,7 @@ const generateEventsFor = (video, screenSize) => {
   });
 };
 
-const connectToStream = async (deviceId, screenSize) => {
+const connectToStream = async (deviceId, screenSize, mWin) => {
   const video = document.createElement("video");
   try {
     if(deviceId != 'Custom Server') {
@@ -90,7 +91,7 @@ const connectToStream = async (deviceId, screenSize) => {
       });
       await pc.setLocalDescription(offer);
 
-      const response = await fetch('http://localhost:8889/live/whep', {
+      const response = await fetch(`http://localhost:8889/live${mWin}/whep`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/sdp'
@@ -108,7 +109,7 @@ const connectToStream = async (deviceId, screenSize) => {
     throw err
   }
 
-  return await generateEventsFor(video, screenSize);
+  return await generateEventsFor(video, screenSize, mWin);
 };
 
 module.exports = {

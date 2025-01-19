@@ -8,7 +8,7 @@ ipcRenderer.on('close-stream', () => {
   }
 })
 
-ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, screenSizePC) => {
+ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, screenSizePC, multipleWindowsId) => {
   const video = document.createElement('video');
   try {
     if(deviceId != 'Custom Server') {
@@ -53,8 +53,8 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
                 offerToReceiveAudio: false
             });
             await pc.setLocalDescription(offer);
-
-            const response = await fetch('http://localhost:8889/live/whep', {
+            let streamAddress = multipleWindowsId ? `http://localhost:8889/live${multipleWindowsId}/whep` : `http://localhost:8889/live/whep`
+            const response = await fetch(streamAddress, {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/sdp'

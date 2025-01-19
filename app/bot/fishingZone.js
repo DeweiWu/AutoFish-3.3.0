@@ -13,7 +13,6 @@ const sleep = (time) => {
 const isInLimits = ({ x, y }, { width, height }) => {
   return x >= 0 && y >= 0 && x < width && y < height;
 };
-let nnnn = 0;
 
 let smallLentgthAttempt = 0
 const closeEnough = value => (v1, v2) => Math.abs(v1 - v2) <= value;
@@ -40,14 +39,12 @@ const isManual = (specColor, percentPrecision) => ([r, g, b]) => {
   return closeEnough(percR)(specColor.r, r) && closeEnough(percG)(specColor.g, g) && closeEnough(percB)(specColor.b, b)
 }
 
-let nn = 0;
-let nnn = 0;
 let checkBobberPrintAttempts = 0;
 
 let imgAroundBobberPrev;
 let pixelMatchMax;
 
-const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, threshold, bobberColor, bobberColorManual, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, streamMode, highlightPercent, splashColor, manualPositionOnBobberOn, manualPositionOnBobber }) => {
+const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, multipleWindows, threshold, bobberColor, bobberColorManual, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, streamMode, highlightPercent, splashColor, manualPositionOnBobberOn, manualPositionOnBobber }) => {
 
   let checkAboveCompensateValue = 0;
   const doubleZoneSize = Math.round((screenSize.height / 1080) * 50); // 25
@@ -339,8 +336,12 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
          if(game == `Vanilla` ) {
            sensitivity = 2;
          } else {
-           sensitivity = bobberPoints.length < 200 ? 2 : 3; // Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 3)), 3); // 3 : 2
-         }
+           if(streamMode) {
+             sensitivity = 3;
+           } else {
+             sensitivity = bobberPoints.length < 200 ? 2 : 3; // Math.max(Math.round((screenSize.height / 1080) * (bobberColor == `red` ? 3 : 3)), 3); // 3 : 2
+           }
+       }
        }
     },
 

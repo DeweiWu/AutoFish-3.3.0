@@ -396,6 +396,7 @@ You can also write in this chat directly to do:
       setTimeout(resolve, 350);
     });
 
+    /*
     if(settings.initial) {
       let games = [`Retail`, `Cata Classic`, `Classic`, "Leg", "MoP", "Cata", "LK Private", "TBC", "Vanilla"];
       let initialGameChoice = showChoiceWarning(win, `Choose your game:`, `Initial configuration`,
@@ -408,6 +409,7 @@ You can also write in this chat directly to do:
 
       writeFileSync(path.join(__dirname, `${configPath}${profile}/settings.json`), JSON.stringify(settings), () => {});
     }
+    */
 
     if(screen.getAllDisplays().length > 1) {
       log.warn("The bot detected more than 1 display: use both the game and the bot on the primary one.")
@@ -447,9 +449,11 @@ You can also write in this chat directly to do:
       config.game = configDefault.game;
     }
 
-    let games
+    let multipleWindowsId = settings.multipleWindows ? profile.match(/WIN(\d+)/)[1] : false; //
+
+    let games;
     try {
-      games =  await findGameWindows(config, config.patch[settings.game], type);
+      games =  await findGameWindows(config, config.patch[settings.game], type, multipleWindowsId);
     } catch(e) {
       log.err(e);
       win.webContents.send("stop-bot");
@@ -498,7 +502,8 @@ You can also write in this chat directly to do:
            streamColor = await (new Promise(function(resolve, reject) {
              win.webContents.send('connect-to-stream-main', {
                deviceId: config.patch[settings.game].streamDevice,
-               screenSize: config.patch[settings.game].streamScreenSize
+               screenSize: config.patch[settings.game].streamScreenSize,
+               mWin: multipleWindowsId
             });
 
             ipcMain.once('connect-to-stream-main-end', (event, e) => {
@@ -508,7 +513,7 @@ You can also write in this chat directly to do:
               }
 
              let reqCh = `channel-${Math.random()}`;
-             win.webContents.send('request-frame', {x: data.x, y: data.y, width: 1, height: 1}, reqCh);
+             win.webContents.send(`request-frame-${multipleWindowsId}`, {x: data.x, y: data.y, width: 1, height: 1}, reqCh);
              ipcMain.once(reqCh, async (event, buffer) => {
                resolve({
                  width: 1,
@@ -617,6 +622,10 @@ You can also write in this chat directly to do:
 
           games.push({game: (await findGameWindows(config, {}))[0], settings, config});
         }
+
+        if(config.patch[settings.game].streamMode) { // ???
+          games.push({game: (await findGameWindows(config, config.patch[settings.game]))[0], settings, config});
+        }
       }
     }
 
@@ -640,21 +649,25 @@ You can also write in this chat directly to do:
       });
 
       try {
-        sharedArray = await (new Promise(function(resolve, reject) {
-          win.webContents.send('connect-to-stream-main', {
-            deviceId: config.patch[settings.game].streamDevice,
-            screenSize: config.patch[settings.game].streamScreenSize
-         });
-          ipcMain.once('connect-to-stream-main-end', (event, e, sharedArray) => {
-            if(e) {
-              log.err(e);
-              reject(e);
-            }
+        for(let mWin = 1; mWin <= games.length; mWin++) {
+          await (new Promise(function(resolve, reject) {
+            win.webContents.send('connect-to-stream-main', {
+              deviceId: config.patch[settings.game].streamDevice,
+              screenSize: config.patch[settings.game].streamScreenSize,
+              mWin: settings.multipleWindows ? mWin : ``
+           });
+            ipcMain.once('connect-to-stream-main-end', (event, e) => {
+              if(e) {
+                log.err(e);
+                reject(e);
+              }
 
-            resolve(sharedArray);
-          })
-          log.ok(`Connected successfully!`);
-        }));
+              resolve();
+            })
+            log.ok(`Connected successfully!`);
+          }));
+        }
+
       } catch(e) {
         log.err(e.message);
         log.err(e.stack)
@@ -666,7 +679,7 @@ You can also write in this chat directly to do:
       win.webContents.send('start-audio', settings);
     }
 
-    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win, sharedArray);
+    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win);
 
     const stopAppAndBots = () => {
       if(trialIsOn) {
@@ -788,6 +801,11 @@ You can also write in this chat directly to do:
     }
 
     let focusedWinPos = BrowserWindow.getFocusedWindow();
+
+    if(!focusedWinPos) {
+      return;
+    }
+
     let winPos = focusedWinPos.getPosition();
     let compensate = 0;
     let scaleFactor = screen.getPrimaryDisplay().scaleFactor;

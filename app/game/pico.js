@@ -41,27 +41,49 @@ const keysSheet = {
   shift: "SHIFT"
 }
 
-async function send(type, jsonData) {
-  try {
-      const response = await axios.post(`http://${picoIp}:5000/${type}`,
-        jsonData,  // Send data as a JSON object
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      attempts = 0;
-  } catch (error) {
-    log.err(`Pico: Error: ${error.response ? error.response.data : error.message}`);
-    await sleep(1000);
-    if(attempts++ < 3) {
-      log.send(`Pico: Sending Again (${attempts})...`);
-      await send(type, jsonData);
+let eventLine = [];
+const runAction = (action) => {
+  return new Promise((resolve, reject) => {
+    if(eventLine.length > 0) {
+      eventLine.push({action, resolve});
     } else {
-      throw new Error(`Something wrong with the connection to Pico Board.`)
+      action(resolve);
+    }
+  });
+}
+
+async function send(type, jsonData) {
+  const action = async (resolve) => {
+      const response = await axios.post(`http://${picoIp}:5000/${type}`,
+          jsonData,  // Send data as a JSON object
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        /*
+    try {
+        attempts = 0;
+    } catch (error) {
+      log.err(`Pico: Error: ${error.response ? error.response.data : error.message}`);
+      await sleep(1000);
+      if(attempts++ < 3) {
+        log.send(`Pico: Sending Again (${attempts})...`);
+        await send(type, jsonData);
+      } else {
+        throw new Error(`Something wrong with the connection to Pico Board.`)
+      }
+    }
+    */
+    eventLine.shift();
+    resolve();
+    if(eventLine.length > 0) {
+      eventLine[0].action(eventLine[0].resolve);
     }
   }
+
+  await runAction(action);
 }
 
 const keyboard = {
@@ -116,6 +138,18 @@ const keyboard = {
     }
 
     await send('printtext', {text, delayFrom: delays[0], delayTo: delays[1]});
+  },
+
+  async altTab(steps, delays) {
+    if(isNaN(delays)) {
+      delays = delay;
+    }
+
+    if(!Array.isArray(delays)) {
+      delays = [delays, delays];
+    }
+
+    await send('alttab', {steps, delayFrom: delays[0], delayTo: delays[1]});
   }
 }
 
@@ -123,6 +157,7 @@ const mouse = {
   async moveTo(x, y) {
     newX = Math.round(x - previousPos.x);
     newY = Math.round(y - previousPos.y);
+
     if(x != -9999 && y != -9999) {
       previousPos = {x, y};
     }
@@ -131,6 +166,7 @@ const mouse = {
   },
 
   async humanMoveTo(x, y, mainSpeed, deviation) { // speed = 88, curvature = 20
+
     let speed = mainSpeed * 15; // 15 // % of step from distance
     let curvature = (deviation / 100) * 30; //20 // % from distance
 
@@ -150,6 +186,29 @@ const mouse = {
 
     let convertedSpeed = speed * speedDistCoofConverted;
     await send('movemousehuman', {x: newX, y: newY, speed: convertedSpeed, curvature});
+  },
+
+  async humanMoveToRClick(x, y, mainSpeed, deviation) { // speed = 88, curvature = 20
+
+    let speed = mainSpeed * 15; // 15 // % of step from distance
+    let curvature = (deviation / 100) * 30; //20 // % from distance
+
+    x = Math.round(x);
+    y = Math.round(y);
+
+    const newX = x - previousPos.x;
+    const newY = y - previousPos.y;
+
+    if(x != -9999 && y != -9999) {
+      previousPos = {x, y};
+    }
+
+    const distance = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
+
+    let speedDistCoofConverted = distance / speedDistCoof;
+
+    let convertedSpeed = speed * speedDistCoofConverted;
+    await send('movemousehumanrclick', {x: newX, y: newY, speed: convertedSpeed, curvature});
   },
 
   async click(button, delays = delay) {
@@ -197,7 +256,7 @@ const mouse = {
 
 const createPicoInterface = (picoip, streamScreenSize, delays, mainLog) => {
   previousPos = {x: 0, y: 0};
-  speedDistCoof = streamScreenSize.width / 10;
+  speedDistCoof = streamScreenSize.width / 10; // ????
   picoIp = picoip;
   log = mainLog;
   delay = [delays.from, delays.to];

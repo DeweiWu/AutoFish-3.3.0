@@ -64,8 +64,8 @@ class AutoFish {
     this.loggerStats = renderLoggerStats();
     let profile = renderProfiles(profiles);
 
-    ipcRenderer.on('connect-to-stream-main', (event, {deviceId, screenSize}) => {
-      connectToStream(deviceId, screenSize)
+    ipcRenderer.on('connect-to-stream-main', (event, {deviceId, screenSize, mWin}) => {
+      connectToStream(deviceId, screenSize, mWin)
       .then(() => {
           ipcRenderer.send('connect-to-stream-main-end')
       })

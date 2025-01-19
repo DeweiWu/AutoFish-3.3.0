@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, Menu, screen } = require('electron');
 const path = require('path');
 
-const createWebCamWin = (deviceId, screenSizeGame) =>
+const createWebCamWin = (deviceId, screenSizeGame, multipleWindowsId) =>
   new Promise(function(resolve, reject) {
 
     let screenSizePC = screen.getPrimaryDisplay().bounds;
@@ -31,7 +31,7 @@ const createWebCamWin = (deviceId, screenSizeGame) =>
     })
 
     mainWindow.on('ready-to-show', () => {
-      mainWindow.webContents.send('connect-to-stream', deviceId, screenSizeGame, screenSizePC);
+      mainWindow.webContents.send('connect-to-stream', deviceId, screenSizeGame, screenSizePC, multipleWindowsId);
     })
 
     ipcMain.on('stream-loaded', () => {

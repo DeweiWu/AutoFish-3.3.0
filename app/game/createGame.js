@@ -1,11 +1,11 @@
 const { Hardware, getAllWindows } = require("keysender");
 const { createWebCamWin } = require('./../wins/webcam/main.js');
 
-const findGameWindows = async ({game}, {streamMode, streamDevice, streamScreenSize}, type) => {
+const findGameWindows = async ({game}, {streamMode, streamDevice, streamScreenSize}, type, multipleWindowsId) => {
 
   if(streamMode) {
     if(type == `relZone` || type == `chatZone` || type == `detectZone` || type == `combatZone` || type == `pointZone`) {
-      const webCamWin = await createWebCamWin(streamDevice, streamScreenSize);
+      const webCamWin = await createWebCamWin(streamDevice, streamScreenSize, multipleWindowsId);
       let win = {
         workwindow: {
           isForeground: () => webCamWin.isFocused(),
