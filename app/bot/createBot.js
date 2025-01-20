@@ -420,7 +420,11 @@ if(lootWindowPatch.exitButton) {
           if(speed) {
             await mouse.humanMoveTo(pos.x, pos.y, 0, 0); // if speed is static then 0 deviation;
           } else {
-            await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+            if(withClick && config.arduinoType == 'pico') {
+              await mouse.humanMoveToRClick(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+            } else {
+              await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+            }
           }
         } else {
           //let nutjspos = await nutjs.mouse.getPos();
@@ -2288,7 +2292,7 @@ if (settings.soundDetection) {
         await keyboard.toggleKey(settings.intKey, true, delay);
         await keyboard.toggleKey(settings.intKey, false, delay);
       } else {
-        if(!config.streamMode)
+        if(!(config.streamMode || (config.arduino && config.arduinoType == 'pico')))
           await moveTo({ pos, randomRange: 5});
 
         if (config.shiftClick) {

@@ -358,6 +358,10 @@ const renderStreamManualCursor = ({streamMode, streamManualCursor}) => {
   return elt(`input`, {type: `checkbox`, checked: streamManualCursor, disabled: !streamMode, name: `streamManualCursor`});
 }
 
+const renderStreamScale = ({streamMode, streamScale}) => {
+  return elt(`input`, {type: `number`, value: streamScale, name: `streamScale`, disabled: !streamMode});
+}
+
 const renderStreamScreenSize = ({streamMode, streamScreenSize}) => {
   return elt(`div`, {"data-collection": `streamScreenSize`}, elt(`span`, {className: `option_text`}, `width:`),
   elt('input', {type: `number`, name: `width`, value: streamScreenSize.width, disabled: !streamMode}), elt(`span`, {className: `option_text`}, `height:`),
@@ -1375,11 +1379,12 @@ const renderSettings = (config) => {
     wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
   ),
 
-  elt(`p`, {className: `settings_header settings_header_premium`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Stream (beta)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://youtu.be/Kacworq8j8Q")}}, `(Guide)`),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Streaming Mode`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://youtu.be/Kacworq8j8Q")}}, `(Guide)`),
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Streaming Source: `, renderStreamDevice(config), `Streaming logic is used to run the bot and the game on different machines. Streaming Source is either an HDMI capture device or RTMP server.`),
     wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Same IP address you configured for your Pico W device in its own code.`),
     wrapInLabel(`Gaming PC Resolution: `, renderStreamScreenSize(config), `The resolution of the Game PC. Same resolution should be for the game, meaning it shouldn't be in windowed mode.`),
+    wrapInLabel(`Gaming PC Scaling (%):`, renderStreamScale(config), `The scaling in your Windows. Setting -> System -> Scale and Layout. Important for proper mouse movement simulation.`),
     wrapInLabel(`Set Initial Cursor Position Manually: `, renderStreamManualCursor(config), `To ensure the bot accurately detects the cursor's position, it should begin from the x:0 and y:0 coordinates, which correspond to the top-left corner of the screen. Enable this option if you encounter any issues with auto-initialization.`)
   ),
 

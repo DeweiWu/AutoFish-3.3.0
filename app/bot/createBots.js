@@ -1,7 +1,7 @@
 const runBot = require("./runBot.js");
 const createBot = require("./createBot.js");
 
-const { ipcMain } = require("electron");
+const { ipcMain, screen } = require("electron");
 
 const { convertMs } = require('../utils/time.js');
 const Stats = require('./stats.js');
@@ -164,8 +164,7 @@ const createBots = async (games, log, tmBot, arduino, win) => {
     if(config.patch[settings.game].streamMode) {
       let gameConfig = config.patch[settings.game];
       if(!picoInterface) {
-        console.log(`creating pico again`);
-        picoInterface = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize, gameConfig.delay, log); // streamScreenSize? what if we use pico normally?
+        picoInterface = createPicoInterface(gameConfig.picoip, gameConfig.streamScreenSize, gameConfig.delay, gameConfig.streamScale, log);
       }
 
       let streamWindow = settings.multipleWindows ? i + 1 : ``;
@@ -203,8 +202,11 @@ const createBots = async (games, log, tmBot, arduino, win) => {
 
       if(config.patch[settings.game].arduinoType == 'pico') {
         let gameConfig = config.patch[settings.game];
-        const pico = createPicoInterface(gameConfig.arduinoPicoIp, game.workwindow.getView(), gameConfig.delay, log);
-        game = {mouse: pico.mouse, workwindow: game.workwindow, keyboard: pico.keyboard}
+        if(!picoInterface) {
+          picoInterface = createPicoInterface(gameConfig.arduinoPicoIp, game.workwindow.getView(), gameConfig.delay, screen.getPrimaryDisplay().scaleFactor * 100, log);
+        }
+
+        game = {mouse: picoInterface.mouse, workwindow: game.workwindow, keyboard: picoInterface.keyboard}
       }
     }
 

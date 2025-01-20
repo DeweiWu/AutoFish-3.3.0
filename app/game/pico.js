@@ -14,6 +14,7 @@ let delay;
 let previousPos, speedDistCoof, picoIp;
 let log;
 let attempts = 0;
+let scaling = 100;
 
 const keysSheet = {
   left: "LEFT_ARROW",
@@ -155,10 +156,13 @@ const keyboard = {
 
 const mouse = {
   async moveTo(x, y) {
-    newX = Math.round(x - previousPos.x);
-    newY = Math.round(y - previousPos.y);
+    x = x / scaling;
+    y = y / scaling;
 
-    if(x != -9999 && y != -9999) {
+    newX = Math.round(x - previousPos.x);
+    newY = Math.round(y  - previousPos.y);
+
+    if(x > -(9000 / scaling) && y > -(9000 / scaling)) {
       previousPos = {x, y};
     }
 
@@ -170,13 +174,13 @@ const mouse = {
     let speed = mainSpeed * 15; // 15 // % of step from distance
     let curvature = (deviation / 100) * 30; //20 // % from distance
 
-    x = Math.round(x);
-    y = Math.round(y);
+    x = Math.round(x / scaling);
+    y = Math.round(y / scaling);
 
     const newX = x - previousPos.x;
     const newY = y - previousPos.y;
 
-    if(x != -9999 && y != -9999) {
+    if(x > -(9000 / scaling) && y > -(9000 / scaling)) {
       previousPos = {x, y};
     }
 
@@ -193,13 +197,13 @@ const mouse = {
     let speed = mainSpeed * 15; // 15 // % of step from distance
     let curvature = (deviation / 100) * 30; //20 // % from distance
 
-    x = Math.round(x);
-    y = Math.round(y);
+    x = Math.round(x / scaling);
+    y = Math.round(y / scaling);
 
     const newX = x - previousPos.x;
     const newY = y - previousPos.y;
 
-    if(x != -9999 && y != -9999) {
+    if(x > -(9000 / scaling) && y > -(9000 / scaling)) {
       previousPos = {x, y};
     }
 
@@ -254,9 +258,10 @@ const mouse = {
   }
 }
 
-const createPicoInterface = (picoip, streamScreenSize, delays, mainLog) => {
+const createPicoInterface = (picoip, streamScreenSize, delays, streamScale, mainLog) => {
   previousPos = {x: 0, y: 0};
   speedDistCoof = streamScreenSize.width / 10; // ????
+  scaling = Number(streamScale) / 100;
   picoIp = picoip;
   log = mainLog;
   delay = [delays.from, delays.to];
