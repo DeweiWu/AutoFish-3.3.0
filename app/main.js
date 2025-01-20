@@ -667,14 +667,23 @@ You can also write in this chat directly to do:
         return;
       }
 
-      let secondValue = config.patch[settings.game].streamCountdown;
-      setTimeout(function logSeconds() {
-        log.send(`Start in ${secondValue--}...`);
-        if(secondValue > 0) {
-          setTimeout(logSeconds, 1000);
-        }
+      let countingState = true;
+      ipcMain.on("stop-bot", () => {
+        countingState = false;
       });
-      await sleep(secondValue * 1000);
+
+      for(let countdown = config.patch[settings.game].streamCountdown; countdown > 0 && countingState; countdown--) {
+        log.send(`Start in ${countdown}...`);
+        await sleep(1000);
+      }
+
+      if(!countingState) {
+        log.send('Stopped.');
+        shell.beep();
+        return;
+      } else {
+        ipcMain.removeAllListeners('stop-bot');
+      }
     }
 
     if(settings.soundDetection) {
