@@ -8,6 +8,8 @@ ipcRenderer.on('close-stream', () => {
   }
 })
 
+
+
 ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, screenSizePC, multipleWindowsId) => {
   const video = document.createElement('video');
   try {
@@ -71,6 +73,13 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
                 type: 'answer',
                 sdp: serverSdp
             }));
+
+          const serverReportOk = await ipcRenderer.invoke('mediamtx-check-last-report');
+          if(/doesn't support/.test(serverReportOk)) {
+            ipcRenderer.send('connect-to-stream-error', `Server doesn't support this Video Encoder.`);
+            return;
+          }
+
       /*
       const hls = new Hls();
       hls.loadSource(`http://localhost:8888/live/index.m3u8`);

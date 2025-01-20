@@ -1,9 +1,9 @@
 const path = require('path');
-const { app } = require('electron');
+const { app, ipcMain } = require('electron');
 const { spawn } = require('child_process');
 const fs = require('fs');
 
-let wholeLog = ``;
+let wholeLog = [];
 let mediamtxProcess;
 
 function extractIPAddress(logLine) {
@@ -12,7 +12,16 @@ function extractIPAddress(logLine) {
     return match ? match : null;
 }
 
-module.exports = (log, mainPath) => {
+ipcMain.handle('mediamtx-check-last-report', () => {
+  return new Promise(function(resolve, reject) {
+    setTimeout(() => {
+      resolve(wholeLog[wholeLog.length - 1]);
+    }, 1000);
+  });
+})
+
+
+module.exports = (log, mainPath, win) => {
   // Path to the MediaMTX binary
   if(mediamtxProcess) {
     return;
@@ -35,22 +44,23 @@ module.exports = (log, mainPath) => {
         log.ok(`${remoteConnection[1]} is streaming to /live`);
       }
     }
-    wholeLog += data.toString();
+    wholeLog.push(data.toString());
   });
 
   mediamtxProcess.stderr.on("data", (data) => {
-    wholeLog += data.toString();
+    wholeLog.push(data.toString());
   });
 
   // Handle process errors
   mediamtxProcess.on("error", (error) => {
     log.err(`RTMP Server Error: ${error.message.toString()}`);
-    wholeLog += error.message.toString();
+    wholeLog.push(error.message.toString());
   });
 
   // Kill the process on app termination
   app.on("quit", () => {
-    fs.writeFileSync(extractedLogPath, wholeLog);
+    let parsedWholeLog = wholeLog.reduce((a, b) => a + `\n` + b);
+    fs.writeFileSync(extractedLogPath, parsedWholeLog);
     mediamtxProcess.kill();
   });
 };

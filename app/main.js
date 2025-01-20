@@ -44,9 +44,9 @@ const getProfile = () => {
   return getJson(`${configPath}config.json`);
 };
 
-const connectToMediaMtx = (log) => {
+const connectToMediaMtx = (log, win) => {
   try {
-    require('./utils/rtmp/server.js')(log, __dirname);
+    require('./utils/rtmp/server.js')(log, __dirname, win);
 
     log.ok(`Launched MediaMTX server!`)
 
@@ -370,7 +370,7 @@ You can also write in this chat directly to do:
     }
 
     if(config.patch[settings.game].streamDevice == 'Custom Server' && config.patch[settings.game].streamMode) {
-      connectToMediaMtx(log);
+      connectToMediaMtx(log, win);
     }
 
     if(tmKey) {
@@ -634,13 +634,12 @@ You can also write in this chat directly to do:
 
     if(config.patch[settings.game].streamMode && !config.patch[settings.game].picoip) {
       // TEMP: Check Pico Connection Logic
-      log.err('Connect to your Pico W device, first.');
+      log.err('Connect to your Pico W device first.');
       win.webContents.send("stop-bot");
       return;
     }
 
 
-    let sharedArray;
     if(config.patch[settings.game].streamMode) {
       try {
         for(let mWin = 1; mWin <= games.length; mWin++) {
@@ -664,6 +663,7 @@ You can also write in this chat directly to do:
         }
       } catch(e) {
         win.webContents.send("stop-bot");
+        shell.beep();
         return;
       }
 

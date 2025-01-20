@@ -40,7 +40,7 @@ const generateEventsFor = (video, screenSize, mWin) => {
 
     });
     ipcRenderer.once('stop-webcam-stream', async () => {
-      ipcRenderer.removeAllListeners('request-frame');
+      ipcRenderer.removeAllListeners(`request-frame-${mWin}`);
       if(stream) {
         stream.getTracks().forEach(track => track.stop());
         stream = null;
@@ -114,6 +114,11 @@ const connectToStream = async (deviceId, screenSize, mWin) => {
         type: 'answer',
         sdp: serverSdp
     }));
+
+    const serverReportOk = await ipcRenderer.invoke('mediamtx-check-last-report');
+    if(/doesn't support/.test(serverReportOk)) {
+      throw new Error(`Server doesn't support this Video Encoder.`);
+    }
   }
 
   return await generateEventsFor(video, screenSize, mWin);
