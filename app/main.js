@@ -192,6 +192,7 @@ const createWindow = async () => {
     width: 341,
     height: 689,
     show: false,
+    maximizable: false,
     resizable: true,
     webPreferences: {
       spellcheck: false,
@@ -360,7 +361,7 @@ You can also write in this chat directly to do:
         const { pingDevice } = require('./game/pico.js');
         try {
           await pingDevice(config.patch[settings.game].arduinoPicoIp).then(() => {
-            log.ok(`Connected to Pico!`)
+            log.ok(`Found Pico under ${config.patch[settings.game].arduinoPicoIp}`)
           })
         } catch(e) {
           log.err(`No pico device under this IP!`)
@@ -426,7 +427,7 @@ You can also write in this chat directly to do:
     const settings = getJson(`${configPath}${profile}/settings.json`);
 
     if(config.patch[settings.game].streamMode) {
-      log.send(`Connecting to stream... Please wait.`);
+      log.send(`Connecting to stream(s)... Please wait.`);
     } else {
       log.send(`Looking for the windows of the game... Please wait.`);
     }
@@ -467,7 +468,9 @@ You can also write in this chat directly to do:
       shell.beep();
       return;
     } else {
-      log.ok(`Found ${games.length} window${games.length > 1 ? `s` : ``} of the game!`);
+      if(!config.patch[settings.game].streamMode) {
+        log.ok(`Found ${games.length} window${games.length > 1 ? `s` : ``} of the game!`);
+      }
     }
 
     if(!settings.multipleWindows) {
@@ -639,15 +642,6 @@ You can also write in this chat directly to do:
 
     let sharedArray;
     if(config.patch[settings.game].streamMode) {
-      log.send(`Connecting to capture device... Please wait.`);
-      let secondValue = 5;
-      setTimeout(function logSeconds() {
-        log.send(`Start in ${secondValue--}...`);
-        if(secondValue > 0) {
-          setTimeout(logSeconds, 1000);
-        }
-      });
-
       try {
         for(let mWin = 1; mWin <= games.length; mWin++) {
           await (new Promise(function(resolve, reject) {
@@ -660,23 +654,35 @@ You can also write in this chat directly to do:
               if(e) {
                 log.err(e);
                 reject(e);
+              } else {
+                log.ok(`Connected successfully!`);
               }
 
               resolve();
             })
-            log.ok(`Connected successfully!`);
           }));
         }
-
       } catch(e) {
-        log.err(e.message);
-        log.err(e.stack)
+        win.webContents.send("stop-bot");
         return;
       }
+
+      let secondValue = 5;
+      setTimeout(function logSeconds() {
+        log.send(`Start in ${secondValue--}...`);
+        if(secondValue > 0) {
+          setTimeout(logSeconds, 1000);
+        }
+      });
+      await sleep(secondValue * 1000);
     }
 
     if(settings.soundDetection) {
       win.webContents.send('start-audio', settings);
+    }
+
+    if(!config.patch[settings.game].streamMode) {
+      win.blur();
     }
 
     const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win);
@@ -735,12 +741,8 @@ You can also write in this chat directly to do:
     ipcMain.on("stop-bot", stopAppAndBots);
     globalShortcut.register(settings.stopKey, stopAppAndBots);
 
-    if(!config.patch[settings.game].streamMode) {
-      win.blur();
-    }
-
     if(config.patch[settings.game].hideWin) {
-        win.hide();
+      win.hide();
     }
 
     if(trialIsOn) {
@@ -800,13 +802,20 @@ You can also write in this chat directly to do:
       hintWin = false;
     }
 
-    let focusedWinPos = BrowserWindow.getFocusedWindow();
+    const focusedWinPos = BrowserWindow.getAllWindows().find((win) => {
+      const [width, height] = win.getSize();
+
+      if(Math.abs(data.client.width - width) < 50) {
+        return true;
+      }
+    });
 
     if(!focusedWinPos) {
       return;
     }
 
     let winPos = focusedWinPos.getPosition();
+
     let compensate = 0;
     let scaleFactor = screen.getPrimaryDisplay().scaleFactor;
     if(focusedWinPos.isMenuBarVisible()) {

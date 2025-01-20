@@ -26,6 +26,10 @@ const wrapInLabel = (name, inner, hint, classname, style) => {
               pos: {
                 x: Math.floor(pos.x),
                 y: Math.floor(pos.y)
+              },
+              client: {
+                width: innerWidth,
+                height: innerHeight
               }
             })
           }
