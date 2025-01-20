@@ -429,7 +429,7 @@ You can also write in this chat directly to do:
     if(config.patch[settings.game].streamMode) {
       log.send(`Connecting to stream(s)... Please wait.`);
     } else {
-      log.send(`Looking for the windows of the game... Please wait.`);
+      log.send(`Looking for the windows of the game...`);
     }
 
     const useCustomWindow = config.patch[settings.game].useCustomWindow;
@@ -667,7 +667,7 @@ You can also write in this chat directly to do:
         return;
       }
 
-      let secondValue = 5;
+      let secondValue = config.patch[settings.game].streamCountdown;
       setTimeout(function logSeconds() {
         log.send(`Start in ${secondValue--}...`);
         if(secondValue > 0) {

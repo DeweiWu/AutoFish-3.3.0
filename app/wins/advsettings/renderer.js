@@ -358,8 +358,12 @@ const renderStreamManualCursor = ({streamMode, streamManualCursor}) => {
   return elt(`input`, {type: `checkbox`, checked: streamManualCursor, disabled: !streamMode, name: `streamManualCursor`});
 }
 
-const renderStreamScale = ({streamMode, streamScale}) => {
+const renderStreamScale = ({streamMode, streamScale = 100}) => {
   return elt(`input`, {type: `number`, value: streamScale, name: `streamScale`, disabled: !streamMode});
+}
+
+const renderStreamCountdown = ({streamMode, streamCountdown = 5}) => {
+  return elt(`input`, {type: `number`, value: streamCountdown, name: `streamCountdown`, disabled: !streamMode});
 }
 
 const renderStreamScreenSize = ({streamMode, streamScreenSize}) => {
@@ -1385,6 +1389,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Same IP address you configured for your Pico W device in its own code.`),
     wrapInLabel(`Gaming PC Resolution: `, renderStreamScreenSize(config), `The resolution of the Game PC. Same resolution should be for the game, meaning it shouldn't be in windowed mode.`),
     wrapInLabel(`Gaming PC Scaling (%):`, renderStreamScale(config), `The scaling in your Windows. Setting -> System -> Scale and Layout. Important for proper mouse movement simulation.`),
+    wrapInLabel(`Countdown (sec): `, renderStreamCountdown(config), `Countdown before starting the bot. You need this time to focus the game window on your own if you stream from a VM.`),
     wrapInLabel(`Set Initial Cursor Position Manually: `, renderStreamManualCursor(config), `To ensure the bot accurately detects the cursor's position, it should begin from the x:0 and y:0 coordinates, which correspond to the top-left corner of the screen. Enable this option if you encounter any issues with auto-initialization.`)
   ),
 
