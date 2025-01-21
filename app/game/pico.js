@@ -273,11 +273,9 @@ const createPicoInterface = (picoip, streamScreenSize, delays, streamScale, main
 
 async function pingDevice(ip) {
   const response = await axios.get(`http://${ip}:5000/device`, {timeout: 1000});
-  if (response.data === "Raspberry Pi Pico W") {
-    return true
-  } else {
-    return false
-  }
+  if (response.data !== "Raspberry Pi Pico W") {
+    throw new Error('Wrong device');
+  } 
 }
 
 module.exports = {

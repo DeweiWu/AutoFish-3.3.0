@@ -29,6 +29,7 @@ const createListenWin = require('./wins/listenWin/main.js');
 const createHintWin = require('./wins/hintWin/main.js');
 const trialEncryption = require('./../enc.js')
 const { saveArchive, loadArchive } = require('./utils/saveArchive.js');
+const { pingDevice } = require('./game/pico.js');
 
 const getJson = (jsonPath) => {
   return JSON.parse(readFileSync(path.join(__dirname, jsonPath), "utf8"));
@@ -360,7 +361,6 @@ You can also write in this chat directly to do:
         .then((msg) => log.ok(msg))
         .catch((err) => log.err(err))
       } else {
-        const { pingDevice } = require('./game/pico.js');
         try {
           await pingDevice(config.patch[settings.game].arduinoPicoIp).then(() => {
             log.ok(`Found Pico under ${config.patch[settings.game].arduinoPicoIp}`)
@@ -636,11 +636,16 @@ You can also write in this chat directly to do:
       }
     }
 
-    if(config.patch[settings.game].streamMode && !config.patch[settings.game].picoip) {
-      // TEMP: Check Pico Connection Logic
-      log.err('Connect to your Pico W device first.');
-      win.webContents.send("stop-bot");
-      return;
+
+    if(config.patch[settings.game].streamMode || (config.patch[settings.game].arduino && config.patch[settings.game].arduinoType == `pico`)) {
+      try {
+        await pingDevice(config.patch[settings.game].picoip);
+      } catch(e) {
+        log.err(`No pico device under this IP!`);
+        shell.beep();
+        win.webContents.send("stop-bot");
+        return;
+      }
     }
 
 
@@ -934,7 +939,6 @@ You can also write in this chat directly to do:
   });
 
   ipcMain.handle('connect-pico', async (event, ip) => {
-    const { pingDevice } = require('./game/pico.js');
     try {
       return await pingDevice(ip).then(() => {
         log.ok(`Connected to Pico!`)
