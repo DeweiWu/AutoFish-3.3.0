@@ -16,7 +16,7 @@ ipcMain.handle('mediamtx-check-last-report', () => {
   return new Promise(function(resolve, reject) {
     setTimeout(() => {
       resolve(wholeLog[wholeLog.length - 1]);
-    }, 1000);
+    }, 2000);
   });
 })
 
