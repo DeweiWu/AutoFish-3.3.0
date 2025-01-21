@@ -241,7 +241,14 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
 
   tmBot.openBags.push(async (ctx) => {
     await action(async () => {
-      await keyboard.sendKeys([`shift`, `b`], delay);
+      if(config.streamMode) {
+        await keyboard.toggleKey('shift', true, delay);
+        await keyboard.toggleKey('b', true, delay);
+        await keyboard.toggleKey('shift', false, delay);
+        await keyboard.toggleKey('b', false, delay);
+      } else {
+        await keyboard.sendKeys([`shift`, `b`], delay);
+      }
     });
 
     await getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
@@ -253,7 +260,14 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
     });
 
     await action(async () => {
-      await keyboard.sendKeys([`shift`, `b`], delay);
+      if(config.streamMode) {
+        await keyboard.toggleKey('shift', true, delay);
+        await keyboard.toggleKey('b', true, delay);
+        await keyboard.toggleKey('shift', false, delay);
+        await keyboard.toggleKey('b', false, delay);
+      } else {
+        await keyboard.sendKeys([`shift`, `b`], delay);
+      }
     });
   });
 
