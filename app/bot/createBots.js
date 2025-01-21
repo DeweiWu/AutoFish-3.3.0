@@ -79,24 +79,6 @@ const createBots = async (games, log, tmBot, arduino, win) => {
     tmBot.ss.reduce((a, screenshot) => a.then(() => screenshot(ctx)), Promise.resolve())
   });
 
-  tmBot.bot.on((tmBot.message('text')), async (ctx) => {
-
-    if(/^\/say/.test(ctx.message.text)) {
-      sayReply(ctx.message.text);
-    }
-
-    if(/^\/w/.test(ctx.message.text)) {
-      whisperReply(ctx.message.text);
-    }
-
-    if(/^\/r/.test(ctx.message.text)) {
-      replyReply(ctx.message.text);
-    }
-
-
-
-  })
-
   tmBot.bot.hears(`🏃 Use HS`, (ctx) => {
     tmBot.reconnects.forEach(reconnect => reconnect(ctx));
     ctx.reply(`Using HS!`);
@@ -107,74 +89,6 @@ const createBots = async (games, log, tmBot, arduino, win) => {
     tmBot.openBags.forEach(bag => bag(ctx));
   });
 
-
-  const whisperReply = (message) => {
-    if(tmBot.replies.length > 1) {
-      let winNum = message.slice(3, 5).match(/\d+/)[0];
-      if(!(/\d+/.test(winNum))) {
-        ctx.reply(`Please ensure proper formatting: Use '/w win_number username message' `);
-        return;
-      }
-
-      let reply = tmBot.replies.find((bot) => bot.win == winNum);
-
-      if(!reply) {
-        ctx.reply(`Can't find Window: ${winNum}`);
-        return;
-      }
-
-      reply.fn(message.slice(0, 3) + message.slice(5));
-    } else {
-      tmBot.replies[0].fn(message);
-    }
-  }
-
-    const sayReply = (message) => {
-      if (tmBot.replies.length > 1) {
-        let winNum = message.slice(5, 7).match(/\d+/)[0];
-        if (!/\d+/.test(winNum)) {
-          ctx.reply(
-            `Please ensure proper formatting: Use '/say win_number username message' `
-          );
-          return;
-        }
-
-        let reply = tmBot.replies.find((bot) => bot.win == winNum);
-
-        if (!reply) {
-          ctx.reply(`Can't find Window: ${winNum}`);
-          return;
-        }
-
-        reply.fn(message.slice(0, 5) + message.slice(7));
-      } else {
-        tmBot.replies[0].fn(message);
-      }
-    };
-
-    const replyReply = (message) => {
-      if (tmBot.replies.length > 1) {
-        let winNum = message.slice(3, 5).match(/\d+/)[0];
-
-        if (!/\d+/.test(winNum)) {
-          ctx.reply(
-            `Please ensure proper formatting: Use '/r win_number message' `
-          );
-          return;
-        }
-
-        let reply = tmBot.replies.find((bot) => bot.win == winNum);
-
-        if (!reply) {
-          ctx.reply(`Can't find Window: ${winNum}`);
-          return;
-        }
-
-        reply.fn(message.slice(0, 3) + message.slice(5));
-      } else {
-        tmBot.replies[0].fn(message);
-      }
-    };
   }
 
   let picoInterface;
@@ -255,10 +169,10 @@ const createBots = async (games, log, tmBot, arduino, win) => {
   }
 
 if (tmBot.bot) {
+
   tmBot.stats = bots.map(({ stats, state }) => ({stats, state}));
 
   tmBot.bot.hears("📢 Stats", (ctx) => {
-
     if(!tmBot.ctx) tmBot.ctx = ctx;
     tmBot.stats.forEach(({stats, state}, i) => ctx.reply(`State: <b>${state.status.toUpperCase()}</b>\nTime passed: <b> ${convertMs(Date.now() - state.startTime)}</b>\nWindow: <b>${i + 1}</b>\n---\nCaught: <b>${stats.caught} (${getPercent(stats.caught, stats.total)}%)</b>\nMissed: <b>${stats.miss + stats.confused} (${getPercent(stats.miss + stats.confused, stats.total)}%)</b>\n---\nTotal: <b>${stats.total}</b>`, { parse_mode: "HTML" }));
   });
@@ -271,6 +185,90 @@ if (tmBot.bot) {
     ctx.reply(`Closed every window of the game and the bot.`);
     app.quit();
   });
+
+  tmBot.bot.on((tmBot.message('text')), async (ctx) => {
+
+    if(/^\/say/.test(ctx.message.text)) {
+      sayReply(ctx.message.text);
+    }
+
+    if(/^\/w/.test(ctx.message.text)) {
+      whisperReply(ctx.message.text);
+    }
+
+    if(/^\/r/.test(ctx.message.text)) {
+      replyReply(ctx.message.text);
+    }
+
+  }) // should be after all 'hears' listeners otherwise it removes them (???)
+
+  const whisperReply = (message) => {
+    if(tmBot.replies.length > 1) {
+      let winNum = message.slice(3, 5).match(/\d+/)[0];
+      if(!(/\d+/.test(winNum))) {
+        ctx.reply(`Please ensure proper formatting: Use '/w win_number username message' `);
+        return;
+      }
+
+      let reply = tmBot.replies.find((bot) => bot.win == winNum);
+
+      if(!reply) {
+        ctx.reply(`Can't find Window: ${winNum}`);
+        return;
+      }
+
+      reply.fn(message.slice(0, 3) + message.slice(5));
+    } else {
+      tmBot.replies[0].fn(message);
+    }
+  }
+
+  const sayReply = (message) => {
+      if (tmBot.replies.length > 1) {
+        let winNum = message.slice(5, 7).match(/\d+/)[0];
+        if (!/\d+/.test(winNum)) {
+          ctx.reply(
+            `Please ensure proper formatting: Use '/say win_number username message' `
+          );
+          return;
+        }
+
+        let reply = tmBot.replies.find((bot) => bot.win == winNum);
+
+        if (!reply) {
+          ctx.reply(`Can't find Window: ${winNum}`);
+          return;
+        }
+
+        reply.fn(message.slice(0, 5) + message.slice(7));
+      } else {
+        tmBot.replies[0].fn(message);
+      }
+    };
+
+  const replyReply = (message) => {
+      if (tmBot.replies.length > 1) {
+        let winNum = message.slice(3, 5).match(/\d+/)[0];
+
+        if (!/\d+/.test(winNum)) {
+          ctx.reply(
+            `Please ensure proper formatting: Use '/r win_number message' `
+          );
+          return;
+        }
+
+        let reply = tmBot.replies.find((bot) => bot.win == winNum);
+
+        if (!reply) {
+          ctx.reply(`Can't find Window: ${winNum}`);
+          return;
+        }
+
+        reply.fn(message.slice(0, 3) + message.slice(5));
+      } else {
+        tmBot.replies[0].fn(message);
+      }
+    };
 }
 
   return {
