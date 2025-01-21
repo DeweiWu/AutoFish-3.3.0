@@ -210,7 +210,7 @@ const createWindow = async () => {
   }
 
   win.loadFile("./app/index.html");
-  win.openDevTools({mode: 'detach'})
+  //win.openDevTools({mode: 'detach'})
   win.on("closed", () => {
     if (process.platform === "darwin") {
       return false;
@@ -643,6 +643,11 @@ You can also write in this chat directly to do:
 
 
     if(config.patch[settings.game].streamMode) {
+      let countingState = true;
+      ipcMain.on("stop-bot", () => {
+        countingState = false;
+      });
+
       try {
         for(let mWin = 1; mWin <= games.length; mWin++) {
           await (new Promise(function(resolve, reject) {
@@ -669,10 +674,6 @@ You can also write in this chat directly to do:
         return;
       }
 
-      let countingState = true;
-      ipcMain.on("stop-bot", () => {
-        countingState = false;
-      });
 
       for(let countdown = config.patch[settings.game].streamCountdown; countdown > 0 && countingState; countdown--) {
         log.send(`Start in ${countdown}...`);
