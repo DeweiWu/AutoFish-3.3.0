@@ -8,7 +8,11 @@ ipcRenderer.on('close-stream', () => {
   }
 })
 
-
+const sleep = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};
 
 ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, screenSizePC, multipleWindowsId) => {
   const video = document.createElement('video');
@@ -56,6 +60,7 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
             });
             await pc.setLocalDescription(offer);
             let streamAddress = `http://localhost:8889/live${multipleWindowsId}/whep`;
+
             const response = await fetch(streamAddress, {
                   method: 'POST',
                   headers: {
@@ -76,7 +81,7 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
 
           const serverReportOk = await ipcRenderer.invoke('mediamtx-check-last-report');
           if(/doesn't support/.test(serverReportOk)) {
-            ipcRenderer.send('connect-to-stream-error', `Server doesn't support this Video Encoder.`);
+            ipcRenderer.send('connect-to-stream-error', `Stream Error: wrong Video Encoder.`);
             return;
           }
 
@@ -93,13 +98,20 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
     video.style.width = `${screenSizePC.width}px`;
     video.style.height = `${screenSizePC.height}px`;
 
-    video.addEventListener('loadeddata', () => {
+    let canplayError = true;
+    video.addEventListener('canplay', () => {
+      canplayError = false;
+
       video.play();
       video.addEventListener('play', () => {
         document.body.append(video);
         ipcRenderer.send('stream-loaded');
       })
-    })
+    });
+    await sleep(15000);
+    if(canplayError) {
+      throw new Error(`Stream Error: can't load the stream. Try again.`)
+    }
   } catch(e) {
       ipcRenderer.send('connect-to-stream-error', e.message);
   }

@@ -1,11 +1,20 @@
 const { ipcRenderer } = require("electron");
 
+const sleep = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};
+
 let stream;
 
 const generateEventsFor = (video, screenSize, mWin) => {
+  return new Promise(async (resolve, reject) => {
+    let canplayError = true
 
-  return new Promise(function (resolve, reject) {
-    video.addEventListener("loadeddata", () => {
+    video.addEventListener("canplay", () => {
+      canplayError = false;
+
       video.play();
       video.addEventListener("play", () => {
 
@@ -32,12 +41,6 @@ const generateEventsFor = (video, screenSize, mWin) => {
 
         resolve();
       });
-
-      /*
-      setTimeout(() => { // give some time to start
-      }, 3000);
-      */
-
     });
     ipcRenderer.once('stop-webcam-stream', async () => {
       ipcRenderer.removeAllListeners(`request-frame-${mWin}`);
@@ -47,6 +50,11 @@ const generateEventsFor = (video, screenSize, mWin) => {
       }
       video.remove();
     })
+
+    await sleep(15000);
+    if(canplayError) {
+      reject(`Error Stream: can't load the stream.`);
+    }
   });
 };
 

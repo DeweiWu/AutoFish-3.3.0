@@ -286,7 +286,7 @@ You can also write in this chat directly to do:
       ]).resize(),
     );
   });
-
+/*
   tmBot.bot.command(`/th`, (ctx) => {
     const profile = getProfile().selected;
     if(!tmBot.ctx) tmBot.ctx = ctx;
@@ -302,7 +302,7 @@ You can also write in this chat directly to do:
       ctx.reply(`The value is incorrect. Provide a proper numeric value between 1 and 150.`);
     }
   });
-
+*/
   tmBot.bot.hears("🟢 Start", (ctx) => {
     if(!tmBot.ctx) tmBot.ctx = ctx;
     win.webContents.send(`start-tm`);
@@ -530,6 +530,8 @@ You can also write in this chat directly to do:
           }));
         } catch(e) {
           log.err(e);
+          win.webContents.send("stop-bot");
+          shell.beep();
           return;
         }
         win.webContents.send('stop-webcam-stream');

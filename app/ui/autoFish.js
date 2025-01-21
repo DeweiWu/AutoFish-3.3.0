@@ -70,7 +70,7 @@ class AutoFish {
           ipcRenderer.send('connect-to-stream-main-end')
       })
       .catch(e => {
-          ipcRenderer.send('connect-to-stream-main-end', e.message)
+          ipcRenderer.send('connect-to-stream-main-end', e)
       })
     });
 
@@ -177,10 +177,11 @@ class AutoFish {
       ipcRenderer.send("save-settings", config);
     });
 
-    this.settings.regOnClick(async (config, node) => {
+    this.settings.regOnClick((config, node) => {
       node.style.cursor = 'progress';
-      await ipcRenderer.invoke("advanced-settings", config);
-      node.style.cursor = 'pointer';
+      ipcRenderer.invoke("advanced-settings", config).then(() => {
+        node.style.cursor = 'pointer';
+      })
     });
 
     this.settings.regOnFishingZoneClick((button) => {
