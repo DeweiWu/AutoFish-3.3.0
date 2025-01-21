@@ -5,9 +5,11 @@ const closeEnough = value => (v1, v2) => Math.abs(v1 - v2) <= value;
 
 const createChatZone = ({ getDataFrom, zone, screenSize, whispSpecColors }) => {
   let whisperColor = ([r, g, b]) => whispSpecColors.some(specColor => {
-    let percR = specColor.r / 100 * (100 - specColor.percent);
-    let percG = specColor.g / 100 * (100 - specColor.percent);
-    let percB = specColor.b / 100 * (100 - specColor.percent);
+
+    let percR = 255 - (255 * (specColor.percent / 100))
+    let percG = 255 - (255 * (specColor.percent / 100))
+    let percB = 255 - (255 * (specColor.percent / 100))
+
     return closeEnough(percR)(specColor.r, r) && closeEnough(percG)(specColor.g, g) && closeEnough(percB)(specColor.b, b)
   });
 
