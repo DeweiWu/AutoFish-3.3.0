@@ -195,16 +195,15 @@ class Settings {
       }
 
       if(event.target.name == `fishingZone`) {
-        event.target.style.cursor = 'progress';
         this.onFishingZoneClick(event.target);
       }
 
       if(event.target.name == `detectZone`) {
-        this.onDetectZoneClick();
+        this.onDetectZoneClick(event.target);
       }
 
       if(event.target.name == `chatZone`) {
-        this.onChatZoneClick();
+        this.onChatZoneClick(event.target);
       }
     })
   }

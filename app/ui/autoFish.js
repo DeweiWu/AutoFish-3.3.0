@@ -184,17 +184,24 @@ class AutoFish {
     });
 
     this.settings.regOnFishingZoneClick((button) => {
+      button.style.cursor = 'progress';
       ipcRenderer.invoke("start-bot", `relZone`).then(() => {
         button.style.cursor = 'pointer';
       })
     });
 
-    this.settings.regOnDetectZoneClick(() => {
-      ipcRenderer.invoke("start-bot", `detectZone`);
+    this.settings.regOnDetectZoneClick((button) => {
+      button.style.cursor = 'progress';
+      ipcRenderer.invoke("start-bot", `detectZone`).then(() => {
+        button.style.cursor = 'pointer';
+      })
     });
 
-    this.settings.regOnChatZoneClick(() => {
-      ipcRenderer.invoke("start-bot", `chatZone`);
+    this.settings.regOnChatZoneClick((button) => {
+      button.style.cursor = 'progress';
+      ipcRenderer.invoke("start-bot", `chatZone`).then(() => {
+        button.style.cursor = 'pointer';
+      })
     });
 
     this.settings.regOnAfkFishing(() => {
