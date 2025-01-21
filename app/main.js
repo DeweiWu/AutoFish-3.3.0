@@ -118,6 +118,7 @@ const { findGameWindows, getAllWindows } = require("./game/createGame.js");
 const createBots = require("./bot/createBots.js");
 const getBitmapAsync = require("./utils/getBitmap.js");
 const { Telegraf, Markup } = require('telegraf');
+const telegrafMessage = require('telegraf/filters');
 /* Bot modules end */
 
 /* Squirrel */
@@ -209,7 +210,7 @@ const createWindow = async () => {
   }
 
   win.loadFile("./app/index.html");
-  //win.openDevTools({mode: 'detach'})
+  win.openDevTools({mode: 'detach'})
   win.on("closed", () => {
     if (process.platform === "darwin") {
       return false;
@@ -236,7 +237,8 @@ const createWindow = async () => {
     stats: [],
     reconnects: [],
     ss: [],
-    replies: []
+    replies: [],
+    message: telegrafMessage.message
   };
 
   const connectToTelegram = (key) => {
@@ -450,7 +452,7 @@ You can also write in this chat directly to do:
       config.game = configDefault.game;
     }
 
-    let multipleWindowsId = settings.multipleWindows ? profile.match(/WIN(\d+)/)[1] : false; //
+    let multipleWindowsId = settings.multipleWindows ? profile.match(/WIN(\d+)/)[1] : ``; //
 
     let games;
     try {

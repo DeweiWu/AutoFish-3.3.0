@@ -55,7 +55,7 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
                 offerToReceiveAudio: false
             });
             await pc.setLocalDescription(offer);
-            let streamAddress = multipleWindowsId ? `http://localhost:8889/live${multipleWindowsId}/whep` : `http://localhost:8889/live/whep`
+            let streamAddress = `http://localhost:8889/live${multipleWindowsId}/whep`;
             const response = await fetch(streamAddress, {
                   method: 'POST',
                   headers: {
