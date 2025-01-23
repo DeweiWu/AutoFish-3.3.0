@@ -331,7 +331,7 @@ const renderStreamDevice = ({streamMode, streamDevice = 'Custom Server'}) => {
   const mediamtxButton = elt(`input`, {type: `button`,value: `Launch`,  id: 'mediamtx', className: `${streamMode ? `` : `disabledButtonPremium`}`, disabled: !streamMode});
 
   const select = elt(`select`, {name: `streamDevice`, className: streamDevice == 'Custom Server' ? `streamSelectCustomServer` : `streamSelect`, disabled: !streamMode});
-  select.append(elt('option', {selected: streamDevice == 'Custom Server', value: `Custom Server`}, `MediaMTX Server`));
+  select.append(elt('option', {selected: streamDevice == 'Custom Server', value: `Custom Server`}, `Streaming Server`));
   const renderUseStreamMode = elt(`input`, {name: `streamMode`, type: `checkbox`, checked: streamMode});
 
   if(streamMode) {

@@ -1,4 +1,7 @@
 const { ipcRenderer } = require("electron");
+const Hls = require('hls.js');
+
+const audioStreams = [];
 
 const sleep = (time) => {
   return new Promise((resolve) => {
@@ -8,16 +11,14 @@ const sleep = (time) => {
 
 let stream;
 
-const generateEventsFor = (video, screenSize, mWin) => {
+const generateEventsFor = (video, screenSize, mWin, audioElement) => {
   return new Promise(async (resolve, reject) => {
     let canplayError = true
 
-    video.addEventListener("canplay", () => {
-      canplayError = false;
-
+    //video.addEventListener("canplay", () => {
       video.play();
       video.addEventListener("play", () => {
-
+        canplayError = false;
         ipcRenderer.on(`request-frame-${mWin}`, (event, pos, reqCh) => {
           const offscreenCanvas = new OffscreenCanvas(pos.width, pos.height); // Set desired resolution
           const context = offscreenCanvas.getContext("2d");
@@ -38,10 +39,9 @@ const generateEventsFor = (video, screenSize, mWin) => {
             ipcRenderer.send(reqCh, imageData.data.buffer);
           }, 0);
         });
-
         resolve();
       });
-    });
+    //});
     ipcRenderer.once('stop-webcam-stream', async () => {
       ipcRenderer.removeAllListeners(`request-frame-${mWin}`);
       if(stream) {
@@ -49,17 +49,21 @@ const generateEventsFor = (video, screenSize, mWin) => {
         stream = null;
       }
       video.remove();
+      if(audioElement) {
+        audioElement.remove();
+      }
     })
 
-    await sleep(15000);
+    await sleep(30000);
     if(canplayError) {
       reject(`Error Stream: can't load the stream.`);
     }
   });
 };
 
-const connectToStream = async (deviceId, screenSize, mWin) => {
+const connectToStream = async (deviceId, screenSize, mWin, soundDetection) => {
   const video = document.createElement("video");
+  let audioElement;
 
   if(deviceId != 'Custom Server') {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -94,14 +98,14 @@ const connectToStream = async (deviceId, screenSize, mWin) => {
 
     pc.ontrack = (event) => {
         if (event.track.kind === 'video') {
-            video.srcObject = event.streams[0];
+          video.srcObject = event.streams[0];
         }
     };
 
     // Create empty offer to start the process
     const offer = await pc.createOffer({
         offerToReceiveVideo: true,
-        offerToReceiveAudio: false
+        offerToReceiveAudio: soundDetection ? true : false
     });
     await pc.setLocalDescription(offer);
 
@@ -127,11 +131,36 @@ const connectToStream = async (deviceId, screenSize, mWin) => {
     if(/doesn't support/.test(serverReportOk)) {
       throw new Error(`Server doesn't support this Video Encoder.`);
     }
+
+    if(soundDetection) {
+      const hls = new Hls();
+      audioElement = document.createElement('audio');
+      hls.loadSource(`http://localhost:8888/live${mWin}/index.m3u8`);
+      hls.attachMedia(audioElement);
+
+      audioElement.play();
+      audioElement.muted = false;
+      audioElement.volume = 1;
+
+      await new Promise(function(resolve, reject) {
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          const audioContext = new AudioContext();
+          const source = audioContext.createMediaElementSource(audioElement);
+          const audioStream = audioContext.createMediaStreamDestination();
+          source.connect(audioStream);
+          audioStreams.push(audioStream.stream);
+          resolve();
+        })
+      });
+    }
   }
 
-  return await generateEventsFor(video, screenSize, mWin);
+  return await generateEventsFor(video, screenSize, mWin, audioElement);
 };
 
 module.exports = {
-  connectToStream
+  connectToStream,
+  getAudioStreams() {
+    return audioStreams;
+  }
 };

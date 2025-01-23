@@ -1,4 +1,7 @@
 const { ipcRenderer } = require('electron');
+const path = require('path');
+
+
 let stream;
 
 ipcRenderer.on('close-stream', () => {
@@ -97,18 +100,17 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
 
     video.style.width = `${screenSizePC.width}px`;
     video.style.height = `${screenSizePC.height}px`;
-
+    video.poster = path.join(__dirname, './loading.gif')
     let canplayError = true;
-    video.addEventListener('canplay', () => {
-      canplayError = false;
-
+    //video.addEventListener('canplay', () => {
       video.play();
       video.addEventListener('play', () => {
+        canplayError = false;
         document.body.append(video);
         ipcRenderer.send('stream-loaded');
       })
-    });
-    await sleep(15000);
+    //});
+    await sleep(30000);
     if(canplayError) {
       throw new Error(`Stream Error: can't load the stream. Try again.`)
     }

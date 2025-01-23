@@ -5,10 +5,10 @@ const createLog = (sendToWindow, sendToWindowStats) => {
   let state = true;
   let statsMemory = [];
   return {
-    send(text, type = "black") {
+    send(text, type = "black", avoidTime) {
       if(state) {
         const { hr, min, sec } = getCurrentTime();
-        text = `[${hr}:${min}:${sec}] ${text}`;
+        text = `${avoidTime ? `` : `[${hr}:${min}:${sec}] `}${text}`;
         sendToWindow({ text, type });
       }
     },
@@ -41,6 +41,10 @@ const createLog = (sendToWindow, sendToWindowStats) => {
 
     err(text) {
       this.send(text, "red");
+    },
+
+    streamInfo(text) {
+      this.send(text, "blue", true);
     },
 
     setState(value) {

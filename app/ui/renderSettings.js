@@ -95,6 +95,14 @@ const renderThreshold = ({ threshold, bobberColor, soundDetectionMode = 'Desktop
     })
 
     let listeningOn = false;
+    ipcRenderer.invoke('check-stream-mode')
+    .then((result) => {
+      if(result) {
+        listenButton.disabled = true
+        listenButton.style.cursor = 'default';
+      }
+    });
+
     const listenButton = elt('input', {type: 'button', style: `cursor: pointer; width: 63px; height: 41px; margin-right: -6px;`, value: "Listen", onclick() {
       if(!listeningOn) {
         this.value = `Stop`;

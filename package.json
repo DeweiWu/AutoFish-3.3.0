@@ -33,6 +33,7 @@
     "axios": "^1.7.3",
     "electron-squirrel-startup": "^1.0.0",
     "extract-zip": "^2.0.1",
+    "hls.js": "^1.5.20",
     "javascript-obfuscator": "^4.1.0",
     "jimp": "^0.16.1",
     "keysender": "^2.3.0",

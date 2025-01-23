@@ -260,8 +260,8 @@ const mouse = {
 
 const createPicoInterface = (picoip, streamScreenSize, delays, streamScale, mainLog) => {
   previousPos = {x: 0, y: 0};
-  speedDistCoof = streamScreenSize.width / 10; // ????
   scaling = Number(streamScale) / 100;
+  speedDistCoof = (streamScreenSize.width / scaling) / 12.5; // ????
   picoIp = picoip;
   log = mainLog;
   delay = [delays.from, delays.to];
@@ -275,7 +275,7 @@ async function pingDevice(ip) {
   const response = await axios.get(`http://${ip}:5000/device`, {timeout: 1000});
   if (response.data !== "Raspberry Pi Pico W") {
     throw new Error('Wrong device');
-  } 
+  }
 }
 
 module.exports = {

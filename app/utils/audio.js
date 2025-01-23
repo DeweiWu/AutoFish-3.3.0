@@ -1,9 +1,13 @@
 const webAnalyser = require('web-audio-analyser');
+const { getAudioStreams } = require('./../ui/webcam.js');
 
-let stream;
-const getAudio = async (settings) => {
-  if(settings.soundDetectionMode == `Desktop` || !settings.soundDetectionInputDevice) {
-    let speaker = new MediaStream();
+let streams = [];
+const getAudio = async (settings, streamMode, mWin) => {
+  let stream = new MediaStream();
+  if(streamMode) {
+    stream = getAudioStreams()[mWin - 1];
+    // stream.addTrack(getAudioStreams()[mWin - 1]);
+  } else if (settings.soundDetectionMode == `Desktop` || !settings.soundDetectionInputDevice) {
     stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         mandatory: {
@@ -16,7 +20,7 @@ const getAudio = async (settings) => {
         }
       }
     });
-    speaker.addTrack(stream.getAudioTracks()[0].clone());
+    // speaker.addTrack(stream.getAudioTracks()[0].clone());
     stream.getVideoTracks()[0].stop();
     stream.removeTrack(stream.getVideoTracks()[0]);
   } else {
@@ -30,15 +34,16 @@ const getAudio = async (settings) => {
     });
   }
 
+  streams.push(stream);
   const analyser = webAnalyser(stream, {audible: false});
   return analyser;
 };
 
 module.exports = {
-  startStream(settings) {
-    return getAudio(settings);
+  startStream(settings, streamMode, mWin) {
+    return getAudio(settings, streamMode, mWin);
   },
-  stopStream() {
-     stream.getTracks().forEach(track => track.stop());
+  stopStream(mWin) {
+     streams[mWin - 1].getTracks().forEach(track => track.stop());
   }
 };

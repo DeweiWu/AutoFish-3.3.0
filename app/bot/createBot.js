@@ -2064,12 +2064,12 @@ if(lootWindowPatch.exitButton) {
 
 if (settings.soundDetection) {
   let caught = await new Promise((resolve, reject) => {
-    ipcMain.once("get-audio-result", (event, result) => {
+    ipcMain.once(`get-audio-result${winNum}`, (event, result) => {
       // resolve(waveform.filter((n) => n != 128 && n != 127).length > Number(settings.soundDetectionRange) ? false : false);
       resolve(result)
     });
 
-    BrowserWindow.getAllWindows()[0].webContents.send("get-audio",
+    BrowserWindow.getAllWindows()[0].webContents.send(`get-audio${winNum}`,
      settings.soundDetectionRange,
      config.maxFishTime,
      missOnPurpose,

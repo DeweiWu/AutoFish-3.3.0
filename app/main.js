@@ -49,8 +49,7 @@ const connectToMediaMtx = (log, win) => {
   try {
     require('./utils/rtmp/server.js')(log, __dirname, win);
 
-    log.ok(`Launched MediaMTX server!`)
-
+    log.ok(`Launched Streaming Server:`)
     const os = require('os');
     const networkInterfaces = os.networkInterfaces();
      const addresses = [];
@@ -62,12 +61,11 @@ const connectToMediaMtx = (log, win) => {
          }
        }
      }
-    log.send(`Servers for OBS:`);
     addresses.forEach((address, i) => {
-      log.ok(`rtmp://${address}:1935/live`)
+      log.streamInfo(`rtmp://${address}:1935/live`)
     })
   } catch(e) {
-    log.err(`Couldn't launch MediaMTX server!`)
+    log.err(`Can not launch Streaming Server!`)
     return Promise.reject(e);
   }
 }
@@ -452,7 +450,7 @@ You can also write in this chat directly to do:
       config.game = configDefault.game;
     }
 
-    let multipleWindowsId = settings.multipleWindows ? profile.match(/WIN(\d+)/)[1] : ``; //
+    let multipleWindowsId = settings.multipleWindows ? profile.match(/WIN(\d+)/)[1] : ``; // potential bug if user creates win99 etc.
 
     let games;
     try {
@@ -508,7 +506,8 @@ You can also write in this chat directly to do:
              win.webContents.send('connect-to-stream-main', {
                deviceId: config.patch[settings.game].streamDevice,
                screenSize: config.patch[settings.game].streamScreenSize,
-               mWin: multipleWindowsId
+               mWin: multipleWindowsId,
+               soundDetection: false
             });
 
             ipcMain.once('connect-to-stream-main-end', (event, e) => {
@@ -659,16 +658,17 @@ You can also write in this chat directly to do:
         for(let mWin = 1; mWin <= games.length; mWin++) {
           await (new Promise(function(resolve, reject) {
             win.webContents.send('connect-to-stream-main', {
-              deviceId: config.patch[settings.game].streamDevice,
-              screenSize: config.patch[settings.game].streamScreenSize,
-              mWin: settings.multipleWindows ? mWin : ``
+              deviceId: config.patch[settings.game].streamDevice, // for every stream only from 1st win?
+              screenSize: config.patch[settings.game].streamScreenSize, // for every stream only from 1st win?
+              mWin: settings.multipleWindows ? mWin : ``,
+              soundDetection: settings.soundDetection // for every stream only from 1st win?
            });
             ipcMain.once('connect-to-stream-main-end', (event, e) => {
               if(e) {
                 log.err(e);
                 reject(e);
               } else {
-                log.ok(`Connected successfully!`);
+                log.ok(`Connected successfully to ${mWin} stream!`);
               }
 
               resolve();
@@ -697,7 +697,7 @@ You can also write in this chat directly to do:
     }
 
     if(settings.soundDetection) {
-      win.webContents.send('start-audio', settings);
+        win.webContents.send(`start-audio`, settings, games.length, config.patch[settings.game].streamMode);
     }
 
     if(!config.patch[settings.game].streamMode) {
@@ -721,11 +721,12 @@ You can also write in this chat directly to do:
         });
       }
 
-      if(settings.soundDetection) {
-        win.webContents.send('stop-audio');
-      }
 
-      games.forEach(async ({game}) => {
+      games.forEach(async ({game}, i) => {
+        if(settings.soundDetection) {
+          win.webContents.send(`stop-audio${i + 1}`);
+        }
+
         if(config.patch[settings.game].streamMode) {
           return;
         }
@@ -893,7 +894,7 @@ You can also write in this chat directly to do:
   });
 
   ipcMain.on("sound-warn", () => {
-    return showWarning(win, `Turn off Music and Ambient Sounds in the game, leave only Sound Effects. Try to find a place secluded from the sounds made by other players to avoid false detections.\n\nUse "Listen" button to determine your specific amplitude value.\n\n Multiple Fishing Mode won't work with Sound Detection.`);
+    return showWarning(win, `Turn off Music and Ambient Sounds in the game, leave only Sound Effects. Try to find a place secluded from the sounds made by other players to avoid false detections.\n\nUse "Listen" button to determine your specific amplitude value.\n\nMultiple Fishing Mode won't work with Sound Detection unless you are in Streaming Mode.`);
   });
 
   ipcMain.on("ascension-warn", () => {
@@ -907,15 +908,20 @@ You can also write in this chat directly to do:
     } else {
       settWin.focus();
     }
+
+    settWin.once('close', () => {
+      win.webContents.send('settings-change');
+    })
+
     await new Promise(function(resolve, reject) {
-      settWin.on('show', () => {
+      settWin.once('show', () => {
         resolve();
-      })
+      });
     });
   });
 
   let listenWin;
-  ipcMain.on('create-listen-win', (event) => {
+  ipcMain.on('create-listen-win', async (event) => {
     let profile = getProfile();
     let settings = getJson(`${configPath}${profile.selected}/settings.json`);
 
@@ -937,6 +943,13 @@ You can also write in this chat directly to do:
       return Promise.reject(e);
     })
   });
+
+  ipcMain.handle('check-stream-mode', () => {
+    let profile = getProfile();
+    let settings = getJson(`${configPath}${profile.selected}/settings.json`);
+    let config = getJson(`${configPath}${profile.selected}/bot.json`);
+    return config.patch[settings.game].streamMode;
+  })
 
   ipcMain.handle('connect-pico', async (event, ip) => {
     try {
@@ -1049,7 +1062,7 @@ ipcMain.handle("delete-user", (event, user) => {
     const customWin = config.patch[settings.game].customWindow;
 
     if(!customWin && (profile == 'WIN1' || profile == 'WIN2' || profile == 'WIN3' || profile == 'WIN4' || profile == 'WIN5' || profile == 'WIN6' || profile == 'WIN7' || profile == 'WIN8' || profile == 'WIN9' || profile == 'WIN10')) {
-      showWarning(win, 'Specify your window in Advanced Settings -> Custom Window, otherwise the bot will ignore this window.')
+      showWarning(win, 'Normal Mode: Specify your window in Advanced Settings -> Custom Window, otherwise the bot will ignore this window.\n\nStreaming Mode: Turn on Streaming Mode for this window in the Advanced Settings -> Streaming Mode, otherwise the bot will ignore this window.')
     }
     let profiles = getProfile();
     profiles.selected = profile;

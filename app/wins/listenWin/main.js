@@ -1,11 +1,11 @@
 const { BrowserWindow, ipcMain } = require("electron");
 
-const createListenWin = (settings) => {
+const createListenWin = (settings, streamMode, multipleWindowsId) => {
   let win = new BrowserWindow({
     alwaysOnTop: true,
     frame: false,
     transparent: true,
-    focusable: false, 
+    focusable: false,
     x: 0,
     y: 0,
     width: 200,
@@ -21,7 +21,7 @@ const createListenWin = (settings) => {
 
   win.once("ready-to-show", async () => {
     win.setIgnoreMouseEvents(true);
-    win.webContents.send('settings-listen-win', settings);
+    win.webContents.send('settings-listen-win', settings, streamMode, multipleWindowsId);
     //win.openDevTools({mode: `detach`})
   });
 

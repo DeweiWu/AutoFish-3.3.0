@@ -64,8 +64,8 @@ class AutoFish {
     this.loggerStats = renderLoggerStats();
     let profile = renderProfiles(profiles);
 
-    ipcRenderer.on('connect-to-stream-main', (event, {deviceId, screenSize, mWin}) => {
-      connectToStream(deviceId, screenSize, mWin)
+    ipcRenderer.on('connect-to-stream-main', (event, {deviceId, screenSize, mWin, soundDetection}) => {
+      connectToStream(deviceId, screenSize, mWin, soundDetection)
       .then(() => {
           ipcRenderer.send('connect-to-stream-main-end')
       })
@@ -225,9 +225,12 @@ class AutoFish {
       ipcRenderer.send("stop-bot");
     });
 
-    ipcRenderer.on("settings-change", (settings) => {
-      this.settings.config = settings;
-      this.settings.render();
+    ipcRenderer.on("settings-change", (event, settings) => {
+      if(settings) {
+        this.settings.config = settings;
+      }
+
+      this.settings.reRender();
     });
 
     ipcRenderer.on("set-game", (event, game) => {
