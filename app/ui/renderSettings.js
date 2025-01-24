@@ -65,11 +65,11 @@ const renderThreshold = ({ threshold, bobberColor, soundDetectionMode = 'Desktop
 
     let rgbBobberColorManual = hexToRgb(bobberColorManual);
     if(bobberColor == `red`) {
-      document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
+      document.styleSheets[0].rules[86].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
     } else if(bobberColor == `blue`) {
-      document.styleSheets[0].rules[79].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
+      document.styleSheets[0].rules[86].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
     } else {
-      document.styleSheets[0].rules[79].style.backgroundImage = `linear-gradient(to right, rgb(${rgbBobberColorManual.r - 25}, ${rgbBobberColorManual.g - 25}, ${rgbBobberColorManual.b - 25}), rgb(${rgbBobberColorManual.r + 25}, ${rgbBobberColorManual.g + 25}, ${rgbBobberColorManual.b + 25}))`;
+      document.styleSheets[0].rules[86].style.backgroundImage = `linear-gradient(to right, rgb(${rgbBobberColorManual.r - 25}, ${rgbBobberColorManual.g - 25}, ${rgbBobberColorManual.b - 25}), rgb(${rgbBobberColorManual.r + 25}, ${rgbBobberColorManual.g + 25}, ${rgbBobberColorManual.b + 25}))`;
     }
 
     return elt(`div`, { className: `thresholdRange` }, rangeContainer); // autoThSwitch
@@ -170,6 +170,14 @@ const renderAfkmode = ({afkmode, multipleWindows}) => {
   if(multipleWindows) {
     checkbox.setAttribute("disabled", true);
   }
+
+  ipcRenderer.invoke('check-stream-mode')
+  .then((result) => {
+    if(result) {
+      checkbox.setAttribute("disabled", true);
+    }
+  });
+
   return checkbox;
 };
 

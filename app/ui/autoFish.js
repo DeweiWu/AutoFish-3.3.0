@@ -46,12 +46,16 @@ const renderLogger = () => {
 };
 
 const renderLoggerStats = () => {
-  let dom = elt('span', {style: `display: inline-block;cursor: help; width: 270px; text-align: right;`, title: `Caught: 0  Missed: 0  Time: 0`}, `🐟: 0  🙁: 0  🕑: 0 (min)`);
+  let fishCaught = elt('span', {style: `cursor: help;`, className: `stats-icon`, title: `Caught.`}, `🐟: 0`);
+  let fishMissed = elt('span', {style: `cursor: help;`, className: `stats-icon`, title: `Missed.`}, `🙁: 0`);
+  let timeSpent = elt('span', {style: `cursor: help;`, className: `stats-icon`, title: `Time passed (min).`}, `🕑: 0`);
+  let dom = elt('p', {className: `settings_header settings_header_log settings_header_main stats_logger`}, fishCaught, fishMissed, timeSpent);
   return {
     dom,
     showStats(stats, time) {
-      dom.textContent = `🐟: ${stats.caught}  🙁: ${stats.miss + stats.confused}  🕑: ${Math.floor(time / 1000 / 60)} (min)`
-      dom.setAttribute('title', `Caught: ${stats.caught} | Missed: ${stats.miss + stats.confused} | Time: ${Math.floor(time / 1000 / 60)} minutes`);
+      fishCaught.textContent = `🐟: ${stats.caught}`;
+      fishMissed.textContent = `🙁: ${stats.miss + stats.confused}`;
+      timeSpent.textContent = `🕑: ${Math.floor(time / 1000 / 60)}`
     }
   }
 }
@@ -292,7 +296,7 @@ class AutoFish {
       renderLogo(),
             elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header settings_header_main settings_header_fold"}, "⚙️"), foldSettingsContainer, profile.dom),
       this.settings.dom,
-            elt("p", { className: "settings_header settings_header_log settings_header_main" }, "📋"), this.loggerStats.dom,
+            elt(`div`, {style: `display: flex; flex-flow: row nowrap; justify-content: space-between;`}, elt("p", { className: "settings_header settings_header_log settings_header_main" }, "📋"), this.loggerStats.dom),
       this.logger.dom,
       this.button.dom,
       footer

@@ -15,7 +15,7 @@ button,
 p,
 select {
   font-family: "Segoe UI";
-  font-size: 12px; 
+  font-size: 12px;
 }
 
 select {
@@ -62,7 +62,6 @@ section {
   margin-bottom: 5px;
 }
 
-
 .AutoFish {
   padding: 5px;
   width: 325px;
@@ -72,10 +71,9 @@ section {
   height: 100px;
   margin-top: -5px;
   margin-bottom: -15px;
-  background-image: url('img/logo.png');
+  background-image: url("img/logo.png");
   background-size: contain;
   background-repeat: no-repeat;
-
 }
 
 .logo_name {
@@ -101,7 +99,6 @@ section {
   top: 0;
   left: 133px;
 }
-
 
 .logo_link_img {
   height: 11px;
@@ -163,11 +160,69 @@ section {
   background-position: center;
   background-color: rgba(255, 255, 0, 0.1);
   border: 1px inset grey;
+  border-right: none;
   border-radius: 10px;
   border-top-left-radius: 7px;
   overflow-y: scroll;
   overflow-x: hidden;
   padding: 5px;
+}
+
+/* Track */
+.logger::-webkit-scrollbar {
+  width: 15px; /* Set the width of the scrollbar */
+
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border: 1px solid grey;
+  border-top: none;
+  border-bottom: none;
+  background: rgb(211, 211, 211); /* Set the color of the scrollbar track */
+}
+
+/* Handle */
+.logger::-webkit-scrollbar-thumb {
+  background-color: rgba(
+    255,
+    209,
+    187
+  ); /* Set the color of the scrollbar handle */
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border: 1px solid rgb(130, 130, 130);
+}
+
+/* Handle on hover */
+.logger::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 189, 167); /* Change color on hover */
+  border: 1px solid grey;
+}
+
+/* Track */
+.logger::-webkit-scrollbar-track {
+
+}
+
+/* Handle when scrolling */
+.logger::-webkit-scrollbar-thumb:active {
+  background-color: rgba(
+    255,
+    169,
+    147
+  ); /* Change color when the user is actively scrolling */
+}
+
+.stats_logger {
+  color: rgba(0, 0, 0, .9);
+  width: auto;
+  margin-right: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.stats_logger span {
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .settings {
@@ -213,7 +268,7 @@ section {
 }
 
 .settings .option_hint:hover {
-  opacity: 0.9
+  opacity: 0.9;
 }
 
 .settings_section.threshold_settings {
@@ -233,13 +288,15 @@ section {
 }
 
 .settings select,
-.settings input[type="number"], .settings input[type="text"] {
+.settings input[type="number"],
+.settings input[type="text"] {
   width: 42px;
   margin-right: 3px;
   height: 20px;
 }
 
-input[data-spares] {}
+input[data-spares] {
+}
 
 .settings input[name="stopKey"],
 .settings input[name="luresKey"],
@@ -257,7 +314,7 @@ input[data-spares] {}
 .settings input[name="findPlayerTargetKey"],
 .settings input[name="findPlayerDoAfterKey"],
 .settings input[name="findPlayerTargetKeyAdd"],
-.settings input[name="logOutDoAfterKey"]  {
+.settings input[name="logOutDoAfterKey"] {
   text-align: center;
   border-radius: 2px;
   border: 1px solid grey;
@@ -318,13 +375,13 @@ input[data-spares] {}
 .settings input[name="findPlayerTargetKey"]:disabled,
 .settings input[name="findPlayerDoAfterKey"]:disabled,
 .settings input[name="findPlayerTargetKeyAdd"]:disabled,
-.settings input[name="logOutDoAfterKey"]:disabled  {
+.settings input[name="logOutDoAfterKey"]:disabled {
   cursor: default;
-  border: 1px solid rgba(0, 0, 0, .2);
-  background-color: rgba(245, 245, 245, .7);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: rgba(245, 245, 245, 0.7);
 }
 
-.settings textarea.whitelist_input  {
+.settings textarea.whitelist_input {
   width: 409px !important;
   height: 50px;
   max-width: 409px;
@@ -342,7 +399,7 @@ input[data-spares] {}
 }
 
 .advanced_settings_button_fz {
-  outline: 2px solid #FFDBC5;
+  outline: 2px solid #ffdbc5;
 }
 
 .advanced_settings_button:hover {
@@ -357,11 +414,11 @@ input[data-spares] {}
 
 .option.game-option {
   width: 125px;
-  outline: 2px solid #FFDBC5;
+  outline: 2px solid #ffdbc5;
 }
 
 .startButton {
-  background-image: url('img/start.png');
+  background-image: url("img/start.png");
   background-repeat: no-repeat;
   background-position: center center;
   display: block;
@@ -399,8 +456,8 @@ input[data-spares] {}
   text-align: center;
 }
 
-.advSettings .buttons input[type=button] {
-  outline: 2px solid #FFDBC5;
+.advSettings .buttons input[type="button"] {
+  outline: 2px solid #ffdbc5;
   margin: 0 3px;
 }
 
@@ -409,43 +466,43 @@ input[data-spares] {}
   margin-right: 5px;
 }
 
-.advSettings input[type=button] {
+.advSettings input[type="button"] {
   margin: 0 2px;
   width: 70px;
   border-radius: 5px;
   border: 1px solid grey;
 }
 
-.advSettings input[type=button]:hover {
+.advSettings input[type="button"]:hover {
   cursor: pointer;
   border: 1px solid black;
   background-color: rgb(230, 230, 230);
 }
 
-.advSettings input[type=button].disabledButtonPremium {
+.advSettings input[type="button"].disabledButtonPremium {
   cursor: default;
   background-color: rgb(248, 237, 231);
   border: 1px solid rgb(199, 190, 185);
 }
 
-.advSettings input[type=button].disabledButton {
+.advSettings input[type="button"].disabledButton {
   cursor: default;
   background-color: rgb(248, 248, 248);
   border: 1px solid rgb(208, 208, 208);
 }
 
-.advSettings input[type=button]:active {
+.advSettings input[type="button"]:active {
   background-color: rgb(240, 240, 240);
 }
 
-
-.advSettings .settings_section input[type=number], .advSettings .settings_section input[type=text] {
+.advSettings .settings_section input[type="number"],
+.advSettings .settings_section input[type="text"] {
   width: 40px;
 }
 
- .advSettings .settings_section input[name=mammothTraderName] {
-   width: 107px;
- }
+.advSettings .settings_section input[name="mammothTraderName"] {
+  width: 107px;
+}
 
 .advSettings .settings {
   flex-flow: column;
@@ -475,7 +532,6 @@ input[data-spares] {}
   position: relative;
 }
 
-
 .bobberColorSwitch {
   transition: 0.1s all;
   margin-right: 3px;
@@ -491,7 +547,7 @@ input[data-spares] {}
   cursor: pointer;
 }
 
-.settings_section input[type=text].tmApiKey {
+.settings_section input[type="text"].tmApiKey {
   width: 225px;
 }
 
@@ -505,23 +561,22 @@ input[data-spares] {}
   padding-left: 3px;
 }
 
-
 /* AdvSettings window end */
 
-input[type=range][name=threshold] {
+input[type="range"][name="threshold"] {
   -webkit-appearance: none;
   background: transparent;
 }
 
-input[type=range][name=threshold]::-webkit-slider-thumb {
+input[type="range"][name="threshold"]::-webkit-slider-thumb {
   -webkit-appearance: none;
 }
 
-input[type=range][name=threshold]:focus {
+input[type="range"][name="threshold"]:focus {
   outline: none;
 }
 
-input[type=range][name=threshold]::-ms-track {
+input[type="range"][name="threshold"]::-ms-track {
   width: 100%;
   cursor: pointer;
   background: transparent;
@@ -529,22 +584,22 @@ input[type=range][name=threshold]::-ms-track {
   color: transparent;
 }
 
-input[type=checkbox] {
+input[type="checkbox"] {
   width: 13px;
   height: 13px;
 }
 
-.threshold_settings input[type=range] {
+.threshold_settings input[type="range"] {
   width: 139px;
   margin-right: 6px;
 }
 
-.threshold_settings input[type=range]::-webkit-slider-thumb {
+.threshold_settings input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   border: 1px solid grey;
   width: 16px;
   border-radius: 3px;
-  background: rgb(240,240,240);
+  background: rgb(240, 240, 240);
   background-image: url("img/grate.png");
   background-position: center center;
   background-size: 10px;
@@ -553,11 +608,11 @@ input[type=checkbox] {
   margin-top: -6px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
 }
 
-.threshold_settings input[type=range]::-webkit-slider-thumb:hover {
+.threshold_settings input[type="range"]::-webkit-slider-thumb:hover {
   border: 1px solid black;
 }
 
-.threshold_settings input[type=range]::-webkit-slider-runnable-track {
+.threshold_settings input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
   height: 10px;
   cursor: pointer;
@@ -566,15 +621,15 @@ input[type=checkbox] {
   border: 0.2px solid #010101;
 }
 
-input[type=range].threshold_disabled::-webkit-slider-runnable-track {
+input[type="range"].threshold_disabled::-webkit-slider-runnable-track {
   opacity: 0.8;
 }
 
-input[type=range]:focus::-webkit-slider-runnable-track {
+input[type="range"]:focus::-webkit-slider-runnable-track {
   opacity: 0.9;
 }
 
-input[type=range].threshold_disabled::-webkit-slider-thumb {
+input[type="range"].threshold_disabled::-webkit-slider-thumb {
   visibility: hidden;
 }
 
@@ -593,12 +648,12 @@ input[type=range].threshold_disabled::-webkit-slider-thumb {
   justify-content: space-around;
 }
 
-.profiles input[type=text] {
+.profiles input[type="text"] {
   margin: 0;
   display: inline;
 }
 
-.profiles input[type=button] {
+.profiles input[type="button"] {
   width: 20px;
   height: 20px;
   border: 1px solid grey;
@@ -607,67 +662,66 @@ input[type=range].threshold_disabled::-webkit-slider-thumb {
   padding: 0;
 }
 
-.profiles input[type=button]:hover {
+.profiles input[type="button"]:hover {
   border: 1px solid black;
   background-color: rgb(230, 230, 230);
   cursor: pointer;
 }
 
-.profiles input[type=button]:active {
+.profiles input[type="button"]:active {
   background-color: rgb(240, 240, 240);
 }
 
-
-.profiles select, .profiles input[type=text].profiles_text {
+.profiles select,
+.profiles input[type="text"].profiles_text {
   width: 127px;
 }
 
-.profiles input[type=text].profiles_text:focus {
+.profiles input[type="text"].profiles_text:focus {
   border: 1px solid grey;
 }
 
 .profile_button_add {
-  background-image: url('img/add.png');
+  background-image: url("img/add.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 .add_button_disabled {
-  background-image: url('img/add_disabled.png') !important;
+  background-image: url("img/add_disabled.png") !important;
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 .profile_button_remove {
-  background-image: url('img/remove.png');
+  background-image: url("img/remove.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 .profile_button_save {
-  background-image: url('img/save.png');
+  background-image: url("img/save.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 .profile_button_load {
-  background-image: url('img/load.png');
+  background-image: url("img/load.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
 }
 
-
 .settings_premium {
-  background-color: #FFDBC5;
+  background-color: #ffdbc5;
 }
 
 .settings_header_premium {
-  background-color: #FFDBC5;
+  background-color: #ffdbc5;
 }
 
 .settings_header_critical {
@@ -715,20 +769,20 @@ input[type=range].threshold_disabled::-webkit-slider-thumb {
 }
 */
 
-input[type=range] {
+input[type="range"] {
   -webkit-appearance: none;
   background: transparent;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
 }
 
-input[type=range]:focus {
+input[type="range"]:focus {
   outline: none;
 }
 
-input[type=range]::-ms-track {
+input[type="range"]::-ms-track {
   width: 100%;
   cursor: pointer;
   background: transparent;
@@ -736,18 +790,18 @@ input[type=range]::-ms-track {
   color: transparent;
 }
 
-input[type=checkbox] {
+input[type="checkbox"] {
   width: 13px;
   height: 13px;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   border: 1px solid grey;
   height: 20px;
   width: 16px;
   border-radius: 3px;
-  background: rgb(240,240,240);
+  background: rgb(240, 240, 240);
   background-image: url("img/grate.png");
   background-position: center center;
   background-size: 10px;
@@ -756,26 +810,29 @@ input[type=range]::-webkit-slider-thumb {
   margin-top: -7px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
 }
 
-input[type=range]::-webkit-slider-thumb:hover {
+input[type="range"]::-webkit-slider-thumb:hover {
   border: 1px solid black;
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
   height: 8px;
   cursor: pointer;
-  background-image: linear-gradient(to left, rgba(0, 117, 255, 0.6), rgba(0, 117, 255, 0.8));
+  background-image: linear-gradient(
+    to left,
+    rgba(0, 117, 255, 0.6),
+    rgba(0, 117, 255, 0.8)
+  );
   border-radius: 3px;
   border: 0.2px solid #010101;
 }
-
 
 .switch_thumb {
   width: 17px;
   height: 16px;
   position: relative;
   top: 1px;
-  background-color: rgb(240,240,240);
+  background-color: rgb(240, 240, 240);
   background-image: url("img/grate.png");
   background-position: 3px center;
   background-size: 9px;
@@ -785,18 +842,18 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 .switch_thumb_left {
-    left: 1px;
+  left: 1px;
 }
 
 .switch_thumb_right {
-    left: 22px;
+  left: 22px;
 }
 
 .switch_thumb:hover {
   border: 1px solid black;
 }
 
-.settingsFolder{
+.settingsFolder {
   height: 16px;
   position: absolute;
   left: 53px;
@@ -807,21 +864,22 @@ input[type=range]::-webkit-slider-runnable-track {
   border-radius: 5px;
 }
 
-.advSettings input[type=range] {
+.advSettings input[type="range"] {
   width: 180px;
 }
 
-.soundDeteaction-header, .threshold-header {
+.soundDeteaction-header,
+.threshold-header {
   cursor: pointer;
 }
 
 .soundDetection-container {
-    height: 71px;
-    width: 278px;
-    position: relative;
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: flex-end;
+  height: 71px;
+  width: 278px;
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-end;
 }
 
 .soundDetectionModeInputContainer {
@@ -845,33 +903,32 @@ input[type=range]::-webkit-slider-runnable-track {
   border-bottom: 1px solid grey;
 }
 
-.soundDetection-container input[type=range] {
+.soundDetection-container input[type="range"] {
   width: 239px;
   height: 10px;
   margin-bottom: 5px;
   z-index: 10;
 }
 
-.soundDetection-container input[type=number] {
+.soundDetection-container input[type="number"] {
   width: 45px;
   margin: 0;
 }
 
-
-input[type=range][name=soundDetectionRange] {
+input[type="range"][name="soundDetectionRange"] {
   -webkit-appearance: none;
   background: transparent;
 }
 
-input[type=range][name=soundDetectionRange]::-webkit-slider-thumb {
+input[type="range"][name="soundDetectionRange"]::-webkit-slider-thumb {
   -webkit-appearance: none;
 }
 
-input[type=range][name=soundDetectionRange]:focus {
+input[type="range"][name="soundDetectionRange"]:focus {
   outline: none;
 }
 
-input[type=range][name=soundDetectionRange]::-ms-track {
+input[type="range"][name="soundDetectionRange"]::-ms-track {
   width: 100%;
   cursor: pointer;
   background: transparent;
@@ -879,13 +936,13 @@ input[type=range][name=soundDetectionRange]::-ms-track {
   color: transparent;
 }
 
-input[type=range][name=soundDetectionRange]::-webkit-slider-thumb {
+input[type="range"][name="soundDetectionRange"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   border: 1px solid grey;
   height: 32px;
   width: 16px;
   border-radius: 3px;
-  background: rgb(240,240,240);
+  background: rgb(240, 240, 240);
   background-image: url("img/grate.png");
   background-position: center center;
   background-size: 10px;
@@ -894,11 +951,11 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-thumb {
   margin-top: -12px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
 }
 
-input[type=range][name=soundDetectionRange]::-webkit-slider-thumb:hover {
+input[type="range"][name="soundDetectionRange"]::-webkit-slider-thumb:hover {
   border: 1px solid black;
 }
 
-input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
+input[type="range"][name="soundDetectionRange"]::-webkit-slider-runnable-track {
   width: 100%;
   height: 10px;
   cursor: pointer;
@@ -1045,7 +1102,8 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   z-index: 3;
 }
 
-.spare-inner, .skills-inner {
+.spare-inner,
+.skills-inner {
   border: 1px solid grey;
   padding: 5px;
   margin: 5px;
@@ -1058,7 +1116,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 }
 
 .spare-execute {
- margin-left: 30px;
+  margin-left: 30px;
 }
 
 .spare-execute::before {
@@ -1085,11 +1143,11 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
   margin-bottom: 5px;
 }
 
- .skills-inner label {
-   display: flex;
-   justify-content: space-between;
-   margin-bottom: 5px;
- }
+.skills-inner label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
 
 .advSettings .settings .settings_section .spareContainer {
   margin-bottom: 5px;
@@ -1106,7 +1164,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 .advSettings .settings .settings_section .sparesContainer .spares-addButton {
   display: block;
   margin: 0 auto;
-  background-image: url('img/add.png');
+  background-image: url("img/add.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
@@ -1115,7 +1173,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 .advSettings .settings .settings_section .sparesContainer .spares-removeButton {
   display: block;
   margin: 0 auto;
-  background-image: url('img/remove.png');
+  background-image: url("img/remove.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
@@ -1124,7 +1182,7 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 .advSettings .settings .settings_section .sparesContainer .skills-removeButton {
   display: block;
   margin: 0 auto;
-  background-image: url('img/remove.png');
+  background-image: url("img/remove.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
@@ -1137,8 +1195,17 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 .advanced_settings_header_text {
   font-size: 1.1em;
   font-weight: 500;
-  margin-left: 5px
+  margin-left: 5px;
 }
+
+
+
+
+
+
+
+
+
 
 /* Track */
 .advSettings_settings::-webkit-scrollbar {
@@ -1147,14 +1214,18 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 
 /* Handle */
 .advSettings_settings::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 209, 187); /* Set the color of the scrollbar handle */
+  background-color: rgba(
+    255,
+    209,
+    187
+  ); /* Set the color of the scrollbar handle */
   border-radius: 5px; /* Round the corners of the scrollbar handle */
   border: 1px solid rgb(130, 130, 130);
 }
 
 /* Handle on hover */
 .advSettings_settings::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 189, 167);  /* Change color on hover */
+  background-color: rgba(255, 189, 167); /* Change color on hover */
   border: 1px solid grey;
 }
 
@@ -1166,19 +1237,22 @@ input[type=range][name=soundDetectionRange]::-webkit-slider-runnable-track {
 
 /* Handle when scrolling */
 .advSettings_settings::-webkit-scrollbar-thumb:active {
-  background-color:  rgba(255, 169, 147); /* Change color when the user is actively scrolling */
+  background-color: rgba(
+    255,
+    169,
+    147
+  ); /* Change color when the user is actively scrolling */
 }
 
 /* Hide the number input arrows */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-input[type=number] {
-    -moz-appearance: textfield; /* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
 }
-
 
 .auto_button {
   width: 30px;
@@ -1209,7 +1283,7 @@ input[type=number] {
   cursor: pointer;
   border: 1px solid rgb(130, 130, 130);
   border-radius: 2px;
-  background-color: rgba(255, 219, 197, .9);
+  background-color: rgba(255, 219, 197, 0.9);
 }
 
 .auto_button_on:hover {
@@ -1217,14 +1291,15 @@ input[type=number] {
   background-color: #ffc19b;
 }
 
-.sensitivityContainer, .rangeContainer {
+.sensitivityContainer,
+.rangeContainer {
   margin-right: 35px;
 }
 
 .checkLogicSelect {
   width: 135px !important;
   margin-right: 8px !important;
-  outline: 2px solid #FFDBC5;
+  outline: 2px solid #ffdbc5;
   font-size: 0.9em;
   cursor: help;
 }
@@ -1279,7 +1354,7 @@ input[type=number] {
 
 .whisperColorPicker {
   width: 30px !important;
-  background-image: url('img/color-picker.png');
+  background-image: url("img/color-picker.png");
   background-size: 12px;
   background-repeat: no-repeat;
   background-position: center center;
@@ -1287,7 +1362,7 @@ input[type=number] {
 
 .whisperColorRemoveButton {
   width: 30px !important;
-  background-image: url('img/remove.png');
+  background-image: url("img/remove.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
@@ -1297,7 +1372,7 @@ input[type=number] {
 .whispSpecColorsAdd {
   display: block;
   margin: 0 auto !important;
-  background-image: url('img/add.png');
+  background-image: url("img/add.png");
   background-size: 12px;
   background-position: center center;
   background-repeat: no-repeat;
@@ -1310,7 +1385,7 @@ input[type=number] {
   margin-top: 2px;
   height: 16px !important;
   font-size: 0.8em;
-  outline: 2px solid #FFDBC5;
+  outline: 2px solid #ffdbc5;
 }
 
 .bobberColorBox {
@@ -1325,7 +1400,7 @@ input[type=number] {
   height: 15px;
   width: 30px;
   margin-right: 1px;
-  background-image: url('img/color-picker.png');
+  background-image: url("img/color-picker.png");
   background-size: 9px;
   background-repeat: no-repeat;
   background-position: center center;
@@ -1350,7 +1425,6 @@ input[type=number] {
   border: 1px solid black;
 }
 
-
 .testSkillsButton {
   margin-top: 5px !important;
   cursor: help !important;
@@ -1358,17 +1432,17 @@ input[type=number] {
   align-self: center;
 }
 
-.advSettings input[type=color] {
+.advSettings input[type="color"] {
   cursor: pointer;
 }
 
-.advSettings input[type=color]:hover {
+.advSettings input[type="color"]:hover {
   border: 1px solid black;
 }
 
 .colorPicker_disabled {
   background-color: rgba(248, 237, 231);
-  border: 1px solid rgb(199, 190, 185)
+  border: 1px solid rgb(199, 190, 185);
 }
 
 .colorPicker_disabled:hover {
@@ -1386,4 +1460,12 @@ input[type=number] {
 
 .picoip {
   width: 150px !important;
+}
+
+.stats-icon {
+  transition: 0.2s all;
+}
+
+.stats-icon:hover {
+  transform: translateY(-3px);
 }

@@ -119,6 +119,11 @@ class Settings {
 
     this.dom.addEventListener('click', (event) => {
 
+      if(event.target.className == 'option_hint') {
+        event.preventDefault();
+        return;
+      }
+
       if(event.target.className == 'bobberColorPicker') {
         event.target.style.cursor = 'progress';
         ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {

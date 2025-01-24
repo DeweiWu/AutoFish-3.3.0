@@ -1062,7 +1062,7 @@ ipcMain.handle("delete-user", (event, user) => {
     const customWin = config.patch[settings.game].customWindow;
 
     if(!customWin && (profile == 'WIN1' || profile == 'WIN2' || profile == 'WIN3' || profile == 'WIN4' || profile == 'WIN5' || profile == 'WIN6' || profile == 'WIN7' || profile == 'WIN8' || profile == 'WIN9' || profile == 'WIN10')) {
-      showWarning(win, 'Normal Mode: Specify your window in Advanced Settings -> Custom Window, otherwise the bot will ignore this window.\n\nStreaming Mode: Turn on Streaming Mode for this window in the Advanced Settings -> Streaming Mode, otherwise the bot will ignore this window.')
+      showWarning(win, 'This profile is used only for Multiple Fishing.\n\nNormal Mode: Specify your window in Advanced Settings -> Custom Window, otherwise the bot will ignore this window.\n\nStreaming Mode: Turn on Streaming Mode for this window in the Advanced Settings -> Streaming Mode, otherwise the bot will ignore this window.')
     }
     let profiles = getProfile();
     profiles.selected = profile;
