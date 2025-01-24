@@ -2012,12 +2012,12 @@ if(lootWindowPatch.exitButton) {
   findBobber.maxAttempts = config.maxAttempts;
 
   const hoverMouse = async (chance = (config.likeHumanHover / 100)) => {
-    if(!config.likeHumanHover || config.arduino || settings.multipleWindows || settings.afkmode || config.streamMode) {
+    if(!config.likeHumanHover || config.arduino || settings.multipleWindows || settings.afkmode) { // config.streamMode
       return;
     }
 
     let cPos = mouse.getPos();
-    if(Math.random() < chance) {
+    if(Math.random() < (chance / 2)) {
       await moveTo({pos: cPos});
       return true;
     }
