@@ -492,7 +492,10 @@ You can also write in this chat directly to do:
       }
 
       if(data && config.patch[settings.game].streamMode) {
-        showWarning(win, `Please wait a couple of seconds until the data is saved! (After you press "OK")`);
+        BrowserWindow.getAllWindows().forEach((win) => {
+          win.webContents.send('freeze-loading');
+        })
+
         log.send('Saving data... Please wait.');
         win.webContents.send('show-loading-cursor-start');
 
@@ -528,6 +531,9 @@ You can also write in this chat directly to do:
             })
           }));
         } catch(e) {
+          BrowserWindow.getAllWindows().forEach((win) => {
+            win.webContents.send('unfreeze-loading');
+          })
           log.err(e);
           win.webContents.send("stop-bot");
           shell.beep();
@@ -544,7 +550,12 @@ You can also write in this chat directly to do:
         log.ok('Canceled.')
       }
 
-      BrowserWindow.getAllWindows()[0].show();
+      for (var i = BrowserWindow.getAllWindows().length - 1; i >= 0; i--) {
+        BrowserWindow.getAllWindows()[i].webContents.send('unfreeze-loading');
+        BrowserWindow.getAllWindows()[i].show();
+      }
+
+
 
       win.webContents.send('show-loading-cursor-end');
       return data;

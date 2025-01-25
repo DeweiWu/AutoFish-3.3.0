@@ -19,7 +19,40 @@ const convertValue = (node) => {
   }
 
   return value;
-};
+}
+
+let freezeElement;
+
+ipcRenderer.on('freeze-loading', (event) => {
+  if(!freezeElement) {
+    /*
+    let box = document.createElement('div');
+    box.className = 'freeze-loading';
+    freezeElement = box;
+    let p = document.createElement('p');
+    p.textContent = 'Loading';
+    p.className = 'freeze-loading-text';
+    box.append(p);
+    document.body.append(box);
+    */
+    let box = document.createElement('div');
+    box.className = 'freeze-loading';
+    freezeElement = box;
+
+    let spinnerContainer = document.createElement('div');
+    spinnerContainer.className = 'spinnerContainer';
+    let spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    spinnerContainer.append(spinner);
+    box.append(spinnerContainer);
+    document.body.append(box);
+  }
+});
+
+ipcRenderer.on('unfreeze-loading', (event) => {
+  freezeElement.remove();
+  freezeElement = false;
+})
 
 const renderCheckConfirm = ({checkConfirm, whitelist}) => elt('input', {type: `checkbox`, disabled: whitelist, checked: checkConfirm, name: `checkConfirm`});
 

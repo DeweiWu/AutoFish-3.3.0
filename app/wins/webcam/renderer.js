@@ -17,6 +17,19 @@ const sleep = (time) => {
   });
 };
 
+const createPlaceholder = () => {
+  let box = document.createElement('div');
+  box.className = 'freeze-loading';
+  let spinnerContainer = document.createElement('div');
+  spinnerContainer.className = 'spinnerContainer';
+  let spinner = document.createElement('div');
+  spinner.className = 'spinner';
+  spinnerContainer.append(spinner);
+  box.append(spinnerContainer);
+  document.body.append(box);
+  return box;
+}
+
 ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, screenSizePC, multipleWindowsId) => {
   const video = document.createElement('video');
   try {
@@ -100,16 +113,17 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
 
     video.style.width = `${screenSizePC.width}px`;
     video.style.height = `${screenSizePC.height}px`;
-    video.poster = path.join(__dirname, './loading.gif')
+    video.poster = './loading.gif';
+    
+    // const box = createPlaceholder();
+    ipcRenderer.send('stream-loaded');
     let canplayError = true;
-    //video.addEventListener('canplay', () => {
-      video.play();
-      video.addEventListener('play', () => {
-        canplayError = false;
-        document.body.append(video);
-        ipcRenderer.send('stream-loaded');
-      })
-    //});
+    video.play();
+    video.addEventListener('play', () => {
+      canplayError = false;
+      //box.remove();
+      document.body.append(video);
+    })
     await sleep(30000);
     if(canplayError) {
       throw new Error(`Stream Error: can't load the stream. Try again.`)

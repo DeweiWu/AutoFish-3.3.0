@@ -2292,7 +2292,7 @@ if (settings.soundDetection) {
   };
 
   const hookBobber = async (pos) => {
-    if (config.reaction) {
+    if (config.reaction && (!settings.soundDetection && !config.streamMode)) {
       await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
     }
     let caught = false;
