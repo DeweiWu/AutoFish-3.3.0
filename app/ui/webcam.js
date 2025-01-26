@@ -1,7 +1,7 @@
 const { ipcRenderer } = require("electron");
 const Hls = require('hls.js');
 
-const audioStreams = [];
+let audioStreams = [];
 
 const sleep = (time) => {
   return new Promise((resolve) => {
@@ -11,15 +11,13 @@ const sleep = (time) => {
 
 let stream;
 
-const generateEventsFor = (video, screenSize, mWin, audioElement) => {
+const generateEventsFor = (video, screenSize, mWin, pc) => {
   return new Promise(async (resolve, reject) => {
     let canplayError = true
-
-    //video.addEventListener("canplay", () => {
-      video.play();
-      video.addEventListener("play", () => {
-        canplayError = false;
-        ipcRenderer.on(`request-frame-${mWin}`, (event, pos, reqCh) => {
+    video.play();
+    video.addEventListener("play", () => {
+      canplayError = false;
+      ipcRenderer.on(`request-frame-${mWin}`, (event, pos, reqCh) => {
           const offscreenCanvas = new OffscreenCanvas(pos.width, pos.height); // Set desired resolution
           const context = offscreenCanvas.getContext("2d");
           context.drawImage(
@@ -39,9 +37,9 @@ const generateEventsFor = (video, screenSize, mWin, audioElement) => {
             ipcRenderer.send(reqCh, imageData.data.buffer);
           }, 0);
         });
-        resolve();
-      });
-    //});
+      resolve();
+    });
+
     ipcRenderer.once('stop-webcam-stream', async () => {
       ipcRenderer.removeAllListeners(`request-frame-${mWin}`);
       if(stream) {
@@ -49,9 +47,13 @@ const generateEventsFor = (video, screenSize, mWin, audioElement) => {
         stream = null;
       }
       video.remove();
-      if(audioElement) {
-        audioElement.remove();
+
+      if(pc) {
+        pc.close();
+        pc = null;
       }
+
+      audioStreams = [];
     })
 
     await sleep(30000);
@@ -63,7 +65,7 @@ const generateEventsFor = (video, screenSize, mWin, audioElement) => {
 
 const connectToStream = async (deviceId, screenSize, mWin, soundDetection) => {
   const video = document.createElement("video");
-  let audioElement;
+  let pc;
 
   if(deviceId != 'Custom Server') {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -92,11 +94,14 @@ const connectToStream = async (deviceId, screenSize, mWin, soundDetection) => {
     });
     video.srcObject = stream;
   } else {
-    const pc = new RTCPeerConnection({
+    pc = new RTCPeerConnection({
         iceServers: []
     });
 
     pc.ontrack = (event) => {
+        if(event.track.kind === 'audio') {
+          audioStreams.push(event.streams[0]);
+        }
         if (event.track.kind === 'video') {
           video.srcObject = event.streams[0];
         }
@@ -131,7 +136,7 @@ const connectToStream = async (deviceId, screenSize, mWin, soundDetection) => {
     if(/doesn't support/.test(serverReportOk)) {
       throw new Error(`Server doesn't support this Video Encoder.`);
     }
-
+    /*
     if(soundDetection) {
       const hls = new Hls();
       audioElement = document.createElement('audio');
@@ -153,9 +158,10 @@ const connectToStream = async (deviceId, screenSize, mWin, soundDetection) => {
         })
       });
     }
+    */
   }
 
-  return await generateEventsFor(video, screenSize, mWin, audioElement);
+  return await generateEventsFor(video, screenSize, mWin, pc);
 };
 
 module.exports = {

@@ -62,7 +62,8 @@ const connectToMediaMtx = (log, win) => {
        }
      }
     addresses.forEach((address, i) => {
-      log.streamInfo(`rtmp://${address}:1935/live`)
+      //log.streamInfo(`rtmp://${address}:1935/live`)
+      log.streamInfo(`rtsp://${address}:8554/live`)
     })
   } catch(e) {
     log.err(`Can not launch Streaming Server!`)
@@ -418,6 +419,7 @@ You can also write in this chat directly to do:
   });
   win.once("ready-to-show", () => {
     win.show();
+    win.webContents.setAudioMuted(true);
   });
 
   ipcMain.handle("start-bot", async (event, type) => {
@@ -679,7 +681,7 @@ You can also write in this chat directly to do:
                 log.err(e);
                 reject(e);
               } else {
-                log.ok(`Connected successfully to ${mWin} stream!`);
+                log.ok(`Connected successfully to stream: /live${mWin}!`);
               }
 
               resolve();
@@ -718,6 +720,11 @@ You can also write in this chat directly to do:
     const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win);
 
     const stopAppAndBots = () => {
+
+      BrowserWindow.getAllWindows().forEach((win) => {
+        win.webContents.send('freeze-loading');
+      })
+
       if(trialIsOn) {
         trial.stop();
         let { version } = getJson('../package.json');

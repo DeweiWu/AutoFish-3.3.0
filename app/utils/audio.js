@@ -6,7 +6,7 @@ const getAudio = async (settings, streamMode, mWin) => {
   let stream = new MediaStream();
   if(streamMode) {
     stream = getAudioStreams()[mWin - 1];
-    // stream.addTrack(getAudioStreams()[mWin - 1]);
+    //stream.addTrack(getAudioStreams()[mWin - 1]);
   } else if (settings.soundDetectionMode == `Desktop` || !settings.soundDetectionInputDevice) {
     stream = await navigator.mediaDevices.getUserMedia({
       audio: {
@@ -35,7 +35,7 @@ const getAudio = async (settings, streamMode, mWin) => {
   }
 
   streams.push(stream);
-  const analyser = webAnalyser(stream, {audible: false});
+  const analyser = webAnalyser(stream, {audible: false, stereo: false});
   return analyser;
 };
 

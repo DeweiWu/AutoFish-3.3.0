@@ -1,7 +1,7 @@
 const runBot = require("./runBot.js");
 const createBot = require("./createBot.js");
 
-const { ipcMain, screen } = require("electron");
+const { ipcMain, screen, BrowserWindow } = require("electron");
 
 const { convertMs } = require('../utils/time.js');
 const Stats = require('./stats.js');
@@ -281,6 +281,11 @@ if (tmBot.bot) {
             if(bots.every(({state}) => state.status == 'stop')) {
               setTimeout(() => log.setState(true), 500);
             }
+
+            BrowserWindow.getAllWindows().forEach((win) => {
+              win.webContents.send('unfreeze-loading');
+            })
+
             //bot.stats.show().forEach((stat) => bot.log.ok(stat));
             //bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
         })

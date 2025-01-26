@@ -7,7 +7,7 @@ let wholeLog = [];
 let mediamtxProcess;
 
 function extractIPAddress(logLine) {
-    const regex = /(\d+\.\d+\.\d+\.\d+):\d+.*?is publishing to path 'live(\d*)'/;
+    const regex = /is publishing to path 'live(\d*)'/;
     const match = logLine.match(regex);
     return match ? match : null;
 }
@@ -39,9 +39,9 @@ module.exports = (log, mainPath, win) => {
     let remoteConnection = extractIPAddress(data.toString());
     if(remoteConnection) {
       if(remoteConnection[2]) {
-        log.ok(`${remoteConnection[1]} is streaming to /live${remoteConnection[2]} (WIN${remoteConnection[2]})`);
+        log.ok(`Stream is being published to /live${remoteConnection[2]} (WIN${remoteConnection[2]})`);
       } else {
-        log.ok(`${remoteConnection[1]} is streaming to /live`);
+        log.ok(`Stream is being published to /live`);
       }
     }
     wholeLog.push(data.toString());

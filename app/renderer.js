@@ -22,7 +22,6 @@ const runApp = async () => {
 
   ipcRenderer.on('start-audio', async (event, settings, wins, streamMode) => {
     for(let mWin = 1; mWin <= wins; mWin++) {
-
     let analyser = await audioAnalyser.startStream(settings, streamMode, mWin);
     ipcRenderer.on(`get-audio${mWin}`, async (event, threshold, checkBobberTime, missOnPurpose, missOnPurposeValues, pos) => { // miss on purpuse?
     const checkBobberTimer = createTimer(() => random(checkBobberTime.from * 1000, checkBobberTime.to * 1000));

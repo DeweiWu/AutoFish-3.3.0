@@ -171,8 +171,8 @@ const mouse = {
 
   async humanMoveTo(x, y, mainSpeed, deviation) { // speed = 88, curvature = 20
 
-    let speed = mainSpeed * 15; // 15 // % of step from distance
-    let curvature = (deviation / 100) * 30; //20 // % from distance
+    let speed = mainSpeed * 20; // 15
+    let curvature = (deviation / 100) * 30; // 30
 
     x = Math.round(x / scaling);
     y = Math.round(y / scaling);
@@ -261,7 +261,7 @@ const mouse = {
 const createPicoInterface = (picoip, streamScreenSize, delays, streamScale, mainLog) => {
   previousPos = {x: 0, y: 0};
   scaling = Number(streamScale) / 100;
-  speedDistCoof = (streamScreenSize.width / scaling) / 12.5; // ????
+  speedDistCoof = (streamScreenSize.width / scaling) / 10; // ????
   picoIp = picoip;
   log = mainLog;
   delay = [delays.from, delays.to];
