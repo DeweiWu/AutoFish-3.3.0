@@ -38,8 +38,8 @@ module.exports = (log, mainPath, win) => {
   mediamtxProcess.stdout.on("data", (data) => {
     let remoteConnection = extractIPAddress(data.toString());
     if(remoteConnection) {
-      if(remoteConnection[2]) {
-        log.ok(`Stream is being published to /live${remoteConnection[2]} (WIN${remoteConnection[2]})`);
+      if(remoteConnection[1]) {
+        log.ok(`Stream is being published to /live${remoteConnection[1]} (WIN${remoteConnection[1]})`);
       } else {
         log.ok(`Stream is being published to /live`);
       }

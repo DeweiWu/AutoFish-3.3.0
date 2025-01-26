@@ -1457,7 +1457,7 @@ input[type="number"] {
 }
 
 .stats-icon:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
 .freeze-loading {

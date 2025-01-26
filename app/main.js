@@ -31,18 +31,43 @@ const trialEncryption = require('./../enc.js')
 const { saveArchive, loadArchive } = require('./utils/saveArchive.js');
 const { pingDevice } = require('./game/pico.js');
 
-const getJson = (jsonPath) => {
-  return JSON.parse(readFileSync(path.join(__dirname, jsonPath), "utf8"));
-};
-
 const sleep = (time) => {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
 };
 
+const random = (from, to) => {
+  return from + Math.random() * (to - from);
+};
+
+const getJson = (jsonPath) => {
+  return JSON.parse(readFileSync(path.join(__dirname, jsonPath), "utf8"));
+};
+
 const getProfile = () => {
   return getJson(`${configPath}config.json`);
+};
+
+const showChoiceWarning = (win, warning, title, ...buttons) => {
+  return result = dialog.showMessageBoxSync(win, {
+    type: "warning",
+    title: `${title}`,
+    message: warning,
+    buttons: buttons,
+    defaultId: 0,
+    cancelId: 1,
+  });
+};
+
+const showWarning = (win, warning) => {
+  if(!getProfile().warningsOn) return;
+  return result = dialog.showMessageBoxSync(win, {
+    type: "warning",
+    title: `Warning`,
+    message: warning,
+    buttons: [`Ok`]
+  });
 };
 
 const connectToMediaMtx = (log, win) => {
@@ -132,26 +157,6 @@ if (handleSquirrelEvent(app)) {
 
 app.setPath('sessionData', path.resolve(app.getAppPath(), `cache`)); // Set cache folder in the app folder
 
-const showChoiceWarning = (win, warning, title, ...buttons) => {
-  return result = dialog.showMessageBoxSync(win, {
-    type: "warning",
-    title: `${title}`,
-    message: warning,
-    buttons: buttons,
-    defaultId: 0,
-    cancelId: 1,
-  });
-};
-
-const showWarning = (win, warning) => {
-  return result = dialog.showMessageBoxSync(win, {
-    type: "warning",
-    title: `Warning`,
-    message: warning,
-    buttons: [`Ok`]
-  });
-};
-
 const setFishingZone = async ({workwindow}, relZone, type, config, settings) => {
   workwindow.setForeground();
   while(!workwindow.isForeground()) {
@@ -181,9 +186,6 @@ const setFishingZone = async ({workwindow}, relZone, type, config, settings) => 
   return convertedResult
 }
 
-const random = (from, to) => {
-  return from + Math.random() * (to - from);
-};
 
 let win;
 let trial;
@@ -1131,6 +1133,12 @@ const menu = Menu.buildFromTemplate([
         click: () => shell.openExternal("https://www.buymeacoffee.com/jsbots"),
       },
       { type: "separator" },
+      { label: 'Show Warnings', type: 'checkbox', checked: getProfile().warningsOn, click() {
+        let profile = getProfile();
+        profile.warningsOn = !profile.warningsOn;
+        writeFileSync(path.join(__dirname, `${configPath}`, `config.json`), JSON.stringify(profile));
+      } },
+      { type: "separator" },
       { role: "quit" },
     ],
   }
@@ -1141,5 +1149,4 @@ Menu.setApplicationMenu(menu);
 });
 
 app.commandLine.appendSwitch('enable-features','SharedArrayBuffer')
-
 crashReporter.start({uploadToServer: false});

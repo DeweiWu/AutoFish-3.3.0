@@ -261,7 +261,7 @@ const mouse = {
 const createPicoInterface = (picoip, streamScreenSize, delays, streamScale, mainLog) => {
   previousPos = {x: 0, y: 0};
   scaling = Number(streamScale) / 100;
-  speedDistCoof = (streamScreenSize.width / scaling) / 10; // ????
+  speedDistCoof = (streamScreenSize.width / scaling) / 12; // ????
   picoIp = picoip;
   log = mainLog;
   delay = [delays.from, delays.to];

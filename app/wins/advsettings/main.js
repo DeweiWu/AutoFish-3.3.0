@@ -2,14 +2,15 @@ const { BrowserWindow, ipcMain, dialog } = require("electron");
 const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
 
+let appPath;
+
 const configPath = process.env.NODE_ENV == `dev` ? './config/' : '../../app.asar.unpacked/app/config/';
 
 const getJson = (path) => JSON.parse(readFileSync(path), "utf8");
 
-const getProfile = (appPath) => {
-  return getJson(path.join(appPath, `${configPath}config.json`)).selected;
+const getProfile = () => {
+  return getJson(path.join(appPath, `${configPath}config.json`));
 };
-
 
 const showChoiceWarning = (win, warning, title, button1, button2) => {
   return result = dialog.showMessageBoxSync(win, {
@@ -24,6 +25,7 @@ const showChoiceWarning = (win, warning, title, button1, button2) => {
 
 
 const showWarning = (win, warning) => {
+  if(!getProfile().warningsOn) return;
   return result = dialog.showMessageBoxSync(win, {
     type: "warning",
     title: `Warning!`,
@@ -32,7 +34,9 @@ const showWarning = (win, warning) => {
   });
 };
 
-const createAdvSettings = (appPath, gameName) => {
+
+const createAdvSettings = (mainAppPath, gameName) => {
+  appPath = mainAppPath
   let mainWin = BrowserWindow.getAllWindows()[0];
   const [mainX, mainY] = mainWin.getPosition();
   let win = new BrowserWindow({
@@ -77,7 +81,7 @@ const createAdvSettings = (appPath, gameName) => {
 
   ipcMain.on("advanced-click", (event, newConfig) => {
     if(newConfig) {
-      const profile = getProfile(appPath);
+      const profile = getProfile().selected;
       const settings = getJson(path.join(appPath, `${configPath}${profile}/settings.json`));
       const config = getJson(path.join(appPath, `${configPath}${profile}/bot.json`));
       config.patch[settings.game] = newConfig;
@@ -123,7 +127,7 @@ const createAdvSettings = (appPath, gameName) => {
   });
 
   ipcMain.handle("advanced-defaults", () => {
-    const profile = getProfile(appPath);
+    const profile = getProfile().selected;
     const settings = getJson(path.join(appPath, `${configPath}${profile}/settings.json`));
     const defaults = getJson(path.join(appPath, `${configPath}${profile}/defaults.json`));
     return defaults.patch[settings.game];
@@ -134,7 +138,7 @@ const createAdvSettings = (appPath, gameName) => {
   })
 
   ipcMain.handle("get-game-config", () => {
-    const profile = getProfile(appPath);
+    const profile = getProfile().selected;
     const settings = getJson(path.join(appPath, `${configPath}${profile}/settings.json`));
     const config = getJson(path.join(appPath, `${configPath}${profile}/bot.json`));
     return config.patch[settings.game];
