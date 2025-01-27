@@ -294,7 +294,7 @@ class AutoFish {
       "div",
       { className: "AutoFish" },
       renderLogo(),
-            elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header settings_header_main settings_header_fold"}, "⚙️"), foldSettingsContainer, profile.dom),
+            elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header settings_header_main settings_header_fold"}, "⚙️") /*foldSettingsContainer*/, profile.dom),
       this.settings.dom,
             elt(`div`, {style: `display: flex; flex-flow: row nowrap; justify-content: space-between;`}, elt("p", { className: "settings_header settings_header_log settings_header_main" }, "📋"), this.loggerStats.dom),
       this.logger.dom,

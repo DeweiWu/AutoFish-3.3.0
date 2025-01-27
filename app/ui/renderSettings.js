@@ -101,11 +101,11 @@ const renderThreshold = ({ threshold, bobberColor, soundDetectionMode = 'Desktop
 
     let rgbBobberColorManual = hexToRgb(bobberColorManual);
     if(bobberColor == `red`) {
-      document.styleSheets[0].rules[86].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
+      document.styleSheets[0].rules[88].style.backgroundImage = "linear-gradient(to right, rgb(100, 0, 0), rgb(250, 0, 0))"
     } else if(bobberColor == `blue`) {
-      document.styleSheets[0].rules[86].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
+      document.styleSheets[0].rules[88].style.backgroundImage = "linear-gradient(to right, rgb(0, 0, 100), rgb(0, 90, 200))"
     } else {
-      document.styleSheets[0].rules[86].style.backgroundImage = `linear-gradient(to right, rgb(${rgbBobberColorManual.r - 25}, ${rgbBobberColorManual.g - 25}, ${rgbBobberColorManual.b - 25}), rgb(${rgbBobberColorManual.r + 25}, ${rgbBobberColorManual.g + 25}, ${rgbBobberColorManual.b + 25}))`;
+      document.styleSheets[0].rules[88].style.backgroundImage = `linear-gradient(to right, rgb(${rgbBobberColorManual.r - 25}, ${rgbBobberColorManual.g - 25}, ${rgbBobberColorManual.b - 25}), rgb(${rgbBobberColorManual.r + 25}, ${rgbBobberColorManual.g + 25}, ${rgbBobberColorManual.b + 25}))`;
     }
 
     return elt(`div`, { className: `thresholdRange` }, rangeContainer); // autoThSwitch
@@ -286,6 +286,8 @@ const renderSettings = (config) => {
 return elt(
     "section",
     { className: "settings" },
+
+    elt('div', {className: `settings_row`},
     elt(
       "div",
       { className: "settings_section" },
@@ -321,9 +323,9 @@ return elt(
           `Enable this option to use the bot across multiple game windows. Ensure each window is properly launched and configured, and **every game instance is set to DirectX 11 or lower** *(older games doesn't need it)*. The bot will automatically switch between windows as needed.\n\nIn this mode, the bot will use special profiles specific to each window: WIN1, WIN2, WIN3, and so on *(check in profiles list)*.\n\nEach "WIN" profile must have a **"Custom Window"** configured *(found under Advanced Settings -> Window)*. Use the **"Focus"** button to check which window you've selected.\n\n**Simple guide:** choose WIN1 in profiles above -> Go to Advanced Settings -> Custom Window -> Choose the window for the first game -> Repeat the same for every next window.`,
           `premium_label`
       )
-
-
     ),
+
+
     elt(
       "div",
       { className: "settings_section " },
@@ -344,6 +346,9 @@ return elt(
         renderAdvancedSettings(config),
         ),
     ),
+
+),
+elt('div', {className: `settings_row_wrap`},
     elt("p", {className: `settings_header settings_header_main threshold-header ${config.soundDetection ? `thClosed`: ``}`, "data-thresholdHeader": true}, "🎨"),
     elt("p", {className: `settings_header settings_header_main soundDeteaction-header ${config.soundDetection ? ``: `thClosed`}`, "data-soundDetectionHeader": true}, "🔊"),
     elt(
@@ -363,7 +368,8 @@ return elt(
        `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value. If in Auto mode: The bot will auto-adjust both sensitivity value per each cast.`
        : `How sensitive the bot is to any movements (jerking, plunging) of the bobber. If the bot clicks too early, decrease this value (don't confuse it with when the bot missclicks on purpose). If the bot clicks on the bobber too late (or doesn't click at all), increase this value.`, `thLabel`) : ``
     )
-  );
+  )
+  )
 }
 
 module.exports = renderSettings;

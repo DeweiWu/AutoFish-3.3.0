@@ -38,7 +38,10 @@ h3 {
 
 body {
   margin: 0;
-  padding: 0;
+  padding-top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 button {
@@ -64,8 +67,9 @@ section {
 
 .AutoFish {
   padding: 5px;
+  padding-top: 10px;
   width: 325px;
-  height: 689px;
+  height: 639px;
 }
 .logo {
   height: 100px;
@@ -225,6 +229,16 @@ section {
 }
 
 .settings {
+  display: flex;
+  flex-flow: column;
+}
+
+.settings_row {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.settings_row_wrap {
   display: flex;
   flex-flow: row wrap;
 }
@@ -418,6 +432,7 @@ input[data-spares] {
 
 .startButton {
   background-image: url("img/start.png");
+  background-size: 119px;
   background-repeat: no-repeat;
   background-position: center center;
   display: block;

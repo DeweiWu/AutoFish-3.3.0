@@ -421,6 +421,7 @@ You can also write in this chat directly to do:
   });
   win.once("ready-to-show", () => {
     win.show();
+    win.webContents.setZoomFactor(1.0);
     win.webContents.setAudioMuted(true);
   });
 
@@ -691,6 +692,7 @@ You can also write in this chat directly to do:
           }));
         }
       } catch(e) {
+        ipcMain.removeAllListeners('stop-bot');
         win.webContents.send("stop-bot");
         shell.beep();
         return;
@@ -842,19 +844,9 @@ You can also write in this chat directly to do:
       hintWin = false;
     }
 
-    const focusedWinPos = BrowserWindow.getAllWindows().find((win) => {
-      const [width, height] = win.getSize();
-
-      if(Math.abs(data.client.width - width) < 50) {
-        return true;
-      }
-    });
-
-    if(!focusedWinPos) {
-      return;
-    }
-
+    const focusedWinPos = BrowserWindow.getFocusedWindow();
     let winPos = focusedWinPos.getPosition();
+    let zoomFactor = win.webContents.getZoomFactor();
 
     let compensate = 0;
     let scaleFactor = screen.getPrimaryDisplay().scaleFactor;
@@ -863,11 +855,11 @@ You can also write in this chat directly to do:
     }
 
     data.pos = {
-      x: data.pos.x + winPos[0],
-      y: data.pos.y + winPos[1] + Math.floor((compensate + 8) / scaleFactor)
+      x: (data.pos.x * zoomFactor) + winPos[0],
+      y: (data.pos.y * zoomFactor) + winPos[1] + Math.floor((compensate + 8) / scaleFactor)
     };
 
-    hintWin = createHintWin(data);
+    hintWin = createHintWin(data, zoomFactor);
   });
 
   ipcMain.on('close-hint-win', (event) => {
@@ -924,7 +916,7 @@ You can also write in this chat directly to do:
   let settWin;
   ipcMain.handle("advanced-settings", async (event, settings) => {
     if(!settWin || settWin.isDestroyed()) {
-      settWin = createAdvSettings(__dirname, settings.game)
+      settWin = createAdvSettings(__dirname, settings.game, win.webContents.getZoomFactor());
     } else {
       settWin.focus();
     }
@@ -1090,6 +1082,15 @@ ipcMain.handle("delete-user", (event, user) => {
   });
 }
 
+function updateWindowSize(zoomFactorX, zoomFactorY) {
+   const [width, height] = win.getSize()
+   win.setSize(
+     Math.round(341 * zoomFactorX),
+     Math.round(689 * zoomFactorY)
+   )
+   // win.center()
+ }
+
 let powerBlocker = powerSaveBlocker.start("prevent-display-sleep");
 app.whenReady().then(() => {
 const menu = Menu.buildFromTemplate([
@@ -1141,7 +1142,44 @@ const menu = Menu.buildFromTemplate([
       { type: "separator" },
       { role: "quit" },
     ],
-  }
+  },
+  {
+        label: 'View',
+        submenu: [
+          {
+            label: 'Zoom In',
+            accelerator: 'CommandOrControl+Plus',
+            click: () => {
+              const webContents = win.webContents
+              const currentZoom = webContents.getZoomFactor()
+              const newZoom = currentZoom + 0.1;
+              let step = Math.abs(1 - newZoom) * 9.5;
+              webContents.setZoomFactor(newZoom)
+              updateWindowSize(newZoom + (0.0125 * step), newZoom + (0.0225 * step))
+            }
+          },
+          {
+            label: 'Zoom Out',
+            accelerator: 'CommandOrControl+-',
+            click: () => {
+              const webContents = win.webContents
+              const currentZoom = webContents.getZoomFactor();
+              const newZoom = Math.max(0.1, currentZoom - 0.1)
+              let step = Math.abs(1 - newZoom) * 9.5;
+              webContents.setZoomFactor(newZoom)
+              updateWindowSize(newZoom + (0.0125 * step), newZoom + (0.0175 * step));
+            }
+          },
+          {
+            label: 'Reset Zoom',
+            accelerator: 'CommandOrControl+0',
+            click: () => {
+              win.webContents.setZoomFactor(1.0)
+              updateWindowSize(1, 1)
+            }
+          }
+        ]
+      }
 ]);
 
 Menu.setApplicationMenu(menu);

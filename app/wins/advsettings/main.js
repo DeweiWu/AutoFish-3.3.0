@@ -35,7 +35,7 @@ const showWarning = (win, warning) => {
 };
 
 
-const createAdvSettings = (mainAppPath, gameName) => {
+const createAdvSettings = (mainAppPath, gameName, winZoomFactor) => {
   appPath = mainAppPath
   let mainWin = BrowserWindow.getAllWindows()[0];
   const [mainX, mainY] = mainWin.getPosition();
@@ -43,8 +43,8 @@ const createAdvSettings = (mainAppPath, gameName) => {
     x: mainX + 150,
     y: mainY,
     title: `Advanced Settings for ${gameName}`,
-    width: 455,
-    height: 667,
+    width: Math.round(455 * (winZoomFactor != 1 ? (winZoomFactor + 0.0125) : 1)),
+    height: Math.round(667 * (winZoomFactor != 1 ? (winZoomFactor + 0.0225) : 1)),
     show: false,
     resizable: false,
     webPreferences: {
@@ -77,6 +77,7 @@ const createAdvSettings = (mainAppPath, gameName) => {
   win.once("ready-to-show", () => {
     //win.openDevTools({mode: `detach`});
     win.show();
+    win.webContents.setZoomFactor(winZoomFactor);
   });
 
   ipcMain.on("advanced-click", (event, newConfig) => {
