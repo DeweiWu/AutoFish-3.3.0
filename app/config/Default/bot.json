@@ -37,6 +37,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -324,6 +325,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -601,6 +603,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -878,6 +881,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -1135,6 +1139,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -1393,6 +1398,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -1647,6 +1653,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -1920,6 +1927,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -2190,6 +2198,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
@@ -2451,6 +2460,7 @@
       "checkChangesDoAfterSleepTime": 1,
       "checkChangesDoAfterKey": "9",
       "deathCheck": false,
+      "deathCheckQuit": false,
       "deathHp": {
         "x": 0,
         "y": 0,
