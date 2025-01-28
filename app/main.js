@@ -221,6 +221,15 @@ const createWindow = async () => {
     app.quit();
   });
 
+  // Define a global context menu
+  const contextMenu = Menu.buildFromTemplate([
+   { label: 'Copy', role: 'copy' }
+  ]);
+
+  win.webContents.on('context-menu', (event, params) => {
+   contextMenu.popup({ window: win, x: params.x, y: params.y });
+  });
+
   const log = createLog(
     (data) => {
       win.webContents.send("log-data", data);
@@ -559,7 +568,6 @@ You can also write in this chat directly to do:
         BrowserWindow.getAllWindows()[i].webContents.send('unfreeze-loading');
         BrowserWindow.getAllWindows()[i].show();
       }
-
 
 
       win.webContents.send('show-loading-cursor-end');

@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain, dialog } = require("electron");
+const { BrowserWindow, ipcMain, dialog, Menu } = require("electron");
 const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
 
@@ -55,6 +55,14 @@ const createAdvSettings = (mainAppPath, gameName, winZoomFactor) => {
   });
 
   win.loadFile(path.join(__dirname, `index.html`));
+  // Define a global context menu
+  const contextMenu = Menu.buildFromTemplate([
+   { label: 'Copy', role: 'copy' }
+  ]);
+
+  win.webContents.on('context-menu', (event, params) => {
+   contextMenu.popup({ window: win, x: params.x, y: params.y });
+  });
 
   win.on("closed", () => {
     ipcMain.removeAllListeners(`advanced-click`);
