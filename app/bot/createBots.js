@@ -301,6 +301,10 @@ if (tmBot.bot) {
               tmBot.ctx.reply(`[ERROR]${error.message}`);
             }
 
+            BrowserWindow.getAllWindows().forEach((win) => {
+              win.webContents.send('unfreeze-loading');
+            })
+
             //bot.stats.show().forEach((stat) => bot.log.ok(stat));
             //bot.log.ok(`Time Passed: ${convertMs(Date.now() - bot.state.startTime)}`);
         });

@@ -113,20 +113,27 @@ ipcRenderer.on('connect-to-stream', async (event, deviceId, screenSizeGame, scre
 
     video.style.width = `${screenSizePC.width}px`;
     video.style.height = `${screenSizePC.height}px`;
-    video.poster = './loading.gif';
-    
-    // const box = createPlaceholder();
+    //video.poster = './loading.gif';
+
+    const box = createPlaceholder();
     ipcRenderer.send('stream-loaded');
-    let canplayError = true;
-    video.play();
-    video.addEventListener('play', () => {
-      canplayError = false;
-      //box.remove();
-      document.body.append(video);
-    })
-    await sleep(30000);
-    if(canplayError) {
-      throw new Error(`Stream Error: can't load the stream. Try again.`)
+
+    let startTime = Date.now();
+    for(;;) { // start polling
+      if(video.readyState >= 3) {
+        video.play();
+        video.addEventListener('play', () => {
+          box.remove();
+          document.body.append(video);
+        })
+        break;
+      }
+
+      if(Date.now() - startTime > 30000) { // 30 sec
+        throw new Error(`Stream Error: can't load the stream. Try again.`)
+      }
+
+      await sleep(500);
     }
   } catch(e) {
       ipcRenderer.send('connect-to-stream-error', e.message);

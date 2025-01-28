@@ -13,32 +13,6 @@ let stream;
 
 const generateEventsFor = (video, screenSize, mWin, pc) => {
   return new Promise(async (resolve, reject) => {
-    let canplayError = true
-    video.play();
-    video.addEventListener("play", () => {
-      canplayError = false;
-      ipcRenderer.on(`request-frame-${mWin}`, (event, pos, reqCh) => {
-          const offscreenCanvas = new OffscreenCanvas(pos.width, pos.height); // Set desired resolution
-          const context = offscreenCanvas.getContext("2d");
-          context.drawImage(
-            video,
-            pos.x,
-            pos.y,
-            pos.width,
-            pos.height,
-            0,
-            0,
-            pos.width,
-            pos.height
-          );
-          const imageData = context.getImageData(0, 0, pos.width, pos.height);
-
-          setTimeout(() => {
-            ipcRenderer.send(reqCh, imageData.data.buffer);
-          }, 0);
-        });
-      resolve();
-    });
 
     ipcRenderer.once('stop-webcam-stream', async () => {
       ipcRenderer.removeAllListeners(`request-frame-${mWin}`);
@@ -56,10 +30,44 @@ const generateEventsFor = (video, screenSize, mWin, pc) => {
       audioStreams = [];
     })
 
-    await sleep(30000);
-    if(canplayError) {
-      reject(`Error Stream: can't load the stream.`);
+    let startTime = Date.now();
+    for(;;) { // start polling
+      if(video.readyState >= 3) {
+        video.play();
+        video.addEventListener("play", () => {
+          ipcRenderer.on(`request-frame-${mWin}`, (event, pos, reqCh) => {
+              const offscreenCanvas = new OffscreenCanvas(pos.width, pos.height); // Set desired resolution
+              const context = offscreenCanvas.getContext("2d");
+              context.drawImage(
+                video,
+                pos.x,
+                pos.y,
+                pos.width,
+                pos.height,
+                0,
+                0,
+                pos.width,
+                pos.height
+              );
+              const imageData = context.getImageData(0, 0, pos.width, pos.height);
+
+              setTimeout(() => {
+                ipcRenderer.send(reqCh, imageData.data.buffer);
+              }, 0);
+            });
+          resolve();
+        });
+        break;
+      }
+
+      if(Date.now() - startTime > 30000) { // 30 sec
+        reject(`Error Stream: can't load the stream.`);
+        return;
+      }
+
+      await sleep(500);
     }
+
   });
 };
 

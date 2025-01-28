@@ -1,5 +1,21 @@
 let { mouse, Point, keyboard, Key } = require("@nut-tree-fork/nut-js");
 
+const keyData = {
+  " ": "Space",
+  "-": "Subtract",
+  "0": "Num0",
+  "1": "Num1",
+  "2": "Num2",
+  "3": "Num3",
+  "4": "Num4",
+  "5": "Num5",
+  "6": "Num6",
+  "7": "Num7",
+  "8": "Num8",
+  "9": "Num9",
+};
+
+
 function getRandomControlPoint(start, end, range) {
     const deltaX = end.x - start.x;
     const deltaY = end.y - start.y;
@@ -141,5 +157,16 @@ module.exports = {
 
       await sleep(delay);
     },
+
+    async printText(text, delay) {
+      for(const char of text) {
+        if(keyData[char]) {
+          await this.sendKey(keyData[char], delay);
+        } else {
+          await this.sendKey(char.toUpperCase(), delay);
+        }
+        await sleep(random(delay[0], delay[1]));
+      }
+    }
   }
 }

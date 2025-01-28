@@ -1097,6 +1097,10 @@ const renderDeathCheck = ({deathCheck}) => {
   return elt('input', {type: `checkbox`, checked: deathCheck, name: 'deathCheck'});
 }
 
+const renderDeathCheckQuit = ({deathCheck, deathCheckQuit = false}) => {
+  return elt('input', {type: `checkbox`, disabled: !deathCheck, checked: deathCheckQuit, name: 'deathCheckQuit'});
+}
+
 const renderDeathCheckHp = ({deathCheck, deathHp}) => {
     const x = elt('input', {type: `number`, name: 'x', disabled: !deathCheck, value: deathHp.x});
     const y = elt('input', {type: `number`, name: 'y', disabled: !deathCheck, value: deathHp.y});
@@ -1427,6 +1431,15 @@ const renderSettings = (config) => {
   ),
 
 
+  elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
+  elt(`div`, {className: `settings_section settings_premium`},
+    wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
+    wrapInLabel(`Detect Chat Messages:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
+    wrapInLabel(`Stop and Close the Game at Chat Message:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
+    wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Omit "@", put in just the name.`),
+    elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
+    renderWhisperColors(config),
+  ),
 
   elt(`p`, {className: `settings_header`}, `🎣`), elt(`span`, {className: `advanced_settings_header_text`}, `Lures`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),
   elt(`div`, {className: `settings_section`},
@@ -1515,18 +1528,11 @@ const renderSettings = (config) => {
     wrapInLabel(`Miss On Purpose Delay: (sec) `,  renderMissOnPurposeRandomDelay(config), `Random delay after which the bot will miss on purpuse. The bot will generate a random number from the provided values. The number is generated every fishing session: so the next time you start the bot, it will be always different (randomly generated) between the given values.`)
     ),
 
-
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🥱`), elt(`span`, {className: `advanced_settings_header_text`}, `Fatigue`),
-    elt('div', {className: "settings_section settings_premium"},
-    wrapInLabel(`Apply Fatigue:`, renderApplyFatigue(config), `The bot will simulate fatigueness by decreasing all the delay values by given rate.`),
-    wrapInLabel(`Apply Fatigue Every (min):`, renderApplyFatigueEvery(config), `The bot will randomly apply fatigueness between the provided interval`),
-    wrapInLabel(`Fatigue Rate (%):`, renderApplyFatigueRate(config), `The rate value of fatigueness which will make all the delay values increase in geometric progression.`),
-    ),
-
-      elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death/Disconnect`),
+      elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death Check`),
       elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel(`Quit and notify at Death/Disconnect: `, renderDeathCheck(config), `The bot will check your HP bar to determine whether your character is dead or you are disconnected. It will notify you via Telegram (if connected) and then exit both the game and the bot.`),
-      wrapInLabel(`Death Indication (User HP): `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death/disconnection.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color.`)
+      wrapInLabel(`Check for Death: `, renderDeathCheck(config), `The bot will check the pixel provided to determine whether your character is **dead/disconnected**. It will notify you via **Telegram** (if connected) and send a screenshot.`),
+      wrapInLabel(`Quit After Death: `, renderDeathCheckQuit(config), `The bot will quit the game. In Multiple Mode it will wait for the last window to stop before quiting. If you have shutdown option turned on in **Timer section** the bot will **shut down your computer** *(both gaming and controling in case of Streaming Mode)* after this triggers.`),
+      wrapInLabel(`Death Pixel: `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death. *Make sure some UI animation won't cover the pixel unintentionally*.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color. This value especially matters in **Streaming Mode**, because streaming image is very dynamic.`)
     ),
 
     elt(`p`, {className: `settings_header`}, `🚪`),elt(`span`, {className: `advanced_settings_header_text`}, `Logging Out`),
@@ -1556,14 +1562,11 @@ const renderSettings = (config) => {
     wrapInLabel(`After Catch Random Delay (ms): `, renderAfterHookDelay(config), `The bot will generate a random number from the provided values. The number is generated every time the bot hooked the fish.`),
     ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
-    elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
-      wrapInLabel(`Detect Chat Messages:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
-      wrapInLabel(`Stop and Close the Game at Chat Message:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
-      wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Omit "@", put in just the name.`),
-      elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
-      renderWhisperColors(config),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🥱`), elt(`span`, {className: `advanced_settings_header_text`}, `Fatigue`),
+    elt('div', {className: "settings_section settings_premium"},
+    wrapInLabel(`Apply Fatigue:`, renderApplyFatigue(config), `The bot will simulate fatigueness by decreasing all the delay values by given rate.`),
+    wrapInLabel(`Apply Fatigue Every (min):`, renderApplyFatigueEvery(config), `The bot will randomly apply fatigueness between the provided interval`),
+    wrapInLabel(`Fatigue Rate (%):`, renderApplyFatigueRate(config), `The rate value of fatigueness which will make all the delay values increase in geometric progression.`),
     ),
     elt(`p`, {className: `settings_header settings_header_premium`}, `🏃`), elt(`span`, {className: `advanced_settings_header_text`}, `Motion Detection`),
     elt(`div`, {className: `settings_section settings_premium`},

@@ -132,6 +132,28 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
   const actionOnce = once(action);
   const missOnPurposeValue = config.missOnPurpose ? random(config.missOnPurposeRandom.from, config.missOnPurposeRandom.to) : 0;
 
+  const inCaseOfShutDown = async () => {
+      await keyboard.sendKey(`lWin`, delay);
+      await sleep(random(1000, 2000));
+      await keyboard.printText(`cmd`, delay);
+      await sleep(random(1000, 2000));
+      await keyboard.sendKey(`enter`, delay);
+      await sleep(random(1000, 2000));
+      await keyboard.printText(`shutdown -s -t 10`, delay); //
+      await keyboard.sendKey(`enter`, delay);
+
+      if(config.streamMode) { // even if it's VM, it will just shut down VM, not a big deal.
+        await nutjs.keyboard.sendKey(`LeftWin`, delay);
+        await sleep(random(1000, 2000));
+        await nutjs.keyboard.printText(`cmd`, delay);
+        await sleep(random(1000, 2000));
+        await nutjs.keyboard.sendKey(`Enter`, delay);
+        await sleep(random(1000, 2000));
+        await nutjs.keyboard.printText(`shutdown -s -t 10`, delay);
+        await nutjs.keyboard.sendKey(`Enter`, delay);
+      }
+  }
+
   /* --- GET DATA FROM --- */
   const getDataFrom = async (zone) => {
     if(zone.x < 0) zone.x = 0;
@@ -523,7 +545,7 @@ if(lootWindowPatch.exitButton) {
       return;
     }
 
-    if(config.logOutFor.from > 30) { // if the bot more than 30 min
+    if(config.logOutFor.from > 30) { // if the bot more than 30 min // reconnect after 30 min ()
       await action(async () => {
         await keyboard.sendKey(`enter`);
       });
@@ -1498,28 +1520,45 @@ if(lootWindowPatch.exitButton) {
 
 
       if(!(await deathHp.checkColor(getDataFrom))) {
-        log.warn(`The bot is dead or disconnected in: ${winNum}! Closing window...`);
-        if(tmBot.bot) {
-          tmBot.ctx.reply(`The bot is dead or disconnected in: ${winNum}! Closing window...`);
-        }
 
         if(doAfterTimer.on && doAfterTimer.timer.isElapsed() && config.timerShutDown) {
           return;
         }
 
+        log.warn(`The bot is dead or disconnected in WIN${winNum}! Closing window...`);
+        if(tmBot.bot) {
+          tmBot.ctx.reply(`The bot is dead or disconnected in WIN${winNum}!`);
+          await getDataFrom({x: 0, y: 0, width: screenSize.width, height: screenSize.height})
+          .then(Jimp.read)
+          .then((data) => data.getBufferAsync(Jimp.MIME_JPEG))
+          .then(async (screenshot) => {
+            await tmBot.ctx.reply(`Screenshot of the WIN${winNum}:`);
+            await tmBot.ctx.replyWithPhoto({source: screenshot})
+          });
+          
+        }
+
         state.status = 'stop';
         if(wins.every(win => win.state.status == `stop`)) {
-          /*
-          if(config.streamMode) {
-            await keyboard.sendKey('enter', delay);
-            await keyboard.printText('/quit', delay);
-            await keyboard.sendKey('enter', delay);
-          }
-          */
           onStop();
           await sleep(1000);
-          workwindow.close();
-          app.quit();
+
+          if(config.deathCheckQuit) {
+
+            if(config.streamMode) {
+              await keyboard.toggleKey('alt', true, delay);
+              await keyboard.sendKey('f4', delay);
+              await keyboard.toggleKey('alt', false, delay);
+            } else {
+              workwindow.close();
+            }
+
+            if(config.timerShutDown) {  //  if you have a timer.shutDown ON the bot will also shut down
+              await inCaseOfShutDown();
+            }
+
+            app.quit();
+          }
         }
       }
     }
@@ -2558,14 +2597,7 @@ if (settings.soundDetection) {
     if(config.afterTimer == `HS + Quit` || config.afterTimer == `Quit`) {
       if(wins.every(win => win.state.status == `stop`)) {
         if(config.timerShutDown) {
-            await keyboard.sendKey(`lWin`, delay);
-            await sleep(random(1000, 2000));
-            await keyboard.printText(`cmd`, delay);
-            await sleep(random(1000, 2000));
-            await keyboard.sendKey(`enter`, delay);
-            await sleep(random(1000, 2000));
-            await keyboard.printText(`shutdown -s -t 10`, delay);
-            await keyboard.sendKey(`enter`, delay);
+          await inCaseOfShutDown();
         }
         onError();
         await sleep(1000);

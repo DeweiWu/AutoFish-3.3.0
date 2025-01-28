@@ -7,7 +7,7 @@ let wholeLog = [];
 let mediamtxProcess;
 
 function extractIPAddress(logLine) {
-    const regex = /is publishing to path 'live(\d*)'/;
+    const regex = /] is publishing to path 'live(\d*)'/;
     const match = logLine.match(regex);
     return match ? match : null;
 }

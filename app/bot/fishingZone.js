@@ -43,6 +43,7 @@ let checkBobberPrintAttempts = 0;
 
 let imgAroundBobberPrev;
 let pixelMatchMax;
+//let n = 0;
 
 const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, autoSens, multipleWindows, threshold, bobberColor, bobberColorManual, autoTh, bobberSensitivity: sensitivity}, {findBobberDirection: direction, streamMode, highlightPercent, splashColor, manualPositionOnBobberOn, manualPositionOnBobber }) => {
 
@@ -92,8 +93,10 @@ const createFishingZone = (getDataFrom, zone, screenSize, { game, checkLogic, au
 
       let rgbData = await getDataFrom(rgbZone);
 
-      //let img = await Jimp.read(rgbData);
-      //img.write(`test_fishing_zone${nn++}.png`);
+      /*
+      let img = await Jimp.read(rgbData);
+      img.write(`test_fishing_zone${n++}.png`);
+      */
 
       let rgb = createRgb(rgbData);
       rgb.saturate(...saturation)
