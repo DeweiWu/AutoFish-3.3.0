@@ -1142,12 +1142,6 @@ const menu = Menu.buildFromTemplate([
         click: () => shell.openExternal("https://www.buymeacoffee.com/jsbots"),
       },
       { type: "separator" },
-      { label: 'Show Warnings', type: 'checkbox', checked: getProfile().warningsOn, click() {
-        let profile = getProfile();
-        profile.warningsOn = !profile.warningsOn;
-        writeFileSync(path.join(__dirname, `${configPath}`, `config.json`), JSON.stringify(profile));
-      } },
-      { type: "separator" },
       { role: "quit" },
     ],
   },
@@ -1185,7 +1179,13 @@ const menu = Menu.buildFromTemplate([
               win.webContents.setZoomFactor(1.0)
               updateWindowSize(1, 1)
             }
-          }
+          },
+          { type: "separator" },
+          { label: 'Show Warnings', type: 'checkbox', checked: getProfile().warningsOn, click() {
+            let profile = getProfile();
+            profile.warningsOn = !profile.warningsOn;
+            writeFileSync(path.join(__dirname, `${configPath}`, `config.json`), JSON.stringify(profile));
+          }}
         ]
       }
 ]);

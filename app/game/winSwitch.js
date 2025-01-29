@@ -18,30 +18,34 @@ const createWinSwitch = (eventLine, winsNumber) => {
   }
 
   return {
-    execute(workwindow, mWinCallback, winNum, state) {
+    execute(workwindow, mWinCallback, winNum, streamMode) {
 
       return new Promise(async (resolve, reject) => {
         eventLine.add(async () => {
-          winNum = winNum - 1;
-          if(!focusedWins[winNum].focused) {
-            let currentlyFocused = focusedWins.find((win) => win.focused == true);
 
-            let stepsToMove = Math.abs(1 - focusedWins[winNum].position);
-            if(stepsToMove > 1) {
-              focusedWins.forEach((win, i) => {
-                if(i != winNum)
-                  win.position = win.position + 1;
-              })
-            } else {
-              currentlyFocused.position = focusedWins[winNum].position;
+          if(streamMode) {
+            winNum = winNum - 1;
+            if(!focusedWins[winNum].focused) {
+              let currentlyFocused = focusedWins.find((win) => win.focused == true);
+
+              let stepsToMove = Math.abs(1 - focusedWins[winNum].position);
+              if(stepsToMove > 1) {
+                focusedWins.forEach((win, i) => {
+                  if(i != winNum)
+                    win.position = win.position + 1;
+                })
+              } else {
+                currentlyFocused.position = focusedWins[winNum].position;
+              }
+              focusedWins[winNum].position = 1;
+
+              currentlyFocused.focused = false;
+              focusedWins[winNum].focused = true;
+
+              await mWinCallback(stepsToMove);
             }
-            focusedWins[winNum].position = 1;
-
-            currentlyFocused.focused = false;
-            focusedWins[winNum].focused = true;
-
-            await mWinCallback(stepsToMove);
           }
+
 
           workwindow.setForeground();
           windowStuck.start();

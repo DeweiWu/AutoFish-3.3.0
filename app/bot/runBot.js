@@ -146,7 +146,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     }
 
     await replyToChat();
-    await checkWhisper();
+    await checkWhisper(onError, wins);
 
     if(logOut.on && logOut.timer.isElapsed()) {
       log.send(`Logging out...`)

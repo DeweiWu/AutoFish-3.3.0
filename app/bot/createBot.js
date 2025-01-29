@@ -123,7 +123,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
     }
     await winSwitch.execute(workwindow, async (steps) => {
       await keyboard.altTab(steps, delay);
-    }, winNum);
+    }, winNum, config.streamMode);
     await callback();
     winSwitch.finished();
   };
@@ -1525,6 +1525,8 @@ if(lootWindowPatch.exitButton) {
           return;
         }
 
+        let isLastWin = wins.filter(win => win.state.status != `stop`).length == 1;
+
         log.warn(`The bot is dead or disconnected in WIN${winNum}! Closing window...`);
         if(tmBot.bot) {
           tmBot.ctx.reply(`The bot is dead or disconnected in WIN${winNum}!`);
@@ -1535,31 +1537,45 @@ if(lootWindowPatch.exitButton) {
             await tmBot.ctx.reply(`Screenshot of the WIN${winNum}:`);
             await tmBot.ctx.replyWithPhoto({source: screenshot})
           });
-          
         }
 
-        state.status = 'stop';
-        if(wins.every(win => win.state.status == `stop`)) {
-          onStop();
-          await sleep(1000);
+        if(config.deathCheckQuit) {
+          /*
+          if(config.streamMode) {
 
-          if(config.deathCheckQuit) {
-
-            if(config.streamMode) {
+            await action(async () => {
               await keyboard.toggleKey('alt', true, delay);
               await keyboard.sendKey('f4', delay);
               await keyboard.toggleKey('alt', false, delay);
-            } else {
-              workwindow.close();
-            }
 
-            if(config.timerShutDown) {  //  if you have a timer.shutDown ON the bot will also shut down
+              await keyboard.sendKey('enter', delay);
+              await keyboard.printText('/logout', delay);
+              await keyboard.sendKey('enter', delay);
+            })
+          } else {
+            workwindow.close();
+          }
+          */
+
+          if(config.timerShutDown && isLastWin) {  //  if you have a timer.shutDown ON the bot will also shut down
+            await action(async () => {
               await inCaseOfShutDown();
-            }
+            })
+          }
 
+          if(isLastWin) {
+            onStop();
             app.quit();
+            return;
           }
         }
+
+        if(isLastWin) {
+          onStop();
+          return;
+        }
+
+        state.status = 'stop'; // stop this window
       }
     }
   };
@@ -2400,15 +2416,49 @@ if (settings.soundDetection) {
     return caught;
   };
 
-  const checkWhisper = async () => {
+  const checkWhisper = async (onStop, wins) => {
     if(tmBot.ctx == null || !config.detectWhisper) return;
     if(await chatZone.checkNewMessages()) {
       tmBot.ctx.reply(`Message in the window ${winNum}:`);
       tmBot.ctx.sendChatAction(`upload_photo`);
       tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
       if(config.closeAtWhisper) {
+
+        if(config.streamMode) {
+          await action(async () => {
+            /*
+            await keyboard.toggleKey('alt', true, delay);
+            await keyboard.sendKey('f4', delay);
+            await keyboard.toggleKey('alt', false, delay);
+            */
+            await keyboard.sendKey('enter', delay);
+            await keyboard.printText('/logout', delay);
+            await keyboard.sendKey('enter', delay);
+          });
+        } else {
+          workwindow.close();
+        }
+
+        let isLastWin = wins.filter(win => win.state.status != `stop`).length == 1;
+
+        if(isLastWin) {
+          if(config.quitAtWhisper) {
+
+            if(config.timerShutDown) {
+              await action(async () => {
+                await inCaseOfShutDown();
+              });
+            }
+
+            onStop();
+            app.quit();
+            return;
+          }
+
+          onStop();
+        }
+
         state.status = `stop`;
-        workwindow.close();
       }
     }
   };
@@ -2592,23 +2642,42 @@ if (settings.soundDetection) {
       await sleep(config.hsKeyDelay);
     }
 
-    state.status = `stop`;
+
+    let isLastWin = wins.filter(win => win.state.status != `stop`).length == 1;
 
     if(config.afterTimer == `HS + Quit` || config.afterTimer == `Quit`) {
-      if(wins.every(win => win.state.status == `stop`)) {
+
+      if (config.streamMode) {
+        await action(async () => {
+          /*
+          await keyboard.toggleKey("alt", true, delay);
+          await keyboard.sendKey("f4", delay);
+          await keyboard.toggleKey("alt", false, delay);
+          */
+          await keyboard.sendKey('enter', delay);
+          await keyboard.printText('/logout', delay);
+          await keyboard.sendKey('enter', delay);
+        });
+      } else {
+        workwindow.close();
+      }
+
+      if(isLastWin) {
         if(config.timerShutDown) {
-          await inCaseOfShutDown();
+          await action(async () => {
+            await inCaseOfShutDown();
+          })
         }
         onError();
-        await sleep(1000);
         app.quit();
-      }
-      workwindow.close();
-    } else {
-      if(wins.every(win => win.state.status == `stop`)) {
-        onError();
+        return;
       }
     }
+
+    if(isLastWin) {
+      onError();
+    }
+    state.status = 'stop';
   }
   doAfterTimer.on = config.timer;
   doAfterTimer.timer = createTimer(() => config.timerTime * 1000 * 60)

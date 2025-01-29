@@ -256,6 +256,7 @@ const renderMaxFishTime = ({maxFishTime}) => {
 };
 
 const renderCloseAtWhisper = ({closeAtWhisper}) => elt(`input`, {type: `checkbox`, checked: closeAtWhisper, name: `closeAtWhisper`});
+const renderQuitAtWhisper = ({quitAtWhisper = false}) => elt(`input`, {type: `checkbox`, checked: quitAtWhisper, name: `quitAtWhisper`});
 
 const renderCheckingDelay = ({checkingDelay}) => {
   return elt(`input`, {type: `number`, name:`checkingDelay`, value: checkingDelay});
@@ -480,10 +481,15 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
 
     const colorPercent = elt('input', {type: `number`, title: `Tolerance: % of how closely other colors must match the chosen color.`, value: 100, min: 0, max: 100, className: `whisperColorRange`});
     const removeButton = elt('input', {type: `button`, className: `whisperColorRemoveButton`, onclick() {
-      this.parentNode.remove();
+      ipcRenderer.invoke('remove-spare-confirm').then(confirmed => {
+        if(confirmed) {
+          this.parentNode.remove();
+        }
+      })
+
     }})
 
-    this.parentNode.insertBefore(elt('div', {className: `whispSpecColorsInnerContainer`}, colorPicker, colorBox, colorPercent, removeButton), this);
+    this.parentNode.insertBefore(elt('div', {className: `whispSpecColorsInnerContainer`}, colorPercent, colorPicker, colorBox, removeButton), this);
   }})
 
   const whispSpecColorsNodes = whispSpecColors.map(({r, g, b, percent}) => {
@@ -502,10 +508,15 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
 
     const colorPercent = elt('input', {type: `number`, title: `Tolerance: % of how closely other colors must match the chosen color.`, value: percent, min: 0, max: 100, className: `whisperColorRange`});
     const removeButton = elt('input', {type: `button`, className: `whisperColorRemoveButton`, onclick() {
-      this.parentNode.remove();
+      ipcRenderer.invoke('remove-spare-confirm').then(confirmed => {
+        if(confirmed) {
+          this.parentNode.remove();
+        }
+      })
+
     }})
 
-    return elt('div', {className: `whispSpecColorsInnerContainer`}, colorPicker, colorBox, colorPercent, removeButton);
+    return elt('div', {className: `whispSpecColorsInnerContainer`}, colorPercent, colorPicker, colorBox, removeButton);
   })
 
 return elt(`div`, {className: `whispSpecColorsContainer`}, ...whispSpecColorsNodes, addButton)
@@ -1433,9 +1444,10 @@ const renderSettings = (config) => {
 
   elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
   elt(`div`, {className: `settings_section settings_premium`},
-    wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.`),
-    wrapInLabel(`Detect Chat Messages:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for Whisper Threshold purple colors, if it finds any it will notifiy telegram bot you connected through token.`),
-    wrapInLabel(`Stop and Close the Game at Chat Message:`, renderCloseAtWhisper(config), `Whether to stop the bot and close the window if someone whispered.`),
+    wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.\n\nMultiple Fishig Mode: the bot will use the token of the current profile for all the windows, you don't need to set it everywhere.`),
+    wrapInLabel(`Detect Chat Messages:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for **Whisper Сolors**, if it finds any it will notifiy via Telegram and send a screenshot.`),
+    wrapInLabel(`Stop After Detection:`, renderCloseAtWhisper(config), `Whether to stop the bot after someone whispered.`),
+    wrapInLabel(`Quit After Detection:`, renderQuitAtWhisper(config), `The bot will stop and also quit (*/logout if in Streaming Mode*) the game. In Multiple Mode it will wait for the last window to stop before quiting. If you have shutdown option turned on in **Timer section** the bot will **shut down your computer** *(both gaming and controling in case of Streaming Mode)* after this triggers.`),
     wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Omit "@", put in just the name.`),
     elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
     renderWhisperColors(config),
@@ -1493,10 +1505,10 @@ const renderSettings = (config) => {
     elt('div', {className: "settings_section"},
     wrapInLabel("Use Timer: ", renderTimer(config),`It's timer. It's too dificult to explain here, so you can ask AI what is it exactly.`),
     wrapInLabel("Time (min): ", renderTimerTime(config), `The bot will work for the given period of minutes.`),
-    wrapInLabel("Do After Timer: ", renderAfterTimer(config),`What the bot should do after the timer elapses (you can set it in the main window)`),
+    wrapInLabel("Do After Timer: ", renderAfterTimer(config),`What the bot should do after the timer elapses (you can set it in the main window).\n\nIn **Streaming Mode** the bot will log out instead of quitting.`),
     wrapInLabel("HS Key: ", renderHsKey(config), `A key your HS is assigned.`),
     wrapInLabel("HS Delay (ms): ", renderHsKeyDelay(config), `How long it take to use HS`),
-    wrapInLabel("Shut Down Computer After Quitting: ", renderShutDown(config), `The bot will press Left Windows Key and launch command line, after that it will write shutdown -s -t 10 command which will shut down your computer in 10 seconds. `),
+    wrapInLabel("Shut Down Computer After Quitting: ", renderShutDown(config), `The bot will press Left Windows Key and launch command line, after that it will write *shutdown -s -t 10* command which will shut down your computer in 10 seconds.\n\nIn Multiple Fishing Mode it will work only for the last window working.\n\nThis value is also used by **Death Check** and **Remote Control** sections.`),
     ),
 
 
@@ -1530,8 +1542,8 @@ const renderSettings = (config) => {
 
       elt(`p`, {className: `settings_header settings_header_premium`}, `☠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Death Check`),
       elt(`div`, {className: `settings_section settings_premium`},
-      wrapInLabel(`Check for Death: `, renderDeathCheck(config), `The bot will check the pixel provided to determine whether your character is **dead/disconnected**. It will notify you via **Telegram** (if connected) and send a screenshot.`),
-      wrapInLabel(`Quit After Death: `, renderDeathCheckQuit(config), `The bot will quit the game. In Multiple Mode it will wait for the last window to stop before quiting. If you have shutdown option turned on in **Timer section** the bot will **shut down your computer** *(both gaming and controling in case of Streaming Mode)* after this triggers.`),
+      wrapInLabel(`Stop After Death: `, renderDeathCheck(config), `The bot will check the pixel provided to determine whether your character is **dead/disconnected**. It will notify you via **Telegram** (if connected) and send a screenshot and then stop working.`),
+      wrapInLabel(`Quit After Death: `, renderDeathCheckQuit(config), `The bot will exit. In Multiple Mode it will wait for the last window to stop before exiting. If you have shutdown option turned on in **Timer section** the bot will also **shut down your computer** *(both gaming and controling in case of Streaming Mode)* after this triggers.`),
       wrapInLabel(`Death Pixel: `, renderDeathCheckHp(config), `Should be pointed at the start of your HP bar or at any pixel the dissapearance of which means death. *Make sure some UI animation won't cover the pixel unintentionally*.\n\nt: Adjust the tolerance to set how closely other colors must match the chosen color. This value especially matters in **Streaming Mode**, because streaming image is very dynamic.`)
     ),
 
@@ -1590,6 +1602,18 @@ const renderSettings = (config) => {
     wrapInLabel(`Use Movements Randomly Every (min): `, renderRngMoveTimer(config), `How often the bot should move your camera/character. The value is chosen randomly within the provided values.`),
     ),
 
+    elt(`p`, {className: `settings_header settings_header_premium`}, `🐘`), elt(`span`, {className: `advanced_settings_header_text`}, `Mount Selling`),
+    elt('div', {className: "settings_section settings_premium"},
+    wrapInLabel(`Use a Mount for Selling Junk: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),
+    wrapInLabel(`Mount Key: `, renderMammothKey(config), `A key that will be used to summon a mammoth mount.`),
+    wrapInLabel(`Mount Key Delay (ms): `, renderMammothKeyDelay(config), `How long the bot will wait after summoning a mammoth mount.`),
+    wrapInLabel(`Mount Sell Delay (ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
+    wrapInLabel(`Use Mount Selling Every (min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
+    wrapInLabel(`Sleep After For (sec):`, renderMammothAfterTradeDelay(config), `How long the bot should wait after all the operations. This time is usually needed to wait until traders disappear to avoid unintentional targeting.`),
+    wrapInLabel(`Use Macro: `, renderMammothMacro(config), `Use your own macro in the game instead of the bot typing /target trader_name command.`),
+    wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
+    ),
+
     elt(`p`, {className: `settings_header settings_header_premium`}, `🔭`),elt(`span`, {className: `advanced_settings_header_text`}, `Players Check (beta)`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#check-for-players-around-telescope")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Find Player: ', renderFindPlayer(config), `The bot will look around to see any other (friendly) players nearby (within target range).`),
@@ -1610,7 +1634,7 @@ const renderSettings = (config) => {
       config.findPlayerType != `Front` ? wrapInLabel('Rotation Time (ms): ', renderFindPlayerRotationTime(config), `How long the bot should rotate. Tweak this if the rotation the bot makes isn't complete or overcomplete.`) : ``
     ),
 
-    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check (beta)`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#aggro-checking-crossed_swords")}}, `(Guide)`),
+    elt(`p`, {className: `settings_header settings_header_premium`}, `⚔️`),  elt(`span`, {className: `advanced_settings_header_text`}, `Aggro Check (alfa)`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#aggro-checking-crossed_swords")}}, `(Guide)`),
     elt(`div`, {className: `settings_section settings_premium`},
       wrapInLabel('Use Aggro Check', renderAggroCheck(config), `Bot will check your HP bar (User HP End value) for any changes to determine whether it's attacked, then if you have chosen "Attack" mode it will turn around and make an attempt to find an enemy within target range (within your target key range), if successful it will move to the enemy until in range of the first skill in the rotation. After that it starts skill rotation, centering camera and keeping distance in range of the current skill of the rotation.\n\nThis module relies on the skill range, namely on the colors whether the skill is in range or not. You need to install an addon that does that (like bartender or tullarange) or point "Skill Position" value exactly at the number of the skill on the skill icon (this number is usually an indication of range: red if in range and white if not in range)\n\nUse "Test Rotation" button to see what will happen if you are attacked during fishing and check whether your rotation and the bot works properly for you.`),
       wrapInLabel('Do After Being Attacked: ', renderAggroCheckDoAfterType(config), `What bot should do after detecting changes in "User HP" pixel.\n\nRun Away: The bot will run away in the direction it was looking to during the fishing. It will randomly jump from time to time.\n\nAttack: Bot will turn around and make an attempt to find an enemy (checking for Enemy Name color value), if successful it will move within the range distance of the first skill and then start skill rotation, centering and keeping distance relative to the range indication of "Skill Position" value of every skill in the rotation. `),
@@ -1641,19 +1665,6 @@ const renderSettings = (config) => {
       config.aggroCheckDoAfterType == `Attack` ?  renderSkills(config) : ``,
       renderTestSkillsButton(config)
     ),
-
-    elt(`p`, {className: `settings_header settings_header_premium`}, `🐘`), elt(`span`, {className: `advanced_settings_header_text`}, `Mount Selling`),
-    elt('div', {className: "settings_section settings_premium"},
-    wrapInLabel(`Use a Mount for Selling Junk: `, renderMammoth(config), `You can summon a mammoth carrying traders during the fishing and then sell all the scrap to one of them using any addon for selling such scrap.`),
-    wrapInLabel(`Mount Key: `, renderMammothKey(config), `A key that will be used to summon a mammoth mount.`),
-    wrapInLabel(`Mount Key Delay (ms): `, renderMammothKeyDelay(config), `How long the bot will wait after summoning a mammoth mount.`),
-    wrapInLabel(`Mount Sell Delay (ms): `, renderMammothSellDelay(config), `How long it will take to sell all the scrap to a trader. The bot will generate a random number from the provided values. The number is generated every time the bot interacts with the trader: so the next time the bot interacts with the trader it will be always different (randomly generated).`),
-    wrapInLabel(`Use Mount Selling Every (min): `, renderMammothApplyEvery(config), `A randomly generated interval of summoning a mammoth mount. The bot will summon a mammoth and then generate a new random value between the provided ones.`),
-    wrapInLabel(`Sleep After For (sec):`, renderMammothAfterTradeDelay(config), `How long the bot should wait after all the operations. This time is usually needed to wait until traders disappear to avoid unintentional targeting.`),
-    wrapInLabel(`Use Macro: `, renderMammothMacro(config), `Use your own macro in the game instead of the bot typing /target trader_name command.`),
-    wrapInLabel(`Mount Trader Name: `, renderMammothTraderName(config), `The bot will use /target trader_name command to target one of your traders. Check the name of one you want to use for trading and write it here. The bot will use interaction key for interaction with a trader, you can assign it in them main settings.`),
-    ),
-
   elt(`p`, {className: `settings_header settings_header_critical`}, `⚠️`), elt(`span`, {className: `advanced_settings_header_text`}, `Critical`),
   elt('div', {className: "settings_section settings_critical"},
   wrapInLabel(`Ignore Preliminary Checks:`, renderIgnorePreliminary(config), `The bot will ignore all the preliminary checks including notification errors.`),
