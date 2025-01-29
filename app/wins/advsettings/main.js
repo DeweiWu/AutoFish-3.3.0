@@ -57,8 +57,11 @@ const createAdvSettings = (mainAppPath, gameName, winZoomFactor) => {
   win.loadFile(path.join(__dirname, `index.html`));
   // Define a global context menu
   const contextMenu = Menu.buildFromTemplate([
-   { label: 'Copy', role: 'copy' }
+   { label: 'Cut', role: 'cut' },
+   { label: 'Copy', role: 'copy' },
+   { label: 'Paste', role: 'paste' }
   ]);
+
 
   win.webContents.on('context-menu', (event, params) => {
    contextMenu.popup({ window: win, x: params.x, y: params.y });
@@ -120,7 +123,7 @@ const createAdvSettings = (mainAppPath, gameName, winZoomFactor) => {
   });
 
   ipcMain.on("stream-warn", () => {
-    showWarning(win, `- Multiple Fishing, Alt-Tab and Sound Detection won't work.\n- Doesn't support windowed mode (of the game).\n- Turn off enchance pointer precision in Mouse Properties (gaming pc).`);
+    showWarning(win, `- Alt-Tab Fishing doesn't work in Streaming Mode.\n- Doesn't support windowed mode (game).\n- Turn off enchance pointer precision in Mouse Properties (gaming PC).\n\nPress "Launch", save and open Advanced Settings again before configuring other settings.`);
   });
 
   ipcMain.on("aggroCheck-warn", () => {
@@ -143,7 +146,7 @@ const createAdvSettings = (mainAppPath, gameName, winZoomFactor) => {
   })
 
   ipcMain.handle("remove-spare-confirm", () => {
-    return !showChoiceWarning(win, `Are you sure you want to delete this action?`, `Warning`, `Yes`, `No`);
+    return !showChoiceWarning(win, `Are you sure you want to delete this?`, `Warning`, `Yes`, `No`);
   })
 
   ipcMain.handle("get-game-config", () => {

@@ -223,7 +223,9 @@ const createWindow = async () => {
 
   // Define a global context menu
   const contextMenu = Menu.buildFromTemplate([
-   { label: 'Copy', role: 'copy' }
+    { label: 'Cut', role: 'cut' },
+    { label: 'Copy', role: 'copy' },
+    { label: 'Paste', role: 'paste' }
   ]);
 
   win.webContents.on('context-menu', (event, params) => {
@@ -735,6 +737,11 @@ You can also write in this chat directly to do:
 
       BrowserWindow.getAllWindows().forEach((win) => {
         win.webContents.send('freeze-loading');
+        setTimeout(() => {
+          BrowserWindow.getAllWindows().forEach((win) => {
+            win.webContents.send('unfreeze-loading');
+          })
+        }, 7500); // unfreeze in any case after 7.5 seconds
       })
 
       if(trialIsOn) {
@@ -852,7 +859,11 @@ You can also write in this chat directly to do:
       hintWin = false;
     }
 
-    const focusedWinPos = BrowserWindow.getFocusedWindow();
+    let focusedWinPos = BrowserWindow.getFocusedWindow();
+    if(!focusedWinPos) {
+      focusedWinPos = BrowserWindow.getAllWindows()[0];
+    }
+
     let winPos = focusedWinPos.getPosition();
     let zoomFactor = win.webContents.getZoomFactor();
 
@@ -925,12 +936,14 @@ You can also write in this chat directly to do:
   ipcMain.handle("advanced-settings", async (event, settings) => {
     if(!settWin || settWin.isDestroyed()) {
       settWin = createAdvSettings(__dirname, settings.game, win.webContents.getZoomFactor());
+      win.webContents.send('as-opened');
     } else {
       settWin.focus();
     }
 
     settWin.once('close', () => {
       win.webContents.send('settings-change');
+      win.webContents.send('as-closed');
     })
 
     await new Promise(function(resolve, reject) {

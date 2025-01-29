@@ -7,9 +7,30 @@ const { ipcRenderer } = require('electron');
 
 
 let freezeElement;
+let asOpenedElement;
+
+ipcRenderer.on('as-opened', () => {
+  if(!asOpenedElement) {
+    let box = document.createElement('div');
+    box.className = 'freeze-loading';
+    asOpenedElement = box;
+    document.body.append(box);
+  }
+});
+
+ipcRenderer.on('as-closed', () => {
+  if(asOpenedElement) {
+    asOpenedElement.remove();
+    asOpenedElement = false;
+  }
+});
+
 
 ipcRenderer.on('freeze-loading', (event) => {
   if(!freezeElement) {
+    if(asOpenedElement) {
+      asOpenedElement.style.visibility = 'hidden';
+    }
     /*
     let box = document.createElement('div');
     box.className = 'freeze-loading';
@@ -35,8 +56,13 @@ ipcRenderer.on('freeze-loading', (event) => {
 });
 
 ipcRenderer.on('unfreeze-loading', (event) => {
-  freezeElement.remove();
-  freezeElement = false;
+  if(freezeElement) {
+    freezeElement.remove();
+    freezeElement = false;
+    if(asOpenedElement) {
+      asOpenedElement.style.visibility = 'visible';
+    }
+  }
 })
 
 const renderColorSwitch = ({bobberColor, bobberColorManual, checkLogic, autoColor, soundDetection}) => {
