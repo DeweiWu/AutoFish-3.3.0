@@ -21,11 +21,13 @@
   "autoTh": true,
   "autoColor": false,
   "bobberColor": "red",
-  "bobberColorManual": "#ffffff",
+  "bobberColorManual": "#b40000",
   "afkmode": false,
   "multipleWindows": true,
   "initial": false,
   "initialZone": false,
   "soundDetection": false,
-  "soundDetectionRange": 500
+  "soundDetectionRange": 40,
+  "soundDetectionMode": "Desktop",
+  "soundDetectionInputDevice": ""
 }
