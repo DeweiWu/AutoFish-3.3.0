@@ -15,7 +15,7 @@ module.exports = {
     "icon": "./app/img/icon-premium.ico",
     "asar": {
       unpackDir: path.join('**', '{app/config,node_modules/sharp}', '**', '*'),   // Unpack the entire config directory
-      unpack: path.join('**', '{app/badd7ae8f43,app/config/config.json,app/utils/rtmp/mediamtx.exe,app/utils/rtmp/mediamtx.yml,app/utils/rtmp/mediamtx.log}')
+      unpack: path.join('**', '{app/badd7ae8f43,app/config/config.json,app/config/logs.json,app/utils/rtmp/mediamtx.exe,app/utils/rtmp/mediamtx.yml,app/utils/rtmp/mediamtx.log}')
     },
     "ignore": [
       '.gitignore',
@@ -32,8 +32,8 @@ module.exports = {
       "name": "@electron-forge/maker-zip",
       "config": {
         "name": name,
-        "authors": faker.person.fullName(),
-        "description": faker.commerce.productDescription(),
+        "authors": 'jsbots',
+        "description": '',
         "setupIcon": "./app/img/icon-premium.ico",
         "setupExe": `AutoFish (${name}) Setup.exe`,
         "skipUpdateIcon": true,

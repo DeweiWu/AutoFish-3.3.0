@@ -7,7 +7,6 @@
     "start": "electron .",
     "startf": "electron-forge start",
     "test": "jest",
-    "premake": "node random.js",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },

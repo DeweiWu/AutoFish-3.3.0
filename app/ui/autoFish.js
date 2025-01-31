@@ -45,6 +45,12 @@ const renderLogger = () => {
   };
 };
 
+const renderFishingLogWinButton = () => {
+  return elt('input', {type: 'button', style: `cursor: pointer; margin-left: auto; margin-top: 4px; width: 55px; text-align: center; height: 18px; font-size: 0.8em;`, value: 'Sessions', onclick() {
+    ipcRenderer.send('create-fishinglog-win');
+  }});
+}
+
 const renderLoggerStats = () => {
   let fishCaught = elt('span', {style: `cursor: help;`, className: `stats-icon`, title: `Caught.`}, `🐟: 0`);
   let fishMissed = elt('span', {style: `cursor: help;`, className: `stats-icon`, title: `Missed.`}, `🙁: 0`);
@@ -296,7 +302,7 @@ class AutoFish {
       renderLogo(),
             elt(`div`, {className: `settings_profile`}, elt("p", { className: "settings_header settings_header_main settings_header_fold"}, "⚙️") /*foldSettingsContainer*/, profile.dom),
       this.settings.dom,
-            elt(`div`, {style: `display: flex; flex-flow: row nowrap; justify-content: space-between;`}, elt("p", { className: "settings_header settings_header_log settings_header_main" }, "📋"), this.loggerStats.dom),
+            elt(`div`, {style: `display: flex; flex-flow: row nowrap; justify-content: space-between;`}, elt("p", { className: "settings_header settings_header_log settings_header_main" }, "📋"), renderFishingLogWinButton(), this.loggerStats.dom),
       this.logger.dom,
       this.button.dom,
       footer

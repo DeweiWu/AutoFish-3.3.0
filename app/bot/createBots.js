@@ -56,7 +56,7 @@ const sleep = (time) => {
 };
 
 
-const createBots = async (games, log, tmBot, arduino, win) => {
+const createBots = async (games, log, tmBot, arduino, win, registerSession) => {
   const winSwitch = createWinSwitch(new EventLine(), games.length);
 
   let chosenConfig = games[0].config.patch[games[0].settings.game];
@@ -271,6 +271,8 @@ if (tmBot.bot) {
     };
 }
 
+  let sessionStartTime = Date.now();
+  let sessionStartDate = new Date();
   return {
     startBots: async (onError, aggroTestRun) => {
       log.send("Starting the bots...");
@@ -310,8 +312,18 @@ if (tmBot.bot) {
         });
       }
     },
-    stopBots() {
+    stopBots(profile) {
       //win.show();
+      let sessionData = {
+        date: sessionStartDate,
+        time: Date.now() - sessionStartTime,
+        caught: bots.reduce((a, b) => a + b.stats.caught, 0),
+        missed: bots.reduce((a, b) => a + b.stats.miss, 0),
+        place: bots.length > 1 ? `Multiple` : profile
+      }
+
+      registerSession(sessionData);
+
       log.send('Stopped.');
       log.setState(false);
       bots.forEach(({state}) => state.status = "stop");

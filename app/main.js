@@ -26,6 +26,7 @@ const createAdvSettings = require(`./wins/advsettings/main.js`);
 const createFishingZone = require(`./wins/fishingzone/main.js`);
 const createPointZone = require(`./wins/pointZone/main.js`);
 const createListenWin = require('./wins/listenWin/main.js');
+const { registerSession, createFullLogsWin } = require(`./wins/fullLogsWin/main.js`);
 const createHintWin = require('./wins/hintWin/main.js');
 const trialEncryption = require('./../enc.js')
 const { saveArchive, loadArchive } = require('./utils/saveArchive.js');
@@ -731,17 +732,19 @@ You can also write in this chat directly to do:
       win.blur();
     }
 
-    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win);
+    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win, registerSession);
 
     const stopAppAndBots = () => {
 
       BrowserWindow.getAllWindows().forEach((win) => {
         win.webContents.send('freeze-loading');
+
         setTimeout(() => {
           BrowserWindow.getAllWindows().forEach((win) => {
             win.webContents.send('unfreeze-loading');
           })
-        }, 7500); // unfreeze in any case after 7.5 seconds
+        }, 10000); // unfreeze in any case after 10 seconds
+
       })
 
       if(trialIsOn) {
@@ -776,7 +779,7 @@ You can also write in this chat directly to do:
       });
 
       if(config.patch[settings.game].hideWin) win.show();
-      stopBots();
+      stopBots(profile);
       shell.beep();
       if (!win.isFocused()) {
         win.flashFrame(true);
@@ -887,6 +890,19 @@ You can also write in this chat directly to do:
       hintWin = false;
     }
   });
+
+  let sessionsWin;
+  ipcMain.on('create-fishinglog-win', async () => {
+    if(!sessionsWin) {
+      sessionsWin = createFullLogsWin(win.webContents.getZoomFactor());
+      win.webContents.send('as-opened');
+
+      sessionsWin.once('close', () => {
+        sessionsWin = null;
+        win.webContents.send('as-closed');
+      })
+    }
+  })
 
   ipcMain.handle('load-config', async () => {
     return await loadArchive(log);
