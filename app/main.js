@@ -224,7 +224,6 @@ const createWindow = async () => {
 
   // Define a global context menu
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Cut', role: 'cut' },
     { label: 'Copy', role: 'copy' },
     { label: 'Paste', role: 'paste' }
   ]);
@@ -895,12 +894,25 @@ You can also write in this chat directly to do:
   ipcMain.on('create-fishinglog-win', async () => {
     if(!sessionsWin) {
       sessionsWin = createFullLogsWin(win.webContents.getZoomFactor());
-      win.webContents.send('as-opened');
+      sessionsWin.once('show', () => {
+        win.webContents.send('as-opened');
+      })
 
       sessionsWin.once('close', () => {
         sessionsWin = null;
         win.webContents.send('as-closed');
       })
+    } else {
+      sessionsWin.focus();
+    }
+  })
+
+  win.on('focus', () => {
+    let wins = BrowserWindow.getAllWindows();
+
+    if(wins.length > 1) {
+      shell.beep();
+      wins[0].focus();
     }
   })
 
@@ -952,7 +964,7 @@ You can also write in this chat directly to do:
   ipcMain.handle("advanced-settings", async (event, settings) => {
     if(!settWin || settWin.isDestroyed()) {
       settWin = createAdvSettings(__dirname, settings.game, win.webContents.getZoomFactor());
-      win.webContents.send('as-opened');
+
     } else {
       settWin.focus();
     }
@@ -964,6 +976,7 @@ You can also write in this chat directly to do:
 
     await new Promise(function(resolve, reject) {
       settWin.once('show', () => {
+        win.webContents.send('as-opened');
         resolve();
       });
     });

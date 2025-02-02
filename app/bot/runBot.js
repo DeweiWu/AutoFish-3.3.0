@@ -263,7 +263,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       if(state.status != `stop`) state.status = `working`;
 
       checkChanges.block();
-      let isHooked = await hookBobber(bobber);
+      let isHooked = await hookBobber(bobber, log);
       checkChanges.unblock();
 
       if(bobber.missedIntentionally) {

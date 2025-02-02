@@ -1492,7 +1492,7 @@ const renderSettings = (config) => {
         renderWhitelist(config),
         `The bot will loot only items in the whitelist. Before using, turn off AutoLoot in the game and set UI Scale to default. The names of the items must be exactly the same as in the game, separated by comma. `
       ),
-      wrapInLabel("Mode: ", renderFilterType(config), `Filter Mode will decide whether to pick or to ignore items in the list.`),
+      //wrapInLabel("Mode: ", renderFilterType(config), `Filter Mode will decide whether to pick or to ignore items in the list.`),
       wrapInLabel("Language: ", renderWhitelistLanguage(config), `If it's the first time you using a language from the list, wait until the bot downloads the tesseract data for your language. `),
       wrapInLabel(`Close Loot Window With: `, renderCloseLoot(config), `The bot will use mouse/esc or randomly one of them to close the loot window while filtering the loot.`),
       wrapInLabel("Loot Window At Mouse: ", renderFilterAtMouse(config), `Loot window at mouse will tell the bot whether it should check the loot window at mouse or the default loot window at the left side of the screen.`),

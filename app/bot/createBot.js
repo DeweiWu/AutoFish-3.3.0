@@ -33,7 +33,9 @@ let once = (fn, done) => (...args) => {
 const {
   percentComparison,
   readTextFrom,
+  readTextFrom2,
   sortWordsByItem,
+  sortWordsByItem2
 } = require("../utils/textReader.js");
 
 const { createTimer } = require("../utils/time.js");
@@ -163,6 +165,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
 
     switch(true) {
       case config.streamMode: {
+        for(const key of Object.keys(zone)) {
+          zone[key] = Math.floor(zone[key]);
+        }
         return await workwindow.capture(zone);
       }
 
@@ -186,6 +191,11 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
 
     switch(true) {
       case config.streamMode: {
+
+        for(const key of Object.keys(zone)) {
+          zone[key] = Math.floor(zone[key]);
+        }
+
         let data = await workwindow.capture(zone);
         let result = await sharp(data.data, {
            raw: {
@@ -308,7 +318,7 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
   let fishingZone = createFishingZone(settings.bobberColor == 'Manual' ? getDataFrom : getDataFromFishingZone, Zone.from(screenSize).toRel(config.relZone), screenSize, settings, config);
 
   const notificationZone = createNotificationZone({
-    getDataFrom: getDataFromFishingZone,
+    getDataFrom: getDataFrom,
     zone: Zone.from({
       x: Math.round((screenSize.width / 2) - (screenSize.width * config.notificationPos.width)),
       y: Math.round(screenSize.height * config.notificationPos.y),
@@ -2172,16 +2182,16 @@ if (settings.soundDetection) {
 
 };
 
-  const pickLoot = async () => {
+  const pickLoot = async (log) => {
     let cursorPos = config.atMouse || !lootWindow.cursorPos ? mouse.getPos() : lootWindow.cursorPos;
     if (cursorPos.y - lootWindow.upperLimit < 0) {
       cursorPos.y = lootWindow.upperLimit;
     }
 
+    await sleep(500); // open loot window
+
     if (config.reaction) {
       await sleep(random(config.reactionDelay.from, config.reactionDelay.to)); // react to opening loot win
-    } else {
-      await sleep(150); // open loot window
     }
 
     if(settings.game != `Retail`) {
@@ -2222,10 +2232,135 @@ if (settings.soundDetection) {
     };
 
     const lootScale = screenSize.width <= 1536 ? 3 : screenSize.width <= 1920 ? 2 : 1;
-    let recognizedWords = await readTextFrom(await getDataFrom(lootWindowDim), lootScale);
-    let items = sortWordsByItem(recognizedWords, lootWindow, settings.game == `Retail`);
-    let itemPos = 0;
+    //let recognizedWords = await readTextFrom(await getDataFrom(lootWindowDim), lootScale);
+    //let items = sortWordsByItem(recognizedWords, lootWindow, settings.game == `Retail`);
 
+    let increaseForWidth = lootWindowDim.width * 0.1;
+    let increaseForHeight = lootWindowDim.height * 0.1;
+    let largenLootWindowDim = {
+      x: lootWindowDim.x - increaseForWidth,
+      y: lootWindowDim.y - increaseForHeight,
+      width: lootWindowDim.width + increaseForWidth * 2,
+      height: lootWindowDim.height + increaseForHeight * 2,
+    }
+
+    let recognizedWords2 = await readTextFrom2(await getDataFrom(largenLootWindowDim), lootScale);
+    let items2 = sortWordsByItem2(recognizedWords2, whitelist.map((filterItem) => filterItem.split(' ')), config.filterConfidence);
+
+    log.err(`Found Items: ${items2.toString()}`);
+
+    let pickedItems = [];
+    for(const {pos, name} of items2) {
+      await moveTo({
+        pos: {
+          x: cursorPos.x,
+          y: largenLootWindowDim.y + (pos / lootScale),
+        },
+        randomRange: 5,
+      });
+
+      await mouse.toggle("right", true, delay);
+      await mouse.toggle("right", false, delay);
+      pickedItems.push(name);
+    }
+
+    for(;state.status != 'stop';) {
+      let lootZone = createLootZone({
+        getDataFrom,
+        zone: {
+          x: lootWindowDim.x,
+          y: lootWindowDim.y,
+          width: lootWindow.width,
+          height: lootWindow.height,
+        },
+      });
+      let blueGreenPurple = await lootZone.findItems("blue", "green", "purple");
+      if(blueGreenPurple) {
+        await moveTo({
+          pos: {
+            x: cursorPos.x,
+            y: lootWindowDim.y + blueGreenPurple.y,
+          },
+          randomRange: 5,
+        });
+
+        await mouse.toggle("right", true, delay);
+        await mouse.toggle("right", false, delay);
+
+        if(config.confirmSoulbound) {
+          if (config.reaction && !config.streamMode) {
+            await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+          } else {
+            await sleep(random(500, 1000)) // wait for the window to appear
+          }
+          const needsConfirm = await checkRedButton(confirmationWindow);
+          if(needsConfirm) {
+            await action(async () => {
+              await mouse.toggle('left', true, delay);
+              await mouse.toggle('left', false, delay);
+            });
+            if(tmBot.ctx) {
+              tmBot.ctx.reply(`Confirmed Souldbound item in the window ${winNum}!`);
+              tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
+            }
+          }
+        }
+        pickedItems.push('bgp_item');
+      } else {
+        break; // if there's no blue/green/purple item - break
+      }
+    }
+
+    if(settings.useInt && itemsPicked.length > 1) {
+      await moveTo({pos: cursorPos, randomRange: 5});
+    }
+
+    if(settings.game != `Retail` && settings.game != `Cata Classic` && settings.game != `Classic`) {
+      await sleep(350); // disappearing loot window delay
+      if (await lootExitZone.isLootOpened(cursorPos)) {
+        if (config.reaction) {
+          await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+        }
+
+        if((config.closeLoot == `mouse` || config.closeLoot == `mouse+esc`) && lootWindow.exitButton) {
+          if(config.closeLoot == `mouse`) {
+            await moveTo({ pos: {
+              x: cursorPos.x + lootWindow.exitButton.x,
+              y: cursorPos.y - lootWindow.exitButton.y
+            }, randomRange: 2});
+            await mouse.toggle("left", true, delay);
+            await mouse.toggle("left", false, delay);
+
+            if(settings.useInt) {
+              await moveTo({ pos: cursorPos, randomRange: 2 });
+            }
+          }
+
+          if(config.closeLoot == `mouse+esc`) {
+            if(random(0, 100) > 50) {
+              await keyboard.sendKey("escape", delay);
+            } else {
+              await moveTo({ pos: {
+                x: cursorPos.x + lootWindow.exitButton.x,
+                y: cursorPos.y - lootWindow.exitButton.y
+              }, randomRange: 2});
+              await mouse.toggle("left", true, delay);
+              await mouse.toggle("left", false, delay);
+
+              if(settings.useInt) {
+                await moveTo({ pos: cursorPos, randomRange: 2 });
+              }
+            }
+          }
+        } else {
+            await keyboard.sendKey("escape", delay);
+        }
+      }
+    }
+
+    /* OLD FILTER CODE */
+    /*
+    let itemPos = 0;
     let itemsPicked = [];
     for (let item of items) {
       let isInList = whitelist.find((word) => percentComparison(word, item) > config.filterConfidence); // 90
@@ -2295,6 +2430,7 @@ if (settings.soundDetection) {
       itemPos += settings.game == `Retail` ? lootWindow.itemHeight + lootWindow.itemHeightAdd : lootWindow.itemHeight;
     }
 
+
     if(settings.useInt && itemsPicked.length > 1) {
       await moveTo({pos: cursorPos, randomRange: 5});
     }
@@ -2340,13 +2476,12 @@ if (settings.soundDetection) {
           await keyboard.sendKey("escape", delay);
       }
     }
+  */
 
-
-
-    return itemsPicked;
+    return pickedItems; // remove pos
   };
 
-  const hookBobber = async (pos) => {
+  const hookBobber = async (pos, log) => {
     if (config.reaction) {
       await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
     }
@@ -2395,7 +2530,7 @@ if (settings.soundDetection) {
     if (!(await notificationZone.check("warning")) && !pos.missedIntentionally) {
       caught = true;
       if (config.whitelist) {
-          let itemsPicked = await pickLoot();
+          let itemsPicked = await pickLoot(log);
             if(itemsPicked.length > 0) {
               caught = itemsPicked.toString();
             }

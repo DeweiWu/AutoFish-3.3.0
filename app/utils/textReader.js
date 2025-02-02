@@ -1,5 +1,6 @@
 const Jimp = require("jimp");
 const { createWorker } = require("tesseract.js");
+//const path = require('path')
 
 let worker;
 
@@ -23,7 +24,107 @@ const readTextFrom = async (buffer, scale) => {
   return words;
 };
 
+//let n = 0;
+
+const readTextFrom2 = async (buffer, scale) => {
+  let img = await Jimp.read(buffer);
+  img.greyscale().contrast(0.3).invert();
+
+  if(scale > 1) {
+    img.scale(scale);
+  }
+
+  //img.write(`test${n++}.png`);
+  //img.write(path.join(__dirname, `../../../app.asar.unpacked/test_${n++}.png`));
+
+  let result = await worker.recognize(await img.getBase64Async(Jimp.MIME_PNG));
+
+  let words = result.data.words.map(({ text, bbox }) => ({
+    text,
+    bbox
+  }));
+  return words;
+};
+
+function stringSimilarity(str1, str2) {
+    if (str1.length === 0 && str2.length === 0) return 100;
+    if (str1.length === 0 || str2.length === 0) return 0;
+
+    const minLength = Math.min(str1.length, str2.length);
+    let matchCount = 0;
+
+    for (let i = 0; i < minLength; i++) {
+        if (str1[i] === str2[i]) {
+            matchCount++;
+        }
+    }
+
+    const maxLength = Math.max(str1.length, str2.length);
+    return (matchCount / maxLength) * 100;
+}
+
+const sortWordsByItem2 = (recognizedWords, filterItems, filterConfidence) => {
+  let result = [];
+  for(const filterItem of filterItems) {
+    let found = [];
+    for(const filterWord of filterItem) {
+       recognizedWords.forEach((recognizedWord, i) => {
+        if(stringSimilarity(recognizedWord.text, filterWord) > filterConfidence) {
+          found.push({word: recognizedWord, pos: i});
+        }
+      });
+    }
+    //console.log(`found`, found);
+    if(found.length === filterItem.length) {
+      result.push(
+        {
+          name: filterItem.join(` `),
+          pos: Math.round(found.reduce((a, b) => a + b.word.bbox.y0, 0) / found.length)
+        }
+      );
+      //console.log(`recWordsBefore`, recognizedWords);
+      recognizedWords = recognizedWords.filter((word, i) => !found.some((foundWord) => foundWord.pos == i));
+      //console.log(`recWordsAfter`, recognizedWords);
+    }
+  }
+  return result;
+};
+
+
+/*
+const items = [];
+
+for(const foundWord of foundWords) {
+
+  let item = items.find((item) => {
+      let isWithin = foundWord.bbox.y0 < item.bbox.y1 && foundWord.bbox.y1 > item.bbox.y0;
+      if(isWithin) {
+        return item;
+      }
+  });
+  let lineHeight = (foundWord.bbox.y1 - foundWord.bbox.y0) / 2;
+
+  if(!item) {
+    items.push({
+      words: [foundWord.text],
+      bbox: {
+        y0: foundWord.bbox.y0 - lineHeight,
+        y1: foundWord.bbox.y1 + lineHeight
+      }
+    })
+  } else {
+    item.words.push(foundWord.text);
+
+    if(foundWord.bbox.y0 < item.bbox.y0) item.bbox.y0 = foundWord.bbox.y0 - lineHeight;
+    if(foundWord.bbox.y1 < item.bbox.y1) item.bbox.y1 = foundWord.bbox.y1 + lineHeight;
+  }
+}
+
+return items.map((item) => item.words.reduce((a, b) => a + ` ` + b));
+*/
+
 const getField = (attr) => (obj) => obj[attr];
+
 const percentComparison = (first, second) => {
   if (second.length > first.length) {
     [first, second] = [second, first];
@@ -67,5 +168,7 @@ module.exports = {
   setWorker,
   percentComparison,
   readTextFrom,
+  readTextFrom2,
   sortWordsByItem,
+  sortWordsByItem2
 };

@@ -10,12 +10,18 @@ const createLootZone = ({ getDataFrom, zone }) => {
 
   return {
     async findItems(...types) {
-      let rgb = createRgb(await getDataFrom(zone));
+      let data = await getDataFrom(zone);
+      let rgb = createRgb(data);
 
-      return types.some(type => rgb.findColors({
-        isColor: colors[type],
-        atFirstMet: true
-      }));
+      for(const type of types) {
+        let found = rgb.findColors({
+         isColor: colors[type],
+         atFirstMet: true
+        });
+       if(found) {
+         return found;
+       }
+      }
     }
   }
 };
