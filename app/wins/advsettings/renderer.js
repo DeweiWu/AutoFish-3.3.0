@@ -593,9 +593,57 @@ const renderRngMoveTimer = ({rngMove, rngMoveTimer}) => {
   );
 }
 
+const renderRngMoveRadiusMaxCanvas = ({rngMoveRadiusMax, rngMove}) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext("2d");
+    canvas.width = 100;
+    canvas.height = 50;
+    canvas.className = `rngMoveCanvas ${rngMove ? `` : `rngMoveCanvas_disabled`}`;
+    angle = Number(rngMoveRadiusMax);
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height; // Bottom center
+    const radius = (100 / 2) - 5; // Fit inside canvas
+    const characterSize = 4; // Radius of the small character circle
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Convert field of view to radians
+    const startAngle = (-angle / 2 - 90) * (Math.PI / 180); // Left boundary
+    const endAngle = (angle / 2 - 90) * (Math.PI / 180); // Right boundary
+
+    // Draw the full circle as the background (grey area)
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, -Math.PI, 0, false); // Full upper half-circle
+    ctx.closePath();
+    ctx.fillStyle = "rgba(150, 150, 150, 0.5)"; // Semi-transparent grey
+    ctx.fill();
+
+    // Draw the camera view arc (blue area)
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(0, 150, 255, 0.3)"; // Semi-transparent blue
+    ctx.fill();
+
+    // Draw border for FOV
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Draw character representation (small blue circle)
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, characterSize, 0, Math.PI * 2, false);
+    ctx.fillStyle = "blue";
+    ctx.fill();
+   return canvas;
+}
+
 const renderRngMoveRadiusMax = ({rngMove, rngMoveRadiusMax}) => {
-  const winRange = elt(`input`, {type: `number`, disabled: !rngMove, value: rngMoveRadiusMax, name: "rngMoveRadiusMax"})
-  const range = elt('input', {type: `range`, step: 0, max: 360, disabled: !rngMove, className: `${!rngMove ? `threshold_disabled` : ``}`, value: rngMoveRadiusMax, oninput: function() {winRange.value = this.value}, name: "rngMoveRadiusMax"});
+  const winRange = elt(`input`, {type: `number`, disabled: !rngMove, max: 180, value: rngMoveRadiusMax, name: "rngMoveRadiusMax"})
+  const range = elt('input', {type: `range`, step: 0, max: 180, disabled: !rngMove, className: `${!rngMove ? `threshold_disabled` : ``}`, value: rngMoveRadiusMax, oninput: function() {winRange.value = this.value}, name: "rngMoveRadiusMax"});
   return elt(`div`, null, range, winRange);
 };
 
@@ -1597,6 +1645,7 @@ const renderSettings = (config) => {
     elt('div', {className: "settings_section settings_premium"},
     wrapInLabel(`Use Random Camera Movement: `, renderRngMove(config), `The bot will randomly move your camera within the provided radius. If the bot overdoes it and "no fishing water" error appear, it will move your camera back for the r * 2 radius.`),
     wrapInLabel(`Use Random Character Movement:`, renderRngMoveKeys(config), `The bot will move your character around a little. Don't leave the bot for a long time in this mode, it might run away and tell everyone that you are using bots.`),
+    renderRngMoveRadiusMaxCanvas(config),
     wrapInLabel(`Camera Movement (deg):`, renderRngMoveRadiusMax(config), `The maximum radius of the camera movement. The bigger the value, the more your character will turn the camera.`),
     wrapInLabel(`Character Movement (steps):`, renderRngMoveDirLengthMax(config), `Aproximate value of steps made by the bot when it moves around, defines the perimeter of how far it might move.`),
     wrapInLabel(`Use Movements Randomly Every (min): `, renderRngMoveTimer(config), `How often the bot should move your camera/character. The value is chosen randomly within the provided values.`),

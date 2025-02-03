@@ -418,7 +418,7 @@ if(lootWindowPatch.exitButton) {
       return {x: posFromCurrent.x + mouse.getPos().x, y: posFromCurrent.y + mouse.getPos().y};
     }
 
-    const moveTo = async ({ pos, withClick, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation, cPos}) => {
+    const moveTo = async ({ pos, withClick, norec, randomRange, fineTune = {offset: randomRange || 5, steps: [1, 3]}, forcedNutMouse, speed, deviation, cPos}) => {
 
       if (randomRange) {
         pos.x = pos.x + Math.round(random(-randomRange, randomRange));
@@ -478,7 +478,7 @@ if(lootWindowPatch.exitButton) {
           if(withClick) {
             await mouse.humanMoveToRClick(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
           } else {
-            await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to));
+            await mouse.humanMoveTo(pos.x, pos.y, random(randomSpeed.from, randomSpeed.to), random(randomDeviation.from, randomDeviation.to), norec);
           }
         }
 
@@ -2641,7 +2641,7 @@ if (settings.soundDetection) {
   };
 
   const getRandomPos = () => {
-    let maxRadius = config.rngMoveRadiusMax / 360 * 500;
+    let maxRadius = ((config.rngMoveRadiusMax / 2)) / 360 * (config.streamMode || (config.arduino && config.arduinoType == 'pico') ? 1600 : 500); // pico
     let minRadius = maxRadius * .25;
 
     let x = random(0, 100) > (50 + 50 * (moveMemory.value / maxRadius) ) ? random(-maxRadius, -minRadius) : random(minRadius, maxRadius);
@@ -2742,8 +2742,17 @@ if (settings.soundDetection) {
     }
 
     if(config.streamMode || (config.arduino && config.arduinoType == 'pico')) {
+      await mouse.toggle('right', true, delay);
+      let cPos = mouse.getPos();
+      await moveTo({pos: {
+        x: cPos.x + (rngPos.direction == 'left' ? -rngPos.delay : rngPos.delay),
+        y: cPos.y
+      }, fineTune: false, norec: true});
+      await mouse.toggle('right', false, delay);
+      /*
       await keyboard.sendKey(rngPos.direction, rngPos.delay);
       await sleep(random(delay[0], delay[1]))
+      */
     } else {
       await keyboard.toggleKey(rngPos.direction, true, rngPos.delay);
       await keyboard.toggleKey(rngPos.direction, false, delay);

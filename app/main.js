@@ -737,13 +737,6 @@ You can also write in this chat directly to do:
 
       BrowserWindow.getAllWindows().forEach((win) => {
         win.webContents.send('freeze-loading');
-
-        setTimeout(() => {
-          BrowserWindow.getAllWindows().forEach((win) => {
-            win.webContents.send('unfreeze-loading');
-          })
-        }, 10000); // unfreeze in any case after 10 seconds
-
       })
 
       if(trialIsOn) {

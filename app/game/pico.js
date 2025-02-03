@@ -46,15 +46,16 @@ let eventLine = [];
 const runAction = (action) => {
   return new Promise((resolve, reject) => {
     if(eventLine.length > 0) {
-      eventLine.push({action, resolve});
+      eventLine.push({action, resolve, reject});
     } else {
-      action(resolve);
+      action(resolve, reject);
     }
   });
 }
 
 async function send(type, jsonData) {
-  const action = async (resolve) => {
+  const action = async (resolve, reject) => {
+    try {
       const response = await axios.post(`http://${picoIp}:5000/${type}`,
           jsonData,  // Send data as a JSON object
           {
@@ -63,6 +64,10 @@ async function send(type, jsonData) {
             },
           }
         );
+    } catch(e) {
+      reject(e);
+    }
+
         /*
     try {
         attempts = 0;
@@ -77,10 +82,11 @@ async function send(type, jsonData) {
       }
     }
     */
+
     eventLine.shift();
     resolve();
     if(eventLine.length > 0) {
-      eventLine[0].action(eventLine[0].resolve);
+        eventLine[0].action(eventLine[0].resolve, eventLine[0].reject);
     }
   }
 
@@ -169,7 +175,7 @@ const mouse = {
     await send('movemouse', {x: newX, y: newY});
   },
 
-  async humanMoveTo(x, y, mainSpeed, deviation) { // speed = 88, curvature = 20
+  async humanMoveTo(x, y, mainSpeed, deviation, norec) { // speed = 88, curvature = 20
 
     let speed = mainSpeed * 15;
     let curvature = (deviation / 100) * 30; // 30
@@ -180,7 +186,7 @@ const mouse = {
     const newX = x - previousPos.x;
     const newY = y - previousPos.y;
 
-    if(x > -(9000 / scaling) && y > -(9000 / scaling)) {
+    if(x > -(9000 / scaling) && y > -(9000 / scaling) && !norec) {
       previousPos = {x, y};
     }
 
@@ -189,6 +195,7 @@ const mouse = {
     let speedDistCoofConverted = distance / speedDistCoof;
 
     let convertedSpeed = speed * speedDistCoofConverted;
+
     await send('movemousehuman', {x: newX, y: newY, speed: convertedSpeed, curvature});
   },
 

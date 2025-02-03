@@ -1533,3 +1533,17 @@ input[type="number"] {
     transform: rotate(360deg);
   }
 }
+
+.rngMoveCanvas {
+  height: 50px;
+  width: 100px;
+
+  border-radius: 5px;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rngMoveCanvas_disabled {
+  opacity: 0.5;
+}
