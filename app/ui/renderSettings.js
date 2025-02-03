@@ -359,14 +359,17 @@ return elt(
         "",
         renderFishingZone(config),
       ),
+      /*
       wrapInLabel(
         "",
         renderChatZone(config),
       ),
+
       wrapInLabel(
         "",
         renderDetectZone(config),
       ),
+      */
       wrapInLabel(
         "",
         renderAdvancedSettings(config),

@@ -1384,6 +1384,44 @@ const renderCombatZone = ({aggroCheck, combatZone}) => {
   }}), combatZoneInput);
 };
 
+const renderChatZone = ({chatZone}) => {
+  let x = elt('input', {type: `number`, name: `x`, value: chatZone.x});
+  let y = elt('input', {type: `number`, name: `y`, value: chatZone.y})
+  let width = elt('input', {type: `number`, name: `width`, value: chatZone.width});
+  let height = elt('input', {type: `number`, name: `height`, value: chatZone.height});
+
+  let chatZoneInput = elt(`div`, {style: `display: none`, "data-collection": `chatZone`}, x, y, width, height);
+  return elt('div', null, elt('input', {type: `button`, className: `asZoneButton`, value: `Chat Zone`, onclick() {
+    ipcRenderer.invoke("start-bot", `chatZone`).then(data => {
+      if(data) {
+        x.value = data.x;
+        y.value = data.y;
+        width.value = data.width;
+        height.value = data.height;
+      }
+    })
+  }}), chatZoneInput);
+};
+
+const renderDetectZone = ({checkChanges, detectZone}) => {
+  let x = elt('input', {type: `number`, name: `x`, value: detectZone.x});
+  let y = elt('input', {type: `number`, name: `y`, value: detectZone.y})
+  let width = elt('input', {type: `number`, name: `width`, value: detectZone.width});
+  let height = elt('input', {type: `number`, name: `height`, value: detectZone.height});
+
+  let detectZoneInput = elt(`div`, {style: `display: none`, "data-collection": `detectZone`}, x, y, width, height);
+  return elt('div', null, detectZoneInput, elt('input', {type: `button`, disabled: !checkChanges, className: `${!checkChanges ? `asZoneButton disabledButtonPremium` : `asZoneButton`}`, style: `width: 120px;`,value: `Detection Zone`, onclick() {
+    ipcRenderer.invoke("start-bot", `detectZone`).then(data => {
+      if(data) {
+        x.value = data.x;
+        y.value = data.y;
+        width.value = data.width;
+        height.value = data.height;
+      }
+    })
+  }}));
+};
+
 const renderFindPlayerTargetKey = ({findPlayer, findPlayerTargetKey}) => {
   let key = elt('input', {type: 'text', value: findPlayerTargetKey, disabled: !findPlayer, name: "findPlayerTargetKey"});
   key.setAttribute(`readonly`, `true`);
@@ -1497,6 +1535,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Stop After Detection:`, renderCloseAtWhisper(config), `Whether to stop the bot after someone whispered.`),
     wrapInLabel(`Quit After Detection:`, renderQuitAtWhisper(config), `The bot will stop and also quit (*/logout if in Streaming Mode*) the game. In Multiple Mode it will wait for the last window to stop before quiting. If you have shutdown option turned on in **Timer section** the bot will **shut down your computer** *(both gaming and controling in case of Streaming Mode)* after this triggers.`),
     wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Omit "@", put in just the name.`),
+    renderChatZone(config),
     elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
     renderWhisperColors(config),
   ),
@@ -1639,6 +1678,7 @@ const renderSettings = (config) => {
     wrapInLabel('Do After Event: ', renderCheckChangesDoAfter(config), `What to do after the event occured.\nChoices:\n- Sleep: the bot will sleep for the given duration.\n- Logout: The bot will log out for the given duration (will use settings from the Logging out section).\n- Move: The bot will make a random movement (will use the settings from the Random Movement section)\n- Press key: the bot will press the designated key.\n- Random: the bot will either sleep, move or do nothing randomly.`),
     config.checkChangesDoAfter == `press key` ? wrapInLabel('Key: ', renderCheckChangesDoAfterKey(config), `Key the bot will press after the event occured. It will sleep after for the prvoided Sleep time. `) : ``,
     config.checkChangesDoAfter == `sleep` || config.checkChangesDoAfter == `press key` || config.checkChangesDoAfter == `random` ? wrapInLabel('Sleep Time (min): ', renderCheckChangesDoAfterSleepTime(config), `Time the bot will sleep after the event occured.`) : ``,
+    renderDetectZone(config)
     ),
 
     elt(`p`, {className: `settings_header settings_header_premium`}, `🤖`),elt(`span`, {className: `advanced_settings_header_text`}, `Random Movement`),

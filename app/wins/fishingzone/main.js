@@ -39,8 +39,8 @@ const createFishingZone = ({pos, screenSize, type, config, settings, scale}, fin
   win.once('closed', () => {
     ipcMain.removeAllListeners(`fishingZone-cancel`);
     ipcMain.removeAllListeners(`fishingZone-ok`);
-		ipcMain.removeHandler(`fishingZone-check`);
-		ipcMain.removeHandler(`fishingZone-bobberColor`);
+		//ipcMain.removeHandler(`fishingZone-check`);
+		//ipcMain.removeHandler(`fishingZone-bobberColor`);
   });
 
 	ipcMain.handle(`fishingZone-bobberColor`, () => settings.bobberColor)
@@ -50,6 +50,7 @@ const createFishingZone = ({pos, screenSize, type, config, settings, scale}, fin
     win.close();
   });
 
+/*
 	ipcMain.handle(`fishingZone-check`, async () => {
 		let pos = win.getBounds();
 
@@ -82,6 +83,7 @@ const createFishingZone = ({pos, screenSize, type, config, settings, scale}, fin
 			return `rgb(70, 255, 68)`;
 		}
 	});
+*/
 
   ipcMain.on(`fishingZone-ok`, () => {
     win.close();

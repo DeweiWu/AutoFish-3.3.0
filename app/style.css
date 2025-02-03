@@ -402,8 +402,8 @@ input[data-spares] {
 }
 
 .advanced_settings_button {
-  height: 33px;
-  font-size: 1.1em;
+  height: 71px;
+  font-size: 1.2em;
   width: 140px;
   margin-right: 3px;
   text-align: center;
@@ -1546,4 +1546,13 @@ input[type="number"] {
 
 .rngMoveCanvas_disabled {
   opacity: 0.5;
+}
+
+.asZoneButton {
+  display: block;
+  width: 120px !important;
+  height: 30px;
+  font-size: 1.1em;
+  margin: 0 auto !important;
+  margin-bottom: 10px !important;
 }
