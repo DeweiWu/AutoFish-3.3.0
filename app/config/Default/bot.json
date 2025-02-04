@@ -216,6 +216,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
@@ -507,6 +511,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "detectWhisper": true,
       "closeAtWhisper": false,
@@ -782,6 +790,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
@@ -1062,6 +1074,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
@@ -1320,6 +1336,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
@@ -1581,6 +1601,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
@@ -1851,6 +1875,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
@@ -2126,6 +2154,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
@@ -2384,6 +2416,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
@@ -2647,6 +2683,10 @@
       "rngMoveRadiusMax": 45,
 
       "rngMoveDirLengthMax": 4,
+      "openai": false,
+      "openaimodel": "gryphe/mythomax-l2-13b:free",
+      "openaicontext": "",
+      "openaiprompt": "",
 
       "tmApiKey": "",
       "tmUseUsername": false,
