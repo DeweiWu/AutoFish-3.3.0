@@ -330,9 +330,9 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
   const chatZone = createChatZone({
     getDataFrom,
     screenSize,
-    zone: Zone.from(screenSize).toRel(config.chatZone),
-    whispSpecColors: config.whispSpecColors,
-  });
+    zone: Zone.from(screenSize).toRel(config.chatZone)
+  }, tmBot, config);
+
   let lootWinResType;
   switch(true) {
     case screenSize.height <= 768: {
@@ -2552,11 +2552,27 @@ if (settings.soundDetection) {
   };
 
   const checkWhisper = async (onStop, wins) => {
-    if(tmBot.ctx == null || !config.detectWhisper) return;
-    if(await chatZone.checkNewMessages()) {
-      tmBot.ctx.reply(`Message in the window ${winNum}:`);
-      tmBot.ctx.sendChatAction(`upload_photo`);
-      tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
+     if(!config.detectWhisper) return;
+     let whispMessage = await chatZone.checkNewMessages();
+     if(whispMessage) {
+       if(config.openai && config.openaikey) {
+         await action(async () => {
+           await keyboard.sendKey('enter', delay);
+           const commandToUse = whispMessage.type == 'whisper' ? '/r' : '/say';
+           await keyboard.printText(`${commandToUse} ${whispMessage.response}`, delay);
+           await keyboard.sendKey('enter', delay);
+         })
+          if (config.reaction) {
+          await sleep(random(config.reactionDelay.from, config.reactionDelay.to));
+        }
+       }
+
+       if(tmBot.ctx) {
+         tmBot.ctx.reply(`Message in the window ${winNum}:`);
+         tmBot.ctx.sendChatAction(`upload_photo`);
+         tmBot.ctx.replyWithPhoto({source: await chatZone.getImage()});
+       }
+
       if(config.closeAtWhisper) {
 
         if(config.streamMode) {

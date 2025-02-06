@@ -508,10 +508,6 @@ You can also write in this chat directly to do:
       }
 
       if(data && config.patch[settings.game].streamMode) {
-        BrowserWindow.getAllWindows().forEach((win) => {
-          win.webContents.send('freeze-loading');
-        })
-
         log.send('Saving data... Please wait.');
         win.webContents.send('show-loading-cursor-start');
 

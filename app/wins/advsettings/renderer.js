@@ -5,6 +5,8 @@ const { SerialPort } = require(`serialport`);
 const keySupport = require("./../../utils/keySupport.js");
 const { hexToRgb, rgbToHex } = require("./../../utils/colors.js");
 
+const createOpenai = require('./../../utils/openai.js');
+
 let spareNumber;
 
 
@@ -460,13 +462,16 @@ const renderTmUsername = ({tmUseUsername = false, tmUsername = ``}) => {
   return elt('div', null, checkbox, text);
 };
 
-const renderDetectWhisper = ({detectWhisper}) => {
-  return elt('input', {type: `checkbox`, checked: detectWhisper, name: `detectWhisper`});
+const renderDetectWhisper = ({detectWhisper, openai}) => {
+  if(openai) {
+    detectWhisper = true;
+  }
+  return elt('input', {type: `checkbox`, disabled: openai, checked: detectWhisper, name: `detectWhisper`});
 };
 
 const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
   const addButton = elt(`input`, {type: `button`, className: `whispSpecColorsAdd`, onclick() {
-    const colorBox = elt('input', {type: `color`, className: `whisperColorBox`, value: `#ffffff`});
+    const colorBox = elt('input', {type: `color`, className: `whisperColorBox`, value: `#ff8cff`});
     const colorPicker = elt('input', {type: `button`, className: `whisperColorPicker`, value: ``, onclick() {
       this.style.cursor = 'progress';
       ipcRenderer.invoke('start-bot', 'pointZone').then((data) => {
@@ -521,6 +526,7 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
 
 return elt(`div`, {className: `whispSpecColorsContainer`}, ...whispSpecColorsNodes, addButton)
 };
+
 
 const renderMammoth = ({mammoth}) => {
   return elt('input', {type: `checkbox`, checked: mammoth, name: `mammoth`});
@@ -1496,6 +1502,84 @@ const renderFindPlayerRotationTime = ({findPlayer, findPlayerRotateBy, findPlaye
   return elt('input', {type: `number`, disabled: !findPlayer, value: findPlayerRotateBy == `Keyboard` ? findPlayerRotationTimeKeyboard : findPlayerRotationTimeMouse, name: `${findPlayerRotateBy == `Keyboard` ? `findPlayerRotationTimeKeyboard` : `findPlayerRotationTimeMouse`}`})
 };
 
+
+let openaiModule;
+const renderOpenAi = ({openai}) => {
+  return  elt(`input`, {type: `checkbox`, checked: openai, name: `openai`})
+};
+
+const renderOpenAiKey = ({openai, openaikey = '123'}) => {
+  return elt('input', {type: `text`, className: 'openaiKey', value: openaikey, disabled: !openai, name: `openaikey`, onchange() {
+    openaiModule.updateKey(this.value);
+  }});
+}
+
+let freeOnlyCheckValue = false;
+const renderOpenAiModel = ({openai, openaimodel}) => {
+  const freeOnlyCheck = elt('input', {type: `checkbox`, disabled: !openai, checked: freeOnlyCheckValue, onclick() {
+    freeOnlyCheckValue = !freeOnlyCheckValue;
+  }});
+  const select = elt('select', {disabled: !openai, value: openaimodel, className: `openaiModel`, name: `openaimodel`});
+  if(openai) {
+    openaiModule.getModels().then((models) => {
+      models.forEach(({name, id}) => {
+        if(freeOnlyCheck.checked) {
+          if(/free/.test(name)) {
+            select.append(elt('option', {selected: openaimodel == id, value: id}, name))
+          }
+        } else {
+          select.append(elt('option', {selected: openaimodel == id, value: id}, name))
+        }
+      })
+    })
+  }
+
+  return elt('div', null, select, `Free only:`, freeOnlyCheck)
+};
+
+const renderOpenAiPrompt = ({openai, openaiprompt}) => {
+  return elt('textarea', {disabled: !openai, className: 'openaiTextarea', name: `openaiprompt`, value: openaiprompt});
+};
+
+const renderOpenAiTest = ({openai, openaiprompt = `Hello`, openaimodel, playertext = "what's up dude?"}) => {
+  const text = elt('textarea', {className: `openaiTextarea_test`, disabled: !openai, value: playertext, name: "playertext"});
+  const resultWin = elt('p', {className: `openaiTestResultWin ${openai ? `` : `openaiTestResultWin_disabled`}`}, ``);
+  const button = elt('input', {type: `button`, disabled: !openai, className: `openaiTestButton ${openai ? `` : `disabledButtonPremium`}`, value: `Send`, async onclick() {
+    let response;
+    resultWin.style.color = 'black';
+    try {
+      button.value = `⌛`;
+      response = await openaiModule.prompt(`${openaiprompt} ${text.value}`, openaimodel);
+      resultWin.textContent = response;
+    } catch(e) {
+      resultWin.style.color = 'red';
+      resultWin.textContent = `Error: ${e.message}`;
+    }
+    button.value = `Send`;
+  }});
+  return elt('div', {style: `display: flex; flex-flow: column`}, elt('div', null, text, button), resultWin);
+};
+
+const renderDetectTriggerWhisper = ({openai, detectTriggerWhisper = true, detectTriggerWhisperWord = 'whispers:'}) => {
+  const checkbox = elt(`input`, {type: `checkbox`, checked: detectTriggerWhisper, name: `detectTriggerWhisper`});
+  const input = elt('input', {type: `text`, value: detectTriggerWhisperWord, disabled: !detectTriggerWhisper, className: `detectTriggerWord`, name: "detectTriggerWhisperWord"});
+  return elt('div', null, checkbox, input);
+};
+
+const renderDetectTriggerSay = ({detectTriggerSay = true, detectTriggerSayWord = 'says:'}) => {
+  const checkbox = elt(`input`, {type: `checkbox`,  checked: detectTriggerSay, name: `detectTriggerSay`});
+  const input = elt('input', {type: `text`, value: detectTriggerSayWord, disabled: !detectTriggerSay, className: `detectTriggerWord`, name: "detectTriggerSayWord"});
+  return elt('div', null, checkbox, input);
+};
+
+const renderDetectByType = ({openai, detectByType = 'colors'}) => {
+  if(openai) {
+    detectByType = 'text';
+  }
+  const types = ['text', 'colors'];
+  return elt('select', {value: detectByType, className: `detectByType`, disabled: openai, name: 'detectByType'}, ...types.map((type) => elt('option', {selected: detectByType == type}, type)))
+}
+
 const renderSettings = (config) => {
   return elt('section', {className: `settings settings_advSettings`},
   elt(`p`, {className: `settings_header advanced_settings_header`}, `⚙️`), elt(`span`, {className: `advanced_settings_header_text`}, `General`),
@@ -1527,7 +1611,6 @@ const renderSettings = (config) => {
     wrapInLabel(`Set Initial Cursor Position Manually: `, renderStreamManualCursor(config), `To ensure the bot accurately detects the cursor's position, it should begin from the x:0 and y:0 coordinates, which correspond to the top-left corner of the screen. Enable this option if you encounter any issues with auto-initialization.`)
   ),
 
-
   elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.\n\nMultiple Fishig Mode: the bot will use the token of the current profile for all the windows, you don't need to set it everywhere.`),
@@ -1535,9 +1618,22 @@ const renderSettings = (config) => {
     wrapInLabel(`Stop After Detection:`, renderCloseAtWhisper(config), `Whether to stop the bot after someone whispered.`),
     wrapInLabel(`Quit After Detection:`, renderQuitAtWhisper(config), `The bot will stop and also quit (*/logout if in Streaming Mode*) the game. In Multiple Mode it will wait for the last window to stop before quiting. If you have shutdown option turned on in **Timer section** the bot will **shut down your computer** *(both gaming and controling in case of Streaming Mode)* after this triggers.`),
     wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Omit "@", put in just the name.`),
+    wrapInLabel(`Detect By Type: `, renderDetectByType(config), `The bot can detect messages in chat either by color (any) or by text (only for whisper/says)`),
+    config.openai || config.detectByType == 'text'  ? wrapInLabel(`Trigger Whisper Word: `, renderDetectTriggerWhisper(config), `Used to detect "whisper" message and reply to it by using /r.`) : ``,
+    config.openai || config.detectByType == 'text'  ? wrapInLabel(`Trigger Say Word: `, renderDetectTriggerSay(config), `Used to detect "say" message and reply by using /say.`) : ``,
     renderChatZone(config),
-    elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
-    renderWhisperColors(config),
+    config.openai || config.detectByType == 'text' ? `` : elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
+    config.openai || config.detectByType == 'text'  ? `` : renderWhisperColors(config),
+  ),
+
+  elt(`p`, {className: `settings_header settings_header_premium`}, `💬`),  elt(`span`, {className: `advanced_settings_header_text`}, `AI Response`),
+  elt(`div`, {className: `settings_section settings_premium`},
+    wrapInLabel('Use OpenRouter AI: ', renderOpenAi(config), `You can connect the bot to your OpenRouter account. It will use a chosen AI Model to reply if it detects any messages. The bot will use trigger words from **Remote Control** section: namely *whispers:* for /r and *says:* for /say by default.\n\nBefore using go to **openrouter.ai** and sign in. Then go to *Keys -> Create Key* and paste it in API Key input. Then choose some free model and test, some models might work better, especially paid ones.`),
+    wrapInLabel('AI Model: ', renderOpenAiModel(config), `Model you want the bot to use to generate a response. You can choose which providers to ignore in OpenRouter settings.\n\nRecommended: *Google: Gemini Flesh 2.0*`),
+    wrapInLabel('AI Prompt: ', renderOpenAiPrompt(config), `Prompt that will be send to the model to generate a response. Experiment with it and change depending on the context.`),
+    wrapInLabel('API Key: ', renderOpenAiKey(config), `API Key you can get from Keys -> Create Keys on *openrouter.ai*`),
+    elt('div', {style: `border-bottom: 1px solid grey; margin: 5px 0 10px 0;`}),
+    wrapInLabel('AI Test: ', renderOpenAiTest(config), `Will send your message with the provided prompt to see a possible response fro the provided model. Write something you think another player will whisper to you and see the results.`)
   ),
 
   elt(`p`, {className: `settings_header`}, `🎣`), elt(`span`, {className: `advanced_settings_header_text`}, `Lures`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#applying-lures-pushpin")}}, `(Guide)`),
@@ -1776,6 +1872,8 @@ const renderSettings = (config) => {
 
 const runApp = async () => {
   let config = await ipcRenderer.invoke("get-game-config");
+  openaiModule = createOpenai(config.openaikey);
+
   const settings = elt(`form`, {className: `advSettings_settings`}, renderSettings(config));
 
   spareNumber = config.spares.length + 1;
