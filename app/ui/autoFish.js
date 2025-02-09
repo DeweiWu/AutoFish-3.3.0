@@ -201,6 +201,7 @@ class AutoFish {
       })
     });
 
+    /*
     this.settings.regOnDetectZoneClick((button) => {
       button.style.cursor = 'progress';
       ipcRenderer.invoke("start-bot", `detectZone`).then(() => {
@@ -214,6 +215,7 @@ class AutoFish {
         button.style.cursor = 'pointer';
       })
     });
+    */
 
     this.settings.regOnAfkFishing(() => {
       ipcRenderer.send("afk-fishing-warn");

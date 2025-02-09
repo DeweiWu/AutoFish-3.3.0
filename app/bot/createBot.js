@@ -126,7 +126,15 @@ const createBot = (game, { config, settings }, winSwitch, tmBot, winNum, state, 
     await winSwitch.execute(workwindow, async (steps) => {
       await keyboard.altTab(steps, delay);
     }, winNum, config.streamMode);
-    await callback();
+    try {
+      await callback();
+    } catch(e) {
+      if(e.message == 'socket hang up') {
+        onError(new Error(`An error occured on Pico W side. You can check the error message via Mu Editor -> Serial on the PC Pico W connected to.`));
+      } else {
+        onError(e);
+      }
+    }
     winSwitch.finished();
   };
 

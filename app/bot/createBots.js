@@ -56,7 +56,7 @@ const sleep = (time) => {
 };
 
 
-const createBots = async (games, log, tmBot, arduino, win, registerSession) => {
+const createBots = async (games, log, tmBot, arduino, win, registerSession, onError) => {
   const winSwitch = createWinSwitch(new EventLine(), games.length);
 
   let chosenConfig = games[0].config.patch[games[0].settings.game];
@@ -145,7 +145,7 @@ const createBots = async (games, log, tmBot, arduino, win, registerSession) => {
     let state = { status: "initial", startTime: Date.now() };
 
     return {
-      bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1, state),
+      bot: createBot(game, {config: config.patch[settings.game], settings}, winSwitch, tmBot, i + 1, state, onError),
       log: createIdLog(log, ++i, settings.multipleWindows),
       state,
       stats: new Stats(i)

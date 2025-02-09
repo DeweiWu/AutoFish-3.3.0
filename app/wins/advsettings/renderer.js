@@ -1398,6 +1398,7 @@ const renderChatZone = ({chatZone}) => {
 
   let chatZoneInput = elt(`div`, {style: `display: none`, "data-collection": `chatZone`}, x, y, width, height);
   return elt('div', null, elt('input', {type: `button`, className: `asZoneButton`, value: `Chat Zone`, onclick() {
+    this.style.cursor = 'progress';
     ipcRenderer.invoke("start-bot", `chatZone`).then(data => {
       if(data) {
         x.value = data.x;
@@ -1405,6 +1406,7 @@ const renderChatZone = ({chatZone}) => {
         width.value = data.width;
         height.value = data.height;
       }
+      this.style.cursor = 'default';
     })
   }}), chatZoneInput);
 };
@@ -1417,6 +1419,7 @@ const renderDetectZone = ({checkChanges, detectZone}) => {
 
   let detectZoneInput = elt(`div`, {style: `display: none`, "data-collection": `detectZone`}, x, y, width, height);
   return elt('div', null, detectZoneInput, elt('input', {type: `button`, disabled: !checkChanges, className: `${!checkChanges ? `asZoneButton disabledButtonPremium` : `asZoneButton`}`, style: `width: 120px;`,value: `Detection Zone`, onclick() {
+    this.style.cursor = 'progress';
     ipcRenderer.invoke("start-bot", `detectZone`).then(data => {
       if(data) {
         x.value = data.x;
@@ -1424,6 +1427,7 @@ const renderDetectZone = ({checkChanges, detectZone}) => {
         width.value = data.width;
         height.value = data.height;
       }
+      this.style.cursor = 'default';
     })
   }}));
 };

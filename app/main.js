@@ -690,7 +690,7 @@ You can also write in this chat directly to do:
                 log.err(e);
                 reject(e);
               } else {
-                log.ok(`Connected successfully to stream: /live${mWin}!`);
+                log.ok(`Connected successfully to stream: /live${settings.multipleWindows ? mWin : ``}!`);
               }
 
               resolve();
@@ -727,9 +727,13 @@ You can also write in this chat directly to do:
       win.blur();
     }
 
-    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win, registerSession);
+    const {startBots, stopBots} = await createBots(games, log, tmBot, arduino, win, registerSession, stopAppAndBots);
 
-    const stopAppAndBots = () => {
+    function stopAppAndBots(e) {
+
+      if(e) {
+        log.err(e.message);
+      }
 
       BrowserWindow.getAllWindows().forEach((win) => {
         win.webContents.send('freeze-loading');
@@ -900,7 +904,7 @@ You can also write in this chat directly to do:
     let wins = BrowserWindow.getAllWindows();
 
     if(wins.length > 1) {
-      shell.beep();
+      wins[0].flashFrame(true);
       wins[0].focus();
     }
   })
