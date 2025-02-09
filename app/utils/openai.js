@@ -1,7 +1,6 @@
 const OpenAI = require("openai")
 
 const createAPI = (key = ``) => {
-  console.log(key);
   let openai = new OpenAI({
     baseURL: `https://openrouter.ai/api/v1`,
     apiKey: key,

@@ -333,7 +333,7 @@ You can also write in this chat directly to do:
   });
 
   tmBot.bot.catch((err, ctx) => {
-    console.log(err);
+    log.err(err);
   })
 
   return new Promise(async (resolve, reject) => {

@@ -53,7 +53,6 @@ const backgroundElement = document.createElement('div');
 backgroundElement.className = 'container';
 
 ipcRenderer.on("show-hint", (event, text) => {
-  console.log(parseTextToHTML(text));
   backgroundElement.append(parseTextToHTML(text));
   document.body.append(backgroundElement);
 });
