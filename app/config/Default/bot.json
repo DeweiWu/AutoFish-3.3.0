@@ -1298,7 +1298,7 @@
       "sleepAfterHook": true,
       "afterHookDelay": { "from": 150, "to": 400 },
       "sleepAfterHookChance": 80,
-      "maxFishTime": { "from": 15, "to": 18 },
+      "maxFishTime": { "from": 18, "to": 21 },
       "maxFishTimeAfter": "recast",
       "highlightPercent": true,
       "relZone": {
