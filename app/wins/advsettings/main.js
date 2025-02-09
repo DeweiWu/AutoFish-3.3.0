@@ -123,7 +123,7 @@ const createAdvSettings = (mainAppPath, gameName, winZoomFactor) => {
   });
 
   ipcMain.on("stream-warn", () => {
-    showWarning(win, `- Alt-Tab Fishing doesn't work in Streaming Mode.\n- Doesn't support windowed mode (game).\n- Turn off enchance pointer precision in Mouse Properties (gaming PC).\n\nPress "Launch", save and open Advanced Settings again before configuring other settings.`);
+    showWarning(win, `Turn off enchance pointer precision on Windows where the game runs.\n\nAlt-Tab Fishing doesn't work in Streaming Mode.\n\nMake sure the game is in Fullscreen.\n\nPress "Launch", save and open Advanced Settings again before configuring other settings.`);
   });
 
   ipcMain.on("aggroCheck-warn", () => {
