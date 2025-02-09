@@ -171,7 +171,7 @@ class AutoFish {
     const footer = elt(`p`, { className: "version" }, versionNode, premiumIcon);
 
     ipcRenderer.on("set-version", (event, version, trial) => {
-      versionNode.textContent = `ver. 3.2.0 ${trial ? `Trial ${trial}` : `Premium`} `;
+      versionNode.textContent = `ver. 3.3.0 ${trial ? `Trial ${trial}` : `Premium`} `;
       if(trial) {
         versionNode.append(donateLink);
       }
