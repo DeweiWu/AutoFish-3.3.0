@@ -469,8 +469,8 @@ const renderDetectWhisper = ({detectWhisper, openai}) => {
   return elt('input', {type: `checkbox`, disabled: openai, checked: detectWhisper, name: `detectWhisper`});
 };
 
-const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
-  const addButton = elt(`input`, {type: `button`, className: `whispSpecColorsAdd`, onclick() {
+const renderWhisperColors = ({detectWhisper, detectByType, whispSpecColors}) => {
+  const addButton = elt(`input`, {type: `button`, className: `whispSpecColorsAdd`, style: `${detectByType == `text` ? `display: none` : ``}`, onclick() {
     const colorBox = elt('input', {type: `color`, className: `whisperColorBox`, value: `#ff8cff`});
     const colorPicker = elt('input', {type: `button`, className: `whisperColorPicker`, value: ``, onclick() {
       this.style.cursor = 'progress';
@@ -497,6 +497,7 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
     this.parentNode.insertBefore(elt('div', {className: `whispSpecColorsInnerContainer`}, colorPercent, colorPicker, colorBox, removeButton), this);
   }})
 
+
   const whispSpecColorsNodes = whispSpecColors.map(({r, g, b, percent}) => {
     const colorBox = elt('input', {type: `color`, className: `whisperColorBox`, value: rgbToHex(r, g, b)});
     const colorPicker = elt('input', {type: `button`, className: `whisperColorPicker`, value: ``, onclick() {
@@ -521,8 +522,9 @@ const renderWhisperColors = ({detectWhisper, whispSpecColors}) => {
 
     }})
 
-    return elt('div', {className: `whispSpecColorsInnerContainer`}, colorPercent, colorPicker, colorBox, removeButton);
+    return elt('div', {className: `whispSpecColorsInnerContainer`, style: `${detectByType == `text` ? `display: none` : ``}`}, colorPercent, colorPicker, colorBox, removeButton);
   })
+
 
 return elt(`div`, {className: `whispSpecColorsContainer`}, ...whispSpecColorsNodes, addButton)
 };
@@ -1631,7 +1633,7 @@ const renderSettings = (config) => {
     config.openai || config.detectByType == 'text'  ? wrapInLabel(`Trigger Say Word: `, renderDetectTriggerSay(config), `Used to detect "say" message and reply by using /say.\n\nThe bot will use language chosen in **Filter** section to detect the word.`) : ``,
     renderChatZone(config),
     config.openai || config.detectByType == 'text' ? `` : elt('p', {style: `text-align: center; font-weight: bold`}, `Chat Message Colors:`),
-    config.openai || config.detectByType == 'text'  ? `` : renderWhisperColors(config),
+    renderWhisperColors(config)
   ),
 
   elt(`p`, {className: `settings_header settings_header_premium`}, `💬`),  elt(`span`, {className: `advanced_settings_header_text`}, `AI Response`),
