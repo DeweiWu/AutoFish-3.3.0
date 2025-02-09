@@ -11,8 +11,6 @@ const setWorker = async (language) => {
   worker = await createWorker(language)
 };
 
-setWorker('eng'); // TEMP:
-
 function stringSimilarity(str1, str2) {
     if (str1.length === 0 && str2.length === 0) return 100;
     if (str1.length === 0 || str2.length === 0) return 0;
@@ -109,8 +107,10 @@ function extractNameFromBrackets(targetString, text) {
 
 
 const createChatZone = ({ getDataFrom, zone, screenSize}, tmBot, {
-  whispSpecColors, openaikey, openai, openaiprompt, openaimodel, detectTriggerWhisper, detectTriggerSay, detectTriggerWhisperWord, detectTriggerSayWord, detectByType
+  whispSpecColors, whitelistLanguage, openaikey, openai, openaiprompt, openaimodel, detectTriggerWhisper, detectTriggerSay, detectTriggerWhisperWord, detectTriggerSayWord, detectByType
 }) => {
+  setWorker(whitelistLanguage);
+
   let openaiAPI;
   if(openai) {
     openaiAPI = createOpenai(openaikey);
