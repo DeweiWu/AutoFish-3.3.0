@@ -53,8 +53,14 @@ function extractWhispers(text) {
 const extractWords = (str) => str.match(/[^\s]+/g) || [];
 
 const editProperly = (str) => {
-    return str.replace(/^"(.*)"$/, '$1').toLowerCase();
+    let removeQuotes = str.replace(/^"(.*)"$/, '$1').toLowerCase();
+    if(/^You:/.test(removeQuotes)) {
+      removeQuotes = removeQuotes.slice(4);
+    }
+
+    return removeQuotes;
 };
+
 const createSplitRegex = (words) => {
     if (!words.length) return null;
     const escapedWords = words.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); // Escape special regex characters
@@ -69,7 +75,7 @@ function extractWhispers(text, trigger, threshold) {
   if(foundWords.length < 1) {
     return results;
   }
-  console.log(`found words`, foundWords);
+  //console.log(`found words`, foundWords);
 
   const parts = text.split(createSplitRegex(foundWords)).slice(1); // Split after keywords
   for (const part of parts) {
@@ -84,6 +90,21 @@ function extractWhispers(text, trigger, threshold) {
   }
 
   return results;
+}
+
+function extractNameFromBrackets(targetString, text) {
+    // Find the position of the target string within the text
+    const position = text.indexOf(targetString);
+    if (position === -1) return null; // If target string is not found, return null
+
+    // Extract the portion of text before the found position
+    const beforeTarget = text.substring(0, position);
+
+    // Match the last occurrence of text inside square brackets
+    const match = [...beforeTarget.matchAll(/\[(\w+)\]/g)];
+
+    // Return the matched group if found, otherwise return null
+    return match ? match[match.length - 1][1] : null;
 }
 
 
@@ -108,7 +129,8 @@ const createChatZone = ({ getDataFrom, zone, screenSize}, tmBot, {
   let previousMsg = [];
   let previousWhispers = [];
   let previousSays = [];
-
+  let dialogsHistoryWhisper = [];
+  let dialogsHistorySay = [];
   return {
     async checkNewMessages() {
       let data = await getDataFrom(zone);
@@ -120,48 +142,93 @@ const createChatZone = ({ getDataFrom, zone, screenSize}, tmBot, {
 
         let textData = await worker.recognize(await img.getBase64Async(Jimp.MIME_PNG));
         let text = textData.data.words.map(({ text }) => text).join(' ');
-        console.log(`text`, text);
-        console.log(`word to extract`, detectTriggerSayWord);
+        //console.log(`text`, text);
+        //console.log(`word to extract`, detectTriggerSayWord);
 
         let whispers = extractWhispers(text, detectTriggerWhisperWord, 75); // TEMP:
         let says = extractWhispers(text, detectTriggerSayWord, 75);
 
-        console.log(`extracted words`, says);
+        //console.log(`extracted words`, says);
         let lastSay = says[says.length - 1];
         let lastWhisper = whispers[whispers.length - 1];
-        if(detectTriggerWhisper && lastWhisper && !previousWhispers.some(({whisper}) => stringSimilarity(whisper, lastWhisper) > 75)) {
-          //console.log(`LAST WHISPER`, lastWhisper);
 
+        if(detectTriggerWhisper && lastWhisper && !previousWhispers.some(({whisper}) => stringSimilarity(whisper, lastWhisper) > 75)) {
+          /*
           let history = previousWhispers.reduce((a, b) => {
             return a + `- "${b.whisper}"\n- "${b.response}"\n`
           }, ``);
+          */
 
           let response = ``;
           if(openai && openaikey) {
-            const fullPrompt = openaiprompt + (history ? `Be consistent with the previous dialog and reply to the last message:\n${history}` : ``) + `\n- "${lastWhisper}"` ;
+            let history;
+            let nameWhisper = extractNameFromBrackets(lastWhisper, text);
+            const alreadySpokenWith = dialogsHistoryWhisper.find(({name}) => stringSimilarity(name, nameWhisper) > 75);
+            if(alreadySpokenWith) {
+              alreadySpokenWith.history += `\n${nameWhisper}: ${lastWhisper}`
+              history = alreadySpokenWith.history;
+            }
 
-            //console.log(`PROMPT: `, fullPrompt);
-            response = editProperly(await openaiAPI.prompt(fullPrompt, openaimodel));
+            const fullPrompt = openaiprompt + (history ? `Be consistent with the previous dialog and reply to the last message:\n${history}` : ``) + `\n${nameWhisper}: "${lastWhisper}"` ;
+
+            try {
+              response = editProperly(await openaiAPI.prompt(fullPrompt, openaimodel));
+            } catch(e) {
+              response = ``;
+            }
+
+            if(!alreadySpokenWith) {
+              dialogsHistoryWhisper.push({
+                name: nameWhisper,
+                history: `${nameWhisper} ${lastWhisper}\nYou: ${response}`
+              })
+            } else {
+              alreadySpokenWith.history += `\nYou: ${response}`;
+            }
           }
-
 
           previousWhispers.push({
             whisper: lastWhisper,
             response
           });
 
-          return {type: 'whisper', response}; // TEMP:
+          return {type: 'whisper', response};
         }
 
         if(detectTriggerSay && lastSay && !previousSays.some(({say, response}) => stringSimilarity(say, lastSay) > 75 || stringSimilarity(response, lastSay) > 75)) {
+          /*
           let history = previousSays.reduce((a, b) => {
             return a + `- "${b.say}"\n- "${b.response}"\n`
           }, ``);
+          */
 
           let response = ``;
           if(openai && openaikey) {
-            const fullPrompt = openaiprompt + (history ? `The other player is standing just right beside you. Be consistent with the previous dialog and reply to the last message:\n${history}` : ``) + `\n- "${lastSay}"` ;
-            response = editProperly(await openaiAPI.prompt(fullPrompt, openaimodel));
+            let history;
+            let nameSay = extractNameFromBrackets(lastSay, text);
+
+            const alreadySpokenWith = dialogsHistorySay.find(({name}) => stringSimilarity(name, nameSay) > 75);
+            if(alreadySpokenWith) {
+              alreadySpokenWith.history += `\n${nameSay}: ${lastSay}`
+              history = alreadySpokenWith.history;
+            }
+
+            const fullPrompt = openaiprompt + (history ? `The other player is standing just right beside you. Be consistent with the previous dialog and reply to the last message:\n${history}` : ``) + `\n${nameSay}: ${lastSay}` ;
+            try {
+              response = editProperly(await openaiAPI.prompt(fullPrompt, openaimodel));
+            } catch(e) {
+              response = ``;
+            }
+
+            if(!alreadySpokenWith) {
+              dialogsHistorySay.push({
+                name: nameSay,
+                history: `${nameSay}: ${lastSay}\nYou: ${response}`
+              })
+            } else {
+              alreadySpokenWith.history += `\nYou: ${response}`;
+            }
+
           }
 
           previousSays.push({
@@ -169,7 +236,7 @@ const createChatZone = ({ getDataFrom, zone, screenSize}, tmBot, {
             response
           });
 
-          return {type: 'say', response}; // TEMP:
+          return {type: 'say', response};
         }
 
       } else { // if not openai

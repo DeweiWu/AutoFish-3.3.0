@@ -1516,11 +1516,15 @@ const renderOpenAiKey = ({openai, openaikey = '123'}) => {
 
 let freeOnlyCheckValue = false;
 const renderOpenAiModel = ({openai, openaimodel}) => {
+
   const freeOnlyCheck = elt('input', {type: `checkbox`, disabled: !openai, checked: freeOnlyCheckValue, onclick() {
     freeOnlyCheckValue = !freeOnlyCheckValue;
   }});
-  const select = elt('select', {disabled: !openai, value: openaimodel, className: `openaiModel`, name: `openaimodel`});
+  const select = elt('select', {disabled: !openai, value: openaimodel, className: `openaiModel`, name: `openaimodel`},
+  elt('option', {value: openaimodel}, openaimodel));
+
   if(openai) {
+    [...select.children].forEach(child => child.remove());
     openaiModule.getModels().then((models) => {
       models.forEach(({name, id}) => {
         if(freeOnlyCheck.checked) {

@@ -2555,7 +2555,7 @@ if (settings.soundDetection) {
      if(!config.detectWhisper) return;
      let whispMessage = await chatZone.checkNewMessages();
      if(whispMessage) {
-       if(config.openai && config.openaikey) {
+       if(config.openai && config.openaikey && whispMessage.response) {
          await action(async () => {
            await keyboard.sendKey('enter', delay);
            const commandToUse = whispMessage.type == 'whisper' ? '/r' : '/say';
