@@ -1611,7 +1611,7 @@ const renderSettings = (config) => {
     wrapInLabel(`Custom window: `, renderCustomWindow(config), `You can choose a custom window from all the windows opened on your computer.`),
   ),
 
-  elt(`p`, {className: `settings_header settings_header_premium`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Streaming Mode`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://youtu.be/Kacworq8j8Q")}}, `(Guide)`),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `📹`), elt(`span`, {className: `advanced_settings_header_text`}, `Streaming Mode`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish?tab=readme-ov-file#streaming-mode-tv")}}, `(Guide)`),
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Streaming Source: `, renderStreamDevice(config), `Streaming Mode is used to run the bot and the game on different computers. Streaming Source can be either a hardware video capture device or a streaming server (to which you can stream via OBS).`),
     wrapInLabel(`Raspberry Pico W IP: `, renderPicoIp(config), `Same IP address you configured for your Pico W device in its own code.`),
@@ -1636,7 +1636,7 @@ const renderSettings = (config) => {
     renderWhisperColors(config)
   ),
 
-  elt(`p`, {className: `settings_header settings_header_premium`}, `💬`),  elt(`span`, {className: `advanced_settings_header_text`}, `AI Response`),
+  elt(`p`, {className: `settings_header settings_header_premium`}, `💬`),  elt(`span`, {className: `advanced_settings_header_text`}, `AI Response`), elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#ai-speech_balloon")}}, `(Guide)`),
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel('Use OpenRouter AI: ', renderOpenAi(config), `You can connect the bot to your OpenRouter account. It will use a chosen AI Model to reply if it detects any messages. The bot will use trigger words from **Remote Control** section: namely *whispers:* for /r and *says:* for /say by default.\n\nBefore using go to **openrouter.ai** and sign in. Then go to *Keys -> Create Key* and paste it in API Key input. Then choose some free model and test, some models might work better, especially paid ones.`),
     wrapInLabel('AI Model: ', renderOpenAiModel(config), `Model you want the bot to use to generate a response. You can choose which providers to ignore in OpenRouter settings.\n\nRecommended: *Google: Gemini Flesh 2.0*`),
