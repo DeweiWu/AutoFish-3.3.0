@@ -735,10 +735,6 @@ You can also write in this chat directly to do:
         log.err(e.message);
       }
 
-      BrowserWindow.getAllWindows().forEach((win) => {
-        win.webContents.send('freeze-loading');
-      })
-
       if(trialIsOn) {
         trial.stop();
         let { version } = getJson('../package.json');

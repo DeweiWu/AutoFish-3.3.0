@@ -168,7 +168,7 @@ const createBots = async (games, log, tmBot, arduino, win, registerSession, onEr
     await sleep(random(250, 1000));
 
     if(!chosenSettings.useInt) {
-      await picoInterface.mouse.moveTo(Math.floor(25 * (screenSize.height / 1080)), Math.floor(25 * (screenSize.height / 1080)));
+      await picoInterface.mouse.humanMoveTo(Math.floor(25 * (screenSize.height / 1080)), Math.floor(25 * (screenSize.height / 1080)), random(0.15, 0.25), 0);
     }
 
     await sleep(random(250, 1000));
