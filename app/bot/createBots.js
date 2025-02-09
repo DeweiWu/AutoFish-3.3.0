@@ -156,13 +156,19 @@ const createBots = async (games, log, tmBot, arduino, win, registerSession) => {
     let screenSize = chosenConfig.streamMode ? chosenConfig.streamScreenSize : games[0].game.workwindow.getView();
 
     if(!chosenConfig.streamManualCursor) {
-      await picoInterface.mouse.moveTo(-9999, -9999);
+      let xMovement = Math.floor(screenSize.width / 5);
+      let yMovement = Math.floor(screenSize.height / 5);
+
+      for (var i = 0; i < 5; i++) {
+        await picoInterface.mouse.humanMoveTo(-xMovement, -yMovement, random(0.15, 0.25), random(40, 75), true);
+        await sleep(random(50, 350));
+      }
     }
 
     await sleep(random(250, 1000));
 
     if(!chosenSettings.useInt) {
-      await picoInterface.mouse.moveTo(Math.floor(screenSize.width / 2), Math.floor(screenSize.height / 2));
+      await picoInterface.mouse.moveTo(Math.floor(25 * (screenSize.height / 1080)), Math.floor(25 * (screenSize.height / 1080)));
     }
 
     await sleep(random(250, 1000));

@@ -161,24 +161,24 @@ const keyboard = {
 }
 
 const mouse = {
-  async moveTo(x, y) {
+  async moveTo(x, y, norec) {
     x = x / scaling;
     y = y / scaling;
 
     newX = Math.round(x - previousPos.x);
     newY = Math.round(y  - previousPos.y);
 
-    if(x > -(9000 / scaling) && y > -(9000 / scaling)) {
+    if(!norec) {
       previousPos = {x, y};
     }
 
     await send('movemouse', {x: newX, y: newY});
   },
 
-  async humanMoveTo(x, y, mainSpeed, deviation, norec) { // speed = 88, curvature = 20
+  async humanMoveTo(x, y, speed, curvature, norec) { // speed = 88, curvature = 20
 
-    let speed = mainSpeed * 15;
-    let curvature = (deviation / 100) * 30; // 30
+    //let speed = mainSpeed * 15;
+    //let curvature = (deviation / 100) * 30; // 30
 
     x = Math.round(x / scaling);
     y = Math.round(y / scaling);
@@ -186,23 +186,20 @@ const mouse = {
     const newX = x - previousPos.x;
     const newY = y - previousPos.y;
 
-    if(x > -(9000 / scaling) && y > -(9000 / scaling) && !norec) {
+    if(!norec) {
       previousPos = {x, y};
     }
 
-    const distance = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
-
-    let speedDistCoofConverted = distance / speedDistCoof;
-
-    let convertedSpeed = speed * speedDistCoofConverted;
-
-    await send('movemousehuman', {x: newX, y: newY, speed: convertedSpeed, curvature});
+    await send('movemousehuman', {x: newX, y: newY, speed: speed * 6, curvature: curvature / 2});
+    /*
+      - speed * 6 it's percentage within percantage (0.25 within 6%, because we use percantage on pico)
+      - we divide curvature for pico because the default value makes it too deviate
+    */
   },
 
-  async humanMoveToRClick(x, y, mainSpeed, deviation) { // speed = 88, curvature = 20
-
-    let speed = mainSpeed * 15; // 15 // % of step from distance
-    let curvature = (deviation / 100) * 30; //20 // % from distance
+  async humanMoveToRClick(x, y, speed, curvature, norec) { // speed = 88, curvature = 20
+    //let speed = mainSpeed * 15; // 15 // % of step from distance
+    //let curvature = (deviation / 100) * 30; //20 // % from distance
 
     x = Math.round(x / scaling);
     y = Math.round(y / scaling);
@@ -210,16 +207,15 @@ const mouse = {
     const newX = x - previousPos.x;
     const newY = y - previousPos.y;
 
-    if(x > -(9000 / scaling) && y > -(9000 / scaling)) {
+    if(!norec) {
       previousPos = {x, y};
     }
 
-    const distance = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
-
-    let speedDistCoofConverted = distance / speedDistCoof;
-
-    let convertedSpeed = speed * speedDistCoofConverted;
-    await send('movemousehumanrclick', {x: newX, y: newY, speed: convertedSpeed, curvature});
+    await send('movemousehumanrclick', {x: newX, y: newY, speed: speed * 6, curvature: curvature / 2});
+    /*
+      - speed * 6 it's percentage within percantage (0.25 within 6%, because we use percantage on pico)
+      - we divide curvature for pico because the default value makes it too deviate
+    */
   },
 
   async click(button, delays = delay) {
