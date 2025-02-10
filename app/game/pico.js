@@ -190,7 +190,7 @@ const mouse = {
       previousPos = {x, y};
     }
 
-    await send('movemousehuman', {x: newX, y: newY, speed: speed * 6, curvature: curvature / 2});
+    await send('movemousehuman', {x: newX, y: newY, speed: speed * 8, curvature: curvature / 2});
     /*
       - speed * 6 it's percentage within percantage (0.25 within 6%, because we use percantage on pico)
       - we divide curvature for pico because the default value makes it too deviate
@@ -211,7 +211,7 @@ const mouse = {
       previousPos = {x, y};
     }
 
-    await send('movemousehumanrclick', {x: newX, y: newY, speed: speed * 6, curvature: curvature / 2});
+    await send('movemousehumanrclick', {x: newX, y: newY, speed: speed * 8, curvature: curvature / 2});
     /*
       - speed * 6 it's percentage within percantage (0.25 within 6%, because we use percantage on pico)
       - we divide curvature for pico because the default value makes it too deviate

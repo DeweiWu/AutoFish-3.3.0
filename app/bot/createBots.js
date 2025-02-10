@@ -154,13 +154,14 @@ const createBots = async (games, log, tmBot, arduino, win, registerSession, onEr
 
   if(chosenConfig.streamMode || (chosenConfig.arduino && chosenConfig.arduinoType == `pico`)) {
     let screenSize = chosenConfig.streamMode ? chosenConfig.streamScreenSize : games[0].game.workwindow.getView();
+    let speed = random(chosenConfig.mouseMoveSpeed - chosenConfig.mouseMoveSpeed * 0.1, chosenConfig.mouseMoveSpeed + chosenConfig.mouseMoveSpeed * 0.1) / 100;
+    let curvature = random(chosenConfig.mouseCurvatureStrength - chosenConfig.mouseCurvatureStrength * 0.1, chosenConfig.mouseCurvatureStrength + chosenConfig.mouseCurvatureStrength * 0.1)
 
     if(!chosenConfig.streamManualCursor) {
       let xMovement = Math.floor(screenSize.width / 5);
       let yMovement = Math.floor(screenSize.height / 5);
-
       for (var i = 0; i < 5; i++) {
-        await picoInterface.mouse.humanMoveTo(-xMovement, -yMovement, random(0.15, 0.25), random(40, 75), true);
+        await picoInterface.mouse.humanMoveTo(-xMovement, -yMovement, speed, curvature, true);
         await sleep(random(50, 350));
       }
     }
@@ -168,7 +169,7 @@ const createBots = async (games, log, tmBot, arduino, win, registerSession, onEr
     await sleep(random(250, 1000));
 
     if(!chosenSettings.useInt) {
-      await picoInterface.mouse.humanMoveTo(Math.floor(25 * (screenSize.height / 1080)), Math.floor(25 * (screenSize.height / 1080)), random(0.15, 0.25), 0);
+      await picoInterface.mouse.humanMoveTo(Math.floor(25 * (screenSize.height / 1080)), Math.floor(25 * (screenSize.height / 1080)), speed, 0);
     }
 
     await sleep(random(250, 1000));

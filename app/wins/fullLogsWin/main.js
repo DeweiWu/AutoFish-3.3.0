@@ -53,9 +53,8 @@ async function registerSession(data) {
 
         // Write back to file
         await fs.writeFile(LOG_FILE_PATH, JSON.stringify(logs, null, 2), 'utf-8');
-        console.log("Log registered successfully.");
     } catch (error) {
-        console.error("Error registering log:", error);
+        throw new Error(`Error registering log`);
     }
 }
 

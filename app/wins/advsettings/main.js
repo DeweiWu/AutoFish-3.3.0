@@ -29,7 +29,7 @@ const showWarning = (win, warning) => {
   return result = dialog.showMessageBoxSync(win, {
     type: "warning",
     title: `Warning!`,
-    message: warning,
+    message: warning + `\n\n(You can turn off warnings in View -> Show Warnings)`,
     buttons: [`Ok`]
   });
 };

@@ -9,6 +9,7 @@ const {
   powerSaveBlocker,
   globalShortcut,
   crashReporter,
+  nativeImage,
   screen
 } = require("electron");
 const path = require("path");
@@ -16,7 +17,7 @@ const path = require("path");
 const { readFileSync, writeFileSync, writeFile, mkdir, rmdir, readdir } = require("fs");
 const { unlink } = require("fs").promises;
 
-process.env.NODE_ENV = `prod`;
+process.env.NODE_ENV = `dev`;
 
 const configPath = process.env.NODE_ENV == `dev` ? './config/' : '../../app.asar.unpacked/app/config/';
 const trialPath = process.env.NODE_ENV == `dev` ? './app/badd7ae8f43' : '../../app.asar.unpacked/app/badd7ae8f43';
@@ -66,7 +67,7 @@ const showWarning = (win, warning) => {
   return result = dialog.showMessageBoxSync(win, {
     type: "warning",
     title: `Warning`,
-    message: warning,
+    message: warning + `\n\n(You can turn off warnings in View -> Show Warnings)`,
     buttons: [`Ok`]
   });
 };
@@ -95,6 +96,9 @@ const connectToMediaMtx = (log, win) => {
     log.err(`Can not launch Streaming Server!`)
     return Promise.reject(e);
   }
+  setTimeout(() => {
+    win.setOverlayIcon(nativeImage.createFromPath('./app/img/stream.png'), 'Streaming Mode')
+  }, 100)
 }
 
 const createTrialTime = () => {
@@ -731,7 +735,7 @@ You can also write in this chat directly to do:
 
     function stopAppAndBots(e) {
 
-      if(e) {
+      if(e && e.message) {
         log.err(e.message);
       }
 
@@ -1015,7 +1019,7 @@ You can also write in this chat directly to do:
 
 
   ipcMain.handle('connect-mediamtx', async (event) => {
-    return connectToMediaMtx(log);
+    return connectToMediaMtx(log, win);
   })
 
   ipcMain.handle('get-profile-name', () => {
