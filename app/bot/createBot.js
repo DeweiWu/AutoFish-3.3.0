@@ -2530,7 +2530,7 @@ if (settings.soundDetection) {
       }
 
     if(config.streamMode) {
-      await sleep(350);
+      await sleep(500);
     } else {
       await sleep(250);
     }
