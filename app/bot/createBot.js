@@ -2029,7 +2029,7 @@ if(lootWindowPatch.exitButton) {
       let randomRange = 5;
       let fineTune = {offset: 5, steps: [1, 5]};
 
-      if(config.likeHumanFineTune && !config.streamMode) {
+      if(config.likeHumanFineTune && !config.streamMode && !(config.arduino && config.arduinoType == 'pico')) {
         let pastPost = generateMovePastPos(posToHighlight);
         await moveTo({pos: pastPost, randomRange, fineTune: null})
       }
@@ -2085,7 +2085,7 @@ if(lootWindowPatch.exitButton) {
   findBobber.maxAttempts = config.maxAttempts;
 
   const hoverMouse = async (chance = (config.likeHumanHover / 100)) => {
-    if(!config.likeHumanHover || config.arduino || settings.multipleWindows || settings.afkmode) { // config.streamMode
+    if(!config.likeHumanHover || config.arduino || settings.multipleWindows || settings.afkmode) {
       return;
     }
 

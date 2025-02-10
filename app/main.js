@@ -97,7 +97,7 @@ const connectToMediaMtx = (log, win) => {
     return Promise.reject(e);
   }
   setTimeout(() => {
-    win.setOverlayIcon(nativeImage.createFromPath('./app/img/stream.png'), 'Streaming Mode')
+    win.setOverlayIcon(nativeImage.createFromPath(path.join(__dirname, './img/stream.png')), 'Streaming Mode')
   }, 100)
 }
 

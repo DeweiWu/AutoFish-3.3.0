@@ -257,8 +257,8 @@ const renderMaxFishTime = ({maxFishTime}) => {
      elt('input', {type: `number`, name: `to`, value: maxFishTime.to}));
 };
 
-const renderCloseAtWhisper = ({closeAtWhisper}) => elt(`input`, {type: `checkbox`, checked: closeAtWhisper, name: `closeAtWhisper`});
-const renderQuitAtWhisper = ({quitAtWhisper = false}) => elt(`input`, {type: `checkbox`, checked: quitAtWhisper, name: `quitAtWhisper`});
+const renderCloseAtWhisper = ({closeAtWhisper, detectWhisper}) => elt(`input`, {type: `checkbox`, checked: closeAtWhisper, disabled: !detectWhisper, name: `closeAtWhisper`});
+const renderQuitAtWhisper = ({quitAtWhisper = false, detectWhisper}) => elt(`input`, {type: `checkbox`, checked: quitAtWhisper, disabled: !detectWhisper, name: `quitAtWhisper`});
 
 const renderCheckingDelay = ({checkingDelay}) => {
   return elt(`input`, {type: `number`, name:`checkingDelay`, value: checkingDelay});
@@ -1570,24 +1570,24 @@ const renderOpenAiTest = ({openai, openaiprompt = `Hello`, openaimodel, playerte
   return elt('div', {style: `display: flex; flex-flow: column`}, elt('div', null, text, button), resultWin);
 };
 
-const renderDetectTriggerWhisper = ({openai, detectTriggerWhisper = true, detectTriggerWhisperWord = 'whispers:'}) => {
+const renderDetectTriggerWhisper = ({openai, detectWhisper, detectTriggerWhisper = true, detectTriggerWhisperWord = 'whispers:'}) => {
   const checkbox = elt(`input`, {type: `checkbox`, checked: detectTriggerWhisper, name: `detectTriggerWhisper`});
-  const input = elt('input', {type: `text`, value: detectTriggerWhisperWord, disabled: !detectTriggerWhisper, className: `detectTriggerWord`, name: "detectTriggerWhisperWord"});
+  const input = elt('input', {type: `text`, value: detectTriggerWhisperWord, disabled: !detectTriggerWhisper || !detectWhisper, className: `detectTriggerWord`, name: "detectTriggerWhisperWord"});
   return elt('div', null, checkbox, input);
 };
 
-const renderDetectTriggerSay = ({detectTriggerSay = true, detectTriggerSayWord = 'says:'}) => {
+const renderDetectTriggerSay = ({detectWhisper, detectTriggerSay = true, detectTriggerSayWord = 'says:'}) => {
   const checkbox = elt(`input`, {type: `checkbox`,  checked: detectTriggerSay, name: `detectTriggerSay`});
-  const input = elt('input', {type: `text`, value: detectTriggerSayWord, disabled: !detectTriggerSay, className: `detectTriggerWord`, name: "detectTriggerSayWord"});
+  const input = elt('input', {type: `text`, value: detectTriggerSayWord, disabled: !detectTriggerSay || !detectWhisper, className: `detectTriggerWord`, name: "detectTriggerSayWord"});
   return elt('div', null, checkbox, input);
 };
 
-const renderDetectByType = ({openai, detectByType = 'colors'}) => {
+const renderDetectByType = ({openai, detectWhisper, detectByType = 'colors'}) => {
   if(openai) {
     detectByType = 'text';
   }
   const types = ['text', 'colors'];
-  return elt('select', {value: detectByType, className: `detectByType`, disabled: openai, name: 'detectByType'}, ...types.map((type) => elt('option', {selected: detectByType == type}, type)))
+  return elt('select', {value: detectByType, className: `detectByType`, disabled: openai || !detectWhisper, name: 'detectByType'}, ...types.map((type) => elt('option', {selected: detectByType == type}, type)))
 }
 
 const renderSettings = (config) => {
@@ -1624,10 +1624,10 @@ const renderSettings = (config) => {
   elt(`p`, {className: `settings_header settings_header_premium`}, `📲`),  elt(`span`, {className: `advanced_settings_header_text`}, `Remote Control`),  elt(`a`, {href: `#`, style: `margin-left: 3px`, onclick: () => {shell.openExternal("https://github.com/jsbots/AutoFish#remote-control-iphone")}}, `(Guide)`),
   elt(`div`, {className: `settings_section settings_premium`},
     wrapInLabel(`Telegram Token:`, renderTmApiKey(config), `Provide telegram token created by t.me/BotFather and press connect.\n\nMultiple Fishig Mode: the bot will use the token of the current profile for all the windows, you don't need to set it everywhere.`),
+    wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Omit "@", put in just the name.`),
     wrapInLabel(`Detect Chat Messages:`, renderDetectWhisper(config), `The bot will analyze Chat Zone for messages, if it finds any it will notifiy you via Telegram and send a screenshot.`),
     wrapInLabel(`Stop After Detection:`, renderCloseAtWhisper(config), `Whether to stop the bot after you get a message.`),
     wrapInLabel(`Quit After Detection:`, renderQuitAtWhisper(config), `The bot will stop and also quit (*/logout if in Streaming Mode*) the game. In Multiple Mode it will wait for the last window to stop before quiting. If you have shutdown option turned on in **Timer section** the bot will **shut down your computer** *(both gaming and controling in case of Streaming Mode)* after this triggers.`),
-    wrapInLabel(`Recieve Commands Only From: `, renderTmUsername(config), `The bot will recieve commands only from the provided telegram user. You can find your name in the settings of your Telegram account. Should look like this: @username. Omit "@", put in just the name.`),
     wrapInLabel(`Detect By Type: `, renderDetectByType(config), `The bot can detect messages in chat either by color (any) or by text (only for whisper/says)`),
     config.openai || config.detectByType == 'text'  ? wrapInLabel(`Trigger Whisper Word: `, renderDetectTriggerWhisper(config), `Used to detect "whisper" message and reply to it by using /r.\n\nThe bot will use language chosen in **Filter** section to detect the word.`) : ``,
     config.openai || config.detectByType == 'text'  ? wrapInLabel(`Trigger Say Word: `, renderDetectTriggerSay(config), `Used to detect "say" message and reply by using /say.\n\nThe bot will use language chosen in **Filter** section to detect the word.`) : ``,
