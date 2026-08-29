@@ -16,7 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        # AutoFish depends on the Windows-only native `keysender` module.
+        os: [windows-2022]
 
     steps:
       - name: Check out source
