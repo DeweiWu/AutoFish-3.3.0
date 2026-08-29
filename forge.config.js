@@ -1,13 +1,22 @@
-const { faker } = require("@faker-js/faker");
-const { obfuscateFiles, obfuscateFolder } = require('./obfuscator.js');
 const path = require('path');
+
+// obfuscator.js is intentionally not part of the public source tree. Builds
+// must still work for contributors and CI when that optional file is absent.
+let obfuscateFiles;
+try {
+  ({ obfuscateFiles } = require('./obfuscator.js'));
+} catch (error) {
+  obfuscateFiles = null;
+}
 
 let name = 'AutoFish Premium'
 
 module.exports = {
   hooks: {
     prePackage: async (forgeConfig, appProcess) => {
-       await obfuscateFiles(['./app/main.js']);
+       if (obfuscateFiles) {
+         await obfuscateFiles(['./app/main.js']);
+       }
     },
   },
   packagerConfig: {
@@ -28,6 +37,15 @@ module.exports = {
     ]
   },
   makers: [
+    ...(process.platform === 'win32' ? [{
+      name: '@electron-forge/maker-squirrel',
+      config: {
+        name: 'AutoFishPremium',
+        authors: 'jsbots',
+        description: 'An easy-to-use fishing bot for official and unofficial wow servers.',
+        setupIcon: './app/img/icon-premium.ico'
+      }
+    }] : []),
     {
       "name": "@electron-forge/maker-zip",
       "config": {
