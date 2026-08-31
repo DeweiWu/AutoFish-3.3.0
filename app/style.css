@@ -70,6 +70,7 @@ section {
   padding-top: 10px;
   width: 325px;
   height: 639px;
+  overflow-y: auto;
 }
 .logo {
   height: 100px;
@@ -241,6 +242,60 @@ section {
 .settings_row_wrap {
   display: flex;
   flex-flow: row wrap;
+}
+
+.timed-keys {
+  border: 1px inset grey;
+  border-radius: 7px;
+  margin-top: 5px;
+  padding: 3px 5px;
+}
+
+.timed-keys summary {
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+}
+
+.timed-keys-list {
+  max-height: 92px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.timed-key-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 3px;
+}
+
+.settings .timed-key-row input[name="timedKey"] {
+  width: 45px;
+  text-align: center;
+}
+
+.settings .timed-key-row input[name="timedKeyInterval"] {
+  width: 52px;
+  margin: 0;
+}
+
+.timed-key-remove,
+.timed-key-add {
+  border: 1px solid grey;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.timed-key-remove {
+  width: 24px;
+  margin-left: auto;
+  color: #a00000;
+}
+
+.timed-key-add {
+  width: 100%;
+  margin-top: 3px;
 }
 
 .settings .settings_section {

@@ -18,6 +18,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
     findAllBobberColors,
     randomSleep,
     applyLures,
+    timedKeys,
     castFishing,
     findBobber,
     highlightBobber,
@@ -41,6 +42,8 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
   regOnError.stopBots = () => {
     onError();
   }
+
+  timedKeys.forEach(({timer}) => timer.start());
 
   checkChanges(onError, log);
   deathCheck(wins, onError, log);
@@ -85,6 +88,7 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
       if(findPlayer.on) {
         findPlayer.timer.start();
       }
+
     }
 
     if(findPlayer.on && findPlayer.timer.isElapsed()) {
@@ -175,6 +179,22 @@ const runBot = async ({ bot, log, state, stats }, onError, wins, aggroTestRun) =
         return;
       }
       randomSleep.timer.update();
+    }
+
+    if(state.status == 'stop') {
+      return;
+    }
+
+    const elapsedTimedKeys = timedKeys.filter(({timer}) => timer.isElapsed());
+    for(const timedKey of elapsedTimedKeys) {
+      timedKey.timer.update();
+      log.send(`Pressing timed key: ${timedKey.key}`);
+      checkChanges.block();
+      try {
+        await timedKey.execute();
+      } finally {
+        checkChanges.unblock();
+      }
     }
 
     let checkSpares = spares.filter(spare => spare.timer.isElapsed());

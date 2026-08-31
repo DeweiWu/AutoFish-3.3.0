@@ -22,9 +22,23 @@ const convertValue = (node) => {
 class Settings {
   constructor(config) {
     this.config = config;
+    if(!Array.isArray(this.config.timedKeys)) {
+      this.config.timedKeys = [];
+    }
     this.dom = elt('form', {className: `settings_dom`} , renderSettings(config));
 
+    const gatherTimedKeys = () => {
+      this.config.timedKeys = [...this.dom.querySelectorAll('.timed-key-row')].map((row) => {
+        const interval = Number(row.querySelector('[name=timedKeyInterval]').value);
+        return {
+          key: row.querySelector('[name=timedKey]').value,
+          intervalMinutes: interval > 0 ? interval : 0.1
+        };
+      });
+    };
+
     const saveSettings = (event) => {
+      gatherTimedKeys();
       if(Object.keys(this.config).includes(event.target.name)) {
         if(event.target.name == `bobberSensitivity`) {
           this.config[event.target.name][this.config.game] = convertValue(event.target);
@@ -85,7 +99,7 @@ class Settings {
         this.reRender();
       }
 
-      if((event.target.name == `stopKey` || event.target.name == `fishingKey` || event.target.name == `luresKey` || event.target.name == `intKey` || event.target.name == `spareKey`) && !event.target.disabled) {
+      if((event.target.name == `stopKey` || event.target.name == `fishingKey` || event.target.name == `luresKey` || event.target.name == `intKey` || event.target.name == `spareKey` || event.target.name == `timedKey`) && !event.target.disabled) {
         event.target.style.backgroundColor = `rgb(255, 219, 197)`;
         const activeKeyAnimation = (alter) => () => {
           if(alter) {
@@ -118,6 +132,24 @@ class Settings {
     })
 
     this.dom.addEventListener('click', (event) => {
+
+      if(event.target.className == 'timed-key-add') {
+        event.preventDefault();
+        gatherTimedKeys();
+        this.config.timedKeys.push({key: '1', intervalMinutes: 10});
+        this.onChange(this.config);
+        this.reRender();
+        return;
+      }
+
+      if(event.target.className == 'timed-key-remove') {
+        event.preventDefault();
+        gatherTimedKeys();
+        this.config.timedKeys.splice(Number(event.target['data-timed-key-index']), 1);
+        this.onChange(this.config);
+        this.reRender();
+        return;
+      }
 
       if(event.target.className == 'option_hint') {
         event.preventDefault();

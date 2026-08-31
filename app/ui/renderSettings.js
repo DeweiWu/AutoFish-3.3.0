@@ -8,6 +8,7 @@ const { ipcRenderer } = require('electron');
 
 let freezeElement;
 let asOpenedElement;
+let timedKeysOpen = false;
 
 ipcRenderer.on('as-opened', () => {
   if(!asOpenedElement) {
@@ -292,6 +293,32 @@ const renderFishingKey = ({fishingKey}) => {
   return key;
 };
 
+const renderTimedKeys = ({timedKeys = []}) => {
+  const rows = timedKeys.map(({key, intervalMinutes}, index) =>
+    elt('div', {className: 'timed-key-row', 'data-timed-key-index': index},
+      elt('input', {type: 'text', name: 'timedKey', value: key, readOnly: true, title: 'Game shortcut key'}),
+      elt('span', null, 'every'),
+      elt('input', {type: 'number', name: 'timedKeyInterval', value: intervalMinutes, min: 0.1, step: 0.1, title: 'Interval in minutes'}),
+      elt('span', null, 'min'),
+      elt('input', {type: 'button', className: 'timed-key-remove', value: '×', 'data-timed-key-index': index, title: 'Remove timed key'})
+    )
+  );
+
+  const details = elt('details', {
+    className: 'timed-keys',
+    open: timedKeysOpen,
+    ontoggle(event) {
+      timedKeysOpen = event.target.open;
+    }
+  },
+    elt('summary', null, `⏱ Timed Keys (${timedKeys.length})`),
+    elt('div', {className: 'timed-keys-list'}, ...rows),
+    elt('input', {type: 'button', className: 'timed-key-add', value: '+ Add Timed Key'})
+  );
+
+  return details;
+};
+
 const renderAdvancedSettings = () => {
   return elt('input', {type: 'button', name:"advancedSettings", value: "Advanced Settings", className: "advanced_settings_button advanced_settings_button_fz"});
 };
@@ -397,7 +424,8 @@ elt('div', {className: `settings_row_wrap`},
        `The size of the zone which will be checked for splash, if the bot doesn't react to "plunging" animation - increase this value. If in Auto mode: The bot will auto-adjust both sensitivity value per each cast.`
        : `How sensitive the bot is to any movements (jerking, plunging) of the bobber. If the bot clicks too early, decrease this value (don't confuse it with when the bot missclicks on purpose). If the bot clicks on the bobber too late (or doesn't click at all), increase this value.`, `thLabel`) : ``
     )
-  )
+  ),
+  renderTimedKeys(config)
   )
 }
 

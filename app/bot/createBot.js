@@ -39,6 +39,7 @@ const {
 } = require("../utils/textReader.js");
 
 const { createTimer } = require("../utils/time.js");
+const createTimedKeys = require('./timedKeys.js');
 
 const sleep = (time, toDo, every) => {
   let everyTime = () => every ? every : 50 + (Math.random() * 150);
@@ -760,6 +761,10 @@ if(lootWindowPatch.exitButton) {
   if(config.luresOmitInitial) {
     applyLures.timer.start();
   }
+
+  const timedKeys = createTimedKeys(settings.timedKeys, (key) => action(async () => {
+    await keyboard.sendKey(key, delay);
+  }));
 
   let spares = config.spares.reduce((a, b) => {
     if(b.execute) {
@@ -2891,6 +2896,7 @@ if (settings.soundDetection) {
     randomSleep,
     applyMammoth,
     applyLures,
+    timedKeys,
     spares,
     castFishing,
     findBobber,

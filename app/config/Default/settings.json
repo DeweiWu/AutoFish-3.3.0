@@ -29,5 +29,6 @@
   "soundDetection": false,
   "soundDetectionRange": 40,
   "soundDetectionMode": "Desktop",
-  "soundDetectionInputDevice": ""
+  "soundDetectionInputDevice": "",
+  "timedKeys": []
 }
