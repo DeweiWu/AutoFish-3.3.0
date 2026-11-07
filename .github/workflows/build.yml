@@ -59,6 +59,12 @@ jobs:
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_NOTES: |
+            独立下载安装包（Setup.exe）和免安装包（zip），不需要下载 Actions 里的完整合集。
+
+            无限服 / WoW Forever 配置已包含在此版本中。客户端 1.60.1.70862 的浮漂识别和收竿尚未实机验证，此版本不表示该客户端已实测兼容。
+
+            安装包安装后运行 AutoFish Premium.exe。zip 解压后直接运行 AutoFish Premium.exe。游戏档选择 WoW Forever。默认钓鱼键是 1，停止键是 delete。若未找到游戏窗口，到 Advanced Settings 使用 Custom Window。
         run: |
           setup=()
           while IFS= read -r -d '' file; do
@@ -73,15 +79,8 @@ jobs:
             find release-assets -type f -print
             exit 1
           fi
-          gh release create "${{ github.ref_name }}" "${setup[0]}" "${portable[0]}" \
-            --title "${{ github.ref_name }}" \
+          gh release create "$GITHUB_REF_NAME" "${setup[0]}" "${portable[0]}" \
+            --title "$GITHUB_REF_NAME" \
             --generate-notes \
-            --notes "$(cat <<'EOF'
-独立下载安装包（Setup.exe）和免安装包（zip），不需要下载 Actions 里的完整合集。
-
-无限服 / WoW Forever 配置已包含在此版本中。客户端 1.60.1.70862 的浮漂识别和收竿尚未实机验证，此版本不表示该客户端已实测兼容。
-
-安装包安装后运行 AutoFish Premium.exe。zip 解压后直接运行 AutoFish Premium.exe。游戏档选择 WoW Forever。默认钓鱼键是 1，停止键是 delete。若未找到游戏窗口，到 Advanced Settings 使用 Custom Window。
-EOF
-)" \
-            --repo "${{ github.repository }}"
+            --notes "$RELEASE_NOTES" \
+            --repo "$GITHUB_REPOSITORY"
