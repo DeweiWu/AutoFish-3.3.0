@@ -19,7 +19,8 @@ const withoutGame = (profile) => {
 describe('WoW Forever profile', () => {
   test('dedicated list check matches a CRLF checkout', () => {
     const needle = 'const gamesDedicated = [\n    `WoW Forever`\n  ]';
-    const windowsText = fs.readFileSync(path.join(ROOT, 'app/ui/renderSettings.js'), 'utf8').replace(/\n/g, '\r\n');
+    const lf = normalizeNewlines(fs.readFileSync(path.join(ROOT, 'app/ui/renderSettings.js'), 'utf8'));
+    const windowsText = lf.replace(/\n/g, '\r\n');
 
     expect(windowsText.includes(needle)).toBe(false);
     expect(normalizeNewlines(windowsText).includes(needle)).toBe(true);
