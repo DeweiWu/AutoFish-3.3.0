@@ -8,7 +8,8 @@ const PREVIOUS_GAMES = ['Retail', 'Cata Classic', 'Classic', 'Leg', 'MoP', 'Cata
 const MISSING_WINDOW = '未找到游戏窗口。无限服 / WoW Forever 仍使用现有窗口匹配（标题包含 “World of”，类名 GxWindowClass、GxWindowClassD3d 或 waApplication Window）。若无法识别，请到 Advanced Settings 使用 Custom Window 手动选择客户端窗口。浮漂识别和收竿尚未在 1.60.1.70862 上实机验证。';
 
 const readJson = (rel) => JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8'));
-const readText = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
+const normalizeNewlines = (text) => text.replace(/\r\n/g, '\n');
+const readText = (rel) => normalizeNewlines(fs.readFileSync(path.join(ROOT, rel), 'utf8'));
 const withoutGame = (profile) => {
   const copy = JSON.parse(JSON.stringify(profile));
   delete copy.game;
@@ -16,6 +17,14 @@ const withoutGame = (profile) => {
 };
 
 describe('WoW Forever profile', () => {
+  test('dedicated list check matches a CRLF checkout', () => {
+    const needle = 'const gamesDedicated = [\n    `WoW Forever`\n  ]';
+    const windowsText = fs.readFileSync(path.join(ROOT, 'app/ui/renderSettings.js'), 'utf8').replace(/\n/g, '\r\n');
+
+    expect(windowsText.includes(needle)).toBe(false);
+    expect(normalizeNewlines(windowsText).includes(needle)).toBe(true);
+  });
+
   test('clones Classic into every window without changing other games', () => {
     const cloned = [];
 
