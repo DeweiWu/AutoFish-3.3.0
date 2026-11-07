@@ -200,6 +200,10 @@ const renderGameNames = ({game}) => {
     `Classic`
   ];
 
+  const gamesDedicated = [
+    `WoW Forever`
+  ];
+
   const gamesPrivate = [
     "Leg",
     "MoP",
@@ -214,6 +218,9 @@ const renderGameNames = ({game}) => {
     "select",
     { name: "game", className: "option game-option" },
     elt(`optgroup`, {label: `Official-like`}, ...gamesOfficial.map((name) =>
+          elt("option", { selected: name == game }, name)
+        )),
+    elt(`optgroup`, {label: `WoW Forever`}, ...gamesDedicated.map((name) =>
           elt("option", { selected: name == game }, name)
         )),
     elt(`optgroup`, {label: `Private-like`}, ...gamesPrivate.map((name) =>
@@ -272,8 +279,8 @@ const renderPoleKey = ({lures, game, intKey, useInt}) => {
 
   const checkbox = elt(`input`, {
     type: `checkbox`,
-    disabled: !(game == `Retail` || game == `Classic` || game == `Cata Classic`),
-    checked: !(game == `Retail` || game == `Classic` || game == `Cata Classic`) ? false : useInt,
+    disabled: !(game == `Retail` || game == `Classic` || game == `Cata Classic` || game == `WoW Forever`),
+    checked: !(game == `Retail` || game == `Classic` || game == `Cata Classic` || game == `WoW Forever`) ? false : useInt,
     style: `margin-right: 7px`, name: "useInt"
     });
 

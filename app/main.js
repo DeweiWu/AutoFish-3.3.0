@@ -417,7 +417,7 @@ You can also write in this chat directly to do:
 
     /*
     if(settings.initial) {
-      let games = [`Retail`, `Cata Classic`, `Classic`, "Leg", "MoP", "Cata", "LK Private", "TBC", "Vanilla"];
+      let games = [`Retail`, `Cata Classic`, `Classic`, "Leg", "MoP", "Cata", "LK Private", "TBC", "Vanilla", "WoW Forever"];
       let initialGameChoice = showChoiceWarning(win, `Choose your game:`, `Initial configuration`,
         ...games
       );
@@ -483,7 +483,9 @@ You can also write in this chat directly to do:
     }
 
     if (!games) {
-      log.err(`Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
+      log.err(settings.game == `WoW Forever`
+        ? `未找到游戏窗口。无限服 / WoW Forever 仍使用现有窗口匹配（标题包含 “World of”，类名 GxWindowClass、GxWindowClassD3d 或 waApplication Window）。若无法识别，请到 Advanced Settings 使用 Custom Window 手动选择客户端窗口。浮漂识别和收竿尚未在 1.60.1.70862 上实机验证。`
+        : `Can't find any window of the game! Go to the Advanced Settings and choose the window of the game manually.`);
       win.webContents.send("stop-bot");
       shell.beep();
       return;

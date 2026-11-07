@@ -2811,6 +2811,371 @@
           "exitButton": { "x": 0.0859375, "y": 0.08888888 }
         }
       }
+    },
+    "WoW Forever": {
+      "game": "WoW Forever",
+      "timer": false,
+      "streamMode": false,
+      "streamCountdown": 5,
+      "streamScale": 100,
+      "streamManualCursor": false,
+      "streamDevice": "Custom Server",
+      "picoip": "192.168.1.245",
+      "streamScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "checkLogic": "default",
+      "timerTime": 30,
+      "manualPositionOnBobbberOn": false,
+      "manualPositionOnBobber": 50,
+      "checkConfirm": true,
+      "startByFishingKey": false,
+      "libraryType": "nut.js",
+      "libraryTypeInput": "nut.js",
+      "catchFishButton": "right",
+      "checkChanges": false,
+      "checkChangesSens": 800,
+      "checkChangesInterval": 1,
+      "checkChangesIntervalAfter": 3,
+      "checkChangesSendImg": true,
+      "checkChangesDoAfter": "nothing",
+      "checkChangesIgnoreActions": true,
+      "checkChangesDoAfterSleepTime": 1,
+      "checkChangesDoAfterKey": "9",
+      "deathCheck": false,
+      "deathCheckQuit": false,
+      "deathHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "findPlayer": false,
+      "findPlayerType": "Front + Around",
+      "findPlayerRotationTimeMouse": 1590,
+      "findPlayerRotationTimeKeyboard": 2000,
+      "findPlayerHpException": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "findPlayerHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "findPlayerTargetKey": "tab",
+      "findPlayerTurnDir": "left",
+      "findPlayerTargetKeyAddUse": false,
+      "findPlayerTargetKeyAdd": "tab",
+      "findPlayerCameraDistance": 15,
+      "findPlayerCameraVertical": 5,
+      "findPlayerDoAfter": "Log out",
+      "findPlayerRotateBy": "Mouse",
+      "findPlayerInterval": {
+        "from": 1,
+        "to": 3
+      },
+      "findPlayerDoAfterKey": "1",
+      "findPlayerDoAfterSleepTime": 90,
+      "findPlayerMouseSpeed": 50,
+      "findPlayerFrontInterval": {
+        "from": 1,
+        "to": 3
+      },
+      "aggroCheck": false,
+      "aggroCheckTurnAround": true,
+      "aggroCheckInterval": 1,
+      "aggroCheckUserHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckEnemyHp": {
+        "x": 0,
+        "y": 0,
+        "color": "#ffffff",
+        "precision": 95
+      },
+      "aggroCheckTargetKey": "tab",
+      "aggroCheckRunTime": 10,
+      "aggroCheckCameraDistance": 15,
+      "aggroCheckCameraVertical": 5,
+      "aggroCheckDoAfterType": "Attack",
+      "aggroCheckEquip": false,
+      "aggroCheckEquipKey": "1",
+      "aggroCheckEnemyName": 210,
+      "aggroCheckQuit": false,
+      "aggroCheckControlBy": "Mouse",
+      "aggroCheckMouseSpeed": 50,
+      "aggroCheckRunAwayFirstTurnDeg": 0,
+      "aggroCheckRunAwayFirstTurnDir": "Right",
+      "skills": [],
+      "detectZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
+      "whitelist": false,
+      "filterConfidence": 90,
+      "whitelistWords": "",
+      "whiteListBlueGreen": true,
+      "confirmSoulbound": true,
+      "confirmSpares": true,
+      "confirmLures": true,
+      "whitelistLanguage": "eng",
+      "filterType": "whitelist",
+      "atMouse": true,
+      "spares": [],
+      "combatZone": {
+        "x": 0.32083333333333336,
+        "y": 0,
+        "width": 0.3729166666666667,
+        "height": 0.4888888888888889
+      },
+      "lures": false,
+      "luresType": "key",
+      "luresOpenCharacterWin": false,
+      "luresCoords": {
+        "x": 0,
+        "y": 0
+      },
+      "fishpoleCoords": {
+        "x": 0,
+        "y": 0
+      },
+      "luresOmitInitial": false,
+      "luresKey": "2",
+      "luresDelayMin": 10,
+      "dynamicThreshold": false,
+      "dynamicThresholdValue": 5,
+      "useCustomWindow": false,
+      "likeHuman": true,
+      "likeHumanHover": 2,
+      "likeHumanFineTune": true,
+      "customWindow": "",
+      "closeLoot": "mouse",
+      "delay": {
+        "from": 50,
+        "to": 150
+      },
+      "castDelay": {
+        "from": 2300,
+        "to": 2500
+      },
+      "sleepAfterHook": true,
+      "afterHookDelay": {
+        "from": 150,
+        "to": 400
+      },
+      "sleepAfterHookChance": 80,
+      "maxFishTime": {
+        "from": 25,
+        "to": 28
+      },
+      "maxFishTimeAfter": "recast",
+      "highlightPercent": true,
+      "relZone": {
+        "x": 0.34427083333333336,
+        "y": 0.08518518518518518,
+        "width": 0.3177083333333333,
+        "height": 0.34074074074074073
+      },
+      "notificationPos": {
+        "y": 0.144444444,
+        "width": 0.01822916,
+        "height": 0.01851851
+      },
+      "findBobberDirection": "center",
+      "checkingDelay": 50,
+      "mouseMoveSpeed": 30,
+      "mouseCurvatureStrength": 65,
+      "applyFatigue": true,
+      "applyFatigueRate": 0.5,
+      "applyFatigueEvery": {
+        "from": 1,
+        "to": 5
+      },
+      "luresDelay": 5500,
+      "randomSleep": true,
+      "randomSleepEvery": {
+        "from": 1,
+        "to": 3
+      },
+      "randomSleepDelay": {
+        "from": 1,
+        "to": 15
+      },
+      "randomSleepChance": 80,
+      "reaction": true,
+      "reactionDelay": {
+        "from": 150,
+        "to": 400
+      },
+      "maxAttempts": 5,
+      "afterTimer": "Stop",
+      "hsKey": "6",
+      "hsKeyDelay": 15000,
+      "timerShutDown": false,
+      "hideWin": false,
+      "shiftClick": false,
+      "missOnPurpose": false,
+      "missOnPurposeRandom": {
+        "from": 5,
+        "to": 20
+      },
+      "missOnPurposeRandomDelay": {
+        "from": 1,
+        "to": 8
+      },
+      "logOut": false,
+      "logOutEvery": {
+        "from": 50,
+        "to": 120
+      },
+      "logOutFor": {
+        "from": 1,
+        "to": 3
+      },
+      "logOutAfter": {
+        "from": 1,
+        "to": 3
+      },
+      "logOutUseMacro": false,
+      "logOutMacroKey": "7",
+      "logOutDoAfter": false,
+      "logOutDoAfterKey": "8",
+      "mammoth": false,
+      "mammothKey": "5",
+      "mammothKeyDelay": 3000,
+      "mammothSellDelay": {
+        "from": 3000,
+        "to": 5000
+      },
+      "mammothApplyEvery": {
+        "from": 15,
+        "to": 30
+      },
+      "mammothTraderName": "Gnimo",
+      "mammothUseMacro": false,
+      "mammothMacroKey": "8",
+      "mammothAfterTradeDelay": 10,
+      "arduino": false,
+      "arduinoPort": "COM1",
+      "arduinoRate": "9600",
+      "arduinoType": "arduino",
+      "arduinoPicoIp": "192.168.1.245",
+      "rngMove": false,
+      "rngMoveKeys": true,
+      "rngMoveTimer": {
+        "from": 3,
+        "to": 10
+      },
+      "rngMoveRadiusMax": 45,
+      "rngMoveDirLengthMax": 4,
+      "playertext": "You've been fishing here for hours dude, are you a bot? ",
+      "manualPositionOnBobberOn": false,
+      "detectTriggerWhisper": true,
+      "detectTriggerWhisperWord": "whispers:",
+      "detectTriggerSay": true,
+      "detectTriggerSayWord": "says:",
+      "detectByType": "colors",
+      "openai": false,
+      "openaimodel": "google/gemini-2.0-flash-lite-preview-02-05:free",
+      "openaiprompt": "You are playing a computer game World of Warcraft. You are very busy right now by fishing in Stormwind. Someone writes to you in the game, give a very short \"gamer\" reply to them (a couple of words, give them a straight answer).",
+      "openaikey": "",
+      "tmApiKey": "",
+      "tmUseUsername": false,
+      "tmUsername": "username",
+      "detectWhisper": true,
+      "closeAtWhisper": false,
+      "quitAtWhisper": false,
+      "whispSpecColors": [
+        {
+          "r": 255,
+          "g": 128,
+          "b": 255,
+          "percent": 100
+        }
+      ],
+      "closeLootDelay": 750,
+      "spareDelay": 3000,
+      "ignorePreliminary": false,
+      "chatZone": {
+        "x": 0.022395833333333334,
+        "y": 0.6787037037037037,
+        "width": 0.28541666666666665,
+        "height": 0.15092592592592594
+      },
+      "confirmationWindow": {
+        "1536": {
+          "x": 0.09004392,
+          "y": 0.22526,
+          "width": 0.082723,
+          "height": 0.04427
+        },
+        "1920": {
+          "x": 0.08177083,
+          "y": 0.20185,
+          "width": 0.073958,
+          "height": 0.042592
+        }
+      },
+      "lootWindow": {
+        "1536": {
+          "upperLimit": 0.125,
+          "toItemX": 0.00732,
+          "toItemY": 0.04296,
+          "itemHeight": 0.057291,
+          "height": 0.22526,
+          "width": 0.079795,
+          "exitButton": {
+            "x": 0.0856515,
+            "y": 0.11067708
+          }
+        },
+        "1920": {
+          "upperLimit": 0.11203,
+          "toItemX": 0.00729,
+          "toItemY": 0.03796,
+          "itemHeight": 0.051,
+          "height": 0.20185,
+          "width": 0.070833,
+          "exitButton": {
+            "x": 0.0776041,
+            "y": 0.099074
+          }
+        },
+        "2560": {
+          "upperLimit": 0.125,
+          "toItemX": 0.0078125,
+          "toItemY": 0.0375,
+          "itemHeight": 0.052083333,
+          "height": 0.19444444,
+          "width": 0.0703125,
+          "exitButton": {
+            "x": 0.07734375,
+            "y": 0.09930555555
+          }
+        },
+        "3840": {
+          "upperLimit": 0.137037037037,
+          "toItemX": 0.00755208333,
+          "toItemY": 0.03842592592,
+          "itemHeight": 0.051388888888,
+          "height": 0.2018518518518,
+          "width": 0.070052083333,
+          "exitButton": {
+            "x": 0.07734375,
+            "y": 0.0986111111
+          }
+        }
+      }
     }
   }
 }
